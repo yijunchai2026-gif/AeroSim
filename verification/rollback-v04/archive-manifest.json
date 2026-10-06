@@ -1,0 +1,43 @@
+{
+  "generated": "2026-10-06T04:29:30.559Z",
+  "retainedVersion": "0.4.0",
+  "retained": {
+    "runtime": "fc0fc875807222e359d53b68cec41b92a2cdf8cdfaec844e3bd3c0744efb2f07",
+    "resources": "492bc1253b545e377cc3b348570d7f0b6cd728100355474bfd093b639da9a130"
+  },
+  "archive": "/Users/bytedance/Documents/ChatGPT/AeroSim-撤销备份-20261005.Zpojz4",
+  "moved": [
+    "AeroSim/Builds/macOS-DesignV4",
+    "AeroSim/Builds/macOS",
+    "AeroSim/Builds/macOS-ArtV2",
+    "AeroSim-设计还原V4.html",
+    "verification/ui-design-v4",
+    "verification/design-v4-build.log",
+    "AeroSim/Assets/AeroSim/Resources/Art/ScenesV4",
+    "AeroSim/Assets/AeroSim/Resources/Art/ScenesV4.meta",
+    "AeroSim/Assets/AeroSim/Resources/UI/DesignV4.uss.meta",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Design.cs.meta",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.HudDesign.cs.meta",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.OsdDesign.cs.meta",
+    "AeroSim/Assets/AeroSim/Runtime/UI/DesignIcon.cs.meta",
+    "AeroSim/Assets/AeroSim/Runtime/UI",
+    "AeroSim/Assets/AeroSim/Runtime/UI.meta"
+  ],
+  "alreadyAbsent": [
+    "AeroSim/Assets/AeroSim/Resources/UI/DesignV4.uss",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Design.cs",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.HudDesign.cs",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.OsdDesign.cs",
+    "AeroSim/Assets/AeroSim/Runtime/UI/DesignIcon.cs"
+  ],
+  "reason": "User requested withdrawal of 0.5 and only 0.4 as active release. Shared art, original design, user data and 0.4 assets retained.",
+  "withdrawnTemporaryQaCopies": [
+    "/private/tmp/aerosim-uiqa.0zcbW5/AeroSim-UIQA.app",
+    "/private/tmp/aerosim-uiqa.6WULqi/AeroSim-UIQA.app",
+    "/private/tmp/aerosim-uiqa.DUKtI6/AeroSim-UIQA.app",
+    "/private/tmp/aerosim-uiqa.ESRXWz/AeroSim-UIQA.app",
+    "/private/tmp/aerosim-uiqa.Hv8IEp/AeroSim-UIQA.app",
+    "/private/tmp/aerosim-uiqa.jGaWBy/AeroSim-UIQA.app",
+    "/private/tmp/aerosim-uiqa.xnHRT0/AeroSim-UIQA.app"
+  ]
+}

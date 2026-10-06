@@ -1,0 +1,39 @@
+PASS Diagnostics uses isolated storage
+PASS Route renders: Home
+PASS Route renders: Onboarding
+PASS Route renders: Controller
+PASS Route renders: Academy
+PASS Route renders: FreeFlight
+PASS Route renders: Challenges
+PASS Route renders: Hangar
+PASS Route renders: Tuning
+PASS Route renders: OsdEditor
+PASS Route renders: Dashboard
+PASS Route renders: Catalog
+PASS Route renders: Brief
+PASS Route renders: Preflight
+PASS Route renders: MissionEditor
+PASS Route renders: Instructor
+PASS Route renders: Readiness
+PASS Route renders: Settings
+PASS Route renders: Records
+PASS Pointer click launches real flight
+PASS Keyboard throttle moves aircraft
+PASS Pause freezes physics and clock
+PASS Pause button freezes session
+PASS Resume button unfreezes session
+PASS Gamepad four-channel input
+PASS Controller disconnect pauses flight
+PASS Touch four-channel input
+PASS Ordered gate objective completes
+PASS Collision updates score evidence
+PASS Session persists with score and telemetry
+PASS Result screen is shown
+PASS Replay seeks into actual telemetry
+PASS Replay advances
+PASS CSV and printable report export
+PASS RTH returns and lands
+PASS Inspection capture order completes
+PASS Photo evidence saved
+PASS Profile reload preserves settings and sessions
+Failures: 0

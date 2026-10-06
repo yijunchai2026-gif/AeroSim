@@ -1,0 +1,24 @@
+# OS and editor metadata
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+
+# Local credentials and signing material
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.mobileprovision
+
+# Generated verification evidence remains local; keep tools and compact summaries.
+/verification/**/*.png
+/verification/**/*.jpg
+/verification/**/*.jpeg
+/verification/**/*.log
+/verification/**/report.json
+/verification/**/failures.json
+
+# Unity cache, builds, and user settings are covered by AeroSim/.gitignore.

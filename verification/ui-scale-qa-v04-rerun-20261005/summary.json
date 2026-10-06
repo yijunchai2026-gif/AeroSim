@@ -1,0 +1,433 @@
+{
+  "generated": "2026-10-06T04:39:54.014Z",
+  "status": "NOT PASSED",
+  "integrity": [
+    {
+      "name": "AeroSim.Runtime.dll",
+      "before": "fc0fc875807222e359d53b68cec41b92a2cdf8cdfaec844e3bd3c0744efb2f07",
+      "after": "fc0fc875807222e359d53b68cec41b92a2cdf8cdfaec844e3bd3c0744efb2f07",
+      "unchanged": true
+    },
+    {
+      "name": "resources.assets",
+      "before": "492bc1253b545e377cc3b348570d7f0b6cd728100355474bfd093b639da9a130",
+      "after": "492bc1253b545e377cc3b348570d7f0b6cd728100355474bfd093b639da9a130",
+      "unchanged": true
+    }
+  ],
+  "evidenceErrors": [],
+  "coverageNotes": [
+    "desktop-1680x945: requested 1680×945, actual 1680×946",
+    "desktop-3840x2160: requested 3840×2160, actual 3840×1992"
+  ],
+  "runs": [
+    {
+      "name": "desktop-1280x720",
+      "width": 1280,
+      "height": 720,
+      "requestedWidth": 1280,
+      "requestedHeight": 720,
+      "states": 217,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "desktop-1680x945",
+      "width": 1680,
+      "height": 946,
+      "requestedWidth": 1680,
+      "requestedHeight": 945,
+      "states": 186,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "desktop-1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "requestedWidth": 1920,
+      "requestedHeight": 1080,
+      "states": 217,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "desktop-2560x1440",
+      "width": 2560,
+      "height": 1440,
+      "requestedWidth": 2560,
+      "requestedHeight": 1440,
+      "states": 186,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "desktop-3840x2160",
+      "width": 3840,
+      "height": 1992,
+      "requestedWidth": 3840,
+      "requestedHeight": 2160,
+      "states": 186,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "ultrawide-2520x1080",
+      "width": 2520,
+      "height": 1080,
+      "requestedWidth": 2520,
+      "requestedHeight": 1080,
+      "states": 186,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "desktop-4k-fullscreen",
+      "width": 3840,
+      "height": 2160,
+      "requestedWidth": 3840,
+      "requestedHeight": 2160,
+      "states": 186,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "acceptance-2560x1080",
+      "width": 2560,
+      "height": 1080,
+      "requestedWidth": 2560,
+      "requestedHeight": 1080,
+      "states": 186,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "tablet-1024x768",
+      "width": 1024,
+      "height": 768,
+      "requestedWidth": 1024,
+      "requestedHeight": 768,
+      "states": 31,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "phone-landscape-844x390",
+      "width": 844,
+      "height": 390,
+      "requestedWidth": 844,
+      "requestedHeight": 390,
+      "states": 31,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "phone-portrait-390x844",
+      "width": 390,
+      "height": 844,
+      "requestedWidth": 390,
+      "requestedHeight": 844,
+      "states": 31,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "dpi2-2048x1536",
+      "width": 2048,
+      "height": 1536,
+      "requestedWidth": 2048,
+      "requestedHeight": 1536,
+      "states": 31,
+      "runtimeErrors": 0
+    },
+    {
+      "name": "dpi3-2532x1170",
+      "width": 2532,
+      "height": 1170,
+      "requestedWidth": 2532,
+      "requestedHeight": 1170,
+      "states": 31,
+      "runtimeErrors": 0
+    }
+  ],
+  "totals": {
+    "states": 1705,
+    "configurations": 55,
+    "checks": 202305,
+    "screenshots": 165,
+    "runtimeErrors": 0,
+    "designFailures": 5400,
+    "layoutFailures": 213,
+    "textWarnings": 18903,
+    "interactions": 165,
+    "interactionFailures": 0,
+    "roundingFindings": 424,
+    "decorativeGlyphFindings": 53
+  },
+  "rules": {
+    "viewport.panel-scale": {
+      "total": 1650,
+      "passed": 1650,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "viewport"
+    },
+    "design.minimum-font-12": {
+      "total": 63806,
+      "passed": 62588,
+      "failed": 1218,
+      "rawFailed": 1271,
+      "kind": "design"
+    },
+    "layout.text-fits": {
+      "total": 54293,
+      "passed": 35390,
+      "failed": 18903,
+      "rawFailed": 18903,
+      "kind": "warning"
+    },
+    "layout.horizontal-containment": {
+      "total": 7865,
+      "passed": 7865,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "layout"
+    },
+    "design.action-height-44": {
+      "total": 7975,
+      "passed": 7975,
+      "failed": 0,
+      "rawFailed": 424,
+      "kind": "design"
+    },
+    "layout.sibling-buttons-no-overlap": {
+      "total": 44220,
+      "passed": 44220,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "layout"
+    },
+    "design.topbar-height-64": {
+      "total": 1375,
+      "passed": 0,
+      "failed": 1375,
+      "rawFailed": 1375,
+      "kind": "design"
+    },
+    "design.nav-width": {
+      "total": 1375,
+      "passed": 0,
+      "failed": 1375,
+      "rawFailed": 1375,
+      "kind": "design"
+    },
+    "layout.critical-action-reachable": {
+      "total": 3300,
+      "passed": 3297,
+      "failed": 3,
+      "rawFailed": 3,
+      "kind": "layout"
+    },
+    "regression.six-aircraft": {
+      "total": 55,
+      "passed": 55,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "regression"
+    },
+    "design.user-ui-scale-setting": {
+      "total": 55,
+      "passed": 0,
+      "failed": 55,
+      "rawFailed": 55,
+      "kind": "design"
+    },
+    "design.independent-hud-scale-setting": {
+      "total": 55,
+      "passed": 0,
+      "failed": 55,
+      "rawFailed": 55,
+      "kind": "design"
+    },
+    "design.text-200-user-setting": {
+      "total": 55,
+      "passed": 0,
+      "failed": 55,
+      "rawFailed": 55,
+      "kind": "design"
+    },
+    "interaction.launch": {
+      "total": 55,
+      "passed": 55,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "interaction"
+    },
+    "layout.hud-contained": {
+      "total": 2243,
+      "passed": 2243,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "layout"
+    },
+    "design.hud-central-view-clear": {
+      "total": 1803,
+      "passed": 1726,
+      "failed": 77,
+      "rawFailed": 77,
+      "kind": "design"
+    },
+    "layout.hud-blocks-no-overlap": {
+      "total": 10495,
+      "passed": 10287,
+      "failed": 208,
+      "rawFailed": 208,
+      "kind": "layout"
+    },
+    "design.hud-top-max-48": {
+      "total": 220,
+      "passed": 0,
+      "failed": 220,
+      "rawFailed": 220,
+      "kind": "design"
+    },
+    "design.hud-bottom-max-56": {
+      "total": 220,
+      "passed": 0,
+      "failed": 220,
+      "rawFailed": 220,
+      "kind": "design"
+    },
+    "layout.pause-panel-contained": {
+      "total": 55,
+      "passed": 55,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "layout"
+    },
+    "layout.pause-action-visible": {
+      "total": 275,
+      "passed": 273,
+      "failed": 2,
+      "rawFailed": 2,
+      "kind": "layout"
+    },
+    "interaction.pause": {
+      "total": 55,
+      "passed": 55,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "interaction"
+    },
+    "interaction.resume": {
+      "total": 55,
+      "passed": 55,
+      "failed": 0,
+      "rawFailed": 0,
+      "kind": "interaction"
+    },
+    "design.content-max-1600": {
+      "total": 750,
+      "passed": 0,
+      "failed": 750,
+      "rawFailed": 750,
+      "kind": "design"
+    }
+  },
+  "issues": [
+    {
+      "id": "UIQA-01",
+      "priority": "P1",
+      "title": "用户缩放功能未交付",
+      "finding": "设置页只有 Larger UI text 开关，没有 80/90/100/110/125/150% + Auto，也没有独立 HUD Scale 或 200% 文本设置。测试注入倍率不能替代用户功能。",
+      "contract": "PRD 18.4.3、18.16",
+      "recommendation": "实现菜单/HUD 独立倍率、即时预览与保存，再重新跑矩阵。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-1920x1080/100-text1-Aerial-Settings.png"
+    },
+    {
+      "id": "UIQA-02",
+      "priority": "P1",
+      "title": "HUD 控件遮挡读数和中央视野",
+      "finding": "1280×720 / 100% 的键位提示压住高度和速度读数，电量卡与小地图相交；1920×1080 / 125% 也出现提示条与遥测相交。720p / 150% 的高度、速度卡侵入中央关键视野；手机竖屏的摇杆覆盖底部动作。",
+      "contract": "PRD 18.4.2、18.4.3、18.21.1/5",
+      "recommendation": "用 HUD 安全区与占位布局，低分辨率隐藏标签、折叠教学卡并避开摇杆/动作区。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-1280x720/100-text1-Aerial-Flight.png"
+    },
+    {
+      "id": "UIQA-03",
+      "priority": "P1",
+      "title": "手机横屏暂停菜单末项不可完整到达",
+      "finding": "844×390 / 100% 时 Exit Without Saving 位于 y=376，高 44，超出 390 高度；暂停面板没有滚动机制。等效 3× DPI 下同样复现。Resume 可点不等于所有暂停动作可用。",
+      "contract": "关键动作可达性；移动端扩展需求",
+      "recommendation": "限制模态框最大高度，内部滚动，并在底部安全区保留必要动作。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/phone-landscape-844x390/100-text1-Aerial-Pause.png"
+    },
+    {
+      "id": "UIQA-04",
+      "priority": "P1",
+      "title": "手机竖屏回放返回按钮裁切",
+      "finding": "390×844 / 100% 时 Back to Records 的边界为 x=302、宽 150，右侧超出屏幕 62；无法完整显示。",
+      "contract": "关键动作可达性；移动端扩展需求",
+      "recommendation": "窄屏减少顶部文字，保留可见返回入口，动作允许换行或进入工具菜单。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/phone-portrait-390x844/100-text1-Aerial-Replay.png"
+    },
+    {
+      "id": "UIQA-05",
+      "priority": "P1",
+      "title": "200% 字体压力测试出现真实重叠和裁切",
+      "finding": "1920×1080 的首页在仅放大字体至 200% 后，进度文案与描述重叠，Start Training 主动作不再显示，控制器/飞行准备卡文字裁切；导航标签拆成碎行。此场景是 QA 压力注入，不是产品已支持的无障碍设置。",
+      "contract": "PRD 18.16：200% 文本，必要时滚动而非裁切",
+      "recommendation": "移除固定文本容器高度，重新组织卡片，保证放大后的主动作可见并可操作。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-1920x1080/100-text2-Aerial-Home.png"
+    },
+    {
+      "id": "UIQA-06",
+      "priority": "P2",
+      "title": "外壳和 HUD 基础尺寸偏离规范",
+      "finding": "100% 时菜单顶栏 76（应 64）、展开导航 216（应 240）；低于 1280 时收起导航为 66（应 72）。HUD 顶栏 64（上限 48）、底栏 68（上限 56）；小地图在右上而非设计的左下。",
+      "contract": "PRD 18.4.1/2、18.5.1",
+      "recommendation": "将这些数值提取为共享 Design Tokens，先统一尺寸再修响应式断点。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-1920x1080/100-text1-Aerial-Home.png"
+    },
+    {
+      "id": "UIQA-07",
+      "priority": "P2",
+      "title": "宽屏内容没有 1600 最大宽度约束",
+      "finding": "2560/3840 宽度下自由飞设置、表单和图片随窗口无限拉长。4K / 100% 的 main-content 超过 3600，明显不是 1600 的居中内容栅格。",
+      "contract": "PRD 18.4.1",
+      "recommendation": "约束文字/表单内容宽度，多余宽度用于场景而非无限拉长控件。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-4k-fullscreen/100-text1-Aerial-FreeFlight.png"
+    },
+    {
+      "id": "UIQA-08",
+      "priority": "P2",
+      "title": "多个核心页面结构未按原设计实现",
+      "finding": "自由飞为纵向表单而非大场景 + 场景卡 + 右侧设置 + 固定启动区；全局设置缺少分类和实时预览；OSD 编辑器缺少组件库/属性栏三栏结构；FPV 首页是通用表单而非全屏快速飞行；专业 HUD 仍为通用左侧摘要而非右侧任务与证据面板。这是设计实现欠账，不是某一缩放导致的回归。",
+      "contract": "PRD 18.5.4、18.8.3、18.9.1/5、18.10.5",
+      "recommendation": "逐页按原设计重构信息架构，并重新验证三个工作台。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-1920x1080/100-text1-FPV-OsdEditor.png"
+    },
+    {
+      "id": "UIQA-09",
+      "priority": "P2",
+      "title": "部分文字小于 12 的最小字号",
+      "finding": "首页 PRACTICE YOUR SKILLS / BE PREPARED 和 HUD 的 SPEED、ALTITUDE、TIME、BATTERY 等标签为 11。图标字形 SET 不作为正文缺陷计数。",
+      "contract": "PRD 18.3.2",
+      "recommendation": "统一正文/状态标签最小字号；小窗口优先隐藏次要标签，不继续缩小字号。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-1920x1080/100-text1-Aerial-Flight.png"
+    },
+    {
+      "id": "UIQA-11",
+      "priority": "P2",
+      "title": "美国单位模式存在不一致标签",
+      "finding": "自由飞已选择 U.S. Customary，风速是 mph，但 RTH altitude 仍标 m；飞行 HUD 的高度为 ft。",
+      "contract": "PRD 18.6.3：禁止同一任务混用单位",
+      "recommendation": "用统一单位格式化器显示返航高度，保存内部米制数值与显示单位分离。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-4k-fullscreen/100-text1-Aerial-FreeFlight.png"
+    },
+    {
+      "id": "UIQA-12",
+      "priority": "P2",
+      "title": "设置页版本文字过期",
+      "finding": "被测应用 Info.plist 为 0.4.0，但 Settings 仍显示 AeroSim 0.2 · Offline functional MVP。源码恢复后保留原版 UI，没有为测试修改此标签。",
+      "contract": "PRD 18.21.10；交付版本可追溯",
+      "recommendation": "后续在 0.4 修复中从 Application.version 读取版本，不手写旧版号。",
+      "image": "verification/ui-scale-qa-v04-rerun-20261005/desktop-1920x1080/100-text1-Aerial-Settings.png"
+    }
+  ],
+  "sourceRecovered": true,
+  "releaseRegression": {
+    "passed": 120,
+    "failed": 0,
+    "noRuntimeErrors": true
+  }
+}

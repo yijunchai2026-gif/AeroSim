@@ -1,0 +1,911 @@
+.app-root {
+    flex-grow: 1;
+    min-width: 640px;
+    min-height: 520px;
+    background-color: rgb(5, 20, 34);
+    color: rgb(244, 249, 255);
+    font-size: 16px;
+}
+
+.app-root Label {
+    color: rgb(244, 249, 255);
+}
+
+.app-root Button {
+    color: rgb(244, 249, 255);
+}
+
+.top-bar {
+    height: 76px;
+    min-height: 76px;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 28px;
+    padding-right: 24px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(139, 178, 207, 0.18);
+    background-color: rgb(7, 27, 44);
+}
+
+.brand {
+    width: 250px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-mark-glyph {
+    color: rgb(26, 211, 255);
+    font-size: 36px;
+    -unity-font-style: bold;
+}
+
+.brand-name {
+    margin-left: 10px;
+    font-size: 26px;
+    -unity-font-style: bold;
+}
+
+.status-strip {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.status-pill {
+    height: 44px;
+    margin-left: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 22px;
+}
+
+.status-pill-highlighted {
+    border-width: 1px;
+    border-color: rgba(28, 220, 178, 0.55);
+    background-color: rgba(6, 75, 78, 0.24);
+}
+
+.status-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.status-text {
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+.status-pill-highlighted .status-icon {
+    color: rgb(28, 220, 178);
+}
+
+.status-pill-highlighted .status-text {
+    color: rgb(28, 220, 178);
+}
+
+.icon-button {
+    width: 46px;
+    height: 46px;
+    margin-left: 12px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.icon-button-label {
+    font-size: 25px;
+}
+
+.app-body {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.side-nav {
+    width: 216px;
+    min-width: 216px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 18px;
+    padding-bottom: 16px;
+    background-color: rgb(9, 29, 47);
+    border-right-width: 1px;
+    border-right-color: rgba(139, 178, 207, 0.12);
+}
+
+.workspace-switcher {
+    height: 48px;
+    margin-bottom: 18px;
+    padding-left: 13px;
+    padding-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: rgba(37, 159, 255, 0.45);
+    background-color: rgba(8, 130, 255, 0.13);
+}
+
+.workspace-switcher:hover {
+    background-color: rgba(8, 130, 255, 0.22);
+}
+
+.workspace-icon {
+    width: 25px;
+    color: rgb(26, 211, 255);
+    font-size: 20px;
+}
+
+.workspace-label {
+    flex-grow: 1;
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+.workspace-chevron {
+    color: rgb(181, 197, 214);
+    font-size: 16px;
+}
+
+.nav-button {
+    height: 56px;
+    margin-bottom: 6px;
+    padding-left: 18px;
+    padding-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    border-width: 0;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.055);
+}
+
+.nav-button-selected {
+    background-color: rgb(8, 130, 255);
+}
+
+.nav-button-selected:hover {
+    background-color: rgb(18, 143, 255);
+}
+
+.nav-icon {
+    width: 32px;
+    font-size: 23px;
+    color: rgb(215, 230, 244);
+}
+
+.nav-label {
+    margin-left: 8px;
+    font-size: 16px;
+}
+
+.nav-button-selected .nav-icon {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}
+
+.nav-button-selected .nav-label {
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}
+
+.nav-spacer {
+    flex-grow: 1;
+}
+
+.main-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.home-scroll {
+    flex-grow: 1;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 18px;
+    padding-bottom: 20px;
+    background-color: rgb(6, 23, 38);
+}
+
+.top-row {
+    flex-direction: row;
+    margin-bottom: 14px;
+}
+
+.middle-row {
+    flex-direction: row;
+    margin-bottom: 14px;
+}
+
+.promo-row {
+    flex-direction: row;
+    margin-bottom: 14px;
+}
+
+.card {
+    border-width: 1px;
+    border-color: rgba(143, 178, 204, 0.24);
+    border-radius: 15px;
+    background-color: rgba(16, 40, 61, 0.94);
+    overflow: hidden;
+}
+
+.hero-card {
+    flex-grow: 1;
+    min-width: 620px;
+    height: 412px;
+    position: relative;
+}
+
+.hero-shade {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(2, 15, 26, 0.30);
+}
+
+.hero-copy {
+    width: 480px;
+    height: 100%;
+    padding-left: 34px;
+    padding-right: 34px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    justify-content: center;
+    background-color: rgba(3, 17, 29, 0.62);
+}
+
+.eyebrow {
+    font-size: 12px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+}
+
+.hero-title {
+    margin-top: 14px;
+    font-size: 40px;
+    -unity-font-style: bold;
+}
+
+.hero-metrics {
+    flex-direction: row;
+    margin-top: 16px;
+    margin-bottom: 13px;
+}
+
+.metric {
+    margin-right: 26px;
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+.hero-description {
+    width: 360px;
+    color: rgb(225, 235, 244);
+    font-size: 16px;
+    white-space: normal;
+}
+
+.primary-button {
+    width: 285px;
+    height: 56px;
+    margin-top: 24px;
+    border-width: 0;
+    border-radius: 12px;
+    background-color: rgb(8, 130, 255);
+    font-size: 17px;
+    -unity-font-style: bold;
+}
+
+.primary-button:hover {
+    background-color: rgb(21, 144, 255);
+}
+
+.controller-card {
+    width: 314px;
+    min-width: 314px;
+    height: 412px;
+    margin-left: 14px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.card-title {
+    font-size: 21px;
+    -unity-font-style: bold;
+}
+
+.controller-status {
+    height: 68px;
+    margin-top: 14px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    flex-direction: row;
+    align-items: center;
+    border-width: 1px;
+    border-color: rgba(143, 178, 204, 0.20);
+    border-radius: 13px;
+    background-color: rgba(16, 41, 62, 0.74);
+}
+
+.device-icon {
+    width: 46px;
+    height: 46px;
+    margin-right: 12px;
+    border-width: 1px;
+    border-color: rgba(143, 178, 204, 0.36);
+    border-radius: 23px;
+    align-items: center;
+    justify-content: center;
+}
+
+.device-icon-glyph {
+    font-size: 21px;
+}
+
+.controller-labels {
+    flex-grow: 1;
+}
+
+.connected-label {
+    color: rgb(28, 220, 178);
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+.controller-device {
+    margin-top: 4px;
+    color: rgb(181, 197, 214);
+    font-size: 12px;
+    white-space: normal;
+}
+
+.controller-art {
+    height: 190px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.secondary-row-button {
+    height: 50px;
+    padding-left: 14px;
+    padding-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    border-width: 1px;
+    border-color: rgba(143, 178, 204, 0.25);
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.035);
+}
+
+.secondary-row-button:hover {
+    background-color: rgba(8, 130, 255, 0.12);
+}
+
+.row-icon {
+    width: 34px;
+    font-size: 10px;
+    -unity-font-style: bold;
+}
+
+.row-button-label {
+    flex-grow: 1;
+    font-size: 14px;
+}
+
+.row-chevron {
+    color: rgb(181, 197, 214);
+    font-size: 28px;
+}
+
+.learning-card {
+    flex-grow: 1;
+    min-width: 620px;
+    height: 240px;
+    padding-left: 27px;
+    padding-right: 27px;
+    padding-top: 19px;
+    padding-bottom: 18px;
+}
+
+.section-heading {
+    height: 34px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.section-subtitle {
+    margin-left: 18px;
+    color: rgb(181, 197, 214);
+    font-size: 13px;
+}
+
+.progress-track {
+    height: 2px;
+    margin-left: 62px;
+    margin-right: 62px;
+    margin-top: 24px;
+    background-color: rgba(143, 178, 204, 0.34);
+}
+
+.progress-complete {
+    width: 67%;
+    height: 2px;
+    background-color: rgb(26, 211, 255);
+}
+
+.lesson-grid {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: -13px;
+}
+
+.lesson {
+    width: 23%;
+    min-width: 120px;
+    height: 166px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    position: relative;
+}
+
+.lesson-marker {
+    width: 30px;
+    height: 30px;
+    align-self: center;
+    margin-bottom: 8px;
+    border-width: 3px;
+    border-color: rgb(29, 63, 88);
+    border-radius: 15px;
+    background-color: rgb(10, 37, 57);
+    -unity-text-align: middle-center;
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.lesson-complete .lesson-marker {
+    border-width: 0;
+    background-color: rgb(42, 159, 255);
+}
+
+.lesson-active .lesson-marker {
+    border-color: rgb(67, 168, 255);
+    color: rgb(85, 185, 255);
+}
+
+.lesson-locked .lesson-marker {
+    color: rgb(116, 141, 161);
+}
+
+.lesson-image {
+    height: 74px;
+    border-width: 1px;
+    border-color: rgba(143, 178, 204, 0.30);
+    border-radius: 9px;
+}
+
+.lesson-active .lesson-image {
+    border-color: rgb(34, 153, 255);
+    border-width: 2px;
+}
+
+.lesson-title {
+    margin-top: 7px;
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+
+.lesson-active .lesson-title {
+    color: rgb(54, 172, 255);
+}
+
+.lesson-active .lesson-status {
+    color: rgb(54, 172, 255);
+}
+
+.lesson-status {
+    margin-top: 3px;
+    color: rgb(181, 197, 214);
+    font-size: 12px;
+}
+
+.readiness-card {
+    width: 342px;
+    min-width: 342px;
+    height: 240px;
+    margin-left: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.readiness-image {
+    height: 82px;
+    margin-top: 13px;
+    border-radius: 10px;
+}
+
+.readiness-title {
+    margin-top: 9px;
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+
+.readiness-description {
+    margin-top: 3px;
+    color: rgb(181, 197, 214);
+    font-size: 12px;
+    white-space: normal;
+}
+
+.text-action {
+    height: 26px;
+    margin-top: 2px;
+    padding-left: 0;
+    padding-right: 0;
+    align-self: flex-start;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(61, 174, 255);
+    font-size: 12px;
+}
+
+.promo-card {
+    flex-grow: 1;
+    height: 145px;
+    min-width: 420px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    position: relative;
+}
+
+.promo-emergency {
+    margin-left: 14px;
+}
+
+.promo-card:hover {
+    border-color: rgba(85, 184, 255, 0.65);
+}
+
+.promo-shade {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(4, 20, 32, 0.43);
+}
+
+.promo-copy {
+    width: 70%;
+    height: 100%;
+    padding-left: 28px;
+    padding-right: 28px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    justify-content: center;
+    background-color: rgba(5, 22, 35, 0.52);
+}
+
+.promo-eyebrow {
+    color: rgb(255, 201, 47);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    -unity-font-style: bold;
+}
+
+.promo-emergency .promo-eyebrow {
+    color: rgb(255, 119, 125);
+}
+
+.promo-title {
+    margin-top: 8px;
+    font-size: 20px;
+    -unity-font-style: bold;
+}
+
+.promo-description {
+    margin-top: 7px;
+    color: rgb(226, 235, 243);
+    font-size: 13px;
+    white-space: normal;
+}
+
+.promo-arrow {
+    position: absolute;
+    right: 20px;
+    top: 51px;
+    width: 42px;
+    height: 42px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.45);
+    border-radius: 21px;
+    background-color: rgba(5, 18, 29, 0.72);
+    -unity-text-align: middle-center;
+    font-size: 29px;
+}
+
+.workspace-menu {
+    position: absolute;
+    left: 14px;
+    top: 70px;
+    width: 380px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-width: 1px;
+    border-color: rgba(60, 159, 233, 0.48);
+    background-color: rgb(9, 31, 49);
+}
+
+.is-hidden {
+    display: none;
+}
+
+.menu-eyebrow {
+    margin-left: 7px;
+    margin-right: 7px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: rgb(181, 197, 214);
+    font-size: 11px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+}
+
+.workspace-option {
+    min-height: 74px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex-direction: row;
+    align-items: center;
+    border-width: 0;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.workspace-option:hover {
+    background-color: rgba(8, 130, 255, 0.12);
+}
+
+.workspace-radio {
+    width: 28px;
+    color: rgb(26, 211, 255);
+    font-size: 18px;
+}
+
+.workspace-option-copy {
+    flex-grow: 1;
+}
+
+.workspace-option-title {
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+.workspace-option-description {
+    margin-top: 4px;
+    color: rgb(181, 197, 214);
+    font-size: 12px;
+    white-space: normal;
+}
+
+.toast {
+    position: absolute;
+    left: 50%;
+    bottom: 28px;
+    min-width: 340px;
+    min-height: 48px;
+    margin-left: -170px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    align-items: center;
+    justify-content: center;
+    border-width: 1px;
+    border-color: rgba(75, 180, 255, 0.55);
+    border-radius: 12px;
+    background-color: rgb(11, 41, 63);
+}
+
+.toast-hidden {
+    display: none;
+}
+
+.toast-label {
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+
+.layout-tablet .status-pill {
+    display: none;
+}
+
+.layout-tablet .status-pill-highlighted {
+    display: flex;
+}
+
+.layout-tablet .side-nav {
+    width: 82px;
+    min-width: 82px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.layout-tablet .workspace-label {
+    display: none;
+}
+
+.layout-tablet .workspace-chevron {
+    display: none;
+}
+
+.layout-tablet .nav-label {
+    display: none;
+}
+
+.layout-tablet .workspace-switcher {
+    justify-content: center;
+}
+
+.layout-tablet .nav-button {
+    justify-content: center;
+}
+
+.layout-tablet .top-row {
+    flex-wrap: wrap;
+}
+
+.layout-tablet .middle-row {
+    flex-wrap: wrap;
+}
+
+.layout-tablet .controller-card {
+    width: 100%;
+    height: 255px;
+    margin-left: 0;
+    margin-top: 14px;
+    position: relative;
+}
+
+.layout-tablet .controller-art {
+    position: absolute;
+    right: 18px;
+    top: 54px;
+    width: 230px;
+    height: 150px;
+}
+
+.layout-tablet .controller-status {
+    width: 50%;
+}
+
+.layout-tablet .secondary-row-button {
+    width: 50%;
+    margin-top: 14px;
+}
+
+.layout-tablet .readiness-card {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 14px;
+}
+
+.layout-phone .status-strip {
+    display: none;
+}
+
+.layout-phone .side-nav {
+    width: 66px;
+    min-width: 66px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.layout-phone .workspace-label {
+    display: none;
+}
+
+.layout-phone .workspace-chevron {
+    display: none;
+}
+
+.layout-phone .nav-label {
+    display: none;
+}
+
+.layout-phone .top-row {
+    flex-direction: column;
+}
+
+.layout-phone .middle-row {
+    flex-direction: column;
+}
+
+.layout-phone .promo-row {
+    flex-direction: column;
+}
+
+.layout-phone .hero-card {
+    width: 100%;
+    min-width: 0;
+    height: 500px;
+}
+
+.layout-phone .controller-card {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 12px;
+}
+
+.layout-phone .learning-card {
+    width: 100%;
+    min-width: 0;
+    height: 650px;
+}
+
+.layout-phone .lesson-grid {
+    flex-direction: column;
+    margin-top: 8px;
+}
+
+.layout-phone .lesson {
+    width: 100%;
+    height: 130px;
+}
+
+.layout-phone .progress-track {
+    display: none;
+}
+
+.layout-phone .readiness-card {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 12px;
+}
+
+.layout-phone .promo-card {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 12px;
+}
+
+.layout-phone .promo-emergency {
+    margin-left: 0;
+}
