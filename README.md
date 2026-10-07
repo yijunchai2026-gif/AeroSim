@@ -29,4 +29,4 @@ Unity Library、Builds、Logs、UserSettings，以及自动生成的 QA 截图�
 
 本地 HTML 图册引用的部分 QA 截图属于被忽略的生成产物，单独克隆源码后不会自动包含这些截图；需保留原本的本地验证目录，或在源码与构建一致后重新生成。部分历史文档指向旧版本，应以本说明的当前基线差异为准。
 
-目前不配置远程仓库，不上传到 GitHub 或其他服务。
+2026-10-07 已通过 GitHub Desktop 发布到私有仓库 [yijunchai2026-gif/AeroSim](https://github.com/yijunchai2026-gif/AeroSim)。本地 `main` 已连接 `origin/main`。构建产物和自动生成的 QA 大文件仍只保留在本机，未随源码上传。
