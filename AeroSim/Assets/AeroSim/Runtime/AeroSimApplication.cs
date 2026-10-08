@@ -47,6 +47,8 @@ namespace AeroSim
             }
             var productStyle = Resources.Load<StyleSheet>("UI/Product");
             if (productStyle != null) _root.styleSheets.Add(productStyle);
+            var responsiveStyle = Resources.Load<StyleSheet>("UI/Responsive");
+            if (responsiveStyle != null) _root.styleSheets.Add(responsiveStyle);
             ApplySettings();
             _root.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
 
@@ -59,6 +61,7 @@ namespace AeroSim
 
         private void OnDisable()
         {
+            ReleaseHangarPreviews();
             if (_root != null)
             {
                 _root.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
@@ -79,7 +82,9 @@ namespace AeroSim
 
             _mainContent = Element("main-content");
             _mainContent.Add(BuildPage(_page));
-            appBody.Add(_mainContent);
+            var stage = Element("content-stage");
+            stage.Add(_mainContent);
+            appBody.Add(stage);
             _root.Add(appBody);
 
             _workspaceMenu = BuildWorkspaceMenu();
@@ -399,19 +404,13 @@ namespace AeroSim
             _root.EnableInClassList("layout-desktop", width >= 1280 && !phone);
             _root.EnableInClassList("layout-tablet", width >= 760 && width < 1280 && !phone);
             _root.EnableInClassList("layout-phone", phone);
+            _root.EnableInClassList("text-expanded", LocalStore.Profile.settings.textScale > 1.1f);
+            _root.EnableInClassList("layout-narrow", width < 1440 && width >= 760);
+            _root.EnableInClassList("layout-wide", width >= 1920);
+            ApplyTypography();
             if (_page == Page.Flight || _page == Page.Replay)
             {
-                var settings = LocalStore.Profile.settings;
-                void PositionMetric(Label label, Vector2 position)
-                {
-                    if(label?.parent==null) return;
-                    label.parent.style.left=UnityEngine.UIElements.Length.Percent(position.x*100);
-                    label.parent.style.top=UnityEngine.UIElements.Length.Percent(position.y*100);
-                }
-                PositionMetric(_speed,phone?new Vector2(.55f,.48f):settings.speedPosition);
-                PositionMetric(_altitude,phone?new Vector2(.25f,.48f):settings.altitudePosition);
-                PositionMetric(_timer,phone?new Vector2(.48f,.22f):settings.timerPosition);
-                PositionMetric(_battery,phone?new Vector2(.77f,.34f):settings.batteryPosition);
+                LayoutFlightHud(width, height);
             }
             if(Application.isMobilePlatform)
             {
@@ -481,6 +480,11 @@ namespace AeroSim
             if (texture == null) return;
             element.style.backgroundImage = new StyleBackground(texture);
             element.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
+            if (element.ClassListContains("scene-banner"))
+                element.RegisterCallback<GeometryChangedEvent>(e => {
+                    var height = Mathf.Clamp(e.newRect.width * 9f / 16f, 180, 420);
+                    if (Mathf.Abs(element.resolvedStyle.height - height) > 1) element.style.height = height;
+                });
         }
     }
 }

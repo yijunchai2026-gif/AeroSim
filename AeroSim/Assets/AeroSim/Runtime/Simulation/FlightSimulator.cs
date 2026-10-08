@@ -62,7 +62,7 @@ namespace AeroSim.Simulation
 
         public void BeginReplay(SessionRecord record)
         {
-            Begin(record.config??new FlightConfig {title=record.title,environment=record.environment,workspace=record.workspace,mode=record.mode});
+            Begin(record.config??new FlightConfig {title=record.title,aircraft=record.aircraft,environment=record.environment,workspace=record.workspace,mode=record.mode});
             Record=record; ReplayMode=true; Body.isKinematic=true; ReplayTime=0; ReplayPlaying=false; Seek(0);
         }
 
@@ -125,12 +125,12 @@ namespace AeroSim.Simulation
             Body.position=Vector3.Lerp(a.position,b.position,t); Body.rotation=Quaternion.Slerp(Quaternion.Euler(a.rotation),Quaternion.Euler(b.rotation),t);
             Battery=Mathf.Lerp(a.battery,b.battery,t); CurrentInput=Vector4.Lerp(a.input,b.input,t);
         }
-        public void Stop() { Running=false; CleanWorld(); }
+        public void Stop() { Running=false; ReplayMode=false; ReplayPlaying=false; CleanWorld(); }
         public void Event(string kind,string message) => Record?.events.Add(new FlightEvent {time=Elapsed,kind=kind,message=message});
 
         private void Update()
         {
-            if(!Running && !ReplayMode) return;
+            if(Body==null || (!Running && !ReplayMode)) return;
             if(ReplayMode)
             {
                 if(ReplayPlaying) { Seek(ReplayTime+Time.unscaledDeltaTime*ReplaySpeed); if(ReplayTime>=Record.duration) ReplayPlaying=false; }
@@ -271,9 +271,13 @@ namespace AeroSim.Simulation
         {
             var drone=new GameObject("Aircraft"); drone.transform.SetParent(_world.transform); drone.transform.position=new Vector3(0,.65f,0);
             Body=drone.AddComponent<Rigidbody>(); Body.mass=.8f; Body.useGravity=true; Body.interpolation=RigidbodyInterpolation.Interpolate; Body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic; Body.maxAngularVelocity=30;
-            var collider=drone.AddComponent<BoxCollider>(); collider.size=new Vector3(.9f,.3f,.9f); drone.AddComponent<CollisionRelay>().simulator=this;
+            var collider=drone.AddComponent<BoxCollider>(); drone.AddComponent<CollisionRelay>().simulator=this;
             _visual=new GameObject("Aircraft Visual").transform; _visual.SetParent(drone.transform,false);
             BuildAircraftVisuals();
+            var renderers=_visual.GetComponentsInChildren<Renderer>();
+            var bounds=renderers[0].bounds;
+            foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+            collider.size=bounds.size;collider.center=drone.transform.InverseTransformPoint(bounds.center);
             _audio=drone.AddComponent<AudioSource>(); _audio.loop=true;
             var clip=AudioClip.Create("Rotor hum",22050,1,22050,false); var samples=new float[22050];
             for(int i=0;i<samples.Length;i++) samples[i]=(Mathf.Sin(i*2*Mathf.PI*110/22050)*.4f+Mathf.Sin(i*2*Mathf.PI*220/22050)*.15f)*.2f;
@@ -313,18 +317,21 @@ namespace AeroSim.Simulation
             if(View==null||Body==null) return;
             if(ChaseView)
             {
-                var behind=Body.rotation*new Vector3(0,3,-7); var desired=Position+behind;
+                float distance=AircraftCatalog.Resolve(Config.aircraft).ChaseDistance;
+                var behind=Body.rotation*new Vector3(0,distance*.43f,-distance); var desired=Position+behind;
                 View.transform.position=LocalStore.Profile.settings.reducedMotion?desired:Vector3.Lerp(View.transform.position,desired,1-Mathf.Exp(-Time.unscaledDeltaTime*8));
-                View.transform.LookAt(Position+Body.rotation*Vector3.forward*5);
+                View.transform.LookAt(Position+Body.rotation*Vector3.forward*distance*.6f);
             }
             else
             {
-                View.transform.position=Position+Body.rotation*new Vector3(0,.13f,.6f);
+                float size=AircraftCatalog.Resolve(Config.aircraft).VisualScale;
+                View.transform.position=Position+Body.rotation*new Vector3(0,size*.03f,size*.60f);
                 View.transform.rotation=Body.rotation*Quaternion.Euler(-LocalStore.Profile.settings.cameraAngle,0,0);
             }
         }
         private void CleanWorld()
         {
+            _rotors.Clear();_visual=null;
             if(_world!=null) { _world.SetActive(false); Destroy(_world); }
             if(_audio?.clip!=null) Destroy(_audio.clip);
             foreach(var m in _materials) if(m!=null) Destroy(m); _materials.Clear(); Body=null; View=null; _audio=null;

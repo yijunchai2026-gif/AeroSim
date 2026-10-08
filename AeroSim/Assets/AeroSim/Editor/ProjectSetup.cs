@@ -26,7 +26,7 @@ namespace AeroSim.Editor
 
             PlayerSettings.companyName = "AeroSim Labs";
             PlayerSettings.productName = "AeroSim";
-            PlayerSettings.bundleVersion = "0.3.0";
+            PlayerSettings.bundleVersion = "0.4.0";
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, "com.aerosim.training");
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS, "com.aerosim.training");
             PlayerSettings.defaultScreenWidth = 1680;
@@ -91,9 +91,27 @@ namespace AeroSim.Editor
             if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new BuildFailedException("Art V2 build failed: "+report.summary.result);
         }
 
+        [MenuItem("AeroSim/Build Aircraft V3 Preview")]
+        public static void BuildAircraftPreview()
+        {
+            Configure(); AuditUiAssets();
+            foreach(var texture in new[]{"mini-shell-v3","air-shell-v3","mavic-shell-v3","avata-shell-v3","carbon-weave-v3"})
+            {
+                var path="Assets/AeroSim/Resources/Art/AircraftV3/"+texture+".png";
+                AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+                if(AssetDatabase.LoadAssetAtPath<Texture2D>(path)==null)throw new BuildFailedException("Aircraft texture missing: "+path);
+            }
+            Directory.CreateDirectory("Builds/macOS-AircraftV3");
+            var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+                scenes=new[]{"Assets/AeroSim/Scenes/Main.unity"},locationPathName="Builds/macOS-AircraftV3/AeroSim.app",
+                target=BuildTarget.StandaloneOSX,options=BuildOptions.None
+            });
+            if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new BuildFailedException("Aircraft V3 build failed: "+report.summary.result);
+        }
+
         public static void AuditUiAssets()
         {
-            foreach(var file in new[]{"AeroSim", "Product"})
+            foreach(var file in new[]{"AeroSim", "Product", "Responsive"})
             {
                 var sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/AeroSim/Resources/UI/"+file+".uss");
                 if (sheet == null) throw new BuildFailedException(file+".uss could not be loaded.");
@@ -102,6 +120,22 @@ namespace AeroSim.Editor
                 if(rules==null || rules.arraySize==0) throw new BuildFailedException(file+".uss has no imported rules.");
                 Debug.Log($"AeroSim stylesheet audit: {file}, rules={rules.arraySize}");
             }
+        }
+
+        // Build candidates separately; never overwrite the user's last verified 0.4 during QA.
+        public static void BuildUiCandidate()
+        {
+            Configure(); AuditUiAssets();
+            var destination = System.Environment.GetEnvironmentVariable("AEROSIM_UI_BUILD_PATH");
+            if (string.IsNullOrEmpty(destination) || !destination.StartsWith("/private/tmp/aerosim-ui-build.") || !destination.EndsWith("/AeroSim.app"))
+                throw new BuildFailedException("AEROSIM_UI_BUILD_PATH must point to a new isolated temporary AeroSim.app.");
+            Directory.CreateDirectory(Path.GetDirectoryName(destination));
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+                scenes = new[] { "Assets/AeroSim/Scenes/Main.unity" }, locationPathName = destination,
+                target = BuildTarget.StandaloneOSX, options = BuildOptions.None
+            });
+            if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+                throw new BuildFailedException("UI candidate build failed: " + report.summary.result);
         }
 
         public static void BuildIosExport()

@@ -7,7 +7,7 @@ namespace AeroSim.Editor
     {
         private void OnPreprocessTexture()
         {
-            if (!assetPath.Contains("/Art/MaterialsV2/") || !assetPath.EndsWith(".png")) return;
+            if ((!assetPath.Contains("/Art/MaterialsV2/") && !assetPath.Contains("/Art/AircraftV3/")) || !assetPath.EndsWith(".png")) return;
             var importer=(TextureImporter)assetImporter;
             importer.textureType=TextureImporterType.Default;
             bool foliage=assetPath.Contains("evergreen-needles");

@@ -2,7 +2,8 @@
 set -euo pipefail
 qa_root="$(cd "$(dirname "$0")/../.." && pwd)"
 qa_unity="/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents"
-qa_original="$qa_root/AeroSim/Builds/macOS-AircraftV3/AeroSim.app"
+qa_original="${1:-$qa_root/AeroSim/Builds/macOS-AircraftV3/AeroSim.app}"
+[[ "$qa_original" = /*/AeroSim.app && -d "$qa_original/Contents/Resources/Data/Managed" ]] || exit 2
 qa_runtime="$qa_unity/Resources/Scripting/NetCoreRuntime/dotnet"
 qa_compiler="$qa_unity/Resources/Scripting/DotNetSdkRoslyn/csc.dll"
 qa_mono="$qa_unity/Resources/Scripting/MonoBleedingEdge/bin/mono"

@@ -14,7 +14,7 @@ namespace AeroSim.Simulation
         private Material _skyMaterial;
         private Material _previousSky;
         private Mesh[] _stoneVariants;
-        private Mesh _branchMesh, _shellMesh;
+        private Mesh _branchMesh;
         private string _visualEnvironment;
 
         private Material Surface(Color tint, string texture = null, float smoothness = .25f, float metallic = 0)
@@ -327,46 +327,10 @@ namespace AeroSim.Simulation
 
         private void BuildAircraftVisuals()
         {
-            bool racer=Config.workspace=="FPV";
-            var shell=Surface(racer?new Color(.22f,.25f,.28f):new Color(.93f,.94f,.94f),"aircraft-shell-v2",.48f);
-            var dark=Surface(new Color(.07f,.08f,.085f),null,.36f,.18f);var aluminum=Surface(new Color(.39f,.41f,.42f),null,.7f,.75f);
-            var glass=Surface(new Color(.025f,.09f,.13f),null,.92f,.35f);var accent=Surface(new Color(.73f,.25f,.12f));
-            _shellMesh=OrganicMesh(32,20,0,0,.5f);
-            MeshObject("Rounded upper aircraft shell",_shellMesh,new Vector3(0,.035f,0),new Vector3(.56f,.22f,.72f),shell,_visual);
-            MeshObject("Lower chassis and battery seam",_shellMesh,new Vector3(0,-.072f,-.015f),new Vector3(.49f,.09f,.63f),dark,_visual);
-            MeshObject("Removable battery cover",_shellMesh,new Vector3(0,.142f,-.12f),new Vector3(.37f,.018f,.31f),shell,_visual);
-            for(int side=-1;side<=1;side+=2)
-            {
-                for(int j=0;j<7;j++)Primitive("Vent slot",PrimitiveType.Cube,new Vector3(side*.272f,.02f,-.18f+j*.038f),new Vector3(.012f,.045f,.014f),dark,_visual,false);
-                var sensor=Primitive("Forward obstacle sensor",PrimitiveType.Sphere,new Vector3(side*.17f,.048f,.323f),new Vector3(.066f,.058f,.032f),glass,_visual,false);
-                sensor.transform.localRotation=Quaternion.Euler(0,side*12,0);
-            }
-            Primitive("Gimbal mounting neck",PrimitiveType.Cylinder,new Vector3(0,-.14f,.27f),new Vector3(.065f,.055f,.065f),aluminum,_visual,false);
-            MeshObject("Three-axis gimbal housing",_shellMesh,new Vector3(0,-.185f,.32f),new Vector3(.22f,.16f,.19f),aluminum,_visual);
-            var lens=Primitive("Camera lens barrel",PrimitiveType.Cylinder,new Vector3(0,-.185f,.426f),new Vector3(.115f,.043f,.115f),dark,_visual,false);lens.transform.localRotation=Quaternion.Euler(90,0,0);
-            var front=Primitive("Optical front glass",PrimitiveType.Cylinder,new Vector3(0,-.185f,.471f),new Vector3(.087f,.004f,.087f),glass,_visual,false);front.transform.localRotation=Quaternion.Euler(90,0,0);
-            _rotors.Clear();_rotorDiscs.Clear();
-            var blur=new Material(Resources.Load<Shader>("RotorBlur"));_materials.Add(blur);
-            var discMesh=RingMesh(48,.025f,.32f);
-            for(int i=0;i<4;i++)
-            {
-                float side=i%2==0?-1:1;var p=new Vector3(side*.48f,.012f,i<2?.45f:-.45f);var start=new Vector3(side*.20f,-.015f,i<2?.19f:-.20f);
-                var arm=Primitive("Tapered folding arm",PrimitiveType.Capsule,(p+start)*.5f,new Vector3(.078f,Vector3.Distance(start,p)*.5f,.078f),shell,_visual,false);
-                arm.transform.localRotation=Quaternion.FromToRotation(Vector3.up,p-start);
-                Primitive("Arm hinge",PrimitiveType.Cylinder,start,new Vector3(.112f,.04f,.112f),aluminum,_visual,false);
-                Primitive("Brushless motor",PrimitiveType.Cylinder,p,new Vector3(.14f,.045f,.14f),dark,_visual,false);
-                Primitive("Motor end cap",PrimitiveType.Cylinder,p+Vector3.up*.042f,new Vector3(.12f,.014f,.12f),aluminum,_visual,false);
-                var rotor=new GameObject("Two-blade propeller").transform;rotor.SetParent(_visual,false);rotor.localPosition=p+Vector3.up*.075f;rotor.localRotation=Quaternion.Euler(0,i*57,0);
-                for(int b=0;b<2;b++)
-                {
-                    var blade=MeshObject("Airfoil blade",_shellMesh,new Vector3((b==0?1:-1)*.17f,0,0),new Vector3(.31f,.011f,.052f),dark,rotor);
-                    blade.transform.localRotation=Quaternion.Euler(0,b==0?9:-9,3);
-                }
-                Primitive("Propeller hub",PrimitiveType.Cylinder,Vector3.zero,new Vector3(.062f,.012f,.062f),dark,rotor,false);_rotors.Add(rotor);
-                var disc=MeshObject("Rotor motion disc",discMesh,p+Vector3.up*.078f,Vector3.one,blur,_visual);disc.GetComponent<Renderer>().shadowCastingMode=ShadowCastingMode.Off;_rotorDiscs.Add(disc);
-                Primitive("Navigation LED",PrimitiveType.Sphere,p+new Vector3(0,-.044f,.025f),new Vector3(.047f,.023f,.035f),i<2?accent:Surface(new Color(.18f,.68f,.33f)),_visual,false);
-                Primitive("Landing leg",PrimitiveType.Capsule,p+new Vector3(0,-.085f,0),new Vector3(.032f,.075f,.032f),dark,_visual,false);
-            }
+            var model=_visual.gameObject.AddComponent<AircraftVisualModel>();
+            model.Initialize(AircraftCatalog.Resolve(Config.aircraft));
+            _rotors.Clear();_rotors.AddRange(model.Rotors);
+            _rotorDiscs.Clear();_rotorDiscs.AddRange(model.MotionDiscs);
         }
 
         private void ReleaseVisualResources()

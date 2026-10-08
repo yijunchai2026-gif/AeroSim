@@ -110,3 +110,8 @@
 .layout-phone .battery-metric { left: 76%; top: 28%; }
 .layout-phone .flight-bottom .primary-button { font-size: 13px; min-width: 120px; min-height: 44px; }
 .is-hidden { display: none; }
+.aircraft-preview { height: 220px; width: 100%; margin-top: 6px; margin-bottom: 16px; background-color: rgb(6,17,26); border-radius: 10px; }
+.aircraft-description { min-height: 48px; font-size: 15px; color: rgb(211,230,241); }
+.aircraft-grid .aircraft-card-selected { border-color: rgb(49,205,230); border-width: 2px; }
+.aircraft-hud-name { font-size: 15px; color: rgb(98,225,246); margin-bottom: 8px; -unity-font-style: bold; }
+.layout-phone .aircraft-preview { height: 160px; }

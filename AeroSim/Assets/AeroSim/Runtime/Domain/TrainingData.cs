@@ -28,6 +28,8 @@ namespace AeroSim.Domain
         public string purpose = "Recreational";
         public float sensitivity = 1, cameraAngle = 25, expo = .3f, rate = 360, thrust = 2.4f;
         public float volume = .45f, textScale = 1;
+        public string uiScale = "Auto", hudScale = "100%";
+        public bool showTouchControls;
         public int quality = 2, targetFps = 60;
         public bool highContrast, reducedMotion, showControls = true, captions = true;
         public bool osdSpeed = true, osdAltitude = true, osdTimer = true, osdBattery = true;
@@ -78,7 +80,7 @@ namespace AeroSim.Domain
     {
         public int schemaVersion = 2;
         public bool onboarded;
-        public string workspace = "Aerial", selectedAircraft = "Camera Drone";
+        public string workspace = "Aerial", selectedAircraft = "mini4";
         public UserSettings settings = new();
         public List<CourseProgress> courses = new();
         public List<string> sessions = new();
@@ -157,7 +159,7 @@ namespace AeroSim.Domain
         public int Minutes;
         public Course(string id, string title, string category, string workspace, string task, string objective, int minutes = 4)
         { Id=id;Title=title;Category=category;Workspace=workspace;Task=task;Objective=objective;Minutes=minutes; }
-        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=Workspace=="FPV"?"5-inch Racer":"Camera Drone", environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
+        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=AircraftCatalog.Selected.Name, environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
     }
 
     public static class CourseCatalog

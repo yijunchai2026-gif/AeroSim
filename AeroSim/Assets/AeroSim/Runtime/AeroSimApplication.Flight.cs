@@ -21,11 +21,14 @@ namespace AeroSim
 
         public void StartFlight(FlightConfig config)
         {
+            ReleaseHangarPreviews();
+            config.aircraft=AircraftCatalog.Resolve(config.aircraft).Name;
             _config = config; _page = Page.Flight;
             EnsureSimulator(); _sim.Begin(config); BuildFlightUi(false);
         }
         public void BeginReplay(SessionRecord record)
         {
+            ReleaseHangarPreviews();
             if (record.frames.Count == 0) { ShowToast("No telemetry was recorded for this session."); return; }
             _record = record; _page = Page.Replay; EnsureSimulator(); _sim.BeginReplay(record); BuildFlightUi(true);
         }
@@ -40,15 +43,19 @@ namespace AeroSim
         private void BuildFlightUi(bool replay)
         {
             _root.Clear(); _root.AddToClassList("flight-root");
+            RefreshUiPreferences();
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
             var hud = Element("flight-hud"); hud.pickingMode = PickingMode.Ignore; _root.Add(hud);
             var bar = Element("flight-bar");
             bar.Add(Text(replay ? "AEROSIM  /  REPLAY" : "AEROSIM  /  " + _config.workspace.ToUpperInvariant(), "flight-brand"));
             _flightStatus = Text(replay ? _record.title : _config.title, "flight-status"); bar.Add(_flightStatus);
             bar.Add(ActionButton(replay ? "Back to Records" : "Pause", () => { if (replay) ShowPage(Page.Records); else TogglePause(); })); hud.Add(bar);
+            var objectiveToggle = ActionButton("Objective", () => ShowObjective());
+            objectiveToggle.AddToClassList("objective-toggle"); bar.Insert(1, objectiveToggle);
 
             var objectiveCard = Element("objective-card");
             objectiveCard.Add(Text(replay ? "RECORDED SESSION" : "SESSION OBJECTIVE", "page-eyebrow"));
+            objectiveCard.Add(Text(AircraftCatalog.Resolve(_sim.Config.aircraft).Name, "aircraft-hud-name"));
             _objective = Text(replay ? _record.title + " · " + _record.score + "/100" : _config.objective, "wrap"); objectiveCard.Add(_objective); hud.Add(objectiveCard);
             var settings = LocalStore.Profile.settings;
             _speed = HudMetric(hud, "SPEED", settings.speedPosition, settings.osdSpeed);
@@ -76,7 +83,13 @@ namespace AeroSim
                 bottom.Add(ActionButton("Photo", () => _sim.CapturePhoto()));
                 bottom.Add(ActionButton("Finish Session", _sim.Finish, true));
             }
-            hud.Add(bottom);
+            var actions = new ScrollView(ScrollViewMode.Horizontal);
+            actions.AddToClassList("hud-actions-scroll");
+            actions.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            actions.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+            bottom.RemoveFromClassList("flight-bottom"); bottom.AddToClassList("hud-actions-row");
+            actions.Add(bottom);
+            var footer = Element("flight-bottom"); footer.Add(actions); hud.Add(footer);
             if (!replay)
             {
                 if (settings.showControls) hud.Add(Text("WASD move  ·  R/F altitude  ·  Q/E yaw  ·  H RTH  ·  C camera  ·  P photo  ·  Esc pause", "flight-guidance", "wrap"));
@@ -89,7 +102,7 @@ namespace AeroSim
             pause.Add(ActionButton("Simulate Signal Loss", () => { TogglePause(); _sim.SignalLoss(); }));
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
             pause.Add(ActionButton("Exit Without Saving", () => ShowConfirm("Leave this flight?", "The current session will not be saved. Existing records are unaffected.", () => ShowPage(Page.Home))));
-            _pauseOverlay.Add(pause); hud.Add(_pauseOverlay);
+            _pauseOverlay.Add(ModalScroll(pause)); hud.Add(_pauseOverlay);
             var toast = Element("toast", "toast-hidden"); _toastLabel = Text("", "toast-label"); toast.Add(_toastLabel); _root.Add(toast);
             OnGeometryChanged(null);
         }
@@ -110,7 +123,21 @@ namespace AeroSim
         {
             var overlay = Element("modal-overlay"); var p = Panel(title, description);
             p.Add(Row(ActionButton("Keep Flying", () => overlay.RemoveFromHierarchy()), ActionButton("Confirm Exit", () => { overlay.RemoveFromHierarchy(); confirm(); }, true)));
-            overlay.Add(p); _root.Add(overlay);
+            overlay.Add(ModalScroll(p)); _root.Add(overlay);
+        }
+        private void ShowObjective()
+        {
+            var overlay = Element("modal-overlay");
+            var panel = Panel("Session objective", _objective.text);
+            panel.Add(ActionButton("Back to Flight", () => overlay.RemoveFromHierarchy(), true));
+            overlay.Add(ModalScroll(panel)); _root.Add(overlay);
+        }
+        private static ScrollView ModalScroll(VisualElement panel)
+        {
+            var scroll = new ScrollView(ScrollViewMode.Vertical);
+            scroll.AddToClassList("modal-scroll");
+            scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            scroll.Add(panel); return scroll;
         }
         private IEnumerator SavePhoto()
         {
@@ -127,6 +154,7 @@ namespace AeroSim
         }
         private void Update()
         {
+            if (_lastWindowWidth != Screen.width || _lastWindowHeight != Screen.height) RefreshUiPreferences();
             if (_page == Page.Controller && _axisLabels != null)
             {
                 var raw = FlightInput.Raw();
