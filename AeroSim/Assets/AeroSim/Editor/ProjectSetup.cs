@@ -154,6 +154,32 @@ namespace AeroSim.Editor
                 throw new BuildFailedException("iOS export failed: " + report.summary.result);
         }
 
+        // Version field denotes a development target, never a visual acceptance claim.
+        public static void BuildDesignV1Candidate()
+        {
+            Configure(); AuditUiAssets();
+            // Assign persisted project-wide actions in Edit mode, not from a runtime
+            // callback. UI Toolkit derives Submit from these actions in Unity 6.3.
+            var uiActions = AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>("Assets/AeroSim/UIInput.inputactions");
+            if (uiActions == null) throw new BuildFailedException("AeroSim UI input actions not imported.");
+            UnityEngine.InputSystem.InputSystem.actions = uiActions;
+            var sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/AeroSim/Resources/UI/FlightDesignV1.uss");
+            if (sheet == null) throw new BuildFailedException("FlightDesignV1.uss not imported.");
+            var flightRules = new SerializedObject(sheet).FindProperty("m_Rules");
+            if (flightRules == null || flightRules.arraySize == 0) throw new BuildFailedException("FlightDesignV1.uss has no imported rules.");
+            var destination = System.Environment.GetEnvironmentVariable("AEROSIM_V1_BUILD_PATH");
+            if (string.IsNullOrEmpty(destination) || !destination.StartsWith("/private/tmp/aerosim-v1-build.") || !destination.EndsWith("/AeroSim.app"))
+                throw new BuildFailedException("AEROSIM_V1_BUILD_PATH must be a new isolated temporary AeroSim.app.");
+            PlayerSettings.bundleVersion = "1.0.0"; AssetDatabase.SaveAssets();
+            Directory.CreateDirectory(Path.GetDirectoryName(destination));
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+                scenes = new[] { "Assets/AeroSim/Scenes/Main.unity" }, locationPathName = destination,
+                target = BuildTarget.StandaloneOSX, options = BuildOptions.None
+            });
+            if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+                throw new BuildFailedException("Design 1.0 candidate build failed: " + report.summary.result);
+        }
+
         public static void BuildAllPlatforms()
         {
             AuditUiAssets();

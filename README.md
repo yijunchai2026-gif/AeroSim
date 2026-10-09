@@ -12,6 +12,16 @@
 
 使用 Unity Hub 打开 `AeroSim/`，编辑器版本见 `AeroSim/ProjectSettings/ProjectVersion.txt`。
 
+## 1.0 开发中（2026-10-08）
+
+工作分支为 `codex/v1-design-parity`，不覆盖 0.4 试用包、不自动合并 `main`。技术、页面、独立 QA、场景开发与两名美术已分工交付首轮实现，正在真实 Unity 构建和逐页面对照；尚未宣布视觉一致或用户验收通过。目标是产品文档中 23 张原始概念图，而不是重新制作参考图迁就代码。
+
+见[产品文档第 24 章](飞行模拟器产品设计文档.md#24-10-多角色开发与图稿对齐2026-10-08)、[技术计划](docs/V1_TECHNICAL_PLAN.md)、[页面规格](docs/V1_SCREEN_SPEC.md)、[QA 计划](docs/V1_QA_PLAN.md)。新环境和透明设备资产随文档入库，实际飞行仍由实时 3D 渲染。
+
+隔离构建入口 `AeroSim.Editor.ProjectSetup.BuildDesignV1Candidate` 要求 `AEROSIM_V1_BUILD_PATH=/private/tmp/aerosim-v1-build.XXXXXX/AeroSim.app`。`verification/v1-qa/` 包含独立截图比较与原生比例测试工具；测试输出被忽略，精选证据另外入库。iOS 真机、Google Maps/实时空域与教员多人服务不能据桌面页面宣称已完成。
+
+2026-10-09 开发候选 03：[23 页原图/原生图册](assets/ui-v1/candidate-20261009-03/gallery.md)、[66 项原生 smoke](verification/v1-qa/candidate-03-native-smoke.txt)、[续作断点](docs/V1_PROGRESS.md)。候选尚有视觉、缩放和焦点缺陷；不是最终 1.0 或已验收版本。每小时断点检查在额度恢复后续作，不购买额度或自动使用重置券。
+
 ## 0.4 UI 比例修复（2026-10-07）
 
 修复工作在 `codex/v04-ui-proportions` 分支中，未自动合并主干。

@@ -12,6 +12,7 @@ namespace AeroSim
         private readonly Dictionary<TextElement, float> _baseFonts = new();
         private bool _typographyScheduled;
         private int _lastWindowWidth, _lastWindowHeight;
+        private readonly Dictionary<VisualElement, StyleLength> _designColumnWidths = new();
 
         private void SaveUiPreferences() { LocalStore.Save(); RefreshUiPreferences(); }
 
@@ -68,8 +69,34 @@ namespace AeroSim
             }).ExecuteLater(30); // Read USS font tokens after the first style/layout pass, not default 14px.
         }
 
+        private void LayoutDesignPages(float width, float height)
+        {
+            if (!_root.ClassListContains("design-v1")) return;
+            bool stack = width < 1280 || height < 500 || LocalStore.Profile.settings.textScale > 1.1f;
+            var stale = new List<VisualElement>();
+            foreach (var entry in _designColumnWidths) if (entry.Key.panel == null) stale.Add(entry.Key);
+            foreach (var element in stale) _designColumnWidths.Remove(element);
+            foreach (var columns in _root.Query<VisualElement>(className: "design-columns").ToList())
+            {
+                columns.style.flexDirection = stack ? FlexDirection.Column : FlexDirection.Row;
+                foreach (var child in columns.Children())
+                {
+                    if (!_designColumnWidths.ContainsKey(child)) _designColumnWidths[child] = child.style.width;
+                    child.style.width = stack ? UnityEngine.UIElements.Length.Percent(100) : _designColumnWidths[child];
+                    child.style.flexBasis = stack ? new StyleLength(StyleKeyword.Auto) : new StyleLength(StyleKeyword.Null);
+                    child.style.flexGrow = stack ? new StyleFloat(0f) : new StyleFloat(StyleKeyword.Null);
+                    child.style.minWidth = 0;
+                }
+            }
+        }
+
         private void LayoutFlightHud(float width, float height)
         {
+            if (_root.ClassListContains("v1-flight-hud") || _root.ClassListContains("v1-replay"))
+            {
+                LayoutDesignFlightHud(width, height);
+                return;
+            }
             var settings = LocalStore.Profile.settings;
             float text = Mathf.Clamp(settings.textScale, 1, 2);
             bool compact = width < 1280 || height < 620 || text > 1.1f;

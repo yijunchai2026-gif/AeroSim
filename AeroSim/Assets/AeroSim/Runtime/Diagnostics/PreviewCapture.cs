@@ -78,7 +78,8 @@ namespace AeroSim.Diagnostics
             {
                 if (_mouse == null) _mouse=InputSystem.AddDevice<Mouse>("AeroSimCaptureMouse");
                 var root = _app.GetComponent<UIDocument>().rootVisualElement;
-                var button = root.Query<Button>().ToList().Find(b => b.text == title);
+                var button = root.Query<Button>().ToList().Find(b =>
+                    b.text == title || b.Q<Label>(className: "design-button-label")?.text == title);
                 if (button == null) { Check("Button exists: " + title, false); yield break; }
                 var scroll = button.GetFirstAncestorOfType<ScrollView>();
                 scroll?.ScrollTo(button); yield return null; yield return null;
@@ -93,7 +94,7 @@ namespace AeroSim.Diagnostics
                 Check("Diagnostics uses isolated storage", Argument("--data-dir") != null);
                 foreach(var name in new[]{"meadow-grass-v2","coastal-rock-v2","aircraft-shell-v2","evergreen-needles-v2"})
                     Check("Art texture bundled: "+name, Resources.Load<Texture2D>("Art/MaterialsV2/"+name)!=null);
-                foreach(var name in new[]{"TrainingSurface","LandscapeSurface","Atmosphere","OceanSurface","RotorBlur","NeedleFoliage"})
+                foreach(var name in new[]{"TrainingSurface","LandscapeSurface","Atmosphere","OceanSurface","RotorBlur","NeedleFoliage","IndustrialSurfaceV1","RiverSurfaceV1"})
                 {
                     var shader=Resources.Load<Shader>(name);Check("Art shader supported: "+name,shader!=null&&shader.isSupported);
                 }
@@ -149,9 +150,66 @@ namespace AeroSim.Diagnostics
                 for (int i = 0; i < 3; i++) { sim.Body.position = sim.Config.mission.targets[i] + new Vector3(0, 0, -8); sim.Body.linearVelocity = Vector3.zero; yield return new WaitForSeconds(.1f); sim.CapturePhoto(); yield return new WaitForSeconds(.12f); }
                 Check("Inspection capture order completes", sim.ObjectiveComplete && sim.Record.photos == 3);
                 Check("Photo evidence saved", Directory.GetFiles(LocalStore.DirectoryPath, "*-photo-*.png").Length >= 3);
+                var evidence = sim.Record.photoEvidence;
+                Check("Photo evidence metadata matches three real targets", evidence.Count == 3 && evidence.All(p => p.status == "saved" && p.width == 1280 && p.height == 720) && evidence.Select(p => p.targetIndex).SequenceEqual(new[] { 0, 1, 2 }));
+                Check("Photo evidence identities and files are unique", evidence.Select(p => p.id).Distinct().Count() == 3 && evidence.Select(p => p.fileName).Distinct().Count() == 3 && evidence.All(p => File.Exists(Path.Combine(LocalStore.DirectoryPath, p.fileName))));
                 sim.Finish(); yield return null;
                 LocalStore.Profile.settings.units = "Metric"; LocalStore.Save(); LocalStore.Initialize();
                 Check("Profile reload preserves settings and sessions", LocalStore.Profile.settings.units == "Metric" && LocalStore.Sessions().Count == 2);
+                _app.StartFlight(new FlightConfig { title = "QA · Rapid capture" }); yield return null;
+                sim = _app.Simulator; sim.Body.position = new Vector3(0, 8, 0); sim.Body.linearVelocity = Vector3.zero;
+                var cameraTarget = sim.View.targetTexture; var activeTarget = RenderTexture.active;
+                sim.CapturePhoto(); sim.CapturePhoto(); sim.CapturePhoto();
+                var rapidRecord = sim.Record;
+                Check("Same-frame rapid captures save distinct evidence", rapidRecord.photos == 3 && rapidRecord.photoEvidence.Count == 3 && rapidRecord.photoEvidence.All(p => p.status == "saved") && rapidRecord.photoEvidence.Select(p => p.fileName).Distinct().Count() == 3);
+                Check("Evidence rendering restores camera and active targets", sim.View.targetTexture == cameraTarget && RenderTexture.active == activeTarget);
+                sim.Finish(); _app.ShowPage(Page.Home); yield return null;
+                Check("Immediate finish retains the captured session identity", LocalStore.Sessions().Any(r => r.id == rapidRecord.id && r.photos == 3 && r.photoEvidence.All(p => File.Exists(Path.Combine(LocalStore.DirectoryPath, p.fileName)))));
+                _app.StartFlight(new FlightConfig { title = "QA · Capture rejection" }); yield return null;
+                sim = _app.Simulator; sim.Body.position = new Vector3(0, 8, 0); sim.Pause(true);
+                Check("Paused capture does not create evidence or count", !sim.CapturePhoto() && sim.Record.photos == 0 && sim.Record.photoEvidence.Count == 0);
+                _app.BeginReplay(rapidRecord); yield return null;
+                Check("Replay capture cannot alter saved evidence", !_app.Simulator.CapturePhoto() && rapidRecord.photos == 3 && rapidRecord.photoEvidence.Count == 3);
+                _app.StartFlight(new FlightConfig { professional = true, task = "inspection", mission = new MissionDefinition(), title = "QA · Rejected evidence write" }); yield return null;
+                sim = _app.Simulator; sim.Body.position = sim.Config.mission.targets[0] + new Vector3(0, 0, -8);
+                string validSessionId = sim.Record.id; sim.Record.id = "../invalid-qa-session";
+                cameraTarget = sim.View.targetTexture; activeTarget = RenderTexture.active;
+                bool invalidCapture = sim.CapturePhoto(); sim.Record.id = validSessionId;
+                Check("Invalid evidence output fails without advancing target", !invalidCapture && sim.Record.photos == 0 && sim.GateIndex == 0 && sim.Record.photoEvidence.Single().status == "failed");
+                Check("Rejected evidence write restores render targets", sim.View.targetTexture == cameraTarget && RenderTexture.active == activeTarget);
+                _app.ShowPage(Page.Home); yield return null;
+                var isolatedHost = new GameObject("QA photo writer failure probe");
+                var isolatedSim = isolatedHost.AddComponent<FlightSimulator>();
+                isolatedSim.Begin(new FlightConfig { professional = true, mission = new MissionDefinition(), task = "inspection" });
+                isolatedSim.Body.position = isolatedSim.Config.mission.targets[0] + new Vector3(0, 0, -8);
+                Check("Missing photo writer records explicit failure", !isolatedSim.CapturePhoto() && isolatedSim.Record.photos == 0 && isolatedSim.GateIndex == 0 && isolatedSim.Record.photoEvidence.Single().status == "failed" && isolatedSim.Record.photoEvidence.Single().failureReason.Contains("No photo evidence writer"));
+                isolatedSim.Stop(); Destroy(isolatedHost); yield return null;
+                var invalidRecord = new SessionRecord { id = "../invalid-qa-export" };
+                bool csvRejected = false, reportRejected = false, saveRejected = false;
+                try { LocalStore.ExportCsv(invalidRecord); } catch (ArgumentException) { csvRejected = true; }
+                try { LocalStore.ExportReport(invalidRecord); } catch (ArgumentException) { reportRejected = true; }
+                try { LocalStore.SaveSession(invalidRecord); } catch (ArgumentException) { saveRejected = true; }
+                Check("Session traversal is rejected by all export and save paths", csvRejected && reportRejected && saveRejected);
+                var priorAttempts = LocalStore.Profile.courses.Find(c => c.id == r.courseId)?.attempts ?? 0;
+                LocalStore.SaveNotes(r);
+                Check("Saving notes does not increment course attempts", (LocalStore.Profile.courses.Find(c => c.id == r.courseId)?.attempts ?? 0) == priorAttempts);
+                var validPhoto = rapidRecord.photoEvidence[0];
+                var unrelatedPhoto = JsonUtility.FromJson<PhotoEvidence>(JsonUtility.ToJson(validPhoto)); unrelatedPhoto.sessionId = "other-qa-session";
+                var traversalPhoto = JsonUtility.FromJson<PhotoEvidence>(JsonUtility.ToJson(validPhoto)); traversalPhoto.fileName = "../other-qa-photo.png";
+                Check("Photo resolver accepts actual linked PNG and rejects cross-session/traversal", EvidencePaths.ResolvePhoto(rapidRecord, validPhoto) != null && EvidencePaths.ResolvePhoto(rapidRecord, unrelatedPhoto) == null && EvidencePaths.ResolvePhoto(rapidRecord, traversalPhoto) == null);
+                bool decodedCaptures = true;
+                foreach (var photo in rapidRecord.photoEvidence)
+                {
+                    var image = new Texture2D(2, 2);
+                    try { decodedCaptures &= image.LoadImage(File.ReadAllBytes(EvidencePaths.ResolvePhoto(rapidRecord, photo))) && image.width == 1280 && image.height == 720; }
+                    finally { Destroy(image); }
+                }
+                Check("Saved evidence PNGs actually decode at 1280 by 720", decodedCaptures);
+                string legacyId = "legacy-qa-session";
+                File.WriteAllText(EvidencePaths.ResolveOutput(legacyId + ".json"), "{\"id\":\"legacy-qa-session\",\"photos\":5,\"frames\":null,\"events\":null}");
+                LocalStore.Profile.sessions.Add(legacyId);
+                var legacy = LocalStore.Sessions().Find(record => record.id == legacyId);
+                Check("Legacy record recovers without fabricated photo metadata", legacy != null && legacy.photos == 5 && legacy.photoEvidence.Count == 0 && legacy.frames != null && legacy.events != null && File.ReadAllText(LocalStore.ExportReport(legacy)).Contains("legacy record has no linked photo metadata"));
                 LocalStore.Profile.settings.units = "U.S. Customary"; LocalStore.Save(); _app.ShowPage(Page.Home);
             }
             private IEnumerator CaptureAll(string dir)

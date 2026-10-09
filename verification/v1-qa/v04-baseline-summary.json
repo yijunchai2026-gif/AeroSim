@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 1,
+  "run": "0.4 curated screenshot comparison against original concepts; not a new app run",
+  "date": "2026-10-08",
+  "status": "VISUAL_DIFFERENT",
+  "counts": {
+    "VISUAL_DIFFERENT": 23
+  },
+  "manifestSha256": "5a1e3ca8b50db20a86f242756c908e0ed25128b61673456d1a6630211460dcce",
+  "toolVerification": {
+    "syntheticTestsPassed": 9,
+    "syntheticTestsFailed": 0,
+    "instrumentCSharpCompile": "PASS",
+    "candidateNativeRun": "NOT_RUN"
+  },
+  "screens": [
+    {
+      "id": "01",
+      "state": "Aerial-Onboarding",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 45.5672,
+      "changedFraction": 0.724151,
+      "edgeMae": 13.3061,
+      "referenceSha256": "0c03886b7542a72cc2fd0938e4c9de7f0200e639177579e39a7d7c59f0179669",
+      "captureSha256": "87ecf6831980f43c2d17e1be5a2a95a02d7c2283c69a719f6a77f9059e8b06b4",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "02",
+      "state": "Aerial-Controller",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 28.411,
+      "changedFraction": 0.437991,
+      "edgeMae": 13.0266,
+      "referenceSha256": "aff35fef57082ceff060d6623f5a813538bc4e813edd9302bfb6caffdc43e618",
+      "captureSha256": "8cac4d0943fe2e2a7ea90a712490292a1c1b988aec8a84b6525ccdb24660cb92",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "03",
+      "state": "Aerial-Home",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 39.0439,
+      "changedFraction": 0.610288,
+      "edgeMae": 22.8388,
+      "referenceSha256": "e24a8936787bd945a09a16c69e2fa0cd3814396c0070799c82f18c84cb7dd4dc",
+      "captureSha256": "e9e0129bb3dae013a8033df801784db95afe8e298dc89ec4888314902fdf53c3",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "04",
+      "state": "Aerial-Academy",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 31.7967,
+      "changedFraction": 0.397631,
+      "edgeMae": 19.726,
+      "referenceSha256": "5ee04e6d61c7457f4cc95f5d8351d9e5a2b4375a17efcf3888cdefbb311583cf",
+      "captureSha256": "cd1d54fde4fd210c10ac008d31cf86f752d56f3688214357603781149a034f3c",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "05",
+      "state": "Aerial-FreeFlight",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 48.2663,
+      "changedFraction": 0.604379,
+      "edgeMae": 21.1711,
+      "referenceSha256": "351a24b76181992d0bce7304a1543f38c1bcffaab047087884f3db038025243a",
+      "captureSha256": "2f2e99a8f46a9bb707baebc389014733949ad74ef8847a831e5c01f67bafe3cd",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "06",
+      "state": "FPV-Home",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 54.5493,
+      "changedFraction": 0.964715,
+      "edgeMae": 12.7637,
+      "referenceSha256": "e28c5556c27fcbb573b035bfdc6a4a4e10b1fadf7e78ac6dcfff94499da1bce4",
+      "captureSha256": "2bab8f153397b84a186c74afc6c94135f25ea23ee3a45605fde7ee86f8435cd2",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "07",
+      "state": "FPV-Challenges",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 32.1544,
+      "changedFraction": 0.549371,
+      "edgeMae": 19.0135,
+      "referenceSha256": "8d92a0a703fc28f20d4e98347c8937fef4f780a6ae4982bb8f28cc5614c854ef",
+      "captureSha256": "ab63bb68ce2c4c83fd36cb705dc9672b4916ed1fb6ad622b07ac5471becce291",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "08",
+      "state": "FPV-Tuning",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 22.1621,
+      "changedFraction": 0.426943,
+      "edgeMae": 15.3332,
+      "referenceSha256": "a7d9ca2ec8b687668eeb4451bcbcfc961458196d5272c58c2703991b83f32ef7",
+      "captureSha256": "df6998fc87a3a20c20da132035b2d595ddc9d4b78c7eaf246efe87c07a877157",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "09",
+      "state": "FPV-Flight",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 87.2415,
+      "changedFraction": 0.991926,
+      "edgeMae": 15.0324,
+      "referenceSha256": "b6ffb63b2ed699692b45cddf8e544b70f6193d68019294b9f30ea6a8f7a9df25",
+      "captureSha256": "3d8a958c23045e234145703c765bf1f5a605654759c9f4075df97fe39fdf7804",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "10",
+      "state": "Professional-Home",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 43.9412,
+      "changedFraction": 0.579769,
+      "edgeMae": 16.111,
+      "referenceSha256": "78795b88ace57024e8a2c198bda99b4e02cad84dea3ca7047700e22ccefaaf64",
+      "captureSha256": "85918cafcb407342d2c5fafddb0642b400098a9ee5ead201295838af3f1b8258",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "11",
+      "state": "Professional-Preflight",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 26.9665,
+      "changedFraction": 0.527394,
+      "edgeMae": 17.7698,
+      "referenceSha256": "d82e639254461cff9a98963e2ef05db9a3a4110c15b1e190080689d33cd4a09e",
+      "captureSha256": "8ce23815b33d0ed3310feba146046d2f299ea1166113e6e7acea662c7212a10c",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "12",
+      "state": "Professional-Flight",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 72.555,
+      "changedFraction": 0.989404,
+      "edgeMae": 29.2196,
+      "referenceSha256": "235ce331d4632b4a1186ac3d746a575e3a35b7a89fa1bb9b4d11e1ff234e9914",
+      "captureSha256": "40e4acfaa549d9ef4122de85e6085ca98eb7400b40b34ce92852c48a6be0943c",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "13",
+      "state": "Professional-Instructor",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 39.8551,
+      "changedFraction": 0.615081,
+      "edgeMae": 18.1573,
+      "referenceSha256": "177de0233e1a12d3647a7ba07a896cb3b06490a1acd5a3720fe0a98b2bce97c5",
+      "captureSha256": "7c28b7ad421e3a38ce99ac7c983b74955c0d492e7454c5ed93651883c873295f",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "14",
+      "state": "Aerial-Results",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 40.7372,
+      "changedFraction": 0.544285,
+      "edgeMae": 12.0102,
+      "referenceSha256": "3ab7f1bd318bbb013a70abb906217f6f190aa96275ce09f956c276a23c61c221",
+      "captureSha256": "07bd2448b62629260914940407a4b94643400ade313d00495e83905e486200dc",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "15",
+      "state": "Aerial-Replay",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 81.8492,
+      "changedFraction": 0.995555,
+      "edgeMae": 23.5003,
+      "referenceSha256": "192cd3a041761c4e0a61ecac80da26b445128542f152201fbe6c8561a518cf1e",
+      "captureSha256": "84ba3e25713d2d2da0573a7ddff38c783fb186979f2b388d8c18a30281e94902",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "16",
+      "state": "Aerial-Readiness",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 31.5591,
+      "changedFraction": 0.389115,
+      "edgeMae": 18.6586,
+      "referenceSha256": "c695330aee2685e8b3241ada318cbebacb154780ca3757a13660636ce6194433",
+      "captureSha256": "831b120a4e17633ae7bcbdd4009951530461357acfd7c69e5ccc8139d7cce903",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "17",
+      "state": "Aerial-Report",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 24.5339,
+      "changedFraction": 0.547108,
+      "edgeMae": 18.5153,
+      "referenceSha256": "f54b925773739a78e9f4f56251d179682422d0f4de3a69fff809ce6e22c8f513",
+      "captureSha256": "da5afa03389487a5dfbc4ee0074b6e21d4a2c2ad3a596832433ce2e629685267",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "18",
+      "state": "FPV-OsdEditor",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 41.6805,
+      "changedFraction": 0.591502,
+      "edgeMae": 16.529,
+      "referenceSha256": "c151a5fde6a88ebe0cda77e88cf87b551fa7c4bb2c72a97da1381e347f60fc21",
+      "captureSha256": "85f9d898dd2086eb18eb359873a0172781a744188fed7a2eee9d007a3861838c",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "19",
+      "state": "Professional-Brief",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 31.4537,
+      "changedFraction": 0.579197,
+      "edgeMae": 19.9136,
+      "referenceSha256": "298926de53b7a29ff16a7b385d882203541f9afdee7e74a0e3c668749f96fbb5",
+      "captureSha256": "2b5a0058090e7e7dd436cd09ab64c0ca7f17fbabfb2cab7e460417eed69243d7",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "20",
+      "state": "Professional-Catalog",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 22.6572,
+      "changedFraction": 0.393117,
+      "edgeMae": 16.8431,
+      "referenceSha256": "3da96167f71ab686373299298b36093061aba4117462d363ab224dc8c4ed8641",
+      "captureSha256": "682250ac05b17677dba3193b29d80e72b8dfd839966225545e68297c1246c025",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "21",
+      "state": "Professional-MissionEditor",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 30.92,
+      "changedFraction": 0.684915,
+      "edgeMae": 22.887,
+      "referenceSha256": "05d1947d3b8f1997d3a1a4383755c67d4e9a9d0222d0a561e6f81d248685bc3b",
+      "captureSha256": "9c8eaa8e9a664c1de76e74974434320ff1be7c39340b67917f3ce7bec68e99f5",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "22",
+      "state": "Aerial-Settings",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 24.2589,
+      "changedFraction": 0.335166,
+      "edgeMae": 17.0143,
+      "referenceSha256": "6d678132b25464a833cb6d2994a99a196dbd4cc81d43bd7e225aef2128704d86",
+      "captureSha256": "4af2a391f06c7c50e28bfd8dea1ddcd27742ea77871aa33bada33fe2115bac0a",
+      "provenance": "UNVERIFIED"
+    },
+    {
+      "id": "23",
+      "state": "Aerial-Flight",
+      "status": "VISUAL_DIFFERENT",
+      "mae": 63.1979,
+      "changedFraction": 0.943567,
+      "edgeMae": 28.2975,
+      "referenceSha256": "9629a175214a232617c618d5987edfce98deb0721f4191ec3fc0d6f0541db97c",
+      "captureSha256": "29076dbca2b1c7e79ddf618904b01d98aef2da2a2d1b4998ad4d4edb1dc3e093",
+      "provenance": "UNVERIFIED"
+    }
+  ],
+  "manualAcceptance": "PENDING",
+  "limitations": [
+    "No fabricated PASS; concepts are raster designs, not executable component specs.",
+    "Core ROI manually calibrated, not automated OCR/component bounds acceptance.",
+    "Pixel/edge difference measures structure, typography/color/art jointly; no semantic/function correctness is inferred.",
+    "Missing or unverified capture metadata prevents build provenance acceptance.",
+    "All optional masks disclosed and raw metrics retained; masking cannot prove exact equality.",
+    "Scaling matrix, keyboard/focus/controller, saves, real mobile hardware, performance and user approval are separate gates.",
+    "Legacy 0.4 PRD topbar64/navigation240 vs latest picture-led 1.0 shell88/248 conflict remains disclosed; old numeric failures are not hidden."
+  ]
+}

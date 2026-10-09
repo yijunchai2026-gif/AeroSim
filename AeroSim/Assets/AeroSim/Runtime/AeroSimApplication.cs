@@ -47,6 +47,8 @@ namespace AeroSim
             }
             var productStyle = Resources.Load<StyleSheet>("UI/Product");
             if (productStyle != null) _root.styleSheets.Add(productStyle);
+            var designFont = Resources.Load<Font>("UI/Fonts/Inter-Regular");
+            if (designFont != null) _root.style.unityFont = designFont;
             var responsiveStyle = Resources.Load<StyleSheet>("UI/Responsive");
             if (responsiveStyle != null) _root.styleSheets.Add(responsiveStyle);
             ApplySettings();
@@ -61,6 +63,8 @@ namespace AeroSim
 
         private void OnDisable()
         {
+            ReleaseDesignEvidenceTextures();
+            ReleaseDesignReplayView();
             ReleaseHangarPreviews();
             if (_root != null)
             {
@@ -72,8 +76,13 @@ namespace AeroSim
 
         private void BuildInterface()
         {
+            ReleaseDesignEvidenceTextures();
             _root.Clear();
             _root.AddToClassList("app-root");
+            _root.AddToClassList("design-v1");
+            _root.EnableInClassList("design-fpv-home", _workspace == TrainingWorkspace.Fpv && _page == Page.Home);
+            _root.EnableInClassList("design-onboarding", _page == Page.Onboarding);
+            _root.EnableInClassList("design-controller-mode", _page == Page.Controller);
 
             _root.Add(BuildTopBar());
 
@@ -101,12 +110,18 @@ namespace AeroSim
         {
             var bar = Element("top-bar");
 
-            var brand = Element("brand");
-            var mark = Element("brand-mark");
-            mark.Add(Text("▲", "brand-mark-glyph"));
-            brand.Add(mark);
-            brand.Add(Text("AeroSim", "brand-name"));
-            bar.Add(brand);
+            var brandSwitch = new Button(ToggleWorkspaceMenu);
+            brandSwitch.AddToClassList("design-brand-switch");
+            brandSwitch.name = "action-switch-training-workspace";
+            brandSwitch.tooltip = "Switch training workspace";
+            brandSwitch.Add(DesignBrand());
+            bar.Add(brandSwitch);
+            var workspace = new Button(ToggleWorkspaceMenu);
+            workspace.AddToClassList("design-top-workspace");
+            workspace.Add(DesignIcon(_workspace == TrainingWorkspace.Fpv ? "drone" : _workspace == TrainingWorkspace.Professional ? "book" : "flight"));
+            workspace.Add(Text(WorkspaceName + " Training", "workspace-label"));
+            workspace.Add(Text("⌄", "workspace-chevron"));
+            bar.Add(workspace);
 
             var statusStrip = Element("status-strip");
             statusStrip.Add(StatusPill("", "Local Training", true));
@@ -128,7 +143,8 @@ namespace AeroSim
 
             var switcher = new Button(ToggleWorkspaceMenu);
             switcher.AddToClassList("workspace-switcher");
-            switcher.Add(Text("A", "workspace-icon"));
+            var workspaceIcon = DesignIcon(_workspace == TrainingWorkspace.Fpv ? "drone" : "flight");
+            workspaceIcon.AddToClassList("workspace-icon"); switcher.Add(workspaceIcon);
             _workspaceLabel = Text(WorkspaceName, "workspace-label");
             switcher.Add(_workspaceLabel);
             switcher.Add(Text("⌄", "workspace-chevron"));
@@ -139,12 +155,17 @@ namespace AeroSim
             navigation.Add(NavButton("F", "Free Flight", AppDestination.FreeFlight));
             navigation.Add(NavButton("C", "Challenges", AppDestination.Challenges));
             navigation.Add(NavButton("D", "Hangar", AppDestination.Hangar));
+            if (_page == Page.Settings)
+            {
+                navigation.Add(NavButton("R", "Flight Records", AppDestination.FlightRecords));
+                AddDesignSettingsNavigation(navigation);
+            }
             if (_workspace == TrainingWorkspace.Fpv) { navigation.Add(RouteButton("T", "Tuning", Page.Tuning)); navigation.Add(RouteButton("O", "OSD Editor", Page.OsdEditor)); }
             if (_workspace == TrainingWorkspace.Professional) { navigation.Add(RouteButton("M", "Mission Editor", Page.MissionEditor)); navigation.Add(RouteButton("I", "Instructor", Page.Instructor)); }
 
             var spacer = Element("nav-spacer");
             navigation.Add(spacer);
-            navigation.Add(NavButton("R", "Flight Records", AppDestination.FlightRecords));
+            if (_page != Page.Settings) navigation.Add(NavButton("R", "Flight Records", AppDestination.FlightRecords));
             return navigation;
         }
 
@@ -186,22 +207,23 @@ namespace AeroSim
         private VisualElement BuildHero()
         {
             var hero = Element("hero-card", "card");
-            SetBackground(hero, "Art/CoastHero");
+            SetBackground(hero, "Art/DesignV1/CoastHeroV1");
 
-            var shade = Element("hero-shade");
+            var shade = new DesignHeroGradient();
+            shade.AddToClassList("hero-shade");
             hero.Add(shade);
 
             var copy = Element("hero-copy");
             copy.Add(Text("C O N T I N U E   L E A R N I N G", "eyebrow"));
-            copy.Add(Text("Build confidence.\nFly with purpose.", "hero-title"));
+            copy.Add(Text("Lesson 6 ·\nReturn-to-Home", "hero-title"));
 
             var metrics = Element("hero-metrics");
-            metrics.Add(Text(LocalStore.Profile.courses.Count + " lessons practiced", "metric"));
+            metrics.Add(Text(LessonStatus("a10"), "metric"));
             metrics.Add(Text("4 min · Guided session", "metric"));
             copy.Add(metrics);
             copy.Add(Text("Learn how your aircraft automatically returns to a safe home point and how to use RTH confidently.", "hero-description"));
 
-            var continueButton = PrimaryButton("Start Training", () => OpenCourse(CourseCatalog.Find("a10")));
+            var continueButton = PrimaryButton("Continue Training", () => OpenCourse(CourseCatalog.Find("a10")));
             copy.Add(continueButton);
             hero.Add(copy);
             return hero;
@@ -214,7 +236,7 @@ namespace AeroSim
 
             var status = Element("controller-status");
             var deviceIcon = Element("device-icon");
-            deviceIcon.Add(Text("⌘", "device-icon-glyph"));
+            deviceIcon.Add(DesignIcon("controller", 30));
             status.Add(deviceIcon);
 
             var labels = Element("controller-labels");
@@ -225,12 +247,12 @@ namespace AeroSim
             card.Add(status);
 
             var art = Element("controller-art");
-            SetBackground(art, "Art/Controller");
+            SetBackground(art, "Art/DesignV1/ControllerCutout");
             card.Add(art);
 
             var settings = new Button(() => ShowPage(Page.Controller));
             settings.AddToClassList("secondary-row-button");
-            settings.Add(Text("SET", "row-icon"));
+            settings.Add(DesignIcon("settings"));
             settings.Add(Text("Controller Settings", "row-button-label"));
             settings.Add(Text("›", "row-chevron"));
             card.Add(settings);
@@ -286,7 +308,7 @@ namespace AeroSim
             card.Add(image);
 
             card.Add(Text("Review FAA resources", "readiness-title"));
-            card.Add(Text("Learn the key rules, airspace types, and best practices for flying in the United States.", "readiness-description"));
+            card.Add(Text("FAA rules, airspace, and safe flying in the United States.", "readiness-description"));
 
             var action = new Button(() => ShowPage(Page.Readiness));
             action.text = "Review resources  ›";
@@ -341,9 +363,10 @@ namespace AeroSim
         {
             var button = new Button(() => Navigate(destination));
             button.AddToClassList("nav-button");
+            if (label == "Training Catalog") button.AddToClassList("design-nav-multiline");
             var target = destination switch { AppDestination.Home => Page.Home, AppDestination.Academy => _workspace == TrainingWorkspace.Professional ? Page.Catalog : Page.Academy, AppDestination.FreeFlight => Page.FreeFlight, AppDestination.Challenges => Page.Challenges, AppDestination.Hangar => Page.Hangar, _ => Page.Records };
             if (selected || _page == target) button.AddToClassList("nav-button-selected");
-            button.Add(Text(icon, "nav-icon"));
+            var vectorIcon = DesignIcon(NavigationIcon(label)); vectorIcon.AddToClassList("nav-icon"); button.Add(vectorIcon);
             button.Add(Text(label, "nav-label"));
             return button;
         }
@@ -407,7 +430,10 @@ namespace AeroSim
             _root.EnableInClassList("text-expanded", LocalStore.Profile.settings.textScale > 1.1f);
             _root.EnableInClassList("layout-narrow", width < 1440 && width >= 760);
             _root.EnableInClassList("layout-wide", width >= 1920);
+            _root.EnableInClassList("design-home-reference", _page == Page.Home && _workspace == TrainingWorkspace.Aerial &&
+                width >= 1600 && height >= 900 && LocalStore.Profile.settings.textScale <= 1.1f);
             ApplyTypography();
+            LayoutDesignPages(width, height);
             if (_page == Page.Flight || _page == Page.Replay)
             {
                 LayoutFlightHud(width, height);
@@ -449,7 +475,7 @@ namespace AeroSim
         {
             var button = new Button(clicked) { tooltip = tooltip };
             button.AddToClassList("icon-button");
-            button.Add(Text(icon, "icon-button-label"));
+            button.Add(DesignIcon(icon == "SET" ? "settings" : NavigationIcon(tooltip)));
             return button;
         }
 
@@ -479,7 +505,7 @@ namespace AeroSim
             var texture = Resources.Load<Texture2D>(resourcePath);
             if (texture == null) return;
             element.style.backgroundImage = new StyleBackground(texture);
-            element.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
+            element.style.unityBackgroundScaleMode = resourcePath.EndsWith("ControllerCutout", StringComparison.Ordinal) ? ScaleMode.ScaleToFit : ScaleMode.ScaleAndCrop;
             if (element.ClassListContains("scene-banner"))
                 element.RegisterCallback<GeometryChangedEvent>(e => {
                     var height = Mathf.Clamp(e.newRect.width * 9f / 16f, 180, 420);

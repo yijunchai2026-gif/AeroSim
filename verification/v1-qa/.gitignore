@@ -1,0 +1,3 @@
+# Keep only compact reviewed evidence in the repository.
+__pycache__/
+results/

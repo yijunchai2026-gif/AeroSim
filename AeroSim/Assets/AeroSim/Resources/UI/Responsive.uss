@@ -101,3 +101,75 @@ Label, Button { white-space: normal; }
 .modal-scroll .unity-base-slider__tracker { background-color: rgb(8,24,38); }
 .replay-slider { min-width: 150px; flex-shrink: 0; }
 .toast { min-width: 0; width: 80%; max-width: 540px; left: 10%; margin-left: 0; }
+/* Source-image contract only for 1.0; the 0.4 branch and build stay untouched. */
+.design-v1 .top-bar { height: 88px; min-height: 88px; max-height: 88px; }
+.design-v1 .main-content { max-width: none; }
+.design-v1 .side-nav { width: 248px; min-width: 248px; }
+.design-v1 .home-scroll { padding-left: 16px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; }
+.design-v1 .hero-card, .design-v1 .hero-copy { min-height: 474px; }
+.design-v1 .controller-card { width: 372px; min-width: 372px; min-height: 474px; }
+.design-v1 .learning-card, .design-v1 .readiness-card { min-height: 276px; }
+.design-v1 .readiness-card { width: 396px; }
+.design-v1 .promo-card { min-height: 168px; }
+.design-v1 .design-button-label { min-width: 0; flex-shrink: 1; white-space: normal; }
+.design-v1 .design-icon-action { height: auto; flex-shrink: 0; max-width: 100%; }
+.design-v1 .nav-label { min-width: 0; white-space: normal; }
+.design-v1.text-expanded .nav-button { height: auto; min-height: 60px; padding-top: 14px; padding-bottom: 14px; }
+.design-v1.text-expanded .design-columns, .design-v1.layout-tablet .design-columns, .design-v1.layout-phone .design-columns { flex-direction: column; margin-left: 0; margin-right: 0; }
+.design-v1.text-expanded .design-column, .design-v1.text-expanded .design-side, .design-v1.text-expanded .design-rail,
+.design-v1.layout-tablet .design-column, .design-v1.layout-tablet .design-side, .design-v1.layout-tablet .design-rail,
+.design-v1.layout-phone .design-column, .design-v1.layout-phone .design-side, .design-v1.layout-phone .design-rail { width: 100%; flex-basis: auto; flex-grow: 0; margin-left: 0; margin-right: 0; margin-bottom: 12px; }
+.design-v1.layout-tablet .side-nav, .design-v1.layout-phone .side-nav { width: 72px; min-width: 72px; padding-left: 6px; padding-right: 6px; padding-top: 16px; }
+.design-v1.layout-tablet .nav-button, .design-v1.layout-phone .nav-button { padding-left: 6px; padding-right: 6px; }
+.design-v1.layout-tablet .nav-label, .design-v1.layout-phone .nav-label { display: none; }
+.design-v1.layout-phone .brand { min-width: 0; width: auto; }
+.design-v1.layout-phone .brand-name { font-size: 20px; margin-left: 8px; }
+.design-v1.layout-phone .brand .design-line-icon { width: 30px; height: 30px; }
+.design-v1.layout-phone .top-bar { padding-left: 12px; padding-right: 12px; }
+.design-v1.layout-phone .design-top-workspace { max-width: 136px; min-width: 0; margin-left: 8px; padding-left: 8px; padding-right: 8px; }
+.design-v1.layout-phone .design-top-workspace .workspace-label { font-size: 12px; margin-left: 4px; margin-right: 4px; }
+.design-v1.layout-phone .design-top-workspace .design-line-icon { display: none; }
+.design-v1.layout-phone .top-settings { right: 8px; }
+.design-v1.layout-tablet .hero-copy, .design-v1.layout-phone .hero-copy, .design-v1.text-expanded .hero-copy { width: 100%; padding-left: 24px; padding-right: 24px; }
+.design-v1.layout-tablet .controller-card, .design-v1.layout-phone .controller-card, .design-v1.text-expanded .controller-card { width: 100%; min-width: 0; }
+.design-v1.layout-tablet .readiness-card, .design-v1.layout-phone .readiness-card, .design-v1.text-expanded .readiness-card { width: 100%; }
+.design-v1.layout-phone .page-title { font-size: 28px; }
+.design-v1.layout-phone .page-subtitle { font-size: 16px; }
+.design-v1.layout-phone .panel-title { font-size: 22px; }
+.design-v1.layout-phone .design-page, .design-v1.layout-phone .design-onboarding-page { padding-left: 16px; padding-right: 16px; }
+.design-v1.layout-phone .design-panel { padding-left: 16px; padding-right: 16px; }
+.design-v1.layout-phone .design-path-grid, .design-v1.text-expanded .design-path-grid { flex-direction: column; }
+.design-v1.layout-phone .design-path-card, .design-v1.text-expanded .design-path-card { flex-basis: auto; flex-grow: 0; width: 100%; margin-left: 0; margin-right: 0; margin-bottom: 16px; }
+.design-v1.layout-phone .design-path-image { height: 200px; }
+.design-v1.layout-phone .design-path-copy { padding: 16px; }
+.design-v1.layout-phone .design-course-item, .design-v1.text-expanded .design-course-item { flex-direction: column; align-items: stretch; }
+.design-v1.layout-phone .design-course-thumb, .design-v1.text-expanded .design-course-thumb { width: 100%; height: 150px; margin-right: 0; margin-bottom: 10px; }
+.design-v1.layout-phone .design-course-meta, .design-v1.text-expanded .design-course-meta { width: 100%; margin-left: 0; margin-top: 8px; }
+.design-v1.layout-phone .design-scene-grid, .design-v1.text-expanded .design-scene-grid { flex-wrap: wrap; }
+.design-v1.layout-phone .design-scene-card, .design-v1.text-expanded .design-scene-card { flex-basis: auto; flex-grow: 0; width: 46%; margin-bottom: 12px; }
+.design-v1.layout-phone .design-challenge-card, .design-v1.text-expanded .design-challenge-card { width: 100%; margin-right: 0; }
+.design-v1.layout-phone .design-readiness-row, .design-v1.text-expanded .design-readiness-row { flex-direction: column; align-items: stretch; padding-right: 0; }
+.design-v1.layout-phone .design-readiness-thumb, .design-v1.text-expanded .design-readiness-thumb { width: 100%; margin-right: 0; height: 160px; }
+.design-v1.layout-phone .design-readiness-row .design-copy { padding-left: 12px; padding-right: 12px; }
+.design-v1.layout-phone .design-table-row, .design-v1.text-expanded .design-table-row { flex-wrap: wrap; }
+.design-v1.layout-phone .design-table-thumb, .design-v1.text-expanded .design-table-thumb { width: 100%; height: 150px; margin-right: 0; }
+.design-v1.layout-phone .design-table-value, .design-v1.text-expanded .design-table-value { width: auto; min-width: 56px; flex-grow: 1; margin-bottom: 8px; }
+.design-v1.layout-phone .design-instructor-grid .design-panel, .design-v1.text-expanded .design-instructor-grid .design-panel { width: 100%; margin-right: 0; }
+.design-v1.layout-phone .design-steps { margin-left: 16px; }
+.design-v1.layout-phone .design-step-dot { margin-right: 16px; }
+.design-v1.layout-phone .design-settings-image { height: 260px; }
+.design-v1.layout-phone .design-preview-telemetry { left: 8px; right: 8px; padding-left: 8px; padding-right: 8px; }
+.design-v1.layout-phone .design-preview-telemetry .design-line-icon { display: none; }
+.design-v1.layout-phone .design-environment-hero { height: 300px; }
+.design-v1.layout-phone .design-environment-copy { left: 16px; top: 16px; width: 86%; }
+.design-v1.layout-phone .design-controller-art { height: 260px; }
+.design-v1.layout-phone .design-brief-image { height: 300px; }
+.design-v1.layout-phone .design-results-panel { width: 100%; padding: 20px; }
+.design-v1.layout-phone .design-dashboard-hero .panel-title, .design-v1.layout-phone .design-dashboard-hero > .wrap, .design-v1.layout-phone .design-dashboard-hero .primary-button,
+.design-v1.text-expanded .design-dashboard-hero .panel-title, .design-v1.text-expanded .design-dashboard-hero > .wrap, .design-v1.text-expanded .design-dashboard-hero .primary-button { max-width: 100%; }
+.design-v1.layout-phone .design-fpv-stage, .design-v1.text-expanded .design-fpv-stage, .design-v1.layout-tablet .design-fpv-stage { min-height: 1150px; }
+.design-v1.layout-phone .design-fpv-menu, .design-v1.text-expanded .design-fpv-menu, .design-v1.layout-tablet .design-fpv-menu { position: relative; top: auto; right: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
+.design-v1.layout-phone .design-fpv-aircraft, .design-v1.text-expanded .design-fpv-aircraft, .design-v1.layout-tablet .design-fpv-aircraft { position: relative; left: auto; bottom: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
+.design-v1.layout-phone .design-fpv-quick, .design-v1.text-expanded .design-fpv-quick, .design-v1.layout-tablet .design-fpv-quick { position: relative; left: auto; bottom: auto; width: auto; height: auto; min-height: 64px; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
+.design-v1.layout-phone .design-fpv-progress, .design-v1.text-expanded .design-fpv-progress, .design-v1.layout-tablet .design-fpv-progress { position: relative; right: auto; bottom: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; margin-bottom: 24px; }
+.design-v1.layout-phone .design-fpv-disclaimer, .design-v1.text-expanded .design-fpv-disclaimer, .design-v1.layout-tablet .design-fpv-disclaimer { position: relative; left: auto; right: auto; bottom: auto; margin-left: 16px; margin-right: 16px; margin-bottom: 24px; white-space: normal; }

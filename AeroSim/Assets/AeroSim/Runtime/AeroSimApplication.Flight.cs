@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using AeroSim.Domain;
 using AeroSim.Input;
+using AeroSim.Navigation;
 using AeroSim.Simulation;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,6 +14,7 @@ namespace AeroSim
     {
         private Label _flightStatus, _objective, _speed, _altitude, _timer, _battery, _sticks;
         private VisualElement _pauseOverlay;
+        private Action _flightDialogClose;
         private Slider _replaySlider;
         private Button _replayPlay;
         private bool _seeking;
@@ -30,17 +32,19 @@ namespace AeroSim
         {
             ReleaseHangarPreviews();
             if (record.frames.Count == 0) { ShowToast("No telemetry was recorded for this session."); return; }
+            _workspace = record.workspace == "FPV" ? TrainingWorkspace.Fpv : record.workspace == "Professional" ? TrainingWorkspace.Professional : TrainingWorkspace.Aerial;
             _record = record; _page = Page.Replay; EnsureSimulator(); _sim.BeginReplay(record); BuildFlightUi(true);
         }
         private void EnsureSimulator()
         {
             if (_sim != null) return;
             _sim = gameObject.AddComponent<FlightSimulator>();
-            _sim.Notice += message => { ShowToast(message); if (message.StartsWith("Capture saved")) StartCoroutine(SavePhoto()); };
+            _sim.Notice += ShowToast;
+            _sim.PhotoCaptureRequested += SavePhotoEvidence;
             _sim.PauseRequested += TogglePause;
             _sim.Finished += record => { _record = record; ShowPage(Page.Results); };
         }
-        private void BuildFlightUi(bool replay)
+        private void BuildLegacyFlightUi(bool replay)
         {
             _root.Clear(); _root.AddToClassList("flight-root");
             RefreshUiPreferences();
@@ -116,21 +120,43 @@ namespace AeroSim
         private void TogglePause()
         {
             if (_page != Page.Flight || _sim == null) return;
+            if (_flightDialogClose != null) { _flightDialogClose(); return; }
             _sim.Pause(!_sim.Paused); _pauseOverlay.EnableInClassList("is-hidden", !_sim.Paused);
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            if (_sim.Paused) _pauseOverlay.Query<Button>().ToList().Find(b => b.enabledInHierarchy)?.Focus();
+            else (_root.panel?.focusController.focusedElement as VisualElement)?.Blur();
         }
         private void ShowConfirm(string title, string description, Action confirm)
         {
+            _flightDialogClose?.Invoke();
             var overlay = Element("modal-overlay"); var p = Panel(title, description);
-            p.Add(Row(ActionButton("Keep Flying", () => overlay.RemoveFromHierarchy()), ActionButton("Confirm Exit", () => { overlay.RemoveFromHierarchy(); confirm(); }, true)));
-            overlay.Add(ModalScroll(p)); _root.Add(overlay);
+            bool pauseForReading = _page == Page.Flight && !_sim.Paused;
+            if (pauseForReading) _sim.Pause(true);
+            void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
+            _flightDialogClose = Close;
+            p.Add(Row(ActionButton("Keep Flying", Close), ActionButton("Confirm Exit", () => { Close(); confirm(); }, true)));
+            overlay.Add(ModalScroll(p)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            overlay.Query<Button>().First()?.Focus();
         }
         private void ShowObjective()
         {
+            _flightDialogClose?.Invoke();
             var overlay = Element("modal-overlay");
             var panel = Panel("Session objective", _objective.text);
-            panel.Add(ActionButton("Back to Flight", () => overlay.RemoveFromHierarchy(), true));
-            overlay.Add(ModalScroll(panel)); _root.Add(overlay);
+            bool pauseForReading = _page == Page.Flight && !_sim.Paused;
+            if (pauseForReading) _sim.Pause(true);
+            void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
+            _flightDialogClose = Close;
+            panel.Add(ActionButton("Back to Flight", Close, true));
+            overlay.Add(ModalScroll(panel)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            overlay.Query<Button>().First()?.Focus();
+        }
+        private void RestoreFlightDialogFocus()
+        {
+            if (_page != Page.Flight || _sim == null) return;
+            if (_sim.Paused && _pauseOverlay != null && !_pauseOverlay.ClassListContains("is-hidden"))
+                _pauseOverlay.Query<Button>().ToList().Find(b => b.enabledInHierarchy)?.Focus();
+            else (_root.panel?.focusController.focusedElement as VisualElement)?.Blur();
         }
         private static ScrollView ModalScroll(VisualElement panel)
         {
@@ -138,19 +164,6 @@ namespace AeroSim
             scroll.AddToClassList("modal-scroll");
             scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             scroll.Add(panel); return scroll;
-        }
-        private IEnumerator SavePhoto()
-        {
-            yield return new WaitForEndOfFrame();
-            if (_sim?.Record == null || _sim.View == null) yield break;
-            var path = Path.Combine(LocalStore.DirectoryPath, _sim.Record.id + "-photo-" + _sim.Record.photos + ".png");
-            // Save the simulator camera only: training evidence does not contain menu overlays.
-            var texture = new RenderTexture(1280, 720, 24);
-            var previousTarget = _sim.View.targetTexture; var previousActive = RenderTexture.active;
-            _sim.View.targetTexture = texture; _sim.View.Render(); RenderTexture.active = texture;
-            var image = new Texture2D(1280, 720, TextureFormat.RGB24, false); image.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0); image.Apply();
-            File.WriteAllBytes(path, image.EncodeToPNG()); _sim.View.targetTexture = previousTarget; RenderTexture.active = previousActive;
-            texture.Release(); Destroy(texture); Destroy(image); Debug.Log("Training photo saved: " + path);
         }
         private void Update()
         {
@@ -175,7 +188,9 @@ namespace AeroSim
             if (replay)
             {
                 _seeking = true; _replaySlider.SetValueWithoutNotify(_sim.ReplayTime); _seeking = false;
-                _replayPlay.text = _sim.ReplayPlaying ? "Pause" : "Play";
+                var playLabel = _replayPlay.Q<Label>(className: "design-button-label");
+                if (playLabel != null) playLabel.text = _sim.ReplayPlaying ? "Pause" : "Play";
+                else _replayPlay.text = _sim.ReplayPlaying ? "Pause" : "Play";
             }
             else
             {
@@ -183,6 +198,7 @@ namespace AeroSim
                 _objective.text = _sim.ObjectiveComplete ? "OBJECTIVE COMPLETE · Finish Session to save your score." : _config.objective + (_config.task == "gates" ? "\nGates: " + _sim.GateIndex + " / 6" : _config.professional ? "\nCaptures: " + _sim.GateIndex + " / " + _config.mission.targets.Count : "") + (next.HasValue?" · Next: "+Length(Vector3.Distance(_sim.Position,next.Value)):"");
             }
             _map.MarkDirtyRepaint();
+            TickDesignFlightUi(replay);
         }
         private float ReplaySpeedAtTime()
         {

@@ -39,6 +39,7 @@ namespace AeroSim
 
         public void ShowPage(Page page)
         {
+            ReleaseDesignReplayView();
             ReleaseHangarPreviews();
             if (_sim != null && (page != Page.Flight && page != Page.Replay)) _sim.Stop();
             _calibrating = page == Page.Controller && _calibrating;
@@ -52,20 +53,20 @@ namespace AeroSim
 
         private VisualElement BuildPage(Page page) => page switch
         {
-            Page.Home => _workspace == TrainingWorkspace.Aerial ? BuildAerialHome() : WorkspaceHome(),
-            Page.Onboarding => Onboarding(), Page.Controller => ControllerPage(), Page.Academy => Academy(),
-            Page.FreeFlight => FreeFlight(), Page.Challenges => Challenges(), Page.Hangar => Hangar(),
-            Page.Tuning => Tuning(), Page.OsdEditor => OsdEditor(), Page.Dashboard => WorkspaceHome(),
-            Page.Catalog => Catalog(), Page.Brief => Brief(), Page.Preflight => Preflight(),
-            Page.MissionEditor => MissionEditor(), Page.Instructor => Instructor(), Page.Readiness => Readiness(),
-            Page.Settings => Settings(), Page.Records => Records(), Page.Results => Results(),
-            Page.Report => Report(), _ => FreeFlight()
+            Page.Home => _workspace == TrainingWorkspace.Aerial ? BuildAerialHome() : _workspace == TrainingWorkspace.Fpv ? DesignFpvHome() : DesignDashboard(),
+            Page.Onboarding => DesignOnboarding(), Page.Controller => DesignController(), Page.Academy => DesignAcademy(),
+            Page.FreeFlight => DesignFreeFlight(), Page.Challenges => DesignChallenges(), Page.Hangar => Hangar(),
+            Page.Tuning => DesignTuning(), Page.OsdEditor => DesignOsdEditor(), Page.Dashboard => DesignDashboard(),
+            Page.Catalog => DesignCatalog(), Page.Brief => DesignBrief(), Page.Preflight => DesignPreflight(),
+            Page.MissionEditor => DesignMissionEditor(), Page.Instructor => DesignInstructor(), Page.Readiness => DesignReadiness(),
+            Page.Settings => DesignSettings(), Page.Records => Records(), Page.Results => DesignResults(),
+            Page.Report => DesignReport(), _ => DesignFreeFlight()
         };
 
         private Button RouteButton(string icon, string title, Page page)
         {
             var b = new Button(() => ShowPage(page));
-            b.AddToClassList("nav-button"); b.Add(Text(icon,"nav-icon")); b.Add(Text(title,"nav-label"));
+            b.AddToClassList("nav-button"); var vectorIcon = DesignIcon(NavigationIcon(title)); vectorIcon.AddToClassList("nav-icon"); b.Add(vectorIcon); b.Add(Text(title,"nav-label"));
             if (_page == page) b.AddToClassList("nav-button-selected"); return b;
         }
         private static Button ActionButton(string title, Action action, bool primary = false)
@@ -95,11 +96,15 @@ namespace AeroSim
         private static void Range(VisualElement parent, string label, float low, float high, float value, Action<float> changed)
         {
             var f = new Slider(label, low, high) { value = value, showInputField = true }; f.AddToClassList("product-field");
+            f.AddToClassList("design-range-field");
+            var numeric = f.Q<FloatField>();
+            if (numeric != null) numeric.AddToClassList("design-range-number");
             f.RegisterValueChangedCallback(e => changed(e.newValue)); parent.Add(f);
         }
         private static void Check(VisualElement parent, string label, bool value, Action<bool> changed)
         {
-            var f = new Toggle(label) { value = value }; f.AddToClassList("product-field"); f.RegisterValueChangedCallback(e => changed(e.newValue)); parent.Add(f);
+            var f = new Toggle(label) { value = value }; f.AddToClassList("product-field"); f.AddToClassList("design-check-field");
+            f.RegisterValueChangedCallback(e => changed(e.newValue)); parent.Add(f);
         }
         private static void Field(VisualElement parent, string label, string value, Action<string> changed)
         {
@@ -484,10 +489,23 @@ namespace AeroSim
             p.Add(Text(r.feedback, "wrap"));
             foreach (var e in r.events) p.Add(Text(Duration(e.time) + "   " + e.kind.ToUpperInvariant() + "   " + e.message, "event-row", "wrap"));
             var notes = new TextField("Instructor notes") { value = r.instructorNote, multiline = true }; notes.AddToClassList("product-field"); notes.RegisterValueChangedCallback(e => r.instructorNote = e.newValue); p.Add(notes);
-            p.Add(Row(ActionButton("Save Notes", () => { File.WriteAllText(Path.Combine(LocalStore.DirectoryPath, r.id + ".json"), JsonUtility.ToJson(r)); ShowToast("Instructor notes saved."); }), ActionButton("Export Printable Report", () => { var path = LocalStore.ExportReport(r); ShowToast("Report exported. Use browser Print / Save as PDF."); OpenExport(path); }, true), ActionButton("Export CSV", () => ExportCsv(r)), ActionButton("Replay Evidence", () => BeginReplay(r))));
+            p.Add(Row(ActionButton("Save Notes", () => SaveReportNotes(r)), ActionButton("Export Printable Report", () => ExportPrintableReport(r), true), ActionButton("Export CSV", () => ExportCsv(r)), ActionButton("Replay Evidence", () => BeginReplay(r))));
             s.Add(p); return s;
         }
-        private void ExportCsv(SessionRecord r) { var path = LocalStore.ExportCsv(r); ShowToast("Telemetry exported: " + path); OpenExport(path); }
+        private void SaveReportNotes(SessionRecord record)
+        {
+            try { LocalStore.SaveNotes(record); ShowToast("Instructor notes saved."); }
+            catch (Exception error) when (error is ArgumentException || error is IOException || error is UnauthorizedAccessException)
+            { ShowToast(error is ArgumentException ? "Notes were not saved: invalid session identity." : "Notes were not saved. Check local storage access and available space."); }
+        }
+        private void ExportCsv(SessionRecord record) => TryExportReport(() => LocalStore.ExportCsv(record), "Telemetry CSV exported.");
+        private void ExportPrintableReport(SessionRecord record) => TryExportReport(() => LocalStore.ExportReport(record), "Report exported. Use browser Print / Save as PDF.");
+        private void TryExportReport(Func<string> export, string success)
+        {
+            try { var path = export(); OpenExport(path); ShowToast(success); }
+            catch (Exception error) when (error is ArgumentException || error is IOException || error is UnauthorizedAccessException)
+            { ShowToast(error is ArgumentException ? "Export failed: invalid session identity or evidence path." : "Export failed. Check local storage access and available space."); }
+        }
         private static void OpenExport(string path)
         {
 #if UNITY_STANDALONE || UNITY_EDITOR

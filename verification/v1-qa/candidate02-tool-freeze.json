@@ -1,0 +1,18 @@
+{
+  "qaContractVersion": "v1-candidate02-34states",
+  "perScaleStates": 34,
+  "standaloneProbes": 3,
+  "desktopFullMatrixExpectedStates": 819,
+  "mobileLogicalMatrixExpectedStates": 207,
+  "validation": "9 visual-comparator unit tests + 8 native-aggregator unit tests PASS; instrumented C# Roslyn compile exit0; Bash syntax and git diff --check PASS. No native candidate02 result inferred.",
+  "rules": "Freeze before candidate02 build and run. Do not modify scripts or reference contract while the batch is running. Raw candidate01 reports are immutable historical evidence, not candidate02 results.",
+  "sourceSha256": {
+    "prepare-instrument.py": "a3d797b0284c725fcbc720d4e371ee9677550a727db3050dac3a87202c0f772c",
+    "aggregate-native.py": "0a03a7863158be47a86d9d5d66f7887f2724c459e7e7b42d6573fc5fc7ae7d46",
+    "run-matrix.sh": "11b10b4393763d42fb97398589cadb48b72c13eea191514ab3609a45f025af61",
+    "compare.py": "4364dccd61b9b9ef27dc5692d691e4987094a39bed8468997c52bad89164c774",
+    "publish-gallery.mjs": "83ca87f4f68eceb8cde920cc8a68f8fc7e892bb5a4722e1ede7d6dcbc22468ce",
+    "reference-manifest.json": "54100c6a1a108827e8edf09440864ec12aace0acbde0005199c86fb4f6107799"
+  },
+  "manualAcceptance": "PENDING"
+}

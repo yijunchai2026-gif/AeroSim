@@ -52,7 +52,7 @@ namespace AeroSim.Simulation
 
         private void BuildEnvironmentVisuals(string environment)
         {
-            _world = new GameObject("Training Environment · " + environment + " · Art v2"); _world.transform.SetParent(transform, false);
+            _world = new GameObject("Training Environment · " + environment + " · 1.0 development art"); _world.transform.SetParent(transform, false);
             _visualEnvironment = environment; _previousSky = RenderSettings.skybox;
             var evening = Config.timeOfDay > 18; var overcast = Config.weather == "Overcast";
             ConfigureVisualQuality();
@@ -77,13 +77,14 @@ namespace AeroSim.Simulation
 
             bool desert = environment == "Desert Range", city = environment == "City Park", warehouse = environment == "Warehouse";
             var ground = Landscape(desert ? new Color(1.12f,.85f,.57f) : new Color(.91f,.99f,.87f), desert ? "coastal-rock-v2" : "meadow-grass-v2", desert ? 9 : 5, .21f, true);
+            if (warehouse) ground = EnvironmentSurfaceV1(new Color(.54f,.53f,.48f),0,null,5);
             var stone = Landscape(desert ? new Color(1.03f,.75f,.53f) : new Color(.82f,.88f,.91f), "coastal-rock-v2", 4, .09f);
             var bark = Landscape(new Color(.35f,.27f,.17f), "coastal-rock-v2", 1.7f, .1f);
             var scrub = Landscape(new Color(.43f,.51f,.32f), "meadow-grass-v2", 2, .07f);
             var needles = Foliage(new Color(.74f,.85f,.75f));
             var lighterNeedles = Foliage(new Color(.92f,.95f,.78f));
-            var concrete = Landscape(new Color(.80f,.82f,.80f), "coastal-rock-v2", 3, .035f);
-            var steel = Surface(new Color(.25f,.29f,.31f), null, .42f, .65f);
+            var concrete = EnvironmentSurfaceV1(new Color(.66f,.67f,.62f),0,null,3);
+            var steel = EnvironmentSurfaceV1(new Color(.27f,.29f,.27f),1,null,2);
             MeshObject("Rolling terrain with flat training corridor", TerrainMesh(120, 720), Vector3.zero, Vector3.one, ground, collision:true);
             BuildLandingPad();
 
@@ -119,9 +120,18 @@ namespace AeroSim.Simulation
                     var g=MeshObject("Eroded shoreline outcrop",_stoneVariants[i%4],new Vector3(x,-2,z),new Vector3(12+i%3*5,7+i%5*2,14),stone,collision:true);
                     g.transform.localRotation=Quaternion.Euler(0,i*61,0);
                 }
+                BuildCoastalDetailsV1(concrete,steel);
             }
-            if(warehouse) BuildWarehouse(concrete,steel);
-            if(Config.professional || city) BuildBridge(concrete,steel);
+            if(warehouse)
+            {
+                BuildWarehouse(concrete,steel);
+                BuildIndustrialDetailsV1(concrete,steel);
+            }
+            if(Config.professional || city)
+            {
+                BuildBridge(concrete,steel);
+                BuildBridgeDetailsV1(concrete,steel,-sun.transform.forward,evening);
+            }
             if(!desert && !warehouse) BuildGroundDetails(rng,scrub,stone);
 
             var cameraObject=new GameObject("Flight Camera"); cameraObject.transform.SetParent(_world.transform,false);
@@ -260,6 +270,8 @@ namespace AeroSim.Simulation
             {
                 float x=(float)rng.NextDouble()*150-70,z=(float)rng.NextDouble()*200-30;
                 if(Mathf.Abs(x)<8 && Mathf.Abs(z)<8 || _visualEnvironment=="Pacific Coast"&&x<-76) continue;
+                // Original low shrubs have no colliders. Do not scatter them through the new lake artwork.
+                if((_visualEnvironment=="City Park" || Config.professional) && Mathf.Abs(x)<170 && z>18 && z<172) continue;
                 float y=GroundHeight(x,z);
                 if(i%5==0) MeshObject("Loose ground stone",_stoneVariants[i%4],new Vector3(x,y+.12f,z),new Vector3(.8f,.4f,.7f),stone);
                 else MeshObject("Low scrub",tuft,new Vector3(x,y,z),new Vector3(.55f,.20f,.55f),vegetation);

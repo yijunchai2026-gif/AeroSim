@@ -7,6 +7,28 @@ using UnityEngine.InputSystem;
 
 namespace AeroSim.Simulation
 {
+    public sealed class PhotoCaptureRequest
+    {
+        public SessionRecord Record { get; }
+        public Camera Camera { get; }
+        public PhotoEvidence Evidence { get; }
+        public string SessionId { get; }
+        public string FileName { get; }
+        public Vector3 CameraPosition { get; }
+        public Quaternion CameraRotation { get; }
+        public float CameraFieldOfView { get; }
+        public int TargetIndex { get; }
+        internal FlightSimulator Owner { get; }
+        internal PhotoCaptureRequest(FlightSimulator owner, SessionRecord record, Camera camera, PhotoEvidence evidence)
+        {
+            Owner = owner;
+            Record = record; Camera = camera; Evidence = evidence;
+            SessionId = record.id; FileName = evidence.fileName; TargetIndex = evidence.targetIndex;
+            CameraPosition = camera.transform.position; CameraRotation = camera.transform.rotation;
+            CameraFieldOfView = camera.fieldOfView;
+        }
+    }
+
     public sealed partial class FlightSimulator : MonoBehaviour
     {
         public FlightConfig Config { get; private set; }
@@ -33,6 +55,7 @@ namespace AeroSim.Simulation
         public event Action<SessionRecord> Finished;
         public event Action<string> Notice;
         public event Action PauseRequested;
+        public event Action<PhotoCaptureRequest> PhotoCaptureRequested;
 
         private GameObject _world;
         private Transform _visual;
@@ -98,10 +121,50 @@ namespace AeroSim.Simulation
                 if(targets==null || GateIndex>=targets.Count) { Notice?.Invoke("All inspection targets captured."); return false; }
                 if(Vector3.Distance(Position,targets[GateIndex])>18) { Notice?.Invoke("Move within 59 ft of the highlighted inspection target."); return false; }
                 if(Vector3.Distance(Position,targets[GateIndex])<Config.mission.safeDistance) { Notice?.Invoke("Too close: respect the mission safe-distance setting."); return false; }
-                GateIndex++;
-                HighlightTarget();
             }
-            Record.photos++; Event("capture","Training photograph "+Record.photos); Notice?.Invoke("Capture saved to the session timeline."); return true;
+            if (View == null || Record == null) { Notice?.Invoke("The simulator camera is unavailable. Capture was not saved."); return false; }
+            Record.photoEvidence ??= new List<PhotoEvidence>();
+            int sequence = Record.photoEvidence.Count + 1;
+            bool hasTarget = Config.professional && Config.mission != null;
+            var target = hasTarget ? Config.mission.targets[GateIndex] : Vector3.zero;
+            string captureId = Guid.NewGuid().ToString("N");
+            var evidence = new PhotoEvidence
+            {
+                id = captureId, sessionId = Record.id, fileName = Record.id + "-photo-" + sequence + "-" + captureId + ".png",
+                sequence = sequence, time = Elapsed, capturedUtc = DateTime.UtcNow.ToString("O"),
+                hasTarget = hasTarget, missionId = hasTarget ? Config.mission.id : "", targetIndex = hasTarget ? GateIndex : -1,
+                targetName = hasTarget && Config.mission.targetNames != null && GateIndex < Config.mission.targetNames.Count ? Config.mission.targetNames[GateIndex] : hasTarget ? "Target " + (GateIndex + 1) : "",
+                aircraftPosition = Position, aircraftRotation = Body == null ? Vector3.zero : Body.rotation.eulerAngles,
+                cameraPosition = View.transform.position, cameraRotation = View.transform.eulerAngles, targetPosition = target,
+                targetDistance = hasTarget ? Vector3.Distance(Position, target) : 0,
+                targetFacingAngle = hasTarget ? Vector3.Angle(View.transform.forward, target - View.transform.position) : 0
+            };
+            Record.photoEvidence.Add(evidence);
+            var request = new PhotoCaptureRequest(this, Record, View, evidence);
+            try
+            {
+                if (PhotoCaptureRequested == null) CompletePhotoCapture(request, false, "No photo evidence writer is connected.");
+                else PhotoCaptureRequested.Invoke(request);
+            }
+            catch (Exception ex) { CompletePhotoCapture(request, false, "Capture writer failed: " + ex.Message); }
+            return evidence.status == "saved";
+        }
+        public void CompletePhotoCapture(PhotoCaptureRequest request, bool saved, string failureReason = "")
+        {
+            if (request?.Evidence == null || request.Evidence.status != "pending") return;
+            var evidence = request.Evidence;
+            evidence.status = saved ? "saved" : "failed";
+            evidence.failureReason = saved ? "" : failureReason ?? "Capture could not be saved.";
+            if (saved)
+            {
+                evidence.width = 1280; evidence.height = 720;
+                request.Record.photos++;
+                request.Record.events.Add(new FlightEvent { time = evidence.time, kind = "capture", message = "Training photograph " + evidence.sequence + " saved" + (evidence.hasTarget ? " · " + evidence.targetName : ""), photoEvidenceId = evidence.id });
+                if (Record == request.Record && evidence.hasTarget && GateIndex == request.TargetIndex)
+                { GateIndex++; HighlightTarget(); }
+            }
+            else request.Record.events.Add(new FlightEvent { time = evidence.time, kind = "capture-failed", message = "Training photograph " + evidence.sequence + " failed: " + evidence.failureReason, photoEvidenceId = evidence.id });
+            if (Record == request.Record) Notice?.Invoke(saved ? "Capture saved to the session timeline." : "Capture was not saved. " + evidence.failureReason);
         }
         public void Finish()
         {

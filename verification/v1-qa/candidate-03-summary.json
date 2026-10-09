@@ -1,0 +1,68 @@
+{
+  "batch": "candidate-20261009-03",
+  "status": "DEVELOPMENT_NOT_ACCEPTED",
+  "smoke": {
+    "pass": 66,
+    "fail": 0,
+    "sha256": "e20adee356fedd5bf50b8afd20ae39774545c600964579db324c19822ce3cefa"
+  },
+  "nativeBaseline": {
+    "version": "1.0.0",
+    "startedUtc": "2026-10-09T20:30:54.6705610Z",
+    "reportSha256": "17c1cc3f40cdb1ef29354945ca7149b008acd82b8a5c1ae4dd4c03b5404b40e0",
+    "width": 1920,
+    "height": 1080,
+    "cases": 37,
+    "checks": 3926,
+    "hardFailures": 0,
+    "textCandidates": 1,
+    "legacyConflicts": 54,
+    "runtimeErrors": 0
+  },
+  "nativeText200": {
+    "version": "1.0.0",
+    "startedUtc": "2026-10-09T20:33:29.2593610Z",
+    "reportSha256": "505d2ae3f36232d785bb9e10f7ce1f7e3c445eb0639f46b536847e7b9154567b",
+    "width": 1280,
+    "height": 720,
+    "cases": 37,
+    "checks": 2978,
+    "hardFailures": 1,
+    "textCandidates": 35,
+    "legacyConflicts": 54,
+    "runtimeErrors": 0
+  },
+  "spaceSubmit": {
+    "checks": 54,
+    "failures": [
+      {
+        "rule": "flight.navigation-does-not-steal-focus.after-enter-resume-arrow",
+        "evidence": "focus=none submitCount=14 -> focus=Button#action-pause visible=True submitCount=14",
+        "passed": false
+      },
+      {
+        "rule": "flight.navigation-does-not-steal-focus.after-escape-resume-arrow",
+        "evidence": "focus=none submitCount=14 -> focus=Button#action-pause visible=True submitCount=14",
+        "passed": false
+      },
+      {
+        "rule": "flight.navigation-does-not-steal-focus.after-gamepad-resume-arrow",
+        "evidence": "focus=none submitCount=15 -> focus=Button#action-pause visible=True submitCount=15",
+        "passed": false
+      }
+    ],
+    "runtimeErrors": 0,
+    "reportSha256": "2c32e0049af116544fe0e26206209506ff23d3997fb475cb018aeae0074253af"
+  },
+  "visual": {
+    "different": 23,
+    "total": 23,
+    "masked": false
+  },
+  "additionalKnownDefects": [
+    "Tuning numeric inner text linebox is only 8px tall; native screenshot clipping not counted by frozen Label/Button gate."
+  ],
+  "fullMatrix": "NOT_COMPLETE",
+  "userAcceptance": "PENDING",
+  "runtimeDllSha256": "f8bf08adf82afc54bfbe930f940f401743d48ce2736f8fd8aa4d02f28eec084f"
+}
