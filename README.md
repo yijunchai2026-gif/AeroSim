@@ -6,7 +6,7 @@
 
 - `AeroSim/Assets`：运行时代码、编辑器工具、场景、Shader、UI 与美术资源。
 - `AeroSim/Packages`、`AeroSim/ProjectSettings`：Unity 依赖与项目设置。
-- `assets/`：产品设计参考图片。
+- `assets/`：产品概念效果图、0.4 精选实际截图（`ui-v04/`）与历史截图（`ui-history/`）。
 - `飞行模拟器产品设计文档.md`：产品与 UI/UX 设计要求。
 - `verification/ui-qa-tools/`：缩放 QA 工具；验证目录保留紧凑摘要。
 
@@ -41,5 +41,9 @@
 Unity Library、Builds、Logs、UserSettings，以及自动生成的 QA 截图、原始大体积报告和运行日志不纳入 Git，原文件仍保留在本机。源码使用的美术贴图与设计参考图片纳入 Git。
 
 本地 HTML 图册引用的部分 QA 截图属于被忽略的生成产物，单独克隆源码后不会自动包含这些截图；需保留原本的本地验证目录，或在源码与构建一致后重新生成。部分历史文档指向旧版本，应以本说明的当前基线差异为准。
+
+产品文档已更新至 v1.4：[第 23 章](飞行模拟器产品设计文档.md#23-04-ui-比例修复效果图与验收2026-10-08)直接内嵌 30 个 0.4 页面/状态、2 个机库滚动视图和 6 组比例对照。23 张概念图与 37 张历史截图一并保留，所有文档内嵌图片都随仓库提交，在 GitHub 可直接显示；不需要本机 `verification` 图片目录。概念图、运行截图和未验收限制分别标注。`publish-design-gallery.mjs` 从原始本机 QA 归档复制精选图，不重新生成截图。
+
+后续代码/文档更新按“验证 → commit → push → 返回 GitHub 地址与具体提交链接”交付；不自动合并主干。完整约定见 [AGENTS.md](AGENTS.md)。
 
 2026-10-07 已通过 GitHub Desktop 发布到私有仓库 [yijunchai2026-gif/AeroSim](https://github.com/yijunchai2026-gif/AeroSim)。本地 `main` 已连接 `origin/main`。构建产物和自动生成的 QA 大文件仍只保留在本机，未随源码上传。
