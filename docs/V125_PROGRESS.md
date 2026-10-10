@@ -74,7 +74,11 @@
 - 两名美术分别冻结原版 Inspire 1 X3 **draft-03**（SHA `94a2245bd26a4bfdd930ea0b6d51f596e9bf4d1459f88861329a4c4e695e4491`）和 Mavic Pro **draft-02**（SHA `ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931`）。根实际查看两份current及Inspire02中间稿：纵杆/斜撑及紧凑相机局部改善，但机械连接、脚/云台、跨视图、投影、底部/材质仍未通过。01旧稿、02失败中间稿与真实提示词不覆盖。当前均 `pending_user`，不是最终3D，不接正式飞行。
 - 审核页重新生成为同四个机型的唯一current，目录仍132+9、4幅current、0用户批准；目录SHA `4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c` 不变。原28目录门禁根/独立QA复跑PASS/0FAIL/0SKIP，涵盖revision/hash变更使旧确认失效，但不替代实际浏览器交互。新稿用相对路径同步 [PRD25.8](../飞行模拟器产品设计文档.md#258-第三批当前机型审核稿局部修订不是最终3d)，[25.9](../飞行模拟器产品设计文档.md#259-双虚拟摇杆纯触点实现边界) 另记三端待接线/真机界限；23原始目标不变。
 
-全部成员冻结停止写后，根最终核对独立报告30个指纹与三个mutation的精确替换重建散列；30条本批文档本地链接有效、生成页当前03/02与pending状态一致，88个Assets meta GUID有效且唯一。07c稳定副本Runtime DLL实际SHA仍 `caf2331190601b9bddab0ccfbc312fab894baa0c20a9d58a101a208e15d5e061`，未作新Unity构建或冒用旧native通过。只纳入本批24个明确文件，历史3个meta及候选04/Wave B无关项继续保留；最终上传状态在实际commit/push之后补记。
+全部成员冻结停止写后，根最终核对独立报告30个指纹与三个mutation的精确替换重建散列；30条本批文档本地链接有效、生成页当前03/02与pending状态一致，88个Assets meta GUID有效且唯一。07c稳定副本Runtime DLL实际SHA仍 `caf2331190601b9bddab0ccfbc312fab894baa0c20a9d58a101a208e15d5e061`，未作新Unity构建或冒用旧native通过。只纳入本批24个明确文件，历史3个meta及候选04/Wave B无关项继续保留；暂存空白检查无警告。
+
+本批已**本地提交** `32e118b3e55b74b5f5c80d101812ee865db61c94`：[GitHub提交目标（尚未上传，可能无法访问）](https://github.com/yijunchai2026-gif/AeroSim/commit/32e118b3e55b74b5f5c80d101812ee865db61c94)。随后实际push与ls-remote均exit128：`could not read Username for https://github.com: terminal prompts disabled`。状态仍 **UNPUSHED_AUTH_BLOCKED**，没有成功push或新远端SHA；origin缓存不是证明。前两笔本地 `7a23c00` / `94c0df6` 同样未补上传，本波断点记录也须一起上传。未改仓库可见性/认证设置、未合并main或force-push。
+
+后继先核实际认证与ahead状态，认证恢复后正常Push origin/Fetch origin并独立核远端SHA；不重复本波生成、构建或已完成合同。用户需在GitHub Desktop的AeroSim仓库确认正常登录与仓库权限并执行Push origin；负责人目前不能安全取得终端凭据。继续不依赖外观批准/认证的本地工作时，仍遵守独立QA、冻结、每批提交和实际上传失败记录，不把未上传分支当最终交付。三端正式接线、真机、全缩放/23图与机型逐一确认仍未完成，1.25没有发布。
 
 ## 团队和文件边界
 
