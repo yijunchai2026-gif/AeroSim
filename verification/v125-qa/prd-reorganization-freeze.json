@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-10-10T19:58:25.227Z",
+  "scope": "PRD v1.6 and distinct pending Mavic 4 Pro review bitmap; existing candidate08 selected evidence only, no Unity implementation or native approval",
+  "branch": "codex/v125-product-lines",
+  "files": [
+    {
+      "file": "飞行模拟器产品设计文档.md",
+      "sha256": "eb2fbd81d49d0b7b99a935352ebe61b86e70fe40cfe131fae4a4439896c63316"
+    },
+    {
+      "file": "docs/V125_ARCHITECTURE.md",
+      "sha256": "0ce2d1a97cdf90329ce42f73ba0cb8957f38df712a2896435e91c96153af64d2"
+    },
+    {
+      "file": "docs/V125_ART_MAVIC4_REFERENCE.md",
+      "sha256": "88d474b9aa02c171e153efb165bc9f81ccc746004370a4f6e7bbbec1271298b4"
+    },
+    {
+      "file": "docs/V125_PRD_CONFLICT_REVIEW.md",
+      "sha256": "5f6f56ee515b2096fcbd2f2277ec06cf681d4f4efb599323698657f5bbe9bfa4"
+    },
+    {
+      "file": "docs/V125_DESKTOP08_DASHBOARD_VISUAL.md",
+      "sha256": "98bc35a6662a090a2a850f9e9da17fe32d13d7dfe341ebb4f8a1c183cd7fd2f9"
+    },
+    {
+      "file": "docs/V125_DESKTOP08_REPLAY_VISUAL.md",
+      "sha256": "dd2549f559d015435ac677635856ba3b2b832aca962031731443b65093533a7b"
+    },
+    {
+      "file": "docs/V125_GATE_A_CONTRACT.md",
+      "sha256": "f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697"
+    },
+    {
+      "file": "AeroSim-1.25-机型逐一审核.html",
+      "sha256": "fc8ba15ddb383773875b4f86314df63e93bd4c03b82836bba09259847cd1aa55"
+    },
+    {
+      "file": "assets/v125-art/mavic/review-drafts.json",
+      "sha256": "2d4cf32ab294592476de301d17b3d3b48911b3fbf5a4d45b15c96862229dee32"
+    },
+    {
+      "file": "assets/v125-art/mavic/mavic-4-pro-draft-01.png",
+      "sha256": "efdc1b0d6c5bf307968731e1c5f0afd9f40aa3e4e5a4eb3deb5382e090eaa9ab"
+    },
+    {
+      "file": "assets/v125-art/mavic/mavic-4-pro-draft-01.prompt.txt",
+      "sha256": "48a713bfea3c52476dbbeabd40d822f05b1d64eb43889020d3b1c812acbfe137"
+    },
+    {
+      "file": "assets/catalog-v125/dji-aircraft.json",
+      "sha256": "4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c"
+    },
+    {
+      "file": "verification/v125-qa/test-catalog-review.mjs",
+      "sha256": "abff7dea02f93bd595bb451331f67521de51f019bfd746b2f80241a8077d358f"
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/home-1440-text100-after08.png",
+      "sha256": "990ce08b81c6ce8d9bcc34e3258f844f4ce1ad3ab27cafe52c60f84b5594f9f8"
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/home-1440-text100-before07c.png",
+      "sha256": "272cb1cd10ab791a77549a126f150f31a75b0702db52e1d9d02f6da39ea08b2f"
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/home-1920-text100-after08.png",
+      "sha256": "bee4373190d4aa77aebce7a5d71fb6db436a998e902d1e19955b3585a62b9fd6"
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/pause-1440-first-tab-space.png",
+      "sha256": "1889f49601508592fcc248b5126a7d395c1b9bff5b4e2da9f21cd928f25f371a"
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/replay-1440-text200.png",
+      "sha256": "9a504c9918e95e20abb721be1e8ba063ca5a4edf339abf554add4fa956c8fa3d"
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/replay-1920-text100.png",
+      "sha256": "c5c1cc8761f15922e6c712649504bdc5a5eff4ee111003e2498c6c69b04d962a"
+    }
+  ]
+}

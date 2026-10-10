@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_AUTOMATED_ONLY",
+  "checkedAt": "2026-10-10T20:02:57.344Z",
+  "scope": "Independent frozen PRD, local file links, review-bitmap identity and negative gate tests; no native/visual/user approval",
+  "command": "node verification/v125-qa/prd-review/prd-document-check.mjs --require-tracked --doc docs/V125_ART_MAVIC4_REFERENCE.md --doc docs/V125_ARCHITECTURE.md --doc docs/V125_PRD_CONFLICT_REVIEW.md --doc docs/V125_DESKTOP08_DASHBOARD_VISUAL.md --doc docs/V125_DESKTOP08_REPLAY_VISUAL.md --doc docs/V125_GATE_A_CONTRACT.md",
+  "summary": {
+    "checks": 816,
+    "failed": 0,
+    "localLinkOccurrences": 242,
+    "originalConcepts": 23,
+    "currentDrafts": 5,
+    "inheritedMissingOccurrences": 0,
+    "publicationPendingUnique": 0,
+    "status": "PASS_AUTOMATED_ONLY"
+  },
+  "sourceSha256": {
+    "飞行模拟器产品设计文档.md": "cc72557d8f3fa0bb899495516418908fba811d63d80fa553631a3c87bdbbf1a6",
+    "docs/V125_ART_MAVIC4_REFERENCE.md": "88d474b9aa02c171e153efb165bc9f81ccc746004370a4f6e7bbbec1271298b4",
+    "docs/V125_ARCHITECTURE.md": "0ce2d1a97cdf90329ce42f73ba0cb8957f38df712a2896435e91c96153af64d2",
+    "docs/V125_PRD_CONFLICT_REVIEW.md": "5f6f56ee515b2096fcbd2f2277ec06cf681d4f4efb599323698657f5bbe9bfa4",
+    "docs/V125_DESKTOP08_DASHBOARD_VISUAL.md": "98bc35a6662a090a2a850f9e9da17fe32d13d7dfe341ebb4f8a1c183cd7fd2f9",
+    "docs/V125_DESKTOP08_REPLAY_VISUAL.md": "dd2549f559d015435ac677635856ba3b2b832aca962031731443b65093533a7b",
+    "docs/V125_GATE_A_CONTRACT.md": "f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697"
+  },
+  "freeze": {
+    "file": "verification/v125-qa/prd-reorganization-freeze-v2.json",
+    "sha256": "8399bc2bdbd4ea076cb71fe0c8effec5f1f8b3ca2a0ac4c9914b4e48ce6389ff",
+    "frozenAt": "2026-10-10T20:02:09.735Z",
+    "checkedAt": "2026-10-10T20:03:07.508Z",
+    "filesChecked": 19,
+    "failed": 0,
+    "mismatches": [],
+    "changedSinceV1": [
+      "飞行模拟器产品设计文档.md"
+    ],
+    "retainedV1Sha256": "e3e07ec939075218b0fbb5645db12a6a451127446a41284bf67a4c490643c0d9"
+  },
+  "baselineAssertions": {
+    "originalBytesPass": 23,
+    "originalEmbeddedPass": 23,
+    "historicalMavicFilesPass": 4,
+    "existingCandidate08FilesPass": 6,
+    "referenceManifestUnchanged": true,
+    "oldMavicFullManifestRowPreserved": true,
+    "currentDrafts": 5,
+    "userApproved": 0,
+    "catalogMain": 132,
+    "catalogVariants": 9,
+    "productionGate": false
+  },
+  "identityAndTextAssertions": [
+    {
+      "id": "CATALOG_REMAINS_PENDING",
+      "result": "PASS"
+    },
+    {
+      "id": "CATALOG_PRODUCTION_GATE",
+      "result": "PASS"
+    },
+    {
+      "id": "DRAFT_IDS_UNIQUE",
+      "result": "PASS"
+    },
+    {
+      "id": "MAVIC_2016_CURRENT_ID_REV_HASH_PRESERVED",
+      "result": "PASS"
+    },
+    {
+      "id": "MAVIC4_DISTINCT_CURRENT_DRAFT",
+      "result": "PASS"
+    },
+    {
+      "id": "MAVIC4_EMBEDDED_IN_PRD",
+      "result": "PASS"
+    },
+    {
+      "id": "MAVIC4_CORRECT_CATALOG_ID",
+      "result": "PASS"
+    },
+    {
+      "id": "GALLERY_FROZEN_DRAFTS_MATCH",
+      "result": "PASS"
+    },
+    {
+      "id": "CURRENT_CONTRACT_AT_CHAPTER_ZERO",
+      "result": "PASS"
+    },
+    {
+      "id": "CURRENT_VERSION_TARGET_125",
+      "result": "PASS"
+    },
+    {
+      "id": "THREE_DEVICE_LINES_NAMED",
+      "result": "PASS"
+    },
+    {
+      "id": "ACTUAL_VERSION_NOT_UPGRADED_BY_DOC",
+      "result": "PASS"
+    },
+    {
+      "id": "REAL_DEVICE_BOUNDARY_RETAINED",
+      "result": "PASS"
+    },
+    {
+      "id": "PER_MODEL_EXPLICIT_USER_GATE_RETAINED",
+      "result": "PASS"
+    }
+  ],
+  "tests": {
+    "catalog": {
+      "command": "node --test verification/v125-qa/test-catalog-review.mjs",
+      "exitCode": 0,
+      "tests": 30,
+      "passed": 30,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "specificNegative": "Synthetic original-Mavic confirmation cannot approve Mavic 4 Pro or its 512GB variant"
+    },
+    "checker": {
+      "command": "node --test verification/v125-qa/prd-review/prd-document-check-test.mjs",
+      "exitCode": 0,
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "specificNegatives": [
+        "Changed/removed original",
+        "Missing/absolute local link",
+        "2016 ID swapped to Mavic 4",
+        "Mavic 4 reuses old PNG or changed SHA",
+        "Ambiguous feedback seeded approval",
+        "Stale gallery revision"
+      ]
+    }
+  },
+  "failures": [],
+  "publicationPending": [],
+  "historicalBrokenLinks": [],
+  "toolAndPreservedEvidenceSha256": {
+    "verification/v125-qa/prd-review/prd-document-check.mjs": "995f114c5355b367602a73d05a52624d2d85d3e72d34577c2a5f6c5ca8c9d3ef",
+    "verification/v125-qa/prd-review/prd-document-check-test.mjs": "6126df5fd05b602bccc79669260d7eb75c14a2ca9c8158fab8b68dc60055cb26",
+    "verification/v125-qa/prd-review/baseline.json": "b4357e4b16eb7477fac6f3372a872288faea7b1437dad6269097b97d18e1af1f",
+    "verification/v125-qa/prd-review/prepared-results.json": "ef6f96579943f0a998c0c78ad296969e92a1a98a9c2789613c38fbdd10ef25c5"
+  },
+  "humanReview": {
+    "read": "Entire original PRD plus all reorganization changes and final fixture wording, complete architecture/conflict/art/selected candidate08 visual/Gate A docs",
+    "resolved": [
+      "10.2 generic calibration separated from per-model physics profiles",
+      "18.4.2 no global hardcoded 24px/40%x38% safe region",
+      "18.5.2 calibration reused only for matching platform/device instance/source",
+      "Onboarding and FPV permit screen sticks without mandatory physical controller",
+      "Metric m/s and Aviation are targets; current m/km/h remains a fact",
+      "Replay duration 20 seconds, sample at 10 seconds verified from the existing probe source"
+    ],
+    "remaining": [
+      "Original UI vs candidate08 visual differences",
+      "Mavic 4 camera/feet/axis/nose-window proportions and cross-view geometry unproven",
+      "No calibrated mesh/material or per-model human approval",
+      "Three-device native/input/safe-area/performance not validated",
+      "Catalog no-omission proof remains open"
+    ]
+  },
+  "limits": [
+    "These results do not approve candidate08 as a whole, Gate A implementation, final visual parity, Mavic geometry, real hardware, online/airspace integration or user acceptance",
+    "Git tracked/staged dependency presence is not evidence of remote push; root owns explicit commit/push/SHA verification",
+    "v1 retained and was superseded only by the factual 20-second/10-second sampling wording correction"
+  ]
+}

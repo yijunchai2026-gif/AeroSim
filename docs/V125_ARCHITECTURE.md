@@ -4,6 +4,12 @@
 
 本文是基于当前工作树的实施方案，**不是三个平台或全部机型已完成的证明**。本轮仅做技术只读检查与文档新增，没有 Unity 构建、Apple 签名、安装或真机测试。
 
+### 当前阅读勘误（2026-10-10）
+
+原文第6章检查了错误的`Unity.app/Contents/PlaybackEngines`位置，得出的“iOSSupport缺失”推断已撤回；真实模块文件位于Unity.app同级`PlaybackEngines/iOSSupport`。文件存在仅为`IOS_MODULE_FILES_PRESENT`，不证明Editor iOS target、新导出、编译、签名或真机可用。完整active Xcode仍不可用。原错误检查保留并明确标注，不据此重复安装模块。
+
+本文其余源码/接口表为2026-10-09方案快照；其中“尚未实现”不覆盖后来单独验证的纯router/触点owner/身份子集，也不把它们当三端接线通过。最新状态以[1.25断点](V125_PROGRESS.md)和[PRD第0章](../飞行模拟器产品设计文档.md#0-当前执行合同与阅读索引)为准。当前Mavic主展示改用独立`dji-mavic-4-pro`生成审核稿；不更名或批准2016`dji-mavic-pro`。
+
 ## 1. 当前代码证据与可复用边界
 
 | 项目 | 实际代码或本机证据 | 1.25 的含义 |
@@ -101,13 +107,13 @@
 
 2026-10-09 本机只读检查结果：
 
-- Unity `6000.3.25f1/Unity.app/Contents/PlaybackEngines` 当前仅有 `MacStandaloneSupport`，**没有 iOSSupport 文件夹**。Mac 文件夹内 `UnityEditor.iOS.Extensions.Xcode.dll` 不能单独证明 iOS Build Support 已装。
+- **历史错误检查（结论撤回）**：当时只查`6000.3.25f1/Unity.app/Contents/PlaybackEngines`，在该错误位置未见iOSSupport，不能推出模块缺失。2026-10-10改查同级`/Applications/Unity/Hub/Editor/6000.3.25f1/PlaybackEngines/iOSSupport`，模块文件存在。Mac文件夹内`UnityEditor.iOS.Extensions.Xcode.dll`也不能单独证明iOS target可用。
 - `xcode-select -p` 为 `/Library/Developer/CommandLineTools`；`xcrun --find xcodebuild` 报找不到工具；标准 `/Applications/Xcode.app` 和 Xcode-beta.app 不存在。当前未发现可用完整 Xcode。
 - `ProjectSettings.asset` 为 `com.aerosim.training`、iOS 最低版本 `15.0`、iPhone 的 scripting backend `1`；`ProjectSetup` 有 Universal iPhoneAndiPad 与 IL2CPP 导出入口。仅有设置不能形成实际导出或运行证据。
 - 未查看私密签名凭据。当前配置的 Apple team/provisioning 字段为空、automatic signing 为关闭；账号、设备注册和发布签名需要实际设置并取得相应授权。
 - `verification/GRAPHICS_V2.md` 记载 2026-10-05 旧版 iOS 成功导出、当时无完整 Xcode。该历史证据不覆盖本机当前模块、当前1.25代码或设备运行。
 
-执行顺序为：先完成可本地做的共享核心与独立布局 → 安装匹配 Unity 的 iOS Build Support / 完整 Xcode（所需下载/系统写入按工具审批）→ 单独冻结源码、导出 Universal iOS Xcode 工程 → 原生编译 → 配置有授权的开发签名 → 安装 iPhone 和 iPad → 分线真实设备 QA。iOS Simulator、桌面逻辑视口、iOS Xcode 工程导出、Apple 原生编译、签名、真机与 TestFlight 是不同证据字段。
+执行顺序为：完成可本地做的共享核心与独立布局 → 验证现有Unity iOS target，并准备完整active Xcode（确有缺项再按工具审批下载/配置，不默认重装模块）→ 单独冻结源码、导出Universal iOS Xcode工程 → 原生编译 → 配置有授权的开发签名 → 安装iPhone和iPad → 分线真实设备QA。iOS Simulator、桌面逻辑视口、工程导出、Apple原生编译、签名、真机与TestFlight是不同证据字段。本轮文档整理未执行安装、切换developer目录或签名。
 
 电脑线先交付有证据的 macOS；若电脑范围扩展到 Windows，则另装对应构建支持并在 Windows 实际运行，不能把 macOS 二进制链接当作两者可用。发布与 TestFlight/托管下载链接只在该产物实际存在且权限可用时提供。
 

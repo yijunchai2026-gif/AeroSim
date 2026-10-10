@@ -220,49 +220,76 @@ test('actual catalog and current art manifests generate in an isolated copy', {s
 
 // Additive second-batch gates. Preserve the original 25 tests above unchanged.
 const expectedArtIds = {
-  legacy: 'dji-phantom-1',
-  current: 'dji-mini-4-pro',
-  inspire: 'dji-inspire-1',
-  mavic: 'dji-mavic-pro'
+  legacy: ['dji-phantom-1'],
+  current: ['dji-mini-4-pro'],
+  inspire: ['dji-inspire-1'],
+  mavic: ['dji-mavic-pro', 'dji-mavic-4-pro']
 };
+const expectedCurrentIds = Object.values(expectedArtIds).flat();
 test('four real art namespaces bind exact aircraft IDs, current PNG bytes and pending revisions', () => {
   const source = JSON.parse(fs.readFileSync(path.join(root, 'assets/catalog-v125/dji-aircraft.json'), 'utf8'));
   const realIds = new Set(source.aircraft.flatMap(a => [a.id, ...(a.variants || []).map(v => v.id)]));
   const sources = runtime({data: source, drafts: []});
   const seen = new Set();
-  for (const [namespace, id] of Object.entries(expectedArtIds)) {
+  for (const [namespace, expectedIds] of Object.entries(expectedArtIds)) {
     const manifest = JSON.parse(fs.readFileSync(path.join(root, `assets/v125-art/${namespace}/review-drafts.json`), 'utf8'));
     const rows = Array.isArray(manifest) ? manifest : manifest.drafts;
-    assert.equal(rows.length, 1, namespace + ' must contain exactly the frozen review entry');
-    const d = rows[0]; assert.equal(d.aircraftId, id, namespace); assert.ok(realIds.has(id));
-    assert.ok(!seen.has(id)); seen.add(id);
-    assert.match(d.image, new RegExp(`^assets/v125-art/${namespace}/[a-z0-9-]+\\.png$`));
-    assert.equal(d.sha256, digest(fs.readFileSync(path.join(root, d.image))), id);
-    assert.equal(d.appearanceStatus, 'pending_user', id); assert.equal(d.kind, 'generated_review_bitmap');
-    assert.ok(d.revision && d.sourceUrls.length); assert.ok(d.sourceUrls.every(sources.qa.safeSource), id);
+    assert.equal(rows.length, expectedIds.length, namespace + ' must contain exactly the frozen review entries');
+    assert.deepEqual(rows.map(d => d.aircraftId).sort(), [...expectedIds].sort(), namespace);
+    for (const d of rows) {
+      const id = d.aircraftId; assert.ok(realIds.has(id));
+      assert.ok(!seen.has(id)); seen.add(id);
+      assert.match(d.image, new RegExp(`^assets/v125-art/${namespace}/[a-z0-9-]+\\.png$`));
+      assert.equal(d.sha256, digest(fs.readFileSync(path.join(root, d.image))), id);
+      assert.equal(d.appearanceStatus, 'pending_user', id); assert.equal(d.kind, 'generated_review_bitmap');
+      assert.ok(d.revision && d.sourceUrls.length); assert.ok(d.sourceUrls.every(sources.qa.safeSource), id);
+    }
   }
-  assert.equal(seen.size, 4);
+  assert.equal(seen.size, 5);
 });
-test('isolated real gallery contains 132 main plus 9 variants and exactly four pending art IDs', () => {
+test('isolated real gallery contains 132 main plus 9 variants and exactly five pending art IDs', () => {
   const r = generateWorkspaceFixture(); assert.equal(r.status, 0, r.stderr);
   const inline = id => JSON.parse(r.html.match(new RegExp('<script id="' + id + '" type="application/json">([\\s\\S]*?)<\\/script>'))[1]);
   const data = inline('catalog-data'), drafts = inline('draft-data');
   assert.equal(data.reviewBaseCount, 132); assert.equal(data.reviewVariantCount, 9); assert.equal(data.aircraft.length, 141);
-  assert.equal(drafts.length, 4);
-  assert.deepEqual(drafts.map(d => d.aircraftId).sort(), Object.values(expectedArtIds).sort());
+  assert.equal(drafts.length, 5);
+  assert.deepEqual(drafts.map(d => d.aircraftId).sort(), [...expectedCurrentIds].sort());
   assert.deepEqual([...new Set(drafts.map(d => d.image.split('/')[2]))].sort(), Object.keys(expectedArtIds).sort());
   const review = runtime({data, drafts});
   assert.ok(data.aircraft.every(a => review.qa.state(a) === 'pending_user'));
   assert.equal(Object.keys(review.qa.getSaved()).length, 0, 'QA must not create real aircraft approval records');
-  for (const id of Object.values(expectedArtIds)) {
+  for (const id of expectedCurrentIds) {
     review.qa.select(id); assert.equal(review.registry.get('approve-model').disabled, false, id);
   }
-  const withoutDraft = data.aircraft.filter(a => !Object.values(expectedArtIds).includes(a.id));
-  assert.equal(withoutDraft.length, 137);
+  const withoutDraft = data.aircraft.filter(a => !expectedCurrentIds.includes(a.id));
+  assert.equal(withoutDraft.length, 136);
   for (const a of withoutDraft) {
     review.qa.select(a.id); assert.equal(review.registry.get('approve-model').disabled, true, a.id);
   }
   assert.equal(Object.keys(review.qa.getSaved()).length, 0);
+});
+
+test('Mavic 4 Pro draft is separate from the preserved 2016 Mavic Pro row', () => {
+  const rows = JSON.parse(fs.readFileSync(path.join(root, 'assets/v125-art/mavic/review-drafts.json'), 'utf8'));
+  const original = rows.find(d => d.aircraftId === 'dji-mavic-pro');
+  const modern = rows.find(d => d.aircraftId === 'dji-mavic-4-pro');
+  assert.equal(original.revision, 'draft-02');
+  assert.equal(original.sha256, 'ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931');
+  assert.equal(modern.revision, 'draft-01');
+  assert.equal(modern.image, 'assets/v125-art/mavic/mavic-4-pro-draft-01.png');
+  assert.equal(modern.sha256, digest(fs.readFileSync(path.join(root, modern.image))));
+  assert.notEqual(modern.image, original.image); assert.notEqual(modern.sha256, original.sha256);
+  assert.equal(modern.appearanceStatus, 'pending_user');
+});
+test('synthetic original-Mavic decision cannot approve Mavic 4 Pro or its 512GB variant', () => {
+  // Memory-only synthetic records with deliberately mismatched aircraftId; not user approvals.
+  const modern = {...draft('dji-mavic-4-pro'), revision: 'qa-modern'};
+  const ids = ['dji-mavic-pro', 'dji-mavic-4-pro', 'dji-mavic-4-pro-512gb'];
+  const data = catalog(ids.map(id => aircraft(id)));
+  const old = savedRecord('dji-mavic-pro', {revision: 'qa-modern'});
+  const r = runtime({data, drafts: [modern], saved: {'dji-mavic-4-pro': old, 'dji-mavic-4-pro-512gb': old}});
+  for (const a of data.aircraft) assert.equal(r.qa.state(a), 'pending_user', a.id);
+  r.qa.select('dji-mavic-4-pro-512gb'); assert.equal(r.registry.get('approve-model').disabled, true);
 });
 test('two additional official CDN hosts are exact HTTPS allowlist entries, not wildcard domains', () => {
   const r = runtime();

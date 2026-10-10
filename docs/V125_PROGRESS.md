@@ -72,13 +72,42 @@
 - 左右 owner 共享一个 Touch source；第三指、跨杆、重复 Down 拒绝，取消只清对应杆，Suspend/Resume 清零后须新 Down；无效 owner Move 清该杆两轴。仅有 pointerId 无法辨别复用同 ID 的迟到旧事件，后续适配器必须加入会话/绑定代际，不能宣称真实 capture/OS 中断已经验证。
 - 独立 QA 另写数组参考状态机逐事件比对：**514,425检查/0失败**，25,746事件（178定向、13,568主动高占用、12,000确定性随机），实际双owner事件13,443，13项纯router组合；根另读全源并严格编译复跑同值。三个临时错误实现都成功严格编译、被未改测试拒绝，而非拿编译错误当检出；具体负例和SHA见 [独立QA](V125_TOUCH_QA.md) / [紧凑证据](../verification/v125-qa/touch-state-independent-summary.json)。不称真实触控或应用生命周期验收。
 - 两名美术分别冻结原版 Inspire 1 X3 **draft-03**（SHA `94a2245bd26a4bfdd930ea0b6d51f596e9bf4d1459f88861329a4c4e695e4491`）和 Mavic Pro **draft-02**（SHA `ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931`）。根实际查看两份current及Inspire02中间稿：纵杆/斜撑及紧凑相机局部改善，但机械连接、脚/云台、跨视图、投影、底部/材质仍未通过。01旧稿、02失败中间稿与真实提示词不覆盖。当前均 `pending_user`，不是最终3D，不接正式飞行。
-- 审核页重新生成为同四个机型的唯一current，目录仍132+9、4幅current、0用户批准；目录SHA `4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c` 不变。原28目录门禁根/独立QA复跑PASS/0FAIL/0SKIP，涵盖revision/hash变更使旧确认失效，但不替代实际浏览器交互。新稿用相对路径同步 [PRD25.8](../飞行模拟器产品设计文档.md#258-第三批当前机型审核稿局部修订不是最终3d)，[25.9](../飞行模拟器产品设计文档.md#259-双虚拟摇杆纯触点实现边界) 另记三端待接线/真机界限；23原始目标不变。
+- 审核页重新生成为同四个机型的唯一current，目录仍132+9、4幅current、0用户批准；目录SHA `4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c` 不变。原28目录门禁根/独立QA复跑PASS/0FAIL/0SKIP，涵盖revision/hash变更使旧确认失效，但不替代实际浏览器交互。新稿用相对路径同步 [PRD25.8](../飞行模拟器产品设计文档.md#258-第三批机型审核稿记录局部修订不是最终3d)，[25.9](../飞行模拟器产品设计文档.md#259-双虚拟摇杆纯触点实现边界) 另记三端待接线/真机界限；23原始目标不变。
 
 全部成员冻结停止写后，根最终核对独立报告30个指纹与三个mutation的精确替换重建散列；30条本批文档本地链接有效、生成页当前03/02与pending状态一致，88个Assets meta GUID有效且唯一。07c稳定副本Runtime DLL实际SHA仍 `caf2331190601b9bddab0ccfbc312fab894baa0c20a9d58a101a208e15d5e061`，未作新Unity构建或冒用旧native通过。只纳入本批24个明确文件，历史3个meta及候选04/Wave B无关项继续保留；暂存空白检查无警告。
 
 本批已**本地提交** `32e118b3e55b74b5f5c80d101812ee865db61c94`：[GitHub提交目标（尚未上传，可能无法访问）](https://github.com/yijunchai2026-gif/AeroSim/commit/32e118b3e55b74b5f5c80d101812ee865db61c94)。随后实际push与ls-remote均exit128：`could not read Username for https://github.com: terminal prompts disabled`。状态仍 **UNPUSHED_AUTH_BLOCKED**，没有成功push或新远端SHA；origin缓存不是证明。前两笔本地 `7a23c00` / `94c0df6` 同样未补上传，本波断点记录也须一起上传。未改仓库可见性/认证设置、未合并main或force-push。
 
 后继先核实际认证与ahead状态，认证恢复后正常Push origin/Fetch origin并独立核远端SHA；不重复本波生成、构建或已完成合同。用户需在GitHub Desktop的AeroSim仓库确认正常登录与仓库权限并执行Push origin；负责人目前不能安全取得终端凭据。继续不依赖外观批准/认证的本地工作时，仍遵守独立QA、冻结、每批提交和实际上传失败记录，不把未上传分支当最终交付。三端正式接线、真机、全缩放/23图与机型逐一确认仍未完成，1.25没有发布。
+
+## 第四批：候选08桌面局部修复（正在独立回归收尾）
+
+2026-10-10 用户再次明确“开始1.25”，从已有08源码/原生结果恢复，不重做旧构建与已完成矩阵。恢复时本地HEAD仍 `2c2597411e94dcaa1fd568b8bf42729dbd2a6aa5`、ahead4，08尚未提交；新一次非交互 `ls-remote` 实际exit128、HTTPS无Username凭据，未补上传旧四笔。账号/仓库权限不修改，不把origin缓存当新远端SHA。额度中断的独立QA/第二美术已接力恢复，无购买额度或reset。
+
+- 页面程序员冻结Pause局部tabIndex=1和Professional Home明确copy宽/自然高，根另修Replay三行分离value/unit；正常Flight/旧HUD保留suffix。五个业务文件及关键基线源冻结在 [08源冻结](../verification/v125-qa/desktop08/candidate08-source-freeze.json)，构建前后10个SHA一致。不缩36/16字号、不隐藏Objective、不修改原23图/旧probe/旧失败。
+- 统一Unity08实际成功，应用仍 **1.0.0开发候选**；未注入app为 `/private/tmp/aerosim-v1-build.z7j0iF/AeroSim.app`，Runtime DLL SHA `0aec831cff961caafa77a38f90bdf0335ff4026b817ccde9fd71b8ed21e99f9f`。07c/07b/06/0.4不覆盖；本批稍后保存独立稳定副本，尚未当最终1.25交付。
+- 同一 [补充探针v1](../verification/v125-qa/desktop08/desktop08-contract-v1.md)：真实07c1440为215/20FAIL、1920为220/15FAIL；08分别215/0、220/0，均0runtime。关闭误入Objective的首Tab/Space、窄列行框和英制/公制三行重复单位，保留旧35FAIL真实证据；不调整字号/行框容差。两视口合计435，不是每视口435，更不是23图验收。
+- 原Space v3在08的1440×900、1920×1080、1280×720均实际1911/0/0runtime，每份各24UNRENDERED单列不计PASS。原Pause/Telemetry844×390实测74/0/0runtime。dynamic v3、Replay typography v2和smoke在此次恢复时仍待完整运行/独立报告收尾，不借07c旧通过；最终本批结果另追加。
+- 两名美术分别实看原图与08首页/Replay两尺寸、Text100/200，保留 **VISUAL_DIFFERENT**。1440/Text100首页叠字、Replay Text100重复单位确已目视关闭；桥任务配海岸、hero高度、CTA宽、首屏密度、场景/图表层级等仍偏离原目标。Text200首屏未出现的遥测/CTA不作目视通过；屏外滚动/点击尚未被本补充验证。见 [Dashboard对照](V125_DESKTOP08_DASHBOARD_VISUAL.md) / [Replay对照](V125_DESKTOP08_REPLAY_VISUAL.md)。正常Flight默认HUD此波未另取新图，不用Pause截图替代。
+- 精选6幅原始PNG字节副本已同步 [PRD25.10](../飞行模拟器产品设计文档.md#2510-第四批候选08桌面局部修复与实际效果)，历史07c修复前/08修复后分开。全量原报告/截图仅本机保留；概念目标和运行截图不混用。
+- 技术负责人 [Gate A候选契约](V125_GATE_A_CONTRACT.md) 已 root 冻结，SHA `f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697`；不是实现/接线/设备通过。修正旧错误路径推断：Unity.app同级 `PlaybackEngines/iOSSupport` 文件确存在，仅 **IOS_MODULE_FILES_PRESENT**；当前 `xcode-select` 仍CommandLineTools，`xcodebuild -version`实际失败，完整active Xcode不可用。Editor target支持/新export/真机均未验证，历史产物不可代签。标准1.16 iOS generic Joystick不等于支持Gamepad，三端需分别验证兼容协议。
+
+恢复后另分配下一批**纯身份解析子集**：实现者只写InputDeviceIdentity新文件与开发者测试，独立QA另写规范化/哈希向量和错误实现测试。它不在已构建08二进制内；其源码即使稍后纯编译通过，也不能套本批native结果。固定布尔依据在 [身份子集补充冻结](../verification/v125-qa/identity-contract-freeze.json)，明确interface与layout两者均非空。未做live registry/碰撞绑定、配置迁移、Unity设备采样或三端UI适配；后继须单独冻结/验证/提交。
+
+## 本轮：PRD冲突重整与Mavic 4 Pro展示（用户直接请求，2026-10-10）
+
+用户要求“检查设计文档前后冲突、重新整理；Mavic Pro展示采用pro4图片”。本轮只推进文档/审核画廊范围，不继续或代签之前未完候选08源码与纯身份实现；用户总体“基本正确”不构成逐机型、revision、真实散列批准。
+
+- 文档修订为v1.6，产品目标仍1.25、实际应用仍1.0.0候选08。第0章为唯一当前合同/阅读索引，第17章三训练工作台与三设备线分开，第18章23原始页面概念图不改，第21–25章保留历史批次/失败。技术成员的23项冲突/歧义见[审查](V125_PRD_CONFLICT_REVIEW.md)；版本/平台、图稿尺寸、输入与校准、暂停/快捷键、返航800ms、单位、地图目标、隐私和发布链接已澄清。
+- root以builtin imagegen全新生成`dji-mavic-4-pro` / draft-01，1536×1024，SHA `efdc1b0d6c5bf307968731e1c5f0afd9f40aa3e4e5a4eb3deb5382e090eaa9ab`，源与项目副本cmp一致。root与独立美术都实际看图、以官方照片作参考；提示词及[独立美术记录](V125_ART_MAVIC4_REFERENCE.md)保留。球形三摄身份可辨，后脚、相机框/轴座、传感窗及跨视图仍未完全一致，pending_user位图不是最终3D。
+- 新图相对路径嵌入PRD0.6，生成画廊为141项目/5机型有current稿/0用户批准；2016 Mavic Pro两个PNG/提示词/完整current manifest行、512GB独立身份不变，目录SHA仍`4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c`。未经用户单独确认不能正式选机飞行。
+- root复跑目录30项及独立checker隔离回归10项，总40 PASS/0 FAIL/0 SKIP；包括错ID、旧图复用、错SHA、自动批准和陈旧画廊拒绝。文档检查（PRD＋六依赖文档、require-tracked）为816检查/0失败、242本地链接，23原图嵌入与字节不变。19个初次冻结指纹逐一吻合；最后按已有probe修正“20秒fixture在第10秒采样”措辞，不冒称新native结果，保留初次freeze并新增[冻结v2](../verification/v125-qa/prd-reorganization-freeze-v2.json)。独立最终报告由[文档QA](V125_PRD_REORGANIZATION_QA.md)另记，root不以自己的复跑替代其签收。
+- PRD已有08六精选PNG和两份已完成视觉差异文档随本次文档依赖纳入；Dashboard原档只作本机索引，不上传全量QA，未完成08独立QA链接不作为交付。Gate A契约候选按已冻结原字节纳入，仅是方案，不是已实现/接线。此前五业务源码、纯身份实现/QA及其他历史未选内容仍未提交，本轮没有Unity新构建、iOS真机、地图接入或最终用户验收。
+- 架构第6章已加勘误：旧错误路径导致“iOSSupport缺失”推断撤回；本轮只读再确认同级模块目录存在和active developer dir为CommandLineTools。不能由此推断Editor target/导出/签名/真机通过，也没有安装/配置系统或购买服务。
+
+本次验证后由root明确选文件本地commit，再实际push/ls-remote。旧ahead4提交尚未补上传，终端认证阻塞仍需新操作验证；此段不预称上传成功。后继从最新Git及本段/QA恢复，不重新生成本轮稿或回滚历史证据；候选08整批QA与三端开发断点继续保留。
+
+独立成员已实际完成v2终验并停止写：816/0文档检查、30/0目录测试、10/0检查器反例、19/19指纹一致；root核对其最终QA文档SHA `ddd3f4552d80164cb3954c82253b1c96ed533eeb246f58b08a1e672c58b50e25`和[紧凑结果](../verification/v125-qa/prd-review/final-results.json) SHA `7cf0b11d3f620a218224ebcb2c9125ffaf90c2faaaff7bdd9e6b0cd2ae4aee32`均吻合。最终PRD SHA `cc72557d8f3fa0bb899495516418908fba811d63d80fa553631a3c87bdbbf1a6`，不把自动文档验收扩展为机体机械准确或产品完成。全工作区旧3个图像meta尾空格未修、不纳入；本批暂存空白检查通过。
 
 ## 团队和文件边界
 
@@ -99,6 +128,11 @@
 | 第三波触点程序员 | 三端共享双杆纯触点所有权与开发者自测 | TouchInputState.cs/.meta、TouchInputStateDeveloperTests.cs、开发runner及V125_TOUCH_IMPLEMENTATION.md |
 | 第三波独立QA | 另写参考状态机、错误实现负例及当前图稿门禁 | 新独立触点tests/runner/summary、V125_TOUCH_QA.md |
 | 第三波两名美术 | 原版Inspire/Mavic局部修订，保留旧稿，逐机型待确认 | 各自inspire/mavic资产目录与专项美术文档 |
+| 第四波电脑页面程序员/根整合 | Pause意图焦点、首页copy、Replay独立单位 | FlightDesignV1.cs、Product/Responsive.uss；根独占Flight.cs/Pages.cs |
+| 第四波独立QA | 07c→08同probe对照、旧Space/Pause/dynamic/Replay保护、compact证据 | desktop08新probe/contract/summary、V125_DESKTOP08_QA.md，不改原工具 |
+| 第四波技术负责人 | Gate A raw/身份/旁路事务精确候选及真实依赖边界 | V125_GATE_A_CONTRACT.md，只读其他源码/本机SDK |
+| 第四波两名UI美术 | 原图与08实际Dashboard、Replay质性对照，不代签像素验收 | V125_DESKTOP08_DASHBOARD_VISUAL.md、V125_DESKTOP08_REPLAY_VISUAL.md |
+| 下一波纯身份程序员/独立QA | descriptor解析首子集；独立预期和mutation在冻结后接力 | InputDeviceIdentity新文件、identity开发/独立tests各自互斥、专项实现/QA文档 |
 
 并发上限四个运行成员，角色按波次接力，不并行争用 Unity 构建。后续设备程序员/QA 按技术审查分配，跨线支援由根负责人记录交接。
 
@@ -106,8 +140,8 @@
 
 1. 对账目录历史/地区/硬件缺口，继续按官方材料补齐；132+9 是当前待确认清单，不标成完整闭合。
 2. 等用户逐机型看初稿、提交确认或修改意见；其他美术继续按机型制作。程序与美术不得批量代确认或默认接受。
-3. 最新字体源码/构建为07c，完成最后Replay入口对照和本批交付后按输入接线Gate A–D推进；1440桌面布局/焦点缺口、完整缩放矩阵和23原图视觉仍需修。历史失败与原图不删除。三端实际接线还未完成，方案不是实测。
-4. 安装/确认当前 Unity iOS Support 和 Xcode 后再导出/真机；当前技术检查发现这些依赖缺失，历史导出不可替代本版本验证。
+3. 当前最新已构建08，先完成本批剩余原生保护与独立QA/提交；之后按输入Gate A–D推进，纯身份新源不可冒用08通过。局部1440焦点/行框已修，完整缩放矩阵与23原图视觉未关闭。历史失败与原图保留，三端正式接线仍未完成。
+4. 已修正历史“iOS模块缺失”的错误位置检查：实际模块文件存在，但Editor target可用性未验；完整active Xcode当前不可用。后继先确认工具链，再新export/真机；历史导出不可替代本版本验证，不自动安装/改developer目录或签名账号。
 5. 审核稿逐机型获得用户确认后才可制作/接入最终资产；共享核心与设备端其他工作不因此暂停。
 6. 达到三端可交付候选后提供链接，停改等待用户验收。
 
