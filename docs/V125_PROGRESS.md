@@ -126,6 +126,8 @@
 
 追加自身QA文档后，root与独立成员分别只读复查同一扩大范围：PRD＋4报告＋QA文档1142检查/0失败、351处本地文件链接、未发布依赖0，暂存空白检查exit0；不覆盖原四报告1075/0的冻结证据。独立成员已停止写入，源与报告保持冻结。
 
+本轮9个明确文件已本地提交为 `3ed9fa87c847fb280c31170ee3a3c3a7e1264063`：[调研提交目标（尚未上传，可能无法访问）](https://github.com/yijunchai2026-gif/AeroSim/commit/3ed9fa87c847fb280c31170ee3a3c3a7e1264063)。实际非交互push及随后新的ls-remote均exit128：`could not read Username for 'https://github.com': terminal prompts disabled`。本批状态为 **UNPUSHED_AUTH_BLOCKED**，无法取得新远端SHA，旧origin缓存不作上传证明。未改GitHub账号/可见性/安全设置、未读取或绕过凭据；认证恢复后应正常Push origin并核对远端分支，不重新调研或覆盖既存未选代码。此真实上传回执另作本地提交并再实际重试一次；若认证仍阻塞，停止同状态重试并向用户说明。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
