@@ -3,7 +3,7 @@
 ## 用户要求的交付流程
 
 - 每次代码更新后，先做与改动风险相称的验证，再提交并推送到本仓库 GitHub。纯文档和效果图更新同样提交、推送。
-- 仓库地址：`https://github.com/yijunchai2026-gif/AeroSim`（私有）。完成回复必须给出 GitHub 地址及本次具体 commit 链接；使用修复分支时同时给分支链接。
+- 仓库地址：`https://github.com/yijunchai2026-gif/AeroSim`（公开；用户于2026-10-10要求，已实际核验）。完成回复必须给出 GitHub 地址及本次具体 commit 链接；使用修复分支时同时给分支链接。
 - 不只做本地 commit 就声称已上传；检查 push 成功和远端分支 SHA。若认证、网络或权限阻塞，清楚报告本地提交与未完成的 push，不隐藏失败。
 - 未得到用户明确许可，不合并修复分支到 `main`、不 force-push、不替用户确认 milestone。默认新分支使用 `codex/` 前缀。
 - 0.4 UI 修复保留在 `codex/v04-ui-proportions`。2026-10-08 用户明确要求推进 1.0，新工作分支为 `codex/v1-design-parity`；保留原 0.4 源码分支和可运行应用，不覆盖它们、不另造 0.5。

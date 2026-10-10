@@ -128,6 +128,17 @@
 
 本轮9个明确文件已本地提交为 `3ed9fa87c847fb280c31170ee3a3c3a7e1264063`：[调研提交目标（尚未上传，可能无法访问）](https://github.com/yijunchai2026-gif/AeroSim/commit/3ed9fa87c847fb280c31170ee3a3c3a7e1264063)。实际非交互push及随后新的ls-remote均exit128：`could not read Username for 'https://github.com': terminal prompts disabled`。本批状态为 **UNPUSHED_AUTH_BLOCKED**，无法取得新远端SHA，旧origin缓存不作上传证明。未改GitHub账号/可见性/安全设置、未读取或绕过凭据；认证恢复后应正常Push origin并核对远端分支，不重新调研或覆盖既存未选代码。此真实上传回执另作本地提交并再实际重试一次；若认证仍阻塞，停止同状态重试并向用户说明。
 
+## GitHub认证恢复与八笔补上传（2026-10-10）
+
+用户明确要求公开仓库、登录并上传，并单独确认GitHub官方CLI的仓库/组织/Gist权限及本机登录凭据保存。网页与CLI均实际确认账号为 `yijunchai2026-gif`；官方CLI标准状态为keyring保存，API确认仓库public、当前账号push权限true。没有输出或提交访问令牌，没有把浏览器会话凭据取出给Git使用；原GitHub连接器账号未被切换，上传走此次独立授权的官方CLI。
+
+- 从 `6b47aac516c7f5113cec82fc4beb4357467d5942` 正常推送到 `dc14fc0a0c5f91be9285fd0b6dacc54dfb55e9d3`，原8笔历史完整保留：`7a23c00`、`94c0df6`、`32e118b`、`2c25974`、`e5519fa`、`241aa54`、`3ed9fa8`、`dc14fc0`。[已上传内容及历史](https://github.com/yijunchai2026-gif/AeroSim/commit/dc14fc0a0c5f91be9285fd0b6dacc54dfb55e9d3)，[开发分支](https://github.com/yijunchai2026-gif/AeroSim/tree/codex/v125-product-lines)。上文UNPUSHED为当时的真实结果，认证阻塞现已解除，不能继续把这8笔标为尚未上传。
+- 首次认证后的push出现HTTP400/sideband断连，exit1；虽末行出现Everything up-to-date，新的ls-remote仍为旧SHA，故未判上传成功。待发176个对象未压缩合计20,865,219字节；只对重试命令使用HTTP/1.1及33,554,432字节postBuffer，TLS校验不变。第二次push实际exit0；随后独立ls-remote的开发分支SHA精确等于本地HEAD `dc14fc0a0c5f91be9285fd0b6dacc54dfb55e9d3`。
+- 远端main仍 `07a9f091ebd24d37e8889a94f286c11237168d46`；没有合并main、force-push、改默认分支或替用户确认机型。8笔原验证证据不重做、不升级为新native/iOS/视觉验收。未选的08业务源码、纯身份子集、旧meta/04/Wave B及原QA产物仍留工作区，没有因上传混入半成品。1.25仍是未交付开发目标。
+- 本轮仅同步本记录与AGENTS的公开状态说明，验证后另作交付回执提交/推送，最后再次核对远端SHA；不修改任何产品代码或图稿。
+
+后继推送需使用标准CLI凭据助手，而不是把公开仓库当成无需认证。本机官方CLI 2.102.0暂存在 `/private/tmp/aerosim-github-cli.IeTEyI/gh_2.102.0_macOS_arm64/bin/gh`，发行zip SHA256已与官方digest `da922c20d1792e5b2cbf375593d7a658acf034c12c84e007e71c76ef959c337e` 一致。运行时 `GH_CONFIG_DIR=/private/tmp/aerosim-github-cli.IeTEyI/auth`，配置不在仓库内，凭据在keyring；通过该CLI的 `auth git-credential` 作为本次Git命令的helper，未改系统全局Git helper。临时目录若失效应按官方流程恢复工具/登录，不读令牌、不把认证文件纳入提交、不绕过Keychain或登录保护。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
