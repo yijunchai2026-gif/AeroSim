@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-10-10T20:28:56.445Z",
+  "scope": "Four research reports plus source guard, not build freeze",
+  "files": [
+    {
+      "file": "docs/V125_UX_UI_OPTIMIZATION_RESEARCH.md",
+      "sha256": "5d2fd6f98fdb3a7f92dac341c33bb65d7356e0a59438b98160e3472765c971f0"
+    },
+    {
+      "file": "docs/V125_UX_FLOW_AUDIT.md",
+      "sha256": "562320981494bc546f6664b18542b3021b4009801e524b3755b38ef0c101b7bf"
+    },
+    {
+      "file": "docs/V125_UI_MOBILE_AUDIT.md",
+      "sha256": "4ce49b8d70e04c285c9ac84e7cfe2853d9a7f6c4c69ce103622bc55873ccc547"
+    },
+    {
+      "file": "docs/V125_SCENE_REALISM_AUDIT.md",
+      "sha256": "a2d3ed25cbafa80960da5dd9aeb415066b13a8dc1d670018d8281ddc337cfa67"
+    },
+    {
+      "file": "verification/v125-qa/ux-ui-research-baseline.json",
+      "sha256": "41b0cea2eb07d4ab00b75e6825f319ef2820c866696ee5401545dae46fbe5f3d"
+    }
+  ]
+}

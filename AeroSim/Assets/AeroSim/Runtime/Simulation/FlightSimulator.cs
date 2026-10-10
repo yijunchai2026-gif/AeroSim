@@ -7,6 +7,28 @@ using UnityEngine.InputSystem;
 
 namespace AeroSim.Simulation
 {
+    public sealed class PhotoCaptureRequest
+    {
+        public SessionRecord Record { get; }
+        public Camera Camera { get; }
+        public PhotoEvidence Evidence { get; }
+        public string SessionId { get; }
+        public string FileName { get; }
+        public Vector3 CameraPosition { get; }
+        public Quaternion CameraRotation { get; }
+        public float CameraFieldOfView { get; }
+        public int TargetIndex { get; }
+        internal FlightSimulator Owner { get; }
+        internal PhotoCaptureRequest(FlightSimulator owner, SessionRecord record, Camera camera, PhotoEvidence evidence)
+        {
+            Owner = owner;
+            Record = record; Camera = camera; Evidence = evidence;
+            SessionId = record.id; FileName = evidence.fileName; TargetIndex = evidence.targetIndex;
+            CameraPosition = camera.transform.position; CameraRotation = camera.transform.rotation;
+            CameraFieldOfView = camera.fieldOfView;
+        }
+    }
+
     public sealed partial class FlightSimulator : MonoBehaviour
     {
         public FlightConfig Config { get; private set; }
@@ -33,6 +55,7 @@ namespace AeroSim.Simulation
         public event Action<SessionRecord> Finished;
         public event Action<string> Notice;
         public event Action PauseRequested;
+        public event Action<PhotoCaptureRequest> PhotoCaptureRequested;
 
         private GameObject _world;
         private Transform _visual;
@@ -62,7 +85,7 @@ namespace AeroSim.Simulation
 
         public void BeginReplay(SessionRecord record)
         {
-            Begin(record.config??new FlightConfig {title=record.title,environment=record.environment,workspace=record.workspace,mode=record.mode});
+            Begin(record.config??new FlightConfig {title=record.title,aircraft=record.aircraft,environment=record.environment,workspace=record.workspace,mode=record.mode});
             Record=record; ReplayMode=true; Body.isKinematic=true; ReplayTime=0; ReplayPlaying=false; Seek(0);
         }
 
@@ -98,10 +121,50 @@ namespace AeroSim.Simulation
                 if(targets==null || GateIndex>=targets.Count) { Notice?.Invoke("All inspection targets captured."); return false; }
                 if(Vector3.Distance(Position,targets[GateIndex])>18) { Notice?.Invoke("Move within 59 ft of the highlighted inspection target."); return false; }
                 if(Vector3.Distance(Position,targets[GateIndex])<Config.mission.safeDistance) { Notice?.Invoke("Too close: respect the mission safe-distance setting."); return false; }
-                GateIndex++;
-                HighlightTarget();
             }
-            Record.photos++; Event("capture","Training photograph "+Record.photos); Notice?.Invoke("Capture saved to the session timeline."); return true;
+            if (View == null || Record == null) { Notice?.Invoke("The simulator camera is unavailable. Capture was not saved."); return false; }
+            Record.photoEvidence ??= new List<PhotoEvidence>();
+            int sequence = Record.photoEvidence.Count + 1;
+            bool hasTarget = Config.professional && Config.mission != null;
+            var target = hasTarget ? Config.mission.targets[GateIndex] : Vector3.zero;
+            string captureId = Guid.NewGuid().ToString("N");
+            var evidence = new PhotoEvidence
+            {
+                id = captureId, sessionId = Record.id, fileName = Record.id + "-photo-" + sequence + "-" + captureId + ".png",
+                sequence = sequence, time = Elapsed, capturedUtc = DateTime.UtcNow.ToString("O"),
+                hasTarget = hasTarget, missionId = hasTarget ? Config.mission.id : "", targetIndex = hasTarget ? GateIndex : -1,
+                targetName = hasTarget && Config.mission.targetNames != null && GateIndex < Config.mission.targetNames.Count ? Config.mission.targetNames[GateIndex] : hasTarget ? "Target " + (GateIndex + 1) : "",
+                aircraftPosition = Position, aircraftRotation = Body == null ? Vector3.zero : Body.rotation.eulerAngles,
+                cameraPosition = View.transform.position, cameraRotation = View.transform.eulerAngles, targetPosition = target,
+                targetDistance = hasTarget ? Vector3.Distance(Position, target) : 0,
+                targetFacingAngle = hasTarget ? Vector3.Angle(View.transform.forward, target - View.transform.position) : 0
+            };
+            Record.photoEvidence.Add(evidence);
+            var request = new PhotoCaptureRequest(this, Record, View, evidence);
+            try
+            {
+                if (PhotoCaptureRequested == null) CompletePhotoCapture(request, false, "No photo evidence writer is connected.");
+                else PhotoCaptureRequested.Invoke(request);
+            }
+            catch (Exception ex) { CompletePhotoCapture(request, false, "Capture writer failed: " + ex.Message); }
+            return evidence.status == "saved";
+        }
+        public void CompletePhotoCapture(PhotoCaptureRequest request, bool saved, string failureReason = "")
+        {
+            if (request?.Evidence == null || request.Evidence.status != "pending") return;
+            var evidence = request.Evidence;
+            evidence.status = saved ? "saved" : "failed";
+            evidence.failureReason = saved ? "" : failureReason ?? "Capture could not be saved.";
+            if (saved)
+            {
+                evidence.width = 1280; evidence.height = 720;
+                request.Record.photos++;
+                request.Record.events.Add(new FlightEvent { time = evidence.time, kind = "capture", message = "Training photograph " + evidence.sequence + " saved" + (evidence.hasTarget ? " · " + evidence.targetName : ""), photoEvidenceId = evidence.id });
+                if (Record == request.Record && evidence.hasTarget && GateIndex == request.TargetIndex)
+                { GateIndex++; HighlightTarget(); }
+            }
+            else request.Record.events.Add(new FlightEvent { time = evidence.time, kind = "capture-failed", message = "Training photograph " + evidence.sequence + " failed: " + evidence.failureReason, photoEvidenceId = evidence.id });
+            if (Record == request.Record) Notice?.Invoke(saved ? "Capture saved to the session timeline." : "Capture was not saved. " + evidence.failureReason);
         }
         public void Finish()
         {
@@ -125,12 +188,12 @@ namespace AeroSim.Simulation
             Body.position=Vector3.Lerp(a.position,b.position,t); Body.rotation=Quaternion.Slerp(Quaternion.Euler(a.rotation),Quaternion.Euler(b.rotation),t);
             Battery=Mathf.Lerp(a.battery,b.battery,t); CurrentInput=Vector4.Lerp(a.input,b.input,t);
         }
-        public void Stop() { Running=false; CleanWorld(); }
+        public void Stop() { Running=false; ReplayMode=false; ReplayPlaying=false; CleanWorld(); }
         public void Event(string kind,string message) => Record?.events.Add(new FlightEvent {time=Elapsed,kind=kind,message=message});
 
         private void Update()
         {
-            if(!Running && !ReplayMode) return;
+            if(Body==null || (!Running && !ReplayMode)) return;
             if(ReplayMode)
             {
                 if(ReplayPlaying) { Seek(ReplayTime+Time.unscaledDeltaTime*ReplaySpeed); if(ReplayTime>=Record.duration) ReplayPlaying=false; }
@@ -271,9 +334,13 @@ namespace AeroSim.Simulation
         {
             var drone=new GameObject("Aircraft"); drone.transform.SetParent(_world.transform); drone.transform.position=new Vector3(0,.65f,0);
             Body=drone.AddComponent<Rigidbody>(); Body.mass=.8f; Body.useGravity=true; Body.interpolation=RigidbodyInterpolation.Interpolate; Body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic; Body.maxAngularVelocity=30;
-            var collider=drone.AddComponent<BoxCollider>(); collider.size=new Vector3(.9f,.3f,.9f); drone.AddComponent<CollisionRelay>().simulator=this;
+            var collider=drone.AddComponent<BoxCollider>(); drone.AddComponent<CollisionRelay>().simulator=this;
             _visual=new GameObject("Aircraft Visual").transform; _visual.SetParent(drone.transform,false);
             BuildAircraftVisuals();
+            var renderers=_visual.GetComponentsInChildren<Renderer>();
+            var bounds=renderers[0].bounds;
+            foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+            collider.size=bounds.size;collider.center=drone.transform.InverseTransformPoint(bounds.center);
             _audio=drone.AddComponent<AudioSource>(); _audio.loop=true;
             var clip=AudioClip.Create("Rotor hum",22050,1,22050,false); var samples=new float[22050];
             for(int i=0;i<samples.Length;i++) samples[i]=(Mathf.Sin(i*2*Mathf.PI*110/22050)*.4f+Mathf.Sin(i*2*Mathf.PI*220/22050)*.15f)*.2f;
@@ -313,18 +380,21 @@ namespace AeroSim.Simulation
             if(View==null||Body==null) return;
             if(ChaseView)
             {
-                var behind=Body.rotation*new Vector3(0,3,-7); var desired=Position+behind;
+                float distance=AircraftCatalog.Resolve(Config.aircraft).ChaseDistance;
+                var behind=Body.rotation*new Vector3(0,distance*.43f,-distance); var desired=Position+behind;
                 View.transform.position=LocalStore.Profile.settings.reducedMotion?desired:Vector3.Lerp(View.transform.position,desired,1-Mathf.Exp(-Time.unscaledDeltaTime*8));
-                View.transform.LookAt(Position+Body.rotation*Vector3.forward*5);
+                View.transform.LookAt(Position+Body.rotation*Vector3.forward*distance*.6f);
             }
             else
             {
-                View.transform.position=Position+Body.rotation*new Vector3(0,.13f,.6f);
+                float size=AircraftCatalog.Resolve(Config.aircraft).VisualScale;
+                View.transform.position=Position+Body.rotation*new Vector3(0,size*.03f,size*.60f);
                 View.transform.rotation=Body.rotation*Quaternion.Euler(-LocalStore.Profile.settings.cameraAngle,0,0);
             }
         }
         private void CleanWorld()
         {
+            _rotors.Clear();_visual=null;
             if(_world!=null) { _world.SetActive(false); Destroy(_world); }
             if(_audio?.clip!=null) Destroy(_audio.clip);
             foreach(var m in _materials) if(m!=null) Destroy(m); _materials.Clear(); Body=null; View=null; _audio=null;

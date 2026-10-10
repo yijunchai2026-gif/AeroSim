@@ -21,4 +21,10 @@
 /verification/**/report.json
 /verification/**/failures.json
 
+# Intermediate 2026-10-07 QA iterations are retained locally, not published as release evidence.
+/verification/ui-scale-qa-v04-ui-fix-20261007/
+/verification/ui-scale-qa-v04-ui-fix-20261007-final/
+/verification/ui-scale-qa-v04-ui-fix-20261007-verified/
+/verification/ui-scale-qa-v04-ui-fix-20261007-release/*/summary.txt
+
 # Unity cache, builds, and user settings are covered by AeroSim/.gitignore.

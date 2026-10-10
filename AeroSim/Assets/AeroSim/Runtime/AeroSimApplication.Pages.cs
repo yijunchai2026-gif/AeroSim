@@ -39,6 +39,8 @@ namespace AeroSim
 
         public void ShowPage(Page page)
         {
+            ReleaseDesignReplayView();
+            ReleaseHangarPreviews();
             if (_sim != null && (page != Page.Flight && page != Page.Replay)) _sim.Stop();
             _calibrating = page == Page.Controller && _calibrating;
             _axisLabels = null;
@@ -51,20 +53,20 @@ namespace AeroSim
 
         private VisualElement BuildPage(Page page) => page switch
         {
-            Page.Home => _workspace == TrainingWorkspace.Aerial ? BuildAerialHome() : WorkspaceHome(),
-            Page.Onboarding => Onboarding(), Page.Controller => ControllerPage(), Page.Academy => Academy(),
-            Page.FreeFlight => FreeFlight(), Page.Challenges => Challenges(), Page.Hangar => Hangar(),
-            Page.Tuning => Tuning(), Page.OsdEditor => OsdEditor(), Page.Dashboard => WorkspaceHome(),
-            Page.Catalog => Catalog(), Page.Brief => Brief(), Page.Preflight => Preflight(),
-            Page.MissionEditor => MissionEditor(), Page.Instructor => Instructor(), Page.Readiness => Readiness(),
-            Page.Settings => Settings(), Page.Records => Records(), Page.Results => Results(),
-            Page.Report => Report(), _ => FreeFlight()
+            Page.Home => _workspace == TrainingWorkspace.Aerial ? BuildAerialHome() : _workspace == TrainingWorkspace.Fpv ? DesignFpvHome() : DesignDashboard(),
+            Page.Onboarding => DesignOnboarding(), Page.Controller => DesignController(), Page.Academy => DesignAcademy(),
+            Page.FreeFlight => DesignFreeFlight(), Page.Challenges => DesignChallenges(), Page.Hangar => Hangar(),
+            Page.Tuning => DesignTuning(), Page.OsdEditor => DesignOsdEditor(), Page.Dashboard => DesignDashboard(),
+            Page.Catalog => DesignCatalog(), Page.Brief => DesignBrief(), Page.Preflight => DesignPreflight(),
+            Page.MissionEditor => DesignMissionEditor(), Page.Instructor => DesignInstructor(), Page.Readiness => DesignReadiness(),
+            Page.Settings => DesignSettings(), Page.Records => Records(), Page.Results => DesignResults(),
+            Page.Report => DesignReport(), _ => DesignFreeFlight()
         };
 
         private Button RouteButton(string icon, string title, Page page)
         {
             var b = new Button(() => ShowPage(page));
-            b.AddToClassList("nav-button"); b.Add(Text(icon,"nav-icon")); b.Add(Text(title,"nav-label"));
+            b.AddToClassList("nav-button"); var vectorIcon = DesignIcon(NavigationIcon(title)); vectorIcon.AddToClassList("nav-icon"); b.Add(vectorIcon); b.Add(Text(title,"nav-label"));
             if (_page == page) b.AddToClassList("nav-button-selected"); return b;
         }
         private static Button ActionButton(string title, Action action, bool primary = false)
@@ -94,11 +96,22 @@ namespace AeroSim
         private static void Range(VisualElement parent, string label, float low, float high, float value, Action<float> changed)
         {
             var f = new Slider(label, low, high) { value = value, showInputField = true }; f.AddToClassList("product-field");
+            f.AddToClassList("design-range-field");
+            // Slider creates a TextField for showInputField in Unity 6, not a FloatField.
+            // Style the actual editable text node rather than an unrelated outer box.
+            VisualElement numeric = f.Q<TextField>();
+            numeric ??= f.Q<FloatField>();
+            if (numeric != null)
+            {
+                numeric.AddToClassList("design-range-number");
+                foreach (var text in numeric.Query<TextElement>().ToList()) text.AddToClassList("design-range-value");
+            }
             f.RegisterValueChangedCallback(e => changed(e.newValue)); parent.Add(f);
         }
         private static void Check(VisualElement parent, string label, bool value, Action<bool> changed)
         {
-            var f = new Toggle(label) { value = value }; f.AddToClassList("product-field"); f.RegisterValueChangedCallback(e => changed(e.newValue)); parent.Add(f);
+            var f = new Toggle(label) { value = value }; f.AddToClassList("product-field"); f.AddToClassList("design-check-field");
+            f.RegisterValueChangedCallback(e => changed(e.newValue)); parent.Add(f);
         }
         private static void Field(VisualElement parent, string label, string value, Action<string> changed)
         {
@@ -275,18 +288,19 @@ namespace AeroSim
             card.Add(Text("Input: " + (_inputCapabilities?.PrimaryDeviceLabel ?? "Keyboard / Touch") + "\nPause: Esc / Start / Pause button\nTraining boundary: 394 ft altitude · 755 ft radius", "muted", "wrap"));
             card.Add(Row(ActionButton("Controller Setup", () => ShowPage(Page.Controller)), start)); s.Add(card); return s;
         }
-        private FlightConfig MissionConfig(MissionDefinition m) => new() { title = m.title, workspace = "Professional", environment = m.environment, professional = true, mission = m, windMph = m.windMph, rthAltitude = m.rthAltitude, task = "inspection", objective = "Capture all " + m.targets.Count + " inspection targets in order." };
+        private FlightConfig MissionConfig(MissionDefinition m) => new() { title = m.title, aircraft = AircraftCatalog.Selected.Name, workspace = "Professional", environment = m.environment, professional = true, mission = m, windMph = m.windMph, rthAltitude = m.rthAltitude, task = "inspection", objective = "Capture all " + m.targets.Count + " inspection targets in order." };
 
         private VisualElement FreeFlight()
         {
             _mission = null;
-            _config = new FlightConfig { workspace = WorkspaceName, aircraft = _workspace == TrainingWorkspace.Fpv ? "5-inch Racer" : LocalStore.Profile.selectedAircraft, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
+            _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
             var config = _config;
             var s = Canvas(WorkspaceName + " / Free Flight", "Make the sky your practice space.", "Configure a local training environment. Settings below affect the next flight.");
             var card = Panel("Flight setup", "Procedural practice maps — not photorealistic scans or DJI hardware models.");
             var image = Element("scene-banner"); SetBackground(image, "Art/CoastHero"); card.Add(image);
             Choice(card, "Environment", new[] { "Pacific Coast", "Desert Range", "City Park", "Warehouse" }, config.environment, v => config.environment = v);
-            Choice(card, "Aircraft", new[] { "Camera Drone", "5-inch Racer", "Micro Trainer" }, config.aircraft, v => config.aircraft = v);
+            Choice(card, "Aircraft", AircraftCatalog.Names, config.aircraft, v => { config.aircraft = v; LocalStore.Profile.selectedAircraft = AircraftCatalog.Resolve(v).Id; LocalStore.Save(); });
+            card.Add(ActionButton("Browse Aircraft in Hangar", () => ShowPage(Page.Hangar)));
             Choice(card, "Flight mode", new[] { "Normal", "Sport", "Manual" }, config.mode, v => config.mode = v);
             Choice(card, "Weather", new[] { "Clear", "Overcast" }, config.weather, v => config.weather = v);
             Range(card, "Wind (mph)", 0, 25, config.windMph, v => config.windMph = v);
@@ -306,23 +320,11 @@ namespace AeroSim
                 var best = LocalStore.Sessions().Where(r => r.courseId == "race-" + map && r.passed).OrderBy(r => r.duration).FirstOrDefault();
                 var p = Panel(map + " Circuit", "6 gates · " + (best == null ? "No completed lap yet" : "Personal best " + Duration(best.duration)));
                 p.Add(Text("The current MVP shares a six-gate route across four environments. Try assisted flight before switching to manual.", "wrap", "muted"));
-                p.Add(ActionButton("Start Challenge", () => StartFlight(new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = _workspace == TrainingWorkspace.Fpv ? "5-inch Racer" : "Camera Drone", mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." }), true)); grid.Add(p);
+                p.Add(ActionButton("Start Challenge", () => StartFlight(new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." }), true)); grid.Add(p);
             }
             s.Add(grid); return s;
         }
-        private VisualElement Hangar()
-        {
-            var s = Canvas("Aircraft / Hangar", "Choose your training platform.", "Generic training aircraft. No DJI trademarks, firmware, or proprietary aerodynamic data are included.");
-            var grid = Element("product-grid");
-            foreach (string aircraft in new[] { "Camera Drone", "5-inch Racer", "Micro Trainer" })
-            {
-                var p = Panel(aircraft, LocalStore.Profile.selectedAircraft == aircraft ? "SELECTED" : "Available");
-                p.Add(Text(aircraft == "5-inch Racer" ? "FPV camera · Manual rate control · Tunable response" : "Assisted hover · Return-to-Home · Chase camera", "wrap"));
-                p.Add(Text("Aircraft profiles currently share a simplified rigidbody model. Tuning changes rate, expo and thrust-to-weight.", "wrap", "muted"));
-                p.Add(ActionButton("Select Aircraft", () => { LocalStore.Profile.selectedAircraft = aircraft; LocalStore.Save(); ShowPage(Page.Hangar); }, true)); grid.Add(p);
-            }
-            s.Add(grid); s.Add(ActionButton("Open Tuning", () => ShowPage(Page.Tuning))); return s;
-        }
+        private VisualElement Hangar() => BuildHangarPage();
         private VisualElement Tuning()
         {
             var settings = LocalStore.Profile.settings;
@@ -354,13 +356,15 @@ namespace AeroSim
         }
         private static void OsdToken(VisualElement preview, string text, Vector2 position, Action<Vector2> changed)
         {
-            var token = Text(text, "osd-token"); token.style.left = UnityEngine.UIElements.Length.Percent(position.x * 100); token.style.top = UnityEngine.UIElements.Length.Percent(position.y * 100); preview.Add(token);
+            var token = Text(text, "osd-token"); token.userData = position; preview.Add(token);
+            token.RegisterCallback<GeometryChangedEvent>(_ => LayoutOsdPreview(preview));
+            preview.RegisterCallback<GeometryChangedEvent>(_ => LayoutOsdPreview(preview));
             bool dragging = false;
             token.RegisterCallback<PointerDownEvent>(e => { dragging = true; token.CapturePointer(e.pointerId); e.StopPropagation(); });
             token.RegisterCallback<PointerMoveEvent>(e =>
             {
                 if (!dragging) return; var local = preview.WorldToLocal(e.position); var pos = new Vector2(Mathf.Clamp(local.x / preview.resolvedStyle.width, .02f, .78f), Mathf.Clamp(local.y / preview.resolvedStyle.height, .02f, .88f));
-                token.style.left = UnityEngine.UIElements.Length.Percent(pos.x * 100); token.style.top = UnityEngine.UIElements.Length.Percent(pos.y * 100); changed(pos);
+                token.userData = pos; LayoutOsdPreview(preview); changed(pos);
             });
             token.RegisterCallback<PointerUpEvent>(e => { dragging = false; token.ReleasePointer(e.pointerId); });
         }
@@ -430,7 +434,9 @@ namespace AeroSim
             var s = LocalStore.Profile.settings;
             Application.targetFrameRate = s.targetFps;
             QualitySettings.vSyncCount = 0; QualitySettings.SetQualityLevel(Mathf.RoundToInt(Mathf.Clamp(s.quality,0,2) * (QualitySettings.names.Length-1) / 2f));
-            _root.EnableInClassList("high-contrast", s.highContrast); _root.EnableInClassList("large-text", s.textScale > 1.1f);
+            _root.EnableInClassList("high-contrast", s.highContrast);
+            _root.RemoveFromClassList("large-text");
+            RefreshUiPreferences();
             Time.fixedDeltaTime = .005f;
         }
         private VisualElement Settings()
@@ -444,11 +450,15 @@ namespace AeroSim
             Choice(p, "Quality", new[] { "Low", "Medium", "High" }, new[] { "Low", "Medium", "High" }[Mathf.Clamp(settings.quality, 0, 2)], v => settings.quality = v == "Low" ? 0 : v == "Medium" ? 1 : 2);
             Range(p, "Motor sound volume", 0, 1, settings.volume, v => settings.volume = v);
             Check(p, "High-contrast interface", settings.highContrast, v => settings.highContrast = v);
-            Check(p, "Larger UI text", settings.textScale > 1.1f, v => settings.textScale = v ? 1.2f : 1);
+            Choice(p, "UI Scale", new[] { "Auto", "80%", "90%", "100%", "110%", "125%", "150%" }, settings.uiScale ?? "Auto", v => { settings.uiScale = v; SaveUiPreferences(); });
+            Choice(p, "HUD Scale", new[] { "Auto", "80%", "90%", "100%", "110%", "125%", "150%" }, settings.hudScale ?? "100%", v => { settings.hudScale = v; SaveUiPreferences(); });
+            Choice(p, "Text Size", new[] { "100%", "125%", "150%", "200%" }, Mathf.RoundToInt(settings.textScale * 100) + "%", v => { settings.textScale = int.Parse(v.TrimEnd('%')) / 100f; SaveUiPreferences(); });
+            p.Add(Text("Changes preview instantly and save locally. Menu and HUD scales are independent. Enlarged text reflows; long panels scroll.", "muted", "wrap"));
+            Check(p, "Show touch controls on desktop", settings.showTouchControls, v => { settings.showTouchControls = v; SaveUiPreferences(); });
             Check(p, "Reduce camera smoothing", settings.reducedMotion, v => settings.reducedMotion = v);
             Check(p, "Show control guidance", settings.showControls, v => settings.showControls = v);
             p.Add(Row(ActionButton("Save Settings", () => { LocalStore.Save(); ApplySettings(); ShowToast("Settings saved."); }, true), ActionButton("Controller Setup", () => ShowPage(Page.Controller)), ActionButton("Run Setup Again", () => { _onboardStep = 0; ShowPage(Page.Onboarding); })));
-            p.Add(Text("AeroSim 0.2 · Offline functional MVP\nStorage: " + LocalStore.DirectoryPath + "\nNo telemetry leaves this device. Training data is not an FAA certificate.", "muted", "wrap"));
+            p.Add(Text("AeroSim " + Application.version + " · Offline training\nStorage: " + LocalStore.DirectoryPath + "\nNo telemetry leaves this device. Training data is not an FAA certificate.", "muted", "wrap"));
             s.Add(p); return s;
         }
 
@@ -486,10 +496,23 @@ namespace AeroSim
             p.Add(Text(r.feedback, "wrap"));
             foreach (var e in r.events) p.Add(Text(Duration(e.time) + "   " + e.kind.ToUpperInvariant() + "   " + e.message, "event-row", "wrap"));
             var notes = new TextField("Instructor notes") { value = r.instructorNote, multiline = true }; notes.AddToClassList("product-field"); notes.RegisterValueChangedCallback(e => r.instructorNote = e.newValue); p.Add(notes);
-            p.Add(Row(ActionButton("Save Notes", () => { File.WriteAllText(Path.Combine(LocalStore.DirectoryPath, r.id + ".json"), JsonUtility.ToJson(r)); ShowToast("Instructor notes saved."); }), ActionButton("Export Printable Report", () => { var path = LocalStore.ExportReport(r); ShowToast("Report exported. Use browser Print / Save as PDF."); OpenExport(path); }, true), ActionButton("Export CSV", () => ExportCsv(r)), ActionButton("Replay Evidence", () => BeginReplay(r))));
+            p.Add(Row(ActionButton("Save Notes", () => SaveReportNotes(r)), ActionButton("Export Printable Report", () => ExportPrintableReport(r), true), ActionButton("Export CSV", () => ExportCsv(r)), ActionButton("Replay Evidence", () => BeginReplay(r))));
             s.Add(p); return s;
         }
-        private void ExportCsv(SessionRecord r) { var path = LocalStore.ExportCsv(r); ShowToast("Telemetry exported: " + path); OpenExport(path); }
+        private void SaveReportNotes(SessionRecord record)
+        {
+            try { LocalStore.SaveNotes(record); ShowToast("Instructor notes saved."); }
+            catch (Exception error) when (error is ArgumentException || error is IOException || error is UnauthorizedAccessException)
+            { ShowToast(error is ArgumentException ? "Notes were not saved: invalid session identity." : "Notes were not saved. Check local storage access and available space."); }
+        }
+        private void ExportCsv(SessionRecord record) => TryExportReport(() => LocalStore.ExportCsv(record), "Telemetry CSV exported.");
+        private void ExportPrintableReport(SessionRecord record) => TryExportReport(() => LocalStore.ExportReport(record), "Report exported. Use browser Print / Save as PDF.");
+        private void TryExportReport(Func<string> export, string success)
+        {
+            try { var path = export(); OpenExport(path); ShowToast(success); }
+            catch (Exception error) when (error is ArgumentException || error is IOException || error is UnauthorizedAccessException)
+            { ShowToast(error is ArgumentException ? "Export failed: invalid session identity or evidence path." : "Export failed. Check local storage access and available space."); }
+        }
         private static void OpenExport(string path)
         {
 #if UNITY_STANDALONE || UNITY_EDITOR

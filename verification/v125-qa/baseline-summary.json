@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "reviewedUtc": "2026-10-10T01:40:18Z",
+  "targetVersion": "1.25",
+  "testedVersion": "1.0.0",
+  "candidate": "05",
+  "status": "BASELINE_REVIEW_REQUIRED",
+  "manualAcceptance": "PENDING",
+  "build": {
+    "app": "/private/tmp/aerosim-v1-build.BPEAKU/AeroSim.app",
+    "buildLogSha256": "01f0f9389932422dc68e1ca92cc14b1c322adb9eec085dc41e242afbbaa25c53",
+    "runtimeAssemblySha256": "8e9e31398287d615bb9698cf36a869a1ee55799e4ff061b186f29321091af6ce",
+    "runtimeAssemblyMtime": "2026-10-09T13:54:12-07:00",
+    "flightDesignSourceMtimeAtReview": "2026-10-09T13:59:02-07:00",
+    "currentSourceBoundToTestedBinary": false,
+    "telemetryButtonPresentInTestedBinary": true,
+    "stableCandidate05CopyVerified": false
+  },
+  "evidence": [
+    {
+      "kind": "smoke",
+      "file": "/private/tmp/aerosim-v1-smoke05-player.log",
+      "sha256": "7929f4517f903a8c169e06bdf6b9af710f6aec8097868cfed887903abdd31c6d",
+      "pass": 66,
+      "fail": 0
+    },
+    {
+      "kind": "native-desktop-snapshot",
+      "file": "verification/v1-qa/results/candidate-05/native/desktop-1920x1080/report.json",
+      "sha256": "2332f20279ea0d53d1e1b615e606b9732af6b0dbb2a62cc0657ab4885d1015f4",
+      "startedUtc": "2026-10-09T20:59:39.1868140Z",
+      "viewport": [1920, 1080],
+      "uiHudTextCombinations": [[1, 1]],
+      "cases": 37,
+      "checks": 3945,
+      "rawFailures": 54,
+      "legacyPrdConflicts": 54,
+      "otherFailures": 0,
+      "runtimeErrors": 0,
+      "screenshots": 33,
+      "missingScreenshots": 0
+    },
+    {
+      "kind": "native-desktop-phone-logical-snapshot",
+      "file": "verification/v1-qa/results/candidate-05/native/phone-landscape-844x390/report.json",
+      "sha256": "0587a60aa6e63a8d7984c8dc4042e84e9a02d355e4f7f91c67fa8fd29839ff8e",
+      "startedUtc": "2026-10-09T20:55:18.3260010Z",
+      "viewport": [844, 390],
+      "uiHudTextCombinations": [[1, 1], [1, 2]],
+      "cases": 71,
+      "checks": 5018,
+      "rawFailures": 61,
+      "legacyPrdConflicts": 60,
+      "otherFailures": 1,
+      "otherFailureRules": ["interaction.nested-confirm-escape"],
+      "runtimeErrors": 0,
+      "screenshots": 66,
+      "missingScreenshots": 0,
+      "physicalIosTest": false
+    },
+    {
+      "kind": "independent-space-submit-v3",
+      "file": "verification/v1-qa/results/candidate-05/space-submit-v3/space-submit-v3-report.json",
+      "sha256": "f6e3a989ff7d42043c372f8d2f26fe3847b210e533f22926163908a43f845546",
+      "startedUtc": "2026-10-09T20:58:17.2299270Z",
+      "viewport": [1920, 1080],
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 1911,
+      "rawFailures": 0,
+      "runtimeErrors": 0,
+      "unrenderedPresentationNotes": 24,
+      "unrenderedIsPass": false,
+      "physicalInputTest": false
+    },
+    {
+      "kind": "independent-pause-telemetry-v1",
+      "file": "verification/v1-qa/results/candidate-05/pause-telemetry-844x390/pause-telemetry-report.json",
+      "sha256": "9e7fb6bfc014dde51e25ba418428a2414ec18b73e5577c8762eea04d860cf7a9",
+      "startedUtc": "2026-10-10T01:39:44.6684170Z",
+      "viewport": [844, 390],
+      "textScales": [1, 2],
+      "status": "FAIL",
+      "checks": 58,
+      "rawFailures": 26,
+      "runtimeErrors": 0,
+      "traces": 34,
+      "observed": [
+        "Pause succeeds; Exit Without Saving and Flight Telemetry pointer centers do not hit target Button",
+        "Nested confirmation does not open; Escape resumes flight from pause",
+        "OSD limitation toast visibly covers pause actions at Text100 and Text200",
+        "Text200 battery and timer report osd-no-safe-slot and are hidden",
+        "Telemetry value failures retain failed panel-open precondition; value algorithm is not independently diagnosed"
+      ],
+      "physicalIosTest": false
+    },
+    {
+      "kind": "original-concept-visual-comparison",
+      "file": "verification/v1-qa/results/candidate-05/visual/summary.json",
+      "sha256": "fbc6eb8acabae92dabdc8c5fe141633030d9b9d0ef03e35ec7cf351318d19feb",
+      "generatedUtc": "2026-10-09T21:01:05.796694+00:00",
+      "status": "VISUAL_DIFFERENT",
+      "screens": 23,
+      "visuallyDifferent": 23,
+      "manualAcceptance": "PENDING"
+    }
+  ],
+  "integrity": {
+    "referenceManifestSha256": "54100c6a1a108827e8edf09440864ec12aace0acbde0005199c86fb4f6107799",
+    "originalReferences": 23,
+    "referenceHashMismatches": 0,
+    "spaceV3FreezeSourceMismatches": 0,
+    "pauseProbeFreezeSourceMismatches": 0,
+    "pythonToolUnitTests": {
+      "command": "python3 -m unittest discover -s verification/v1-qa -p 'test_*.py' -v",
+      "tests": 25,
+      "failures": 0,
+      "status": "PASS"
+    }
+  },
+  "preservedV04": {
+    "branch": "codex/v04-ui-proportions",
+    "sha": "8460d57d8dfa7dfbb7bb248f241847fec1902924",
+    "sourceBundleVersion": "0.4.0",
+    "app": "AeroSim/Builds/rollback-v04-ui.VdvFoW/AeroSim.app",
+    "appBundleVersion": "0.4.0"
+  },
+  "deliveryAtReview": {
+    "repository": "https://github.com/yijunchai2026-gif/AeroSim",
+    "localHeadAtReviewStart": "eb29e81bfe6f50793e1729eb55229a5a55a7f666",
+    "branch": "codex/v1-design-parity",
+    "rootReportedDesktopPublishComplete": true,
+    "remoteShaIndependentlyVerified": false,
+    "note": "Root coordinator must verify the remote branch SHA and report current batch commit; no push or commit performed by independent QA."
+  },
+  "remainingGates": [
+    "Fix pointer/Toast overlap and rerun unchanged pause telemetry probe against a newly frozen build",
+    "Run full seven-viewport UI/HUD/Text matrix; current snapshots cover two viewports only",
+    "Review 23 original concepts page by page and retain manual visual acceptance pending",
+    "Validate physical desktop keyboard/controllers and iPad/iPhone touch/safe-area/performance separately",
+    "Require user approval of every DJI model before approved asset integration",
+    "Verify each delivery push against remote SHA; preserve v0.4 and do not merge main without authorization"
+  ]
+}

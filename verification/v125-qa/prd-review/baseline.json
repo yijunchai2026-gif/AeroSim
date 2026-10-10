@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-10T19:44:57.070Z",
+  "reason": "Independent pre-reorganization byte freeze; not user acceptance",
+  "initialPrdSha256": "a850dc579798c4e88362c0833f78596ca6b805fb7c181a8d087c231654aa01a3",
+  "referenceManifestSha256": "54100c6a1a108827e8edf09440864ec12aace0acbde0005199c86fb4f6107799",
+  "originalConcepts": [
+    {
+      "id": "01",
+      "state": "Aerial-Onboarding",
+      "file": "assets/aerosim-us-01-onboarding-learning-path.png",
+      "sha256": "0c03886b7542a72cc2fd0938e4c9de7f0200e639177579e39a7d7c59f0179669",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "02",
+      "state": "Aerial-Controller",
+      "file": "assets/aerosim-us-02-controller-calibration.png",
+      "sha256": "aff35fef57082ceff060d6623f5a813538bc4e813edd9302bfb6caffdc43e618",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "03",
+      "state": "Aerial-Home",
+      "file": "assets/aerosim-us-03-aerial-home.png",
+      "sha256": "e24a8936787bd945a09a16c69e2fa0cd3814396c0070799c82f18c84cb7dd4dc",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "04",
+      "state": "Aerial-Academy",
+      "file": "assets/aerosim-us-04-aerial-academy.png",
+      "sha256": "5ee04e6d61c7457f4cc95f5d8351d9e5a2b4375a17efcf3888cdefbb311583cf",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "05",
+      "state": "Aerial-FreeFlight",
+      "file": "assets/aerosim-us-05-free-flight-setup.png",
+      "sha256": "351a24b76181992d0bce7304a1543f38c1bcffaab047087884f3db038025243a",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "06",
+      "state": "FPV-Home",
+      "file": "assets/aerosim-us-06-fpv-home.png",
+      "sha256": "e28c5556c27fcbb573b035bfdc6a4a4e10b1fadf7e78ac6dcfff94499da1bce4",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "07",
+      "state": "FPV-Challenges",
+      "file": "assets/aerosim-us-07-fpv-challenges.png",
+      "sha256": "8d92a0a703fc28f20d4e98347c8937fef4f780a6ae4982bb8f28cc5614c854ef",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "08",
+      "state": "FPV-Tuning",
+      "file": "assets/aerosim-us-08-fpv-tuning.png",
+      "sha256": "a7d9ca2ec8b687668eeb4451bcbcfc961458196d5272c58c2703991b83f32ef7",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "09",
+      "state": "FPV-Flight",
+      "file": "assets/aerosim-us-09-fpv-race-osd.png",
+      "sha256": "b6ffb63b2ed699692b45cddf8e544b70f6193d68019294b9f30ea6a8f7a9df25",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "10",
+      "state": "Professional-Home",
+      "file": "assets/aerosim-us-10-professional-dashboard.png",
+      "sha256": "78795b88ace57024e8a2c198bda99b4e02cad84dea3ca7047700e22ccefaaf64",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "11",
+      "state": "Professional-Preflight",
+      "file": "assets/aerosim-us-11-professional-preflight.png",
+      "sha256": "d82e639254461cff9a98963e2ef05db9a3a4110c15b1e190080689d33cd4a09e",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "12",
+      "state": "Professional-Flight",
+      "file": "assets/aerosim-us-12-professional-mission.png",
+      "sha256": "235ce331d4632b4a1186ac3d746a575e3a35b7a89fa1bb9b4d11e1ff234e9914",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "13",
+      "state": "Professional-Instructor",
+      "file": "assets/aerosim-us-13-instructor-live-session.png",
+      "sha256": "177de0233e1a12d3647a7ba07a896cb3b06490a1acd5a3720fe0a98b2bce97c5",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "14",
+      "state": "Aerial-Results",
+      "file": "assets/aerosim-us-14-flight-results.png",
+      "sha256": "3ab7f1bd318bbb013a70abb906217f6f190aa96275ce09f956c276a23c61c221",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "15",
+      "state": "Aerial-Replay",
+      "file": "assets/aerosim-us-15-replay-analysis.png",
+      "sha256": "192cd3a041761c4e0a61ecac80da26b445128542f152201fbe6c8561a518cf1e",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "16",
+      "state": "Aerial-Readiness",
+      "file": "assets/aerosim-us-16-us-flight-readiness.png",
+      "sha256": "c695330aee2685e8b3241ada318cbebacb154780ca3757a13660636ce6194433",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "17",
+      "state": "Aerial-Report",
+      "file": "assets/aerosim-us-17-professional-report.png",
+      "sha256": "f54b925773739a78e9f4f56251d179682422d0f4de3a69fff809ce6e22c8f513",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "18",
+      "state": "FPV-OsdEditor",
+      "file": "assets/aerosim-us-18-fpv-osd-editor.png",
+      "sha256": "c151a5fde6a88ebe0cda77e88cf87b551fa7c4bb2c72a97da1381e347f60fc21",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "19",
+      "state": "Professional-Brief",
+      "file": "assets/aerosim-us-19-professional-mission-brief.png",
+      "sha256": "298926de53b7a29ff16a7b385d882203541f9afdee7e74a0e3c668749f96fbb5",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "20",
+      "state": "Professional-Catalog",
+      "file": "assets/aerosim-us-20-professional-training-catalog.png",
+      "sha256": "3da96167f71ab686373299298b36093061aba4117462d363ab224dc8c4ed8641",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "21",
+      "state": "Professional-MissionEditor",
+      "file": "assets/aerosim-us-21-professional-mission-editor.png",
+      "sha256": "05d1947d3b8f1997d3a1a4383755c67d4e9a9d0222d0a561e6f81d248685bc3b",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "22",
+      "state": "Aerial-Settings",
+      "file": "assets/aerosim-us-22-global-settings.png",
+      "sha256": "6d678132b25464a833cb6d2994a99a196dbd4cc81d43bd7e225aef2128704d86",
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "id": "23",
+      "state": "Aerial-Flight",
+      "file": "assets/aerosim-us-flight-training-ui-v1.png",
+      "sha256": "9629a175214a232617c618d5987edfce98deb0721f4191ec3fc0d6f0541db97c",
+      "width": 1672,
+      "height": 941
+    }
+  ],
+  "preservedMavicFiles": [
+    {
+      "file": "assets/v125-art/mavic/mavic-pro-draft-01.png",
+      "sha256": "70570d7d9b15aabf4ef7f1c7d0b65c0da8fd3cb1eacbc003bc1351a686cddeb4"
+    },
+    {
+      "file": "assets/v125-art/mavic/mavic-pro-draft-02.png",
+      "sha256": "ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931"
+    },
+    {
+      "file": "assets/v125-art/mavic/mavic-pro-draft-01.prompt.txt",
+      "sha256": "670668149ba22e709915385a44bad0541b9d11c813ae1816eaad9a120c970a4d"
+    },
+    {
+      "file": "assets/v125-art/mavic/mavic-pro-draft-02.prompt.txt",
+      "sha256": "6f35e2bc017b9ed94a1908c4ef615191f032eb43acb1d81e96a6b46d186ddd64"
+    }
+  ],
+  "preservedCandidate08Screenshots": [
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/home-1440-text100-before07c.png",
+      "sha256": "272cb1cd10ab791a77549a126f150f31a75b0702db52e1d9d02f6da39ea08b2f",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/home-1440-text100-after08.png",
+      "sha256": "990ce08b81c6ce8d9bcc34e3258f844f4ce1ad3ab27cafe52c60f84b5594f9f8",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/home-1920-text100-after08.png",
+      "sha256": "bee4373190d4aa77aebce7a5d71fb6db436a998e902d1e19955b3585a62b9fd6",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/pause-1440-first-tab-space.png",
+      "sha256": "1889f49601508592fcc248b5126a7d395c1b9bff5b4e2da9f21cd928f25f371a",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/replay-1920-text100.png",
+      "sha256": "c5c1cc8761f15922e6c712649504bdc5a5eff4ee111003e2498c6c69b04d962a",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "assets/ui-v125/candidate-20261010-08/replay-1440-text200.png",
+      "sha256": "9a504c9918e95e20abb721be1e8ba063ca5a4edf339abf554add4fa956c8fa3d",
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "oldMavicCurrent": {
+    "aircraftId": "dji-mavic-pro",
+    "image": "assets/v125-art/mavic/mavic-pro-draft-02.png",
+    "sha256": "ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931",
+    "revision": "draft-02",
+    "kind": "generated_review_bitmap",
+    "appearanceStatus": "pending_user",
+    "sourceUrls": [
+      "https://u.dji.com/cn/articles/36",
+      "https://www.dji.com/mavic/info",
+      "https://www.dji.com/support/product/mavic",
+      "https://www.dji.com/downloads/products/mavic",
+      "https://dl.djicdn.com/downloads/mavic/Mavic%20Pro%20User%20Manual%20V1.0.pdf",
+      "https://www4.djicdn.com/cms_uploads/ckeditor/pictures/724/content_mavic__7_.jpg",
+      "https://www4.djicdn.com/cms_uploads/ckeditor/pictures/725/content_4.jpg",
+      "https://www1.djicdn.com/uploads/share_image/image/203/f37f548d7e85eb6d9aeb75460c808072.png",
+      "https://www1.djicdn.com/uploads/share_image/image/204/45c6a77550dd736bdbbd45100e9aafbd.jpg"
+    ],
+    "notes": [
+      "Original 2016 dark-gray Mavic Pro identity; not Platinum, Alpine White, Mavic 2, Mini, or a color/combo variant.",
+      "Generated 2026-10-10 with one built-in image_gen precise-object edit, referenced_image_paths containing only draft-01 and transparent_background=false; no CLI/API fallback. Source output copied byte-for-byte and cmp verified; workspace copy actually opened with view_image.",
+      "1536 x 1024 8-bit RGB PNG four-view generated review bitmap; not an official photograph, calibrated CAD orthographic drawing, runnable mesh, UV/LOD/collider or final PBR asset.",
+      "Draft-01 was actually viewed before editing. DJI support/specification and 2016 launch text were re-read; official original-gimbal images 203/204 and dark-gray 2016 launch photograph 724 were actually viewed in the browser before this local edit. Manual pages 6-8 remain draft-01 historical research, not a new manual inspection in draft-02.",
+      "Observed local improvement: FRONT and THREE-QUARTER have a visually smaller/less tall silver-gray single-lens camera and slimmer visible axis details. Two round vision windows in compact dark angular corner sockets are retained; no measured nose-window correction is claimed.",
+      "Four-panel layout, labels, dark-gray body, unfolded four-motor outline, black two-leaf propellers and yellow front-arm double bands are visually retained. LEFT SIDE front landing strut occludes much of the camera, so identical camera/gimbal geometry and physical clearance across views remain unproven.",
+      "Observed risk: FRONT is slightly elevated rather than level orthographic, so front/rear motor height relationships cannot be confirmed consistently against LEFT SIDE.",
+      "Observed risk: propeller phases, hub details and visible tip bands are not proven identical or correct across all views; marked/unmarked quick-release hubs need explicit verification.",
+      "Observed risk: the gimbal still has a simplified silver transverse barrel/support; original axis topology, camera/nose-window ratios and clearance are not measured or fully matched to official references. Arm cross-sections, side ports, yellow-band placement and dimensions remain unverified.",
+      "Draft-01 PNG/prompt and SHA 70570d7d9b15aabf4ef7f1c7d0b65c0da8fd3cb1eacbc003bc1351a686cddeb4 are retained unchanged as history in docs/V125_ART_MAVIC.md; this manifest contains exactly one current row for dji-mavic-pro, draft-02.",
+      "No user confirmation recorded. Not eligible for formal flight selection or final Unity 3D integration."
+    ]
+  },
+  "initialPrdMissingLinks": [
+    {
+      "url": "/Users/bytedance/Documents/ChatGPT/飞行模拟器/AeroSim/Builds/macOS-ArtV2/AeroSim.app",
+      "image": false,
+      "label": "AeroSim Art V2",
+      "line": 2071,
+      "document": "飞行模拟器产品设计文档.md",
+      "absolute": true,
+      "target": "AeroSim/Builds/macOS-ArtV2/AeroSim.app",
+      "outsideRoot": false,
+      "exists": false
+    }
+  ],
+  "initialNonPortableLinks": [
+    {
+      "url": "/Users/bytedance/Documents/ChatGPT/飞行模拟器/AeroSim-美术升级V2.html",
+      "image": false,
+      "label": "AeroSim-美术升级V2.html",
+      "line": 2063,
+      "document": "飞行模拟器产品设计文档.md",
+      "absolute": true,
+      "target": "AeroSim-美术升级V2.html",
+      "outsideRoot": false,
+      "exists": true
+    },
+    {
+      "url": "/Users/bytedance/Documents/ChatGPT/飞行模拟器/AeroSim/Builds/macOS-ArtV2/AeroSim.app",
+      "image": false,
+      "label": "AeroSim Art V2",
+      "line": 2071,
+      "document": "飞行模拟器产品设计文档.md",
+      "absolute": true,
+      "target": "AeroSim/Builds/macOS-ArtV2/AeroSim.app",
+      "outsideRoot": false,
+      "exists": false
+    },
+    {
+      "url": "/Users/bytedance/Documents/ChatGPT/飞行模拟器/ART_DIRECTION_V2.md",
+      "image": false,
+      "label": "ART_DIRECTION_V2.md",
+      "line": 2073,
+      "document": "飞行模拟器产品设计文档.md",
+      "absolute": true,
+      "target": "ART_DIRECTION_V2.md",
+      "outsideRoot": false,
+      "exists": true
+    }
+  ]
+}

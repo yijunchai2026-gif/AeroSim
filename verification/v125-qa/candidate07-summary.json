@@ -1,0 +1,449 @@
+{
+  "schemaVersion": 1,
+  "status": "LOCAL_SCOPED_GATES_PASS_07C_FINAL_ACCEPTANCE_AND_PUSH_BLOCKED",
+  "testedNativeVersion": "1.0.0",
+  "build": {
+    "candidate07": {
+      "status": "BUILD_FAILED",
+      "freeze": "verification/v125-qa/candidate07-source-freeze.json",
+      "log": "/private/tmp/aerosim-v1-candidate07-build.log",
+      "sha256": "4946f80ac55ec8ca1f36b89a58255445518d1061335991ad874b5ee24f0e7425",
+      "independentlyReadLines": [
+        222,
+        702,
+        708,
+        713,
+        717
+      ],
+      "causes": [
+        "CS0029 ExecuteLater returns void",
+        "Invalid33hex InputRouter.cs.meta ignored"
+      ]
+    },
+    "candidate07b": {
+      "status": "SUCCESS",
+      "freeze": "verification/v125-qa/candidate07b-source-freeze.json",
+      "sourceHashMismatches": 0,
+      "log": "/private/tmp/aerosim-v1-candidate07b-build.log",
+      "logSha256": "6c06493f5a63fe20d4899cab12b114bb1d8da0c5dd1ab9ff8377ba0622e4925e",
+      "successLine": 949,
+      "originalApp": "/private/tmp/aerosim-v1-build.6x0OSc/AeroSim.app",
+      "stableApp": "AeroSim/Builds/macOS-V1-Candidate-20261010-07b/AeroSim.app",
+      "runtimeDllSha256": "6f487a915564c1a5ab62e4ca57e9c5345f858e1526328984dd7537191537ea96",
+      "sourceHashMatchBoundary": "Five hashes independently matched at07b freeze; current Responsive is07c, historical07b not overwritten"
+    },
+    "candidate07c": {
+      "status": "SUCCESS",
+      "freeze": "verification/v125-qa/candidate07c-source-freeze.json",
+      "sourceHashMismatches": 0,
+      "log": "/private/tmp/aerosim-v1-candidate07c-build.log",
+      "logSha256": "ebeb6857701d544e4ff32a734d2ef3b5a380ca69e95f6fd14d179ab70a57522d",
+      "successLine": 926,
+      "stableApp": "AeroSim/Builds/macOS-V1-Candidate-20261010-07c/AeroSim.app",
+      "runtimeDllSha256": "caf2331190601b9bddab0ccfbc312fab894baa0c20a9d58a101a208e15d5e061"
+    }
+  },
+  "dynamicV1": {
+    "freeze": "verification/v125-qa/dynamic-modal-typography-freeze.json",
+    "initialViewport": "844x390",
+    "resizedViewport": "1280x720",
+    "baselineElements": 16,
+    "measurementsEach": 512,
+    "candidate06": {
+      "status": "FAIL",
+      "checks": 2185,
+      "failures": 208,
+      "fontFailures": 160,
+      "rapidFailures": 48,
+      "runtimeErrors": 0,
+      "pngCount": 24,
+      "path": "verification/v1-qa/results/candidate-06/dynamic-fonts-844x390/dynamic-modal-typography-report.json",
+      "sha256": "4190469a7ea321c8235e0299335734c9cc6bdf80239906421502092cd12fdea2"
+    },
+    "candidate07b": {
+      "status": "FAIL",
+      "checks": 2185,
+      "failures": 48,
+      "fontFailures": 0,
+      "rapidFailures": 48,
+      "runtimeErrors": 0,
+      "pngCount": 24,
+      "path": "verification/v1-qa/results/candidate-07b/dynamic-fonts-844x390/dynamic-modal-typography-report.json",
+      "sha256": "33a4e3fc0d59e8072ae6d651e81b174ed17b7295c9840f53eb88e43cc69f2368",
+      "passingScopedCounts": {
+        "font": 512,
+        "scrollLinebox": 272,
+        "resize": 24,
+        "recordUnchanged": 105,
+        "profileUnchanged": 105
+      }
+    },
+    "rapidInterpretation": "Same48 failures both binaries; correct Pick then modal change occurs before next pointer. Independentv2 queue flush needed, no silent passing."
+  },
+  "dynamicV2": {
+    "status": "FAIL_RESULTS_RETAINED",
+    "freeze": "verification/v125-qa/dynamic-modal-typography-freeze-v2.json",
+    "originalCheckRuleSequenceUnchanged": true,
+    "ruleKinds": 20,
+    "staticCompileAndCopyInjection": "PASS",
+    "candidate06Results": "verification/v1-qa/results/candidate-06/dynamic-fonts-v2-844x390",
+    "candidate07bResults": "verification/v1-qa/results/candidate-07b/dynamic-fonts-v2-844x390",
+    "candidate06": {
+      "status": "FAIL",
+      "checks": 2209,
+      "failures": 160,
+      "fontFailures": 160,
+      "runtimeErrors": 0,
+      "path": "verification/v1-qa/results/candidate-06/dynamic-fonts-v2-844x390/dynamic-modal-typography-report.json",
+      "sha256": "3802bca89bbdbb43d6be1d956800a2d4f6b1e48931f419b63a4278acaa10be08"
+    },
+    "candidate07b": {
+      "status": "FAIL",
+      "checks": 2209,
+      "failures": 4,
+      "fontFailures": 0,
+      "runtimeErrors": 0,
+      "path": "verification/v1-qa/results/candidate-07b/dynamic-fonts-v2-844x390/dynamic-modal-typography-report.json",
+      "sha256": "b7b6df04dcecd6235d9eb0d41ba52236e764a2f52080ad5f6e666856541bc4d8"
+    },
+    "failureInterpretation": "Telemetry125 quick0 close firstScroll after deferred font layout is outside viewport y398..442 versus20..371; secondScroll correctly picks/closes. v3 bounded sameScroll retry, all assertions retained."
+  },
+  "legacyRegression": {
+    "smoke": {
+      "checks": 66,
+      "failures": 0,
+      "path": "verification/v125-qa/candidate07b-native-smoke.txt",
+      "sha256": "e20adee356fedd5bf50b8afd20ae39774545c600964579db324c19822ce3cefa"
+    },
+    "pause": {
+      "checks": 74,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "path": "verification/v1-qa/results/candidate-07b/pause-telemetry-844x390/pause-telemetry-report.json",
+      "sha256": "339459aac62ca74a87a30376c0763c821bbfb301596c143e0121dc9541743821"
+    },
+    "space07b1440": {
+      "status": "FAIL",
+      "checks": 1911,
+      "failures": 3,
+      "runtimeErrors": 0,
+      "unrenderedNotPass": 24,
+      "path": "verification/v1-qa/results/candidate-07b/space-submit-v3-1440x900/space-submit-v3-report.json",
+      "sha256": "f28d07651f56737f1cecfc837059cd0d9cd4058f222a2671e7283f858fc6b09f",
+      "failedRules": [
+        "v2.intentional-tab-selects-pause",
+        "v2.text-linebox-readable",
+        "v2.text-linebox-readable"
+      ],
+      "boundary": "Equal viewport06 baseline has same3 failures and identicalevidence; pre-existing1440 narrow desktop gaps, not introduced by this batch. Unresolved."
+    },
+    "space07b1920": {
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 1911,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "unrenderedNotPass": 24,
+      "path": "verification/v1-qa/results/candidate-07b/space-submit-v3-1920x1080/space-submit-v3-report.json",
+      "sha256": "52cacf57be3379b99be5848f52e00266f3040d62af79c73928d031f11a28488d"
+    },
+    "space061440": {
+      "status": "FAIL",
+      "checks": 1911,
+      "failures": 3,
+      "runtimeErrors": 0,
+      "unrenderedNotPass": 24,
+      "path": "verification/v1-qa/results/candidate-06/space-submit-v3-1440x900/space-submit-v3-report.json",
+      "sha256": "5e0f1d5193fdb5831a8411d3bddf28bf3d41ddf2fa54a8dec4d15fa19a3a4676",
+      "failedRulesAndEvidenceIdenticalTo07b1440": true
+    },
+    "smoke07c": {
+      "checks": 66,
+      "failures": 0,
+      "path": "verification/v125-qa/candidate07c-native-smoke.txt",
+      "sha256": "d5ca9d45b53c8fba3315f481cfe0ed28e0f7b76352ca6a0d494d4e0ca9a6f50a"
+    },
+    "pause07c": {
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 74,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "pngCount": 10,
+      "path": "verification/v1-qa/results/candidate-07c/pause-telemetry-844x390/pause-telemetry-report.json",
+      "sha256": "9b2d0fb3b66ba2f2054a4be471ea8e81e7bff9acc633f0f6f2dcb1bb1bd0daba"
+    },
+    "space07c1920": {
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 1911,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "pngCount": 58,
+      "path": "verification/v1-qa/results/candidate-07c/space-submit-v3-1920x1080/space-submit-v3-report.json",
+      "sha256": "46598dd6654c0e5ac43d7bfa0c3cbcdae86ea7eddeb10cb284b8418be8e2e522",
+      "unrenderedNotPass": 24
+    },
+    "space07c1440": {
+      "status": "FAIL",
+      "checks": 1911,
+      "failures": 3,
+      "runtimeErrors": 0,
+      "pngCount": 58,
+      "path": "verification/v1-qa/results/candidate-07c/space-submit-v3-1440x900/space-submit-v3-report.json",
+      "sha256": "c83b00d49dcd3e80b9a642377b3bf79e5c6a70e05423d0f5b6eeb0fede2b3a56",
+      "unrenderedNotPass": 24,
+      "old77DifferingPassEvidenceRestoredExactlyTo06": true,
+      "all1911CheckRuleEvidenceAndPassEqualTo06InThisRun": true,
+      "threeOldFailuresUnresolved": true
+    }
+  },
+  "catalogReview": {
+    "status": "PASS_TESTS_ONLY",
+    "tests": 28,
+    "failures": 0,
+    "skips": 0,
+    "original25Retained": true,
+    "testSha256": "4d6bde38f526fb55acc23e51e428772b347f24957d86b6c0d6c458fc6d4a14e6",
+    "generatorSha256": "eaac5b5db8f6c7c77509f97822aa5e6e4365e4f4911d052e185821d3c0d5d8f8",
+    "templateSha256": "4dee4e66fb9bb3cd978358270b917ed7bb8213512b02f36f45add6c060933304",
+    "actualHtmlSha256": "163bc0bc2a421229a18a08111b5f73de080091abf53a574726f24c717dec6f6c",
+    "mainEntries": 132,
+    "variants": 9,
+    "reviewItems": 141,
+    "drafts": 4,
+    "withoutDraftDisabled": 137,
+    "draftIds": [
+      "dji-phantom-1",
+      "dji-mini-4-pro",
+      "dji-inspire-1",
+      "dji-mavic-pro"
+    ],
+    "realApprovalRecordsCreated": 0,
+    "browserLayout": "NOT_RUN_SECURITY_BLOCKED",
+    "original25PrefixSha256": "901b4ac55032f15cb4e7bf5c88be5db1da1520f4426d3280d3a4373fa8a2efce",
+    "sourceValidationBoundary": "Domain/URL validation, not independently browsing all referenced content or proving catalog completeness"
+  },
+  "metadataValidation": {
+    "filesUnderAssetsAeroSim": 86,
+    "includingRootMeta": 87,
+    "invalid32Hex": 0,
+    "duplicates": 0,
+    "scope": "Current static metadata, not historical build success"
+  },
+  "visualReview": {
+    "status": "LIMITED_REAL_PNG_REVIEW_ONLY",
+    "viewed": [
+      "candidate06 confirm-Text200-initial.png",
+      "candidate07b confirm-Text200-initial.png",
+      "candidate07b objective-Text200-initial.png",
+      "candidate07b telemetry-Text200-initial.png",
+      "candidate07b confirm-Text100-initial.png",
+      "candidate07b confirm-Text125-initial.png",
+      "candidate07b confirm-Text150-initial.png",
+      "candidate07b confirm-Text100-live200to100.png",
+      "candidate07c dynamicv3 confirm-Text200-initial.png",
+      "candidate07c dynamicv3 telemetry-Text200-initial.png",
+      "candidate07c replayv1 Text200-Replay.png",
+      "candidate07b Space1440 text200-Aerial-Replay.png",
+      "candidate07c Space1440 text200-Aerial-Replay.png",
+      "candidate07b replayv2 Text150-SpaceCoroutine-Replay.png",
+      "candidate07c replayv2 Text150-SpaceCoroutine-Replay.png"
+    ],
+    "observed": "Title22->44 description14->28 button15->30; Objective wraps and Back button complete; Telemetry first screen title/description/Altitude only, other values require scroll. 07c same enlargedmodal fonts; actual Replay1440 before/after shows corrected typehierarchy/wrapping, lower controls need scroll. Not alltokens or fullzoom/parity.",
+    "selected07c": [
+      {
+        "path": "assets/ui-v125/candidate-20261010-07c/confirm-text200-after07c.png",
+        "source": "verification/v1-qa/results/candidate-07c/dynamic-fonts-v3-844x390/confirm-Text200-initial.png",
+        "sha256": "9e4884bbb83d9d98fa3704e48adc14ec2906140f1ee988e08416ce59c6864604",
+        "sameBytes": true
+      },
+      {
+        "path": "assets/ui-v125/candidate-20261010-07c/replay-text200-1440.png",
+        "source": "verification/v1-qa/results/candidate-07c/space-submit-v3-1440x900/text200-Aerial-Replay.png",
+        "sha256": "fdf3810bf64d03bfe456030f4fa948000fecfa1dfc249f4de4e69a98a793d568",
+        "sameBytes": true
+      }
+    ],
+    "unresolvedObservedContent": [
+      "Replay telemetry duplicates units:26 ft ft /0.0 mph mph (not covered by old automaticcontracts)"
+    ]
+  },
+  "legacyProbesChanged": false,
+  "applicationLaunchedByQa": false,
+  "limitations": [
+    "Space1440 three failures unresolved",
+    "Not23concept or complete zoom visual acceptance",
+    "No physicaliOS/joystick verification",
+    "No usermodel approval or production3D",
+    "Root owns builds/Git",
+    "Replay scoped19fixedtokentargets pass07c, notfullpagepixelcontent acceptance;duplicatedtelemetryunits remain"
+  ],
+  "dynamicV3": {
+    "status": "SCOPED_PASS_07B_AND_07C_NEGATIVE_06_CONFIRMED",
+    "freeze": "verification/v125-qa/dynamic-modal-typography-freeze-v3.json",
+    "allOriginalCheckRuleKindsAndOrderRetained": true,
+    "ruleKinds": 20,
+    "staticCompileAndCopyInjection": "PASS",
+    "candidate06": {
+      "status": "FAIL",
+      "checks": 2209,
+      "failures": 160,
+      "fontFailures": 160,
+      "runtimeErrors": 0,
+      "pngCount": 24,
+      "path": "verification/v1-qa/results/candidate-06/dynamic-fonts-v3-844x390/dynamic-modal-typography-report.json",
+      "sha256": "e782d094ba28e4d37d59e2e6491faad1be257a1de5d8c745b775f7482fa25d18"
+    },
+    "candidate07b": {
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 2209,
+      "failures": 0,
+      "fontFailures": 0,
+      "runtimeErrors": 0,
+      "pngCount": 24,
+      "path": "verification/v1-qa/results/candidate-07b/dynamic-fonts-v3-844x390/dynamic-modal-typography-report.json",
+      "sha256": "b7e9bf74ae935f2a61d4604fe514e896188029dce2f09e6ac2d43325d9534c5a",
+      "boundedSameScrollRetries": 2,
+      "beforeButtonY": 398,
+      "afterButtonY": 327,
+      "buttonHeight": 44,
+      "viewportYMin": 20,
+      "viewportYMax": 371,
+      "fontUnchangedAtRetry": 18.75
+    },
+    "candidate07c": {
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 2209,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "pngCount": 24,
+      "path": "verification/v1-qa/results/candidate-07c/dynamic-fonts-v3-844x390/dynamic-modal-typography-report.json",
+      "sha256": "b54dff4ac1580c1a6f4741b788f06e99acfd01337a71a27a0f9ff112fba97e20",
+      "fontFailures": 0
+    }
+  },
+  "replayTokenQa": {
+    "status": "SCOPED_TOKEN_PASS_07C_NEGATIVE_07B_CONFIRMED",
+    "freeze": "verification/v125-qa/replay-typography-freeze.json",
+    "fixedUssTokens": {
+      "navigation": 17,
+      "replayActionChild": 16,
+      "disclaimer": 12
+    },
+    "exactReplaySourceCounts": {
+      "navigation": 6,
+      "actionChild": 12,
+      "disclaimer": 1
+    },
+    "observedSpacePassEvidenceDifferenceCount": 77,
+    "knownExampleText200": {
+      "candidate06": {
+        "Home": 34,
+        "Play": 32,
+        "disclaimer": 24
+      },
+      "candidate07b": {
+        "Home": 28,
+        "Play": 28,
+        "disclaimer": 28
+      }
+    },
+    "interpretation": "v1 Pointer passesall3 butdoesnotreproducecoroutine drift; v2 preservesallv1 andsame frozenUSS0.25font3linebox, reproduces07b38fontFAIL atText150entry/reapply. 07c passesv2 andrestores77oldSpace1440differences exactlyto06inthisrun. Not fullpagepixels/23concept/physicaldevice.",
+    "v1": {
+      "status": "PASS_NOT_NEGATIVE_BASELINE_REPRODUCTION",
+      "candidate06": {
+        "status": "PASS_AUTOMATED_ONLY",
+        "checks": 778,
+        "failures": 0,
+        "runtimeErrors": 0,
+        "pngCount": 4,
+        "path": "verification/v1-qa/results/candidate-06/replay-typography-1920x1080/replay-typography-report.json",
+        "sha256": "c593bc1f1f6d6b48ac3130fada473b057f99c6cc1a362b4c4ebb1d73a36fd52d"
+      },
+      "candidate07b": {
+        "status": "PASS_AUTOMATED_ONLY",
+        "checks": 778,
+        "failures": 0,
+        "runtimeErrors": 0,
+        "pngCount": 4,
+        "path": "verification/v1-qa/results/candidate-07b/replay-typography-1920x1080/replay-typography-report.json",
+        "sha256": "112916e6b8293bf115e0c66b8f6db3a88e7089202bf15f7a7cbd488eadee8dd8"
+      },
+      "candidate07c": {
+        "status": "PASS_AUTOMATED_ONLY",
+        "checks": 778,
+        "failures": 0,
+        "runtimeErrors": 0,
+        "pngCount": 4,
+        "path": "verification/v1-qa/results/candidate-07c/replay-typography-1920x1080/replay-typography-report.json",
+        "sha256": "4f4e676936c4b4749157d954150f9cf506444f991ba163c833a4e864aa9fe334"
+      }
+    },
+    "v2": {
+      "status": "SCOPED_PASS_06_AND_07C_NEGATIVE_07B_CONFIRMED",
+      "freeze": "verification/v125-qa/replay-typography-freeze-v2.json",
+      "v1AssertionsRetained": true,
+      "extraEntry": "Public BeginReplay coroutine after original Space predecessors; not Pointer/device validation",
+      "candidate06": {
+        "status": "PASS_AUTOMATED_ONLY",
+        "checks": 1454,
+        "failures": 0,
+        "fontFailures": 0,
+        "runtimeErrors": 0,
+        "pngCount": 8,
+        "fontChecks": 528,
+        "path": "verification/v1-qa/results/candidate-06/replay-typography-v2-1920x1080/replay-typography-v2-report.json",
+        "sha256": "7345838cedcbfa5b157b4b45db2b080d6b47fca49f475d29863264d5dff1d839",
+        "recordProfileFailures": 0
+      },
+      "candidate07b": {
+        "status": "FAIL",
+        "checks": 1454,
+        "failures": 38,
+        "fontFailures": 38,
+        "runtimeErrors": 0,
+        "pngCount": 8,
+        "fontChecks": 528,
+        "path": "verification/v1-qa/results/candidate-07b/replay-typography-v2-1920x1080/replay-typography-v2-report.json",
+        "sha256": "cd48af06f18c73e3b89e0a8ed29ca1ea9e82fc3c86d285e947c903d274a1f74d",
+        "recordProfileFailures": 0
+      },
+      "candidate07c": {
+        "status": "PASS_AUTOMATED_ONLY",
+        "checks": 1454,
+        "failures": 0,
+        "fontFailures": 0,
+        "runtimeErrors": 0,
+        "pngCount": 8,
+        "fontChecks": 528,
+        "path": "verification/v1-qa/results/candidate-07c/replay-typography-v2-1920x1080/replay-typography-v2-report.json",
+        "sha256": "f3911d3b18561a9f4c3a7d4a7f34e36e3b4ae3b1a02f9ed55a916b15b610b8e2",
+        "recordProfileFailures": 0
+      },
+      "v1First777RuleStagesAndCompletionRetained": true,
+      "negative07b": {
+        "failedStages": {
+          "Text150-SpaceCoroutine-Replay": 19,
+          "Text150-SpaceCoroutine-reapply3": 19
+        },
+        "failedRules": {
+          "font.frozen-uss-token-times-multiplier": 38
+        },
+        "targetsPerStage": {
+          "nav": 6,
+          "actionChild": 12,
+          "disclaimer": 1
+        },
+        "actualFontPxEach": 21,
+        "expectedFontPx": {
+          "navigation": 25.5,
+          "replayActionChild": 24,
+          "disclaimer": 18
+        },
+        "reopenRecovered": true
+      }
+    }
+  },
+  "githubDelivery": {
+    "status": "PUSH_NOT_PROVEN",
+    "evidenceBoundary": "Parent reports repeated GitHub Desktop CUA timeouts, private repo connector404, unauthenticated Git; QA does noGitwrites or remoteauthdiagnostics. Root must provide successfulpush and verifiedremoteSHA."
+  }
+}

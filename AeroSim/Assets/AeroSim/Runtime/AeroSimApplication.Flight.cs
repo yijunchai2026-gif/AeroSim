@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using AeroSim.Domain;
 using AeroSim.Input;
+using AeroSim.Navigation;
 using AeroSim.Simulation;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,6 +14,7 @@ namespace AeroSim
     {
         private Label _flightStatus, _objective, _speed, _altitude, _timer, _battery, _sticks;
         private VisualElement _pauseOverlay;
+        private Action _flightDialogClose;
         private Slider _replaySlider;
         private Button _replayPlay;
         private bool _seeking;
@@ -21,34 +23,43 @@ namespace AeroSim
 
         public void StartFlight(FlightConfig config)
         {
+            ReleaseHangarPreviews();
+            config.aircraft=AircraftCatalog.Resolve(config.aircraft).Name;
             _config = config; _page = Page.Flight;
             EnsureSimulator(); _sim.Begin(config); BuildFlightUi(false);
         }
         public void BeginReplay(SessionRecord record)
         {
+            ReleaseHangarPreviews();
             if (record.frames.Count == 0) { ShowToast("No telemetry was recorded for this session."); return; }
+            _workspace = record.workspace == "FPV" ? TrainingWorkspace.Fpv : record.workspace == "Professional" ? TrainingWorkspace.Professional : TrainingWorkspace.Aerial;
             _record = record; _page = Page.Replay; EnsureSimulator(); _sim.BeginReplay(record); BuildFlightUi(true);
         }
         private void EnsureSimulator()
         {
             if (_sim != null) return;
             _sim = gameObject.AddComponent<FlightSimulator>();
-            _sim.Notice += message => { ShowToast(message); if (message.StartsWith("Capture saved")) StartCoroutine(SavePhoto()); };
+            _sim.Notice += ShowToast;
+            _sim.PhotoCaptureRequested += SavePhotoEvidence;
             _sim.PauseRequested += TogglePause;
             _sim.Finished += record => { _record = record; ShowPage(Page.Results); };
         }
-        private void BuildFlightUi(bool replay)
+        private void BuildLegacyFlightUi(bool replay)
         {
             _root.Clear(); _root.AddToClassList("flight-root");
+            RefreshUiPreferences();
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
             var hud = Element("flight-hud"); hud.pickingMode = PickingMode.Ignore; _root.Add(hud);
             var bar = Element("flight-bar");
             bar.Add(Text(replay ? "AEROSIM  /  REPLAY" : "AEROSIM  /  " + _config.workspace.ToUpperInvariant(), "flight-brand"));
             _flightStatus = Text(replay ? _record.title : _config.title, "flight-status"); bar.Add(_flightStatus);
             bar.Add(ActionButton(replay ? "Back to Records" : "Pause", () => { if (replay) ShowPage(Page.Records); else TogglePause(); })); hud.Add(bar);
+            var objectiveToggle = ActionButton("Objective", () => ShowObjective());
+            objectiveToggle.AddToClassList("objective-toggle"); bar.Insert(1, objectiveToggle);
 
             var objectiveCard = Element("objective-card");
             objectiveCard.Add(Text(replay ? "RECORDED SESSION" : "SESSION OBJECTIVE", "page-eyebrow"));
+            objectiveCard.Add(Text(AircraftCatalog.Resolve(_sim.Config.aircraft).Name, "aircraft-hud-name"));
             _objective = Text(replay ? _record.title + " · " + _record.score + "/100" : _config.objective, "wrap"); objectiveCard.Add(_objective); hud.Add(objectiveCard);
             var settings = LocalStore.Profile.settings;
             _speed = HudMetric(hud, "SPEED", settings.speedPosition, settings.osdSpeed);
@@ -76,7 +87,13 @@ namespace AeroSim
                 bottom.Add(ActionButton("Photo", () => _sim.CapturePhoto()));
                 bottom.Add(ActionButton("Finish Session", _sim.Finish, true));
             }
-            hud.Add(bottom);
+            var actions = new ScrollView(ScrollViewMode.Horizontal);
+            actions.AddToClassList("hud-actions-scroll");
+            actions.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            actions.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+            bottom.RemoveFromClassList("flight-bottom"); bottom.AddToClassList("hud-actions-row");
+            actions.Add(bottom);
+            var footer = Element("flight-bottom"); footer.Add(actions); hud.Add(footer);
             if (!replay)
             {
                 if (settings.showControls) hud.Add(Text("WASD move  ·  R/F altitude  ·  Q/E yaw  ·  H RTH  ·  C camera  ·  P photo  ·  Esc pause", "flight-guidance", "wrap"));
@@ -89,8 +106,8 @@ namespace AeroSim
             pause.Add(ActionButton("Simulate Signal Loss", () => { TogglePause(); _sim.SignalLoss(); }));
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
             pause.Add(ActionButton("Exit Without Saving", () => ShowConfirm("Leave this flight?", "The current session will not be saved. Existing records are unaffected.", () => ShowPage(Page.Home))));
-            _pauseOverlay.Add(pause); hud.Add(_pauseOverlay);
-            var toast = Element("toast", "toast-hidden"); _toastLabel = Text("", "toast-label"); toast.Add(_toastLabel); _root.Add(toast);
+            _pauseOverlay.Add(ModalScroll(pause)); hud.Add(_pauseOverlay);
+            InstallToast();
             OnGeometryChanged(null);
         }
         private static Label HudMetric(VisualElement hud, string caption, Vector2 position, bool show)
@@ -103,30 +120,59 @@ namespace AeroSim
         private void TogglePause()
         {
             if (_page != Page.Flight || _sim == null) return;
+            if (_flightDialogClose != null) { _flightDialogClose(); return; }
             _sim.Pause(!_sim.Paused); _pauseOverlay.EnableInClassList("is-hidden", !_sim.Paused);
+            if (_sim.Paused) DismissToast();
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            if (_sim.Paused) _pauseOverlay.Query<Button>().ToList().Find(b => b.enabledInHierarchy)?.Focus();
+            else (_root.panel?.focusController.focusedElement as VisualElement)?.Blur();
         }
         private void ShowConfirm(string title, string description, Action confirm)
         {
+            _flightDialogClose?.Invoke();
             var overlay = Element("modal-overlay"); var p = Panel(title, description);
-            p.Add(Row(ActionButton("Keep Flying", () => overlay.RemoveFromHierarchy()), ActionButton("Confirm Exit", () => { overlay.RemoveFromHierarchy(); confirm(); }, true)));
-            overlay.Add(p); _root.Add(overlay);
+            bool pauseForReading = _page == Page.Flight && !_sim.Paused;
+            if (pauseForReading) _sim.Pause(true);
+            DismissToast();
+            void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
+            _flightDialogClose = Close;
+            p.Add(Row(ActionButton("Keep Flying", Close), ActionButton("Confirm Exit", () => { Close(); confirm(); }, true)));
+            overlay.Add(ModalScroll(p)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            ApplyTypography(overlay);
+            overlay.Query<Button>().First()?.Focus();
         }
-        private IEnumerator SavePhoto()
+        private void ShowObjective()
         {
-            yield return new WaitForEndOfFrame();
-            if (_sim?.Record == null || _sim.View == null) yield break;
-            var path = Path.Combine(LocalStore.DirectoryPath, _sim.Record.id + "-photo-" + _sim.Record.photos + ".png");
-            // Save the simulator camera only: training evidence does not contain menu overlays.
-            var texture = new RenderTexture(1280, 720, 24);
-            var previousTarget = _sim.View.targetTexture; var previousActive = RenderTexture.active;
-            _sim.View.targetTexture = texture; _sim.View.Render(); RenderTexture.active = texture;
-            var image = new Texture2D(1280, 720, TextureFormat.RGB24, false); image.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0); image.Apply();
-            File.WriteAllBytes(path, image.EncodeToPNG()); _sim.View.targetTexture = previousTarget; RenderTexture.active = previousActive;
-            texture.Release(); Destroy(texture); Destroy(image); Debug.Log("Training photo saved: " + path);
+            _flightDialogClose?.Invoke();
+            var overlay = Element("modal-overlay");
+            var panel = Panel("Session objective", _objective.text);
+            bool pauseForReading = _page == Page.Flight && !_sim.Paused;
+            if (pauseForReading) _sim.Pause(true);
+            DismissToast();
+            void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
+            _flightDialogClose = Close;
+            panel.Add(ActionButton("Back to Flight", Close, true));
+            overlay.Add(ModalScroll(panel)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            ApplyTypography(overlay);
+            overlay.Query<Button>().First()?.Focus();
+        }
+        private void RestoreFlightDialogFocus()
+        {
+            if (_page != Page.Flight || _sim == null) return;
+            if (_sim.Paused && _pauseOverlay != null && !_pauseOverlay.ClassListContains("is-hidden"))
+                _pauseOverlay.Query<Button>().ToList().Find(b => b.enabledInHierarchy)?.Focus();
+            else (_root.panel?.focusController.focusedElement as VisualElement)?.Blur();
+        }
+        private static ScrollView ModalScroll(VisualElement panel)
+        {
+            var scroll = new ScrollView(ScrollViewMode.Vertical);
+            scroll.AddToClassList("modal-scroll");
+            scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            scroll.Add(panel); return scroll;
         }
         private void Update()
         {
+            if (_lastWindowWidth != Screen.width || _lastWindowHeight != Screen.height) RefreshUiPreferences();
             if (_page == Page.Controller && _axisLabels != null)
             {
                 var raw = FlightInput.Raw();
@@ -147,7 +193,9 @@ namespace AeroSim
             if (replay)
             {
                 _seeking = true; _replaySlider.SetValueWithoutNotify(_sim.ReplayTime); _seeking = false;
-                _replayPlay.text = _sim.ReplayPlaying ? "Pause" : "Play";
+                var playLabel = _replayPlay.Q<Label>(className: "design-button-label");
+                if (playLabel != null) playLabel.text = _sim.ReplayPlaying ? "Pause" : "Play";
+                else _replayPlay.text = _sim.ReplayPlaying ? "Pause" : "Play";
             }
             else
             {
@@ -155,6 +203,7 @@ namespace AeroSim
                 _objective.text = _sim.ObjectiveComplete ? "OBJECTIVE COMPLETE · Finish Session to save your score." : _config.objective + (_config.task == "gates" ? "\nGates: " + _sim.GateIndex + " / 6" : _config.professional ? "\nCaptures: " + _sim.GateIndex + " / " + _config.mission.targets.Count : "") + (next.HasValue?" · Next: "+Length(Vector3.Distance(_sim.Position,next.Value)):"");
             }
             _map.MarkDirtyRepaint();
+            TickDesignFlightUi(replay);
         }
         private float ReplaySpeedAtTime()
         {
@@ -175,12 +224,24 @@ namespace AeroSim
                 RegisterCallback<PointerUpEvent>(e => { if (_pointer == e.pointerId) { Reset(); this.ReleasePointer(e.pointerId); } });
                 RegisterCallback<PointerCaptureOutEvent>(e => Reset());
             }
+            public void ConfigureLayout(float size, float bottom, float edge, bool hideCaption)
+            {
+                style.width = size; style.height = size; style.bottom = bottom;
+                if (_left) style.left = edge; else style.right = edge;
+                float knobSize = Mathf.Max(16, size * .4f);
+                _knob.style.width = knobSize; _knob.style.height = knobSize;
+                var caption = this.Q<Label>(className: "stick-caption");
+                caption.style.top = size + 4; caption.style.left = -8; caption.style.right = -8;
+                caption.style.display = hideCaption ? DisplayStyle.None : DisplayStyle.Flex;
+                tooltip = _left ? "Throttle / yaw touch control" : "Pitch / roll touch control";
+            }
             private void Move(Vector3 position)
             {
                 var local = this.WorldToLocal(position); float radius = resolvedStyle.width * .5f;
-                var v = Vector2.ClampMagnitude(new Vector2(local.x - radius, radius - local.y) / (radius - 20), 1);
+                float travel = Mathf.Max(1, radius - _knob.resolvedStyle.width * .5f);
+                var v = Vector2.ClampMagnitude(new Vector2(local.x - radius, radius - local.y) / travel, 1);
                 if (_left) FlightInput.TouchLeft = v; else FlightInput.TouchRight = v;
-                _knob.style.translate = new Translate(v.x * (radius - 20), -v.y * (radius - 20));
+                _knob.style.translate = new Translate(v.x * travel, -v.y * travel);
             }
             private void Reset() { _pointer = -1; if (_left) FlightInput.TouchLeft = Vector2.zero; else FlightInput.TouchRight = Vector2.zero; _knob.style.translate = new Translate(0, 0); }
         }

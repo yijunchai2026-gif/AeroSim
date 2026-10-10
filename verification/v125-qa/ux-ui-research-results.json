@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10T20:29:30.641Z",
+  "scope": "Independent research documentation, source/asset guard, and preserved approval gates only; not implementation or native device acceptance.",
+  "reviewer": "/root/ux_ui_independent_qa",
+  "status": "PASS_DOCUMENT_REVIEW_ONLY",
+  "startHead": "241aa545ff3e35bd5c436bc7cadcdb37948496d3",
+  "researchFreeze": "verification/v125-qa/ux-ui-research-freeze.json",
+  "sourceBaseline": "verification/v125-qa/ux-ui-research-baseline.json",
+  "frozenDocumentSha256": {
+    "飞行模拟器产品设计文档.md": "cc72557d8f3fa0bb899495516418908fba811d63d80fa553631a3c87bdbbf1a6",
+    "docs/V125_UX_UI_OPTIMIZATION_RESEARCH.md": "5d2fd6f98fdb3a7f92dac341c33bb65d7356e0a59438b98160e3472765c971f0",
+    "docs/V125_UX_FLOW_AUDIT.md": "562320981494bc546f6664b18542b3021b4009801e524b3755b38ef0c101b7bf",
+    "docs/V125_UI_MOBILE_AUDIT.md": "4ce49b8d70e04c285c9ac84e7cfe2853d9a7f6c4c69ce103622bc55873ccc547",
+    "docs/V125_SCENE_REALISM_AUDIT.md": "a2d3ed25cbafa80960da5dd9aeb415066b13a8dc1d670018d8281ddc337cfa67"
+  },
+  "documentationChecker": {
+    "command": "node verification/v125-qa/prd-review/prd-document-check.mjs --require-tracked --doc docs/V125_UX_UI_OPTIMIZATION_RESEARCH.md --doc docs/V125_UX_FLOW_AUDIT.md --doc docs/V125_UI_MOBILE_AUDIT.md --doc docs/V125_SCENE_REALISM_AUDIT.md",
+    "exitCode": 0,
+    "summary": {
+      "checks": 1075,
+      "failed": 0,
+      "localLinkOccurrences": 329,
+      "originalConcepts": 23,
+      "currentDrafts": 5,
+      "inheritedMissingOccurrences": 0,
+      "publicationPendingUnique": 0,
+      "status": "PASS_AUTOMATED_ONLY"
+    },
+    "failures": [],
+    "limits": [
+      "File targets only; Markdown anchors are not validated.",
+      "Includes PRD and four reports, not a native or browser action test.",
+      "Git-tracked/staged dependency state is not evidence of successful remote push."
+    ]
+  },
+  "byteGuards": {
+    "frozenReports": {
+      "checked": 5,
+      "passed": 5,
+      "mismatches": []
+    },
+    "sourceGuard": {
+      "checked": 31,
+      "passed": 31,
+      "mismatches": []
+    },
+    "originalConcepts": {
+      "checked": 23,
+      "passed": 23,
+      "mismatches": []
+    },
+    "referenceManifest": {
+      "checked": 1,
+      "passed": 1,
+      "mismatches": []
+    },
+    "historicalMavic": {
+      "checked": 4,
+      "passed": 4,
+      "mismatches": []
+    },
+    "selectedCandidate08": {
+      "checked": 6,
+      "passed": 6,
+      "mismatches": []
+    },
+    "historical05": {
+      "checked": 3,
+      "passed": 3,
+      "version": "1.0.0",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scales": [
+        100,
+        100,
+        100
+      ],
+      "visualAcceptance": "PENDING"
+    },
+    "oldMavicFullCurrentRowPreserved": true
+  },
+  "isolatedTests": {
+    "command": "node --test verification/v125-qa/test-catalog-review.mjs verification/v125-qa/prd-review/prd-document-check-test.mjs",
+    "executedByReviewer": true,
+    "total": 40,
+    "passed": 40,
+    "failed": 0,
+    "skipped": 0,
+    "catalog": 30,
+    "checkerMutation": 10,
+    "scope": "Catalog review gates and checker rejection cases only; not Unity/browser/mobile hardware tests."
+  },
+  "approvalGate": {
+    "mainAircraft": 132,
+    "variants": 9,
+    "total": 141,
+    "pendingUser": 141,
+    "currentDrafts": 5,
+    "approved": 0,
+    "newProductionAssetAllowed": false,
+    "exhaustiveCatalogProven": false
+  },
+  "closedDocumentFindings": [
+    {
+      "id": "Q01",
+      "status": "CLOSED_DOCUMENT",
+      "description": "UI draft/save wording conflicted with PRD/UX UI/HUD/Text independent immediate preview and local save. Final reports preserve those three preferences and isolate other editing drafts. Runtime transaction verification remains NOT_RUN."
+    },
+    {
+      "id": "Q02",
+      "status": "CLOSED_DOCUMENT",
+      "description": "UI fixed 30 actual-state assertion conflated inherited mapping and course/state counts. Final UI requires all actual pages and interaction contexts against a later frozen implementation inventory. Historical counts retained."
+    }
+  ],
+  "independentSourceSamples": [
+    "AeroSimApplication.Flight.cs L120-157, L218-251: pause/dialog and old TouchStick owner/lifecycle paths.",
+    "Input/FlightInput.cs L14-54: mixed source Raw and shared calibration.",
+    "AeroSimApplication.FlightDesignV1.cs L121/163/167, L220-226: direct RTH and pause/reset/discard paths.",
+    "Simulation/FlightSimulator.cs L203-208: separately polled keys.",
+    "AeroSimApplication.DesignV1.cs L145, L213-244, L279-314 and Pages.cs L40-51: origin/config/draft/save/page-rebuild paths.",
+    "AppBootstrap.cs L19-23, Responsive.cs L39-45, Application.cs L421-446, FlightDesignV1.cs L453-458: DPI/panel/safe coordinates.",
+    "Packages/manifest.json; GraphicsSettings custom pipeline 0; all six QualitySettings custom pipeline 0: Built-in evidence.",
+    "LandscapeSurface.shader L15, L24-30; Visuals/EnvironmentV1 and Ocean/River shader: existing Standard/procedural response and geometry/water limits.",
+    "MaterialsV2 meta and PROMPTS.md: intended grass tile 2m versus source ground 5m; mips/aniso8/iOS1024 format50 import configuration, not measured runtime format."
+  ],
+  "independentlyViewedImages": [
+    "assets/ui-v125/candidate-20261010-08/home-1440-text100-after08.png",
+    "assets/ui-v125/candidate-20261010-08/replay-1920-text100.png",
+    "assets/aerosim-us-flight-training-ui-v1.png",
+    "assets/ui-history/graphics-v2/pacific-coast-flight.png",
+    "assets/ui-v1/candidate-20261009-05/Aerial-Flight.png",
+    "assets/ui-v1/candidate-20261009-05/FPV-Flight.png",
+    "assets/ui-v1/candidate-20261009-05/Professional-Flight.png",
+    "assets/aerosim-us-09-fpv-race-osd.png",
+    "assets/aerosim-us-12-professional-mission.png"
+  ],
+  "primarySourceCrossChecks": [
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/layout",
+      "method": "Official search excerpt; regular open is JavaScript-only.",
+      "supports": "Adapt to available space/window/text while preserving functionality."
+    },
+    {
+      "url": "https://developer.apple.com/videos/play/wwdc2024/10085/?time=29",
+      "method": "Official search excerpt.",
+      "supports": "44 by 44 points default iPhone/iPad tap-target aim, not Unity pixel equality."
+    },
+    {
+      "url": "https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Screen-safeArea.html",
+      "method": "Opened primary documentation.",
+      "supports": "Safe area is relative Player-window pixels with bottom-left origin; UI Toolkit inversion required."
+    },
+    {
+      "url": "https://docs.unity.com/en-us/engine/6000.3/manual/materials-and-shaders/shaders/writing-shaders-birp/writing-surface/sl-surface-shader-lighting",
+      "method": "Opened primary documentation.",
+      "supports": "Surface Shaders not URP/HDRP support."
+    },
+    {
+      "url": "https://docs.unity.com/en-us/engine/6000.3/script-reference/unityeditor/textureimporterformat/astc-6x6",
+      "method": "Official search excerpt plus Unity6000.3 legacy API page.",
+      "supports": "ASTC_6x6 = 50. No runtime import/device format verification."
+    }
+  ],
+  "manualReview": {
+    "allFourReportsRead": true,
+    "prioritiesHaveClosureConditions": true,
+    "recommendationVersusImplementationDistinguished": true,
+    "staticRiskVersusNativeReproductionDistinguished": true,
+    "iosPointsVersusUnityPixelsDistinguished": true,
+    "sceneBudgetsAreProposalsNotMeasurements": true,
+    "referenceImagesNotReplaced": true,
+    "pendingModelApprovalsPreserved": true,
+    "noClaimOf125Completion": true,
+    "noRemainingBlockingConflictInReviewedScope": true
+  },
+  "notRun": [
+    "Unity build or native interactions",
+    "iPad/iPhone/Windows installation and device testing",
+    "Real gamepad/joystick/touch owner and cancellation events",
+    "Persistence failure/runtime transactions",
+    "Point/safeArea mapping on physical devices",
+    "Full 23-page human visual parity",
+    "Scene A/B/GPU/frame-time/resident-memory/thermal tests",
+    "VoiceOver/Dynamic Type implementation",
+    "Real map/airspace integration",
+    "Per-model appearance approval or product final acceptance",
+    "Git push and fresh remote-SHA verification"
+  ],
+  "limitations": [
+    "Static source includes preserved uncommitted work and is not candidate08 build proof.",
+    "Nine images actually viewed; original 23 references protected by bytes, not all human reviewed.",
+    "No revised UI or scene asset implemented by this research.",
+    "Counter totals and file existence do not replace device, visual, or user acceptance."
+  ]
+}

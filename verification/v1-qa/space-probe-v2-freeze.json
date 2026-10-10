@@ -1,0 +1,13 @@
+{
+  "contract": "independent-space-submit-v2-arrow-space-lineboxes",
+  "baseV1Sha256": "fe75cf13cdaf6d59d85e225f470b73ff212be8b73798ce9a546d97f592c1c6bd",
+  "sourceSha256": {
+    "SpaceSubmitProbeV2.cs": "87d4033dc4bd14f495e25cf9f7393c71c5890cfc93c33bad730ad21dc7baf141",
+    "prepare-space-v2.py": "04c40319198e52a04f8f8a6a02395de5068e6dd9ec26ed0d585ab9211dbb9b71",
+    "build-space-submit-probe-v2.sh": "afc7de1067412d6e2d25d66b93f3ccf6c53d49e25f184318aff6f0f5bf13d367"
+  },
+  "staticValidation": "4 generator unit tests PASS; C# Roslyn compile against uninstrumented candidate03 Managed exit0; shell syntax and git diff --check PASS; original v1 and 6 frozen matrix hashes unchanged.",
+  "nativeStatus": "NOT_RUN",
+  "manualAcceptance": "PENDING",
+  "rule": "Keep these sources unchanged during a native v2 batch. Report is independent and must not replace original v1 or frozen 34-state evidence. Runtime text-check counts depend on actual rendered content; do not infer missing checks as PASS."
+}

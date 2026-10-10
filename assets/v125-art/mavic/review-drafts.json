@@ -1,0 +1,58 @@
+[
+  {
+    "aircraftId": "dji-mavic-pro",
+    "image": "assets/v125-art/mavic/mavic-pro-draft-02.png",
+    "sha256": "ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931",
+    "revision": "draft-02",
+    "kind": "generated_review_bitmap",
+    "appearanceStatus": "pending_user",
+    "sourceUrls": [
+      "https://u.dji.com/cn/articles/36",
+      "https://www.dji.com/mavic/info",
+      "https://www.dji.com/support/product/mavic",
+      "https://www.dji.com/downloads/products/mavic",
+      "https://dl.djicdn.com/downloads/mavic/Mavic%20Pro%20User%20Manual%20V1.0.pdf",
+      "https://www4.djicdn.com/cms_uploads/ckeditor/pictures/724/content_mavic__7_.jpg",
+      "https://www4.djicdn.com/cms_uploads/ckeditor/pictures/725/content_4.jpg",
+      "https://www1.djicdn.com/uploads/share_image/image/203/f37f548d7e85eb6d9aeb75460c808072.png",
+      "https://www1.djicdn.com/uploads/share_image/image/204/45c6a77550dd736bdbbd45100e9aafbd.jpg"
+    ],
+    "notes": [
+      "Original 2016 dark-gray Mavic Pro identity; not Platinum, Alpine White, Mavic 2, Mini, or a color/combo variant.",
+      "Generated 2026-10-10 with one built-in image_gen precise-object edit, referenced_image_paths containing only draft-01 and transparent_background=false; no CLI/API fallback. Source output copied byte-for-byte and cmp verified; workspace copy actually opened with view_image.",
+      "1536 x 1024 8-bit RGB PNG four-view generated review bitmap; not an official photograph, calibrated CAD orthographic drawing, runnable mesh, UV/LOD/collider or final PBR asset.",
+      "Draft-01 was actually viewed before editing. DJI support/specification and 2016 launch text were re-read; official original-gimbal images 203/204 and dark-gray 2016 launch photograph 724 were actually viewed in the browser before this local edit. Manual pages 6-8 remain draft-01 historical research, not a new manual inspection in draft-02.",
+      "Observed local improvement: FRONT and THREE-QUARTER have a visually smaller/less tall silver-gray single-lens camera and slimmer visible axis details. Two round vision windows in compact dark angular corner sockets are retained; no measured nose-window correction is claimed.",
+      "Four-panel layout, labels, dark-gray body, unfolded four-motor outline, black two-leaf propellers and yellow front-arm double bands are visually retained. LEFT SIDE front landing strut occludes much of the camera, so identical camera/gimbal geometry and physical clearance across views remain unproven.",
+      "Observed risk: FRONT is slightly elevated rather than level orthographic, so front/rear motor height relationships cannot be confirmed consistently against LEFT SIDE.",
+      "Observed risk: propeller phases, hub details and visible tip bands are not proven identical or correct across all views; marked/unmarked quick-release hubs need explicit verification.",
+      "Observed risk: the gimbal still has a simplified silver transverse barrel/support; original axis topology, camera/nose-window ratios and clearance are not measured or fully matched to official references. Arm cross-sections, side ports, yellow-band placement and dimensions remain unverified.",
+      "Draft-01 PNG/prompt and SHA 70570d7d9b15aabf4ef7f1c7d0b65c0da8fd3cb1eacbc003bc1351a686cddeb4 are retained unchanged as history in docs/V125_ART_MAVIC.md; this manifest contains exactly one current row for dji-mavic-pro, draft-02.",
+      "No user confirmation recorded. Not eligible for formal flight selection or final Unity 3D integration."
+    ]
+  },
+  {
+    "aircraftId": "dji-mavic-4-pro",
+    "image": "assets/v125-art/mavic/mavic-4-pro-draft-01.png",
+    "sha256": "efdc1b0d6c5bf307968731e1c5f0afd9f40aa3e4e5a4eb3deb5382e090eaa9ab",
+    "revision": "draft-01",
+    "kind": "generated_review_bitmap",
+    "appearanceStatus": "pending_user",
+    "sourceUrls": [
+      "https://www.dji.com/sg/mavic-4-pro?from=store-product-page",
+      "https://www.dji.com/sg/mavic-4-pro/specs",
+      "https://repair.dji.com/help/content?customId=01700012427&lang=en&paperDocType=ARTICLE&re=US&spaceId=17",
+      "https://se-cdn.djiits.com/stormsend/uploads/099c259d7da1670b291a22b0364395e4.jpg?h=1130&thumb=BAgGA4AIuWaIhjmH%2B5imj3k%3D&w=2400"
+    ],
+    "notes": [
+      "New standard DJI Mavic 4 Pro review identity, not original 2016 Mavic Pro, Mini 4 Pro, Mavic 3 Pro or approval of the separate 512GB hardware variant.",
+      "2026-10-10 user requested Pro4 for the Mavic product-document showcase; root explicitly interpreted this as Mavic 4 Pro. General 'basically correct' art feedback is not a per-ID/revision/hash approval.",
+      "Built-in image_gen single new generation, transparent_background=false, no image-edit target or CLI fallback. Official photos were visually inspected in the browser but not downloaded or submitted to the generator; exact text prompt is retained in mavic-4-pro-draft-01.prompt.txt.",
+      "1536 x 1024 generated four-view bitmap; copied byte-for-byte from the tool output and cmp verified, then actually viewed. Not a DJI photograph, calibrated CAD, runnable mesh, UV/LOD/collider or final PBR material.",
+      "Visible Mavic 4 Pro anchors: black spherical three-camera gimbal with top large clipped-square lens surround, lower viewer-left small opening and lower viewer-right round larger lens surround; medium-gray body, four slender folding arms and black two-leaf propellers with amber tips.",
+      "Remaining limitations: lens surrounds/proportions, rear-motor landing-foot geometry, body sensing windows, underside, ports and matching physical topology across views are not verified engineering geometry. See docs/V125_ART_MAVIC4_REFERENCE.md for independent visual inspection.",
+      "Original 2016 Mavic Pro row and draft-01/draft-02 PNGs/prompts remain unchanged. Each model has exactly one separate current manifest row; no identity or confirmation migration.",
+      "pending_user only. No approval by user, no formal flight integration or final Unity 3D asset."
+    ]
+  }
+]

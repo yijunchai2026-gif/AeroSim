@@ -4,7 +4,8 @@ qa_root="$(cd "$(dirname "$0")/../.." && pwd)"
 qa_app="${1:?Pass the isolated AeroSim-UIQA.app path}"
 case "$qa_app" in /private/tmp/aerosim-uiqa.*/AeroSim-UIQA.app) ;; *) exit 2;; esac
 qa_exe="$qa_app/Contents/MacOS/AeroSim"
-qa_output="$qa_root/verification/ui-scale-qa"
+qa_output="${2:-$qa_root/verification/ui-scale-qa-v04-ui-fix-20261007-release}"
+case "$qa_output" in "$qa_root"/verification/ui-scale-qa-v04-ui-fix-*) ;; *) exit 2;; esac
 while read -r qa_name qa_width qa_height qa_scales qa_stress qa_fullscreen; do
   qa_profile="$(mktemp -d /private/tmp/aerosim-layout-profile.XXXXXX)"
   mkdir -p "$qa_output/$qa_name"

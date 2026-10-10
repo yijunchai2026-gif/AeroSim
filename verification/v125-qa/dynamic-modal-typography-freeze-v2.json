@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "contract": "independent-dynamic-modal-typography-v2",
+  "frozenUtc": "2026-10-10T07:01:54Z",
+  "nativeRunAtFreeze": "NOT_RUN",
+  "sourceSha256": {
+    "verification/v125-qa/DynamicModalTypographyProbeV2.cs": "fcf021871fb261f8ed2fabaaa856e2597b0a7bc2ce0831fe8ed0f2bb2502cf3e",
+    "verification/v125-qa/build-dynamic-modal-typography-probe-v2.sh": "1ebf9c8440d97d2eafd19713d297a4278ff5b79eb3b1497f9beed5a8febc2bbc",
+    "verification/v125-qa/dynamic-modal-typography-contract-v2.md": "32c911f92e442a35068194811d28e723cdae32beb36e10f30220e70dca05d3ff"
+  },
+  "unchangedV1Freeze": "verification/v125-qa/dynamic-modal-typography-freeze.json",
+  "revisionReason": "v1 rapid release checks run before UI Toolkit dispatch finishes: a correctly picked quick0 opens only before quick1, and correctly picked close finishes before the next normal open. Both binaries have the same 48 failures. v2 adds only EndOfFrame plus one frame after queued pointer-up on rapid path, without 0.16s settle, assertion removal, tolerance change, direct callback or new baseline.",
+  "originalAssertionsRetained": true,
+  "v1NativeEvidence": {
+    "candidate06": {
+      "path": "verification/v1-qa/results/candidate-06/dynamic-fonts-844x390/dynamic-modal-typography-report.json",
+      "sha256": "4190469a7ea321c8235e0299335734c9cc6bdf80239906421502092cd12fdea2",
+      "checks": 2185, "failures": 208, "fontFailures": 160, "rapidFailures": 48, "runtimeErrors": 0
+    },
+    "candidate07b": {
+      "path": "verification/v1-qa/results/candidate-07b/dynamic-fonts-844x390/dynamic-modal-typography-report.json",
+      "sha256": "33a4e3fc0d59e8072ae6d651e81b174ed17b7295c9840f53eb88e43cc69f2368",
+      "checks": 2185, "failures": 48, "fontFailures": 0, "rapidFailures": 48, "runtimeErrors": 0
+    }
+  },
+  "compile": {
+    "status": "PASS_COMPILE_AND_COPY_INJECTION_ONLY",
+    "candidate06Copy": "/private/tmp/aerosim-dynamic-typography-v2.IAgL40/AeroSim-UIQA.app",
+    "originalApplicationModified": false,
+    "applicationLaunchedByQa": false
+  },
+  "comparisonPolicy": "Retain v1 failures; run both candidate06 and candidate07b under this same v2 source and contract. Do not call a candidate passed before raw results exist.",
+  "limitations": "macOS logical viewport and synthetic pointer only; no original-art full visual or physical iOS/gamepad acceptance"
+}

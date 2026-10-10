@@ -1,0 +1,57 @@
+PASS Diagnostics uses isolated storage
+PASS Art texture bundled: meadow-grass-v2
+PASS Art texture bundled: coastal-rock-v2
+PASS Art texture bundled: aircraft-shell-v2
+PASS Art texture bundled: evergreen-needles-v2
+PASS Art shader supported: TrainingSurface
+PASS Art shader supported: LandscapeSurface
+PASS Art shader supported: Atmosphere
+PASS Art shader supported: OceanSurface
+PASS Art shader supported: RotorBlur
+PASS Art shader supported: NeedleFoliage
+PASS Art shader supported: IndustrialSurfaceV1
+PASS Art shader supported: RiverSurfaceV1
+PASS Route renders: Home
+PASS Route renders: Onboarding
+PASS Route renders: Controller
+PASS Route renders: Academy
+PASS Route renders: FreeFlight
+PASS Route renders: Challenges
+PASS Route renders: Hangar
+PASS Route renders: Tuning
+PASS Route renders: OsdEditor
+PASS Route renders: Dashboard
+PASS Route renders: Catalog
+PASS Route renders: Brief
+PASS Route renders: Preflight
+PASS Route renders: MissionEditor
+PASS Route renders: Instructor
+PASS Route renders: Readiness
+PASS Route renders: Settings
+PASS Route renders: Records
+PASS Pointer click launches real flight
+PASS Keyboard throttle moves aircraft
+PASS Pause freezes physics and clock
+PASS Pause button freezes session
+PASS Resume button unfreezes session
+PASS Gamepad four-channel input
+PASS Controller disconnect pauses flight
+PASS Touch four-channel input
+PASS Ordered gate objective completes
+PASS Collision updates score evidence
+PASS Session persists with score and telemetry
+PASS Result screen is shown
+PASS Replay seeks into actual telemetry
+PASS Replay advances
+PASS CSV and printable report export
+PASS RTH returns and lands
+PASS Inspection capture order completes
+PASS Photo evidence saved
+PASS Photo evidence metadata matches three real targets
+PASS Photo evidence identities and files are unique
+PASS Profile reload preserves settings and sessions
+PASS Same-frame rapid captures save distinct evidence
+PASS Evidence rendering restores camera and active targets
+PASS Immediate finish retains the captured session identity
+PASS No runtime errors or exceptions
+Failures: 0

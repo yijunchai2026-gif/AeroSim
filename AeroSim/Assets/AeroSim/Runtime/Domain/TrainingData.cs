@@ -28,6 +28,8 @@ namespace AeroSim.Domain
         public string purpose = "Recreational";
         public float sensitivity = 1, cameraAngle = 25, expo = .3f, rate = 360, thrust = 2.4f;
         public float volume = .45f, textScale = 1;
+        public string uiScale = "Auto", hudScale = "100%";
+        public bool showTouchControls;
         public int quality = 2, targetFps = 60;
         public bool highContrast, reducedMotion, showControls = true, captions = true;
         public bool osdSpeed = true, osdAltitude = true, osdTimer = true, osdBattery = true;
@@ -61,7 +63,16 @@ namespace AeroSim.Domain
         public Vector3 position, rotation;
         public Vector4 input;
     }
-    [Serializable] public class FlightEvent { public float time; public string message; public string kind; }
+    [Serializable] public class FlightEvent { public float time; public string message; public string kind; public string photoEvidenceId; }
+    [Serializable] public class PhotoEvidence
+    {
+        public string id, sessionId, fileName, capturedUtc, missionId, targetName;
+        public string status = "pending", failureReason = "", imageQuality = "not-evaluated";
+        public int sequence, targetIndex = -1, width, height;
+        public float time, targetDistance, targetFacingAngle;
+        public bool hasTarget;
+        public Vector3 aircraftPosition, aircraftRotation, cameraPosition, cameraRotation, targetPosition;
+    }
     [Serializable] public class SessionRecord
     {
         public FlightConfig config;
@@ -72,13 +83,14 @@ namespace AeroSim.Domain
         public string feedback, instructorNote = "";
         public List<TelemetryFrame> frames = new();
         public List<FlightEvent> events = new();
+        public List<PhotoEvidence> photoEvidence = new();
     }
     [Serializable] public class CourseProgress { public string id; public int bestScore, attempts; }
     [Serializable] public class Profile
     {
         public int schemaVersion = 2;
         public bool onboarded;
-        public string workspace = "Aerial", selectedAircraft = "Camera Drone";
+        public string workspace = "Aerial", selectedAircraft = "mini4";
         public UserSettings settings = new();
         public List<CourseProgress> courses = new();
         public List<string> sessions = new();
@@ -114,7 +126,9 @@ namespace AeroSim.Domain
         }
         public static void SaveSession(SessionRecord record)
         {
-            File.WriteAllText(Path.Combine(DirectoryPath, record.id + ".json"), JsonUtility.ToJson(record));
+            if (record == null) throw new ArgumentException("A session record is required.");
+            EvidencePaths.ValidateSessionId(record.id);
+            File.WriteAllText(EvidencePaths.ResolveOutput(record.id + ".json"), JsonUtility.ToJson(record));
             if (!Profile.sessions.Contains(record.id)) Profile.sessions.Insert(0, record.id);
             if (!string.IsNullOrEmpty(record.courseId))
             {
@@ -124,29 +138,58 @@ namespace AeroSim.Domain
             }
             Save();
         }
+        public static void SaveNotes(SessionRecord record)
+        {
+            if (record == null) throw new ArgumentException("A session record is required.");
+            EvidencePaths.ValidateSessionId(record.id);
+            File.WriteAllText(EvidencePaths.ResolveOutput(record.id + ".json"), JsonUtility.ToJson(record));
+            // Updating annotations is not a new flight attempt and must not modify course progress.
+        }
         public static List<SessionRecord> Sessions()
         {
             var result = new List<SessionRecord>();
             foreach (var id in Profile.sessions.Take(100))
             {
-                try { var path = Path.Combine(DirectoryPath, id + ".json"); if (File.Exists(path)) result.Add(JsonUtility.FromJson<SessionRecord>(File.ReadAllText(path))); }
+                try
+                {
+                    EvidencePaths.ValidateSessionId(id);
+                    var path = EvidencePaths.ResolveOutput(id + ".json");
+                    if (!File.Exists(path)) continue;
+                    var record = JsonUtility.FromJson<SessionRecord>(File.ReadAllText(path));
+                    if (record == null || record.id != id) { Debug.LogWarning("Session identity does not match its file."); continue; }
+                    record.frames ??= new List<TelemetryFrame>(); record.events ??= new List<FlightEvent>();
+                    record.photoEvidence ??= new List<PhotoEvidence>(); // Old records have no evidence metadata; do not fabricate it.
+                    result.Add(record);
+                }
                 catch (Exception ex) { Debug.LogWarning("Session load: " + ex.Message); }
             }
             return result;
         }
         public static string ExportCsv(SessionRecord r)
         {
-            var path = Path.Combine(DirectoryPath, r.id + "-telemetry.csv");
+            if (r == null) throw new ArgumentException("A session record is required.");
+            EvidencePaths.ValidateSessionId(r.id);
+            var path = EvidencePaths.ResolveOutput(r.id + "-telemetry.csv");
             var lines = new List<string> { "time_s,x_m,y_m,z_m,speed_mps,battery_pct,throttle,yaw,pitch,roll" };
             foreach (var f in r.frames) lines.Add(string.Join(",", new[] {f.time,f.position.x,f.position.y,f.position.z,f.speed,f.battery,f.input.x,f.input.y,f.input.z,f.input.w}.Select(v => v.ToString("F3", CultureInfo.InvariantCulture))));
             File.WriteAllLines(path, lines); return path;
         }
         public static string ExportReport(SessionRecord r)
         {
+            if (r == null) throw new ArgumentException("A session record is required.");
+            EvidencePaths.ValidateSessionId(r.id);
             string Escape(string s) => System.Net.WebUtility.HtmlEncode(s);
-            var path = Path.Combine(DirectoryPath, r.id + "-report.html");
+            var path = EvidencePaths.ResolveOutput(r.id + "-report.html");
             var events = string.Join("", r.events.Select(e => $"<tr><td>{e.time:F1}s</td><td>{Escape(e.kind)}</td><td>{Escape(e.message)}</td></tr>"));
-            File.WriteAllText(path, $"<!doctype html><meta charset='utf-8'><title>AeroSim Training Report</title><style>body{{font:16px system-ui;max-width:900px;margin:48px auto;color:#162b3e}}h1{{font-size:36px}}table{{width:100%;border-collapse:collapse}}td,th{{padding:12px;border-bottom:1px solid #ccd7df}}.score{{font-size:64px;color:#0070cf}}@media print{{button{{display:none}}}}</style><button onclick='print()'>Print / Save as PDF</button><h1>{Escape(r.title)}</h1><p>AeroSim local training report · {Escape(r.startedUtc)} · {Escape(r.physicsVersion)}</p><div class='score'>{r.score}/100</div><p>{(r.passed ? "PASSED" : "PRACTICE AGAIN")} · {r.duration:F0}s · {r.collisions} collisions · {r.photos} captures</p><p>{Escape(r.feedback)}</p><h2>Event evidence</h2><table><tr><th>Time</th><th>Type</th><th>Event</th></tr>{events}</table><h2>Instructor notes</h2><p>{Escape(r.instructorNote)}</p><p>Training record only. This document is not an FAA certificate.</p>");
+            var evidenceRows = string.Join("", (r.photoEvidence ?? new List<PhotoEvidence>()).Where(photo => photo != null).Select(photo =>
+            {
+                bool available = EvidencePaths.ResolvePhoto(r, photo) != null;
+                string media = available ? $"<a href='{Uri.EscapeDataString(photo.fileName)}'><img style='max-width:280px;height:auto' src='{Uri.EscapeDataString(photo.fileName)}' alt='Training capture {photo.sequence}'></a>" : Escape(photo.status == "saved" ? "Image file missing" : photo.failureReason);
+                string target = photo.hasTarget ? Escape(photo.targetName) : "Free-flight capture";
+                return $"<tr><td>{photo.sequence}</td><td>{photo.time.ToString("F1", CultureInfo.InvariantCulture)}s</td><td>{target}</td><td>{Escape(photo.status)}</td><td>{media}</td></tr>";
+            }));
+            string evidenceSection = string.IsNullOrEmpty(evidenceRows) ? "<p>This legacy record has no linked photo metadata. Capture counts alone do not establish image evidence.</p>" : $"<table><tr><th>Capture</th><th>Time</th><th>Target</th><th>Status</th><th>Evidence</th></tr>{evidenceRows}</table>";
+            File.WriteAllText(path, $"<!doctype html><meta charset='utf-8'><title>AeroSim Training Report</title><style>body{{font:16px system-ui;max-width:900px;margin:48px auto;color:#162b3e}}h1{{font-size:36px}}table{{width:100%;border-collapse:collapse}}td,th{{padding:12px;border-bottom:1px solid #ccd7df}}.score{{font-size:64px;color:#0070cf}}@media print{{button{{display:none}}}}</style><button onclick='print()'>Print / Save as PDF</button><h1>{Escape(r.title)}</h1><p>AeroSim local training report · {Escape(r.startedUtc)} · {Escape(r.physicsVersion)}</p><div class='score'>{r.score}/100</div><p>{(r.passed ? "PASSED" : "PRACTICE AGAIN")} · {r.duration:F0}s · {r.collisions} collisions · {r.photos} saved captures</p><p>{Escape(r.feedback)}</p><h2>Event evidence</h2><table><tr><th>Time</th><th>Type</th><th>Event</th></tr>{events}</table><h2>Photo evidence</h2>{evidenceSection}<p>Images are simulator-camera captures. Photographic image quality is not evaluated. Keep image files beside this report when sharing it.</p><h2>Instructor notes</h2><p>{Escape(r.instructorNote)}</p><p>Training record only. This document is not an FAA certificate.</p>");
             return path;
         }
     }
@@ -157,7 +200,7 @@ namespace AeroSim.Domain
         public int Minutes;
         public Course(string id, string title, string category, string workspace, string task, string objective, int minutes = 4)
         { Id=id;Title=title;Category=category;Workspace=workspace;Task=task;Objective=objective;Minutes=minutes; }
-        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=Workspace=="FPV"?"5-inch Racer":"Camera Drone", environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
+        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=AircraftCatalog.Selected.Name, environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
     }
 
     public static class CourseCatalog

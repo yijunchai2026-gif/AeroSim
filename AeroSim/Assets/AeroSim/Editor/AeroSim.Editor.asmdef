@@ -2,7 +2,8 @@
   "name": "AeroSim.Editor",
   "rootNamespace": "AeroSim.Editor",
   "references": [
-    "AeroSim.Runtime"
+    "AeroSim.Runtime",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [
     "Editor"
@@ -16,4 +17,3 @@
   "versionDefines": [],
   "noEngineReferences": false
 }
-

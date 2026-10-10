@@ -1,0 +1,1077 @@
+{
+  "schemaVersion": 1,
+  "created": "2026-10-08",
+  "targetVersion": "1.0.0",
+  "referenceCanvas": {
+    "width": 1920,
+    "height": 1080,
+    "normalization": "contain (isotropic Lanczos resampling, centered pad in #090D14); never crop/stretch; original bytes locked",
+    "uiScale": 100,
+    "hudScale": 100,
+    "textScale": 100
+  },
+  "thresholds": {
+    "pixelDelta": 16,
+    "maxMeanAbsoluteError": 3,
+    "maxChangedFraction": 0.01,
+    "maxEdgeMeanAbsoluteError": 5
+  },
+  "decision": "Machine results are VISUAL_DIFFERENT / REVIEW_REQUIRED / NOT_RUN / REFERENCE_CHANGED, never user acceptance. Strict identicalPixels is separate from tolerated metrics.",
+  "notes": [
+    "ROI coordinates manually calibrated against locked concept screenshots; not a Figma component measurement oracle.",
+    "Some concept top bars/navigation differ from PRD 64px/240px. Keep both evidence; do not change reference to pass old geometry.",
+    "No automatic scene/data masks. Optional masks must disclose exact rectangle/reason; report raw and unmasked scores; masked results cannot assert exact equality."
+  ],
+  "screens": [
+    {
+      "id": "01",
+      "state": "Aerial-Onboarding",
+      "file": "assets/aerosim-us-01-onboarding-learning-path.png",
+      "sha256": "0c03886b7542a72cc2fd0938e4c9de7f0200e639177579e39a7d7c59f0179669",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "learning-title",
+          "rect": [
+            0.06,
+            0.13,
+            0.88,
+            0.12
+          ]
+        },
+        {
+          "id": "learning-path-cards",
+          "rect": [
+            0.05,
+            0.29,
+            0.9,
+            0.49
+          ]
+        },
+        {
+          "id": "wizard-actions",
+          "rect": [
+            0.02,
+            0.85,
+            0.96,
+            0.13
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Learning path selection (not profile entry step)"
+    },
+    {
+      "id": "02",
+      "state": "Aerial-Controller",
+      "file": "assets/aerosim-us-02-controller-calibration.png",
+      "sha256": "aff35fef57082ceff060d6623f5a813538bc4e813edd9302bfb6caffdc43e618",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "wizard-steps",
+          "rect": [
+            0.02,
+            0.12,
+            0.23,
+            0.7
+          ]
+        },
+        {
+          "id": "controller-calibration",
+          "rect": [
+            0.27,
+            0.16,
+            0.4,
+            0.6
+          ]
+        },
+        {
+          "id": "live-input",
+          "rect": [
+            0.69,
+            0.16,
+            0.27,
+            0.59
+          ]
+        },
+        {
+          "id": "wizard-actions",
+          "rect": [
+            0.27,
+            0.84,
+            0.7,
+            0.12
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "03",
+      "state": "Aerial-Home",
+      "file": "assets/aerosim-us-03-aerial-home.png",
+      "sha256": "e24a8936787bd945a09a16c69e2fa0cd3814396c0070799c82f18c84cb7dd4dc",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "hero",
+          "rect": [
+            0.137,
+            0.101,
+            0.648,
+            0.442
+          ]
+        },
+        {
+          "id": "controller",
+          "rect": [
+            0.795,
+            0.102,
+            0.193,
+            0.441
+          ]
+        },
+        {
+          "id": "learning-path",
+          "rect": [
+            0.139,
+            0.556,
+            0.634,
+            0.257
+          ]
+        },
+        {
+          "id": "readiness",
+          "rect": [
+            0.782,
+            0.556,
+            0.205,
+            0.258
+          ]
+        },
+        {
+          "id": "challenge-cards",
+          "rect": [
+            0.138,
+            0.826,
+            0.85,
+            0.155
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "04",
+      "state": "Aerial-Academy",
+      "file": "assets/aerosim-us-04-aerial-academy.png",
+      "sha256": "5ee04e6d61c7457f4cc95f5d8351d9e5a2b4375a17efcf3888cdefbb311583cf",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "chapters",
+          "rect": [
+            0.131,
+            0.11,
+            0.205,
+            0.84
+          ]
+        },
+        {
+          "id": "lesson-path",
+          "rect": [
+            0.342,
+            0.11,
+            0.352,
+            0.84
+          ]
+        },
+        {
+          "id": "lesson-detail",
+          "rect": [
+            0.7,
+            0.11,
+            0.28,
+            0.84
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "05",
+      "state": "Aerial-FreeFlight",
+      "file": "assets/aerosim-us-05-free-flight-setup.png",
+      "sha256": "351a24b76181992d0bce7304a1543f38c1bcffaab047087884f3db038025243a",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "scene-preview",
+          "rect": [
+            0.141,
+            0.12,
+            0.628,
+            0.543
+          ]
+        },
+        {
+          "id": "scene-picker",
+          "rect": [
+            0.141,
+            0.684,
+            0.628,
+            0.17
+          ]
+        },
+        {
+          "id": "flight-setup",
+          "rect": [
+            0.779,
+            0.117,
+            0.202,
+            0.829
+          ]
+        },
+        {
+          "id": "launch-bar",
+          "rect": [
+            0.135,
+            0.857,
+            0.634,
+            0.108
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "06",
+      "state": "FPV-Home",
+      "file": "assets/aerosim-us-06-fpv-home.png",
+      "sha256": "e28c5556c27fcbb573b035bfdc6a4a4e10b1fadf7e78ac6dcfff94499da1bce4",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "quick-flight",
+          "rect": [
+            0.42,
+            0.805,
+            0.255,
+            0.108
+          ]
+        },
+        {
+          "id": "aircraft-summary",
+          "rect": [
+            0.02,
+            0.796,
+            0.258,
+            0.12
+          ]
+        },
+        {
+          "id": "quick-links",
+          "rect": [
+            0.762,
+            0.257,
+            0.219,
+            0.454
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "07",
+      "state": "FPV-Challenges",
+      "file": "assets/aerosim-us-07-fpv-challenges.png",
+      "sha256": "8d92a0a703fc28f20d4e98347c8937fef4f780a6ae4982bb8f28cc5614c854ef",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "challenge-grid",
+          "rect": [
+            0.183,
+            0.25,
+            0.59,
+            0.66
+          ]
+        },
+        {
+          "id": "challenge-detail",
+          "rect": [
+            0.785,
+            0.13,
+            0.2,
+            0.785
+          ]
+        },
+        {
+          "id": "filters",
+          "rect": [
+            0.004,
+            0.444,
+            0.169,
+            0.362
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "08",
+      "state": "FPV-Tuning",
+      "file": "assets/aerosim-us-08-fpv-tuning.png",
+      "sha256": "a7d9ca2ec8b687668eeb4451bcbcfc961458196d5272c58c2703991b83f32ef7",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "build-list",
+          "rect": [
+            0.167,
+            0.105,
+            0.17,
+            0.784
+          ]
+        },
+        {
+          "id": "drone-preview",
+          "rect": [
+            0.349,
+            0.192,
+            0.395,
+            0.342
+          ]
+        },
+        {
+          "id": "rates-curve",
+          "rect": [
+            0.349,
+            0.605,
+            0.395,
+            0.284
+          ]
+        },
+        {
+          "id": "rates-controls",
+          "rect": [
+            0.756,
+            0.111,
+            0.236,
+            0.778
+          ]
+        },
+        {
+          "id": "save-bar",
+          "rect": [
+            0.167,
+            0.904,
+            0.825,
+            0.084
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "09",
+      "state": "FPV-Flight",
+      "file": "assets/aerosim-us-09-fpv-race-osd.png",
+      "sha256": "b6ffb63b2ed699692b45cddf8e544b70f6193d68019294b9f30ea6a8f7a9df25",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "osd-top",
+          "rect": [
+            0.02,
+            0.02,
+            0.96,
+            0.07
+          ]
+        },
+        {
+          "id": "race-timing",
+          "rect": [
+            0.02,
+            0.85,
+            0.96,
+            0.13
+          ]
+        },
+        {
+          "id": "crosshair",
+          "rect": [
+            0.475,
+            0.465,
+            0.05,
+            0.08
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "10",
+      "state": "Professional-Home",
+      "file": "assets/aerosim-us-10-professional-dashboard.png",
+      "sha256": "78795b88ace57024e8a2c198bda99b4e02cad84dea3ca7047700e22ccefaaf64",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "next-mission",
+          "rect": [
+            0.139,
+            0.231,
+            0.615,
+            0.321
+          ]
+        },
+        {
+          "id": "qualification",
+          "rect": [
+            0.765,
+            0.229,
+            0.218,
+            0.33
+          ]
+        },
+        {
+          "id": "training-plan",
+          "rect": [
+            0.14,
+            0.566,
+            0.842,
+            0.197
+          ]
+        },
+        {
+          "id": "reports-and-skills",
+          "rect": [
+            0.14,
+            0.781,
+            0.842,
+            0.181
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "11",
+      "state": "Professional-Preflight",
+      "file": "assets/aerosim-us-11-professional-preflight.png",
+      "sha256": "d82e639254461cff9a98963e2ef05db9a3a4110c15b1e190080689d33cd4a09e",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "mission-map",
+          "rect": [
+            0.141,
+            0.216,
+            0.616,
+            0.636
+          ]
+        },
+        {
+          "id": "checklist",
+          "rect": [
+            0.773,
+            0.208,
+            0.208,
+            0.645
+          ]
+        },
+        {
+          "id": "start-bar",
+          "rect": [
+            0.144,
+            0.88,
+            0.839,
+            0.078
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "12",
+      "state": "Professional-Flight",
+      "file": "assets/aerosim-us-12-professional-mission.png",
+      "sha256": "235ce331d4632b4a1186ac3d746a575e3a35b7a89fa1bb9b4d11e1ff234e9914",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "task-top",
+          "rect": [
+            0,
+            0,
+            1,
+            0.087
+          ]
+        },
+        {
+          "id": "mission-map",
+          "rect": [
+            0.009,
+            0.619,
+            0.31,
+            0.344
+          ]
+        },
+        {
+          "id": "inspection-targets",
+          "rect": [
+            0.734,
+            0.092,
+            0.259,
+            0.854
+          ]
+        },
+        {
+          "id": "telemetry",
+          "rect": [
+            0.323,
+            0.854,
+            0.397,
+            0.109
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "13",
+      "state": "Professional-Instructor",
+      "file": "assets/aerosim-us-13-instructor-live-session.png",
+      "sha256": "177de0233e1a12d3647a7ba07a896cb3b06490a1acd5a3720fe0a98b2bce97c5",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "student-grid",
+          "rect": [
+            0.139,
+            0.268,
+            0.583,
+            0.67
+          ]
+        },
+        {
+          "id": "instructor-events",
+          "rect": [
+            0.736,
+            0.205,
+            0.245,
+            0.711
+          ]
+        },
+        {
+          "id": "cohort-selector",
+          "rect": [
+            0.14,
+            0.122,
+            0.843,
+            0.084
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Instructor four-view observed sessions (local simulation must be labeled)"
+    },
+    {
+      "id": "14",
+      "state": "Aerial-Results",
+      "file": "assets/aerosim-us-14-flight-results.png",
+      "sha256": "3ab7f1bd318bbb013a70abb906217f6f190aa96275ce09f956c276a23c61c221",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "results-panel",
+          "rect": [
+            0.255,
+            0.18,
+            0.506,
+            0.732
+          ]
+        },
+        {
+          "id": "metrics",
+          "rect": [
+            0.275,
+            0.46,
+            0.464,
+            0.11
+          ]
+        },
+        {
+          "id": "events",
+          "rect": [
+            0.275,
+            0.6,
+            0.462,
+            0.079
+          ]
+        },
+        {
+          "id": "result-actions",
+          "rect": [
+            0.275,
+            0.846,
+            0.463,
+            0.063
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Synthetic QA results fixture (not a real achievement)"
+    },
+    {
+      "id": "15",
+      "state": "Aerial-Replay",
+      "file": "assets/aerosim-us-15-replay-analysis.png",
+      "sha256": "192cd3a041761c4e0a61ecac80da26b445128542f152201fbe6c8561a518cf1e",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "replay-preview",
+          "rect": [
+            0.143,
+            0.184,
+            0.548,
+            0.454
+          ]
+        },
+        {
+          "id": "telemetry",
+          "rect": [
+            0.704,
+            0.141,
+            0.273,
+            0.495
+          ]
+        },
+        {
+          "id": "timeline",
+          "rect": [
+            0.144,
+            0.674,
+            0.834,
+            0.213
+          ]
+        },
+        {
+          "id": "playback-controls",
+          "rect": [
+            0.144,
+            0.909,
+            0.834,
+            0.045
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "16",
+      "state": "Aerial-Readiness",
+      "file": "assets/aerosim-us-16-us-flight-readiness.png",
+      "sha256": "c695330aee2685e8b3241ada318cbebacb154780ca3757a13660636ce6194433",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "readiness-checklist",
+          "rect": [
+            0.144,
+            0.26,
+            0.569,
+            0.638
+          ]
+        },
+        {
+          "id": "before-you-fly",
+          "rect": [
+            0.725,
+            0.212,
+            0.26,
+            0.708
+          ]
+        },
+        {
+          "id": "readiness-tabs",
+          "rect": [
+            0.143,
+            0.266,
+            0.554,
+            0.05
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "17",
+      "state": "Aerial-Report",
+      "file": "assets/aerosim-us-17-professional-report.png",
+      "sha256": "f54b925773739a78e9f4f56251d179682422d0f4de3a69fff809ce6e22c8f513",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "score-breakdown",
+          "rect": [
+            0.145,
+            0.215,
+            0.296,
+            0.727
+          ]
+        },
+        {
+          "id": "route-evidence",
+          "rect": [
+            0.447,
+            0.215,
+            0.297,
+            0.364
+          ]
+        },
+        {
+          "id": "mission-summary",
+          "rect": [
+            0.748,
+            0.215,
+            0.233,
+            0.364
+          ]
+        },
+        {
+          "id": "events-and-notes",
+          "rect": [
+            0.445,
+            0.592,
+            0.537,
+            0.35
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "18",
+      "state": "FPV-OsdEditor",
+      "file": "assets/aerosim-us-18-fpv-osd-editor.png",
+      "sha256": "c151a5fde6a88ebe0cda77e88cf87b551fa7c4bb2c72a97da1381e347f60fc21",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "component-library",
+          "rect": [
+            0.167,
+            0.271,
+            0.139,
+            0.638
+          ]
+        },
+        {
+          "id": "osd-canvas",
+          "rect": [
+            0.315,
+            0.217,
+            0.505,
+            0.686
+          ]
+        },
+        {
+          "id": "osd-properties",
+          "rect": [
+            0.83,
+            0.227,
+            0.157,
+            0.676
+          ]
+        },
+        {
+          "id": "osd-toolbar",
+          "rect": [
+            0.161,
+            0.921,
+            0.826,
+            0.069
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "19",
+      "state": "Professional-Brief",
+      "file": "assets/aerosim-us-19-professional-mission-brief.png",
+      "sha256": "298926de53b7a29ff16a7b385d882203541f9afdee7e74a0e3c668749f96fbb5",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "mission-route",
+          "rect": [
+            0.141,
+            0.275,
+            0.52,
+            0.66
+          ]
+        },
+        {
+          "id": "mission-objectives",
+          "rect": [
+            0.683,
+            0.229,
+            0.3,
+            0.637
+          ]
+        },
+        {
+          "id": "brief-actions",
+          "rect": [
+            0.14,
+            0.947,
+            0.842,
+            0.046
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "20",
+      "state": "Professional-Catalog",
+      "file": "assets/aerosim-us-20-professional-training-catalog.png",
+      "sha256": "3da96167f71ab686373299298b36093061aba4117462d363ab224dc8c4ed8641",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "skill-tree",
+          "rect": [
+            0.139,
+            0.246,
+            0.169,
+            0.693
+          ]
+        },
+        {
+          "id": "mission-table",
+          "rect": [
+            0.313,
+            0.275,
+            0.422,
+            0.666
+          ]
+        },
+        {
+          "id": "mission-detail",
+          "rect": [
+            0.741,
+            0.182,
+            0.242,
+            0.757
+          ]
+        },
+        {
+          "id": "search-filters",
+          "rect": [
+            0.143,
+            0.217,
+            0.59,
+            0.055
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "21",
+      "state": "Professional-MissionEditor",
+      "file": "assets/aerosim-us-21-professional-mission-editor.png",
+      "sha256": "05d1947d3b8f1997d3a1a4383755c67d4e9a9d0222d0a561e6f81d248685bc3b",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "object-library",
+          "rect": [
+            0.135,
+            0.208,
+            0.174,
+            0.702
+          ]
+        },
+        {
+          "id": "mission-canvas",
+          "rect": [
+            0.314,
+            0.189,
+            0.463,
+            0.691
+          ]
+        },
+        {
+          "id": "target-properties",
+          "rect": [
+            0.785,
+            0.173,
+            0.201,
+            0.73
+          ]
+        },
+        {
+          "id": "event-timeline",
+          "rect": [
+            0.136,
+            0.912,
+            0.85,
+            0.078
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "22",
+      "state": "Aerial-Settings",
+      "file": "assets/aerosim-us-22-global-settings.png",
+      "sha256": "6d678132b25464a833cb6d2994a99a196dbd4cc81d43bd7e225aef2128704d86",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "settings-categories",
+          "rect": [
+            0.016,
+            0.411,
+            0.104,
+            0.51
+          ]
+        },
+        {
+          "id": "settings-form",
+          "rect": [
+            0.138,
+            0.229,
+            0.501,
+            0.685
+          ]
+        },
+        {
+          "id": "settings-preview",
+          "rect": [
+            0.65,
+            0.229,
+            0.329,
+            0.677
+          ]
+        },
+        {
+          "id": "settings-actions",
+          "rect": [
+            0.135,
+            0.942,
+            0.854,
+            0.05
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    },
+    {
+      "id": "23",
+      "state": "Aerial-Flight",
+      "file": "assets/aerosim-us-flight-training-ui-v1.png",
+      "sha256": "9629a175214a232617c618d5987edfce98deb0721f4191ec3fc0d6f0541db97c",
+      "width": 1672,
+      "height": 941,
+      "regions": [
+        {
+          "id": "hud-top",
+          "rect": [
+            0,
+            0,
+            1,
+            0.087
+          ]
+        },
+        {
+          "id": "lesson-guidance",
+          "rect": [
+            0.016,
+            0.219,
+            0.239,
+            0.375
+          ]
+        },
+        {
+          "id": "radar",
+          "rect": [
+            0.018,
+            0.628,
+            0.185,
+            0.322
+          ]
+        },
+        {
+          "id": "camera-tools",
+          "rect": [
+            0.931,
+            0.235,
+            0.053,
+            0.494
+          ]
+        },
+        {
+          "id": "telemetry",
+          "rect": [
+            0.249,
+            0.882,
+            0.534,
+            0.08
+          ]
+        }
+      ],
+      "masks": [],
+      "semanticState": "Target page as shown in locked reference"
+    }
+  ]
+}

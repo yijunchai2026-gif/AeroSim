@@ -110,3 +110,292 @@
 .layout-phone .battery-metric { left: 76%; top: 28%; }
 .layout-phone .flight-bottom .primary-button { font-size: 13px; min-width: 120px; min-height: 44px; }
 .is-hidden { display: none; }
+.aircraft-preview { height: 220px; width: 100%; margin-top: 6px; margin-bottom: 16px; background-color: rgb(6,17,26); border-radius: 10px; }
+.aircraft-description { min-height: 48px; font-size: 15px; color: rgb(211,230,241); }
+.aircraft-grid .aircraft-card-selected { border-color: rgb(49,205,230); border-width: 2px; }
+.aircraft-hud-name { font-size: 15px; color: rgb(98,225,246); margin-bottom: 8px; -unity-font-style: bold; }
+.layout-phone .aircraft-preview { height: 160px; }
+
+/* 1.0 native page compositions. These are editable UIElements, never flattened screen mockups. */
+.design-v1 { background-color: rgb(6, 23, 38); color: rgb(244, 247, 251); font-size: 16px; }
+.design-v1 .top-bar { height: 88px; min-height: 88px; background-color: rgb(13, 34, 52); padding-left: 34px; padding-right: 28px; }
+.design-v1 .brand { width: 220px; }
+.design-v1 .brand-name { font-size: 30px; margin-left: 14px; }
+.design-line-icon { flex-shrink: 0; color: rgb(237, 245, 252); }
+.design-top-workspace { flex-direction: row; align-items: center; min-height: 48px; padding-left: 18px; padding-right: 14px; border-width: 1px; border-color: rgb(45, 82, 113); background-color: rgba(8, 40, 69, 0.7); border-radius: 24px; }
+.design-top-workspace .workspace-label { margin-left: 12px; margin-right: 14px; }
+.design-v1 .side-nav { width: 248px; min-width: 248px; background-color: rgb(13, 34, 52); padding-left: 16px; padding-right: 16px; padding-top: 38px; }
+.design-v1 .side-nav .workspace-switcher { display: none; }
+.design-v1 .nav-button { min-height: 60px; height: 60px; margin-bottom: 16px; border-radius: 12px; padding-left: 20px; }
+.design-v1 .nav-label { font-size: 18px; margin-left: 16px; }
+.design-v1 .nav-icon { width: 28px; min-width: 28px; }
+.design-v1 .nav-button-selected { background-color: rgb(0, 116, 255); }
+.design-v1 .nav-button-selected .design-line-icon { color: white; }
+.design-v1 .card, .design-v1 .product-panel { background-color: rgb(11, 31, 48); border-color: rgb(45, 68, 88); border-radius: 14px; }
+.design-v1 .page-title { font-size: 42px; margin-bottom: 10px; }
+.design-v1 .page-subtitle { color: rgb(181, 202, 225); font-size: 18px; margin-bottom: 24px; }
+.design-v1 .page-eyebrow { color: rgb(177, 200, 224); font-size: 12px; margin-bottom: 14px; }
+.design-v1 .panel-title { font-size: 26px; margin-bottom: 14px; }
+.design-v1 .muted { color: rgb(172, 194, 216); font-size: 14px; }
+.design-v1 .primary-button { background-color: rgb(0, 116, 255); border-radius: 10px; min-height: 52px; font-size: 18px; padding-left: 20px; padding-right: 20px; }
+.design-v1 .primary-button:hover { background-color: rgb(30, 140, 255); }
+.design-v1 .action-button { background-color: rgb(19, 41, 61); border-color: rgb(55, 84, 109); border-radius: 10px; min-height: 48px; }
+.design-v1 .primary-button:focus, .design-v1 .action-button:focus, .design-v1 .design-path-card:focus, .design-v1 .design-course-item:focus, .design-v1 .design-scene-card:focus { border-color: rgb(141, 192, 255); border-width: 2px; }
+.design-v1 .primary-button:disabled { background-color: rgb(46, 78, 114); opacity: 0.55; }
+.design-page { padding-top: 28px; padding-bottom: 28px; padding-left: 24px; padding-right: 24px; }
+.design-columns { flex-direction: row; align-items: stretch; min-width: 0; margin-left: -8px; margin-right: -8px; }
+.design-v1 .design-column { flex-grow: 1; flex-basis: 0; min-width: 0; margin-left: 8px; margin-right: 8px; }
+.design-side { width: 390px; flex-grow: 0; flex-shrink: 0; min-width: 0; margin-left: 8px; margin-right: 8px; }
+.design-rail { width: 260px; flex-grow: 0; flex-shrink: 0; min-width: 0; margin-left: 8px; margin-right: 8px; }
+.design-panel { padding: 22px; margin-bottom: 16px; }
+.design-image { background-color: rgb(12, 28, 41); border-radius: 10px; }
+.design-copy { flex-grow: 1; min-width: 0; }
+.design-item-title { font-size: 20px; -unity-font-style: bold; white-space: normal; }
+.design-icon-action { flex-direction: row; align-items: center; justify-content: center; }
+.design-icon-action .design-line-icon { margin-right: 12px; }
+.design-button-label { font-size: 16px; -unity-text-align: middle-center; }
+.design-selected { border-width: 2px; border-color: rgb(0, 147, 255); background-color: rgb(8, 47, 83); }
+.design-footer { flex-direction: row; flex-wrap: wrap; align-items: center; border-top-width: 1px; border-top-color: rgb(41, 63, 82); padding-top: 16px; margin-top: 16px; min-height: 78px; }
+.design-footer .design-copy, .design-footer > .muted { flex-grow: 1; margin-left: 16px; margin-right: 20px; }
+.design-nav-section { margin-top: 22px; margin-bottom: 12px; padding-top: 16px; border-top-width: 1px; border-top-color: rgb(52, 74, 92); color: rgb(172, 194, 216); }
+.design-v1 .product-field { margin-top: 8px; margin-bottom: 12px; }
+.design-v1 .product-field .unity-base-field__label { min-width: 170px; }
+.design-side .product-field, .design-rail .product-field { flex-direction: column; }
+.design-side .product-field .unity-base-field__label, .design-rail .product-field .unity-base-field__label { min-width: 0; margin-bottom: 8px; }
+.design-v1 .product-field .unity-base-field__input { min-height: 40px; background-color: rgb(20, 43, 63); border-color: rgb(59, 85, 109); color: rgb(242, 247, 251); }
+.design-v1 .product-field .unity-toggle__input, .design-v1 .product-field .unity-slider__input { background-color: rgba(0, 0, 0, 0); }
+.design-v1 .hero-card { border-radius: 14px; }
+.design-v1 .hero-title { font-size: 48px; }
+.design-v1 .hero-copy { width: 60%; padding-left: 40px; padding-top: 32px; }
+.design-v1 .hero-description { font-size: 18px; }
+.design-v1 .controller-card { width: 360px; }
+.design-v1 .controller-art { height: 210px; }
+.design-v1 .card-title { font-size: 24px; }
+.design-v1 .learning-card { padding-top: 18px; padding-bottom: 16px; }
+.design-v1 .readiness-card { width: 380px; }
+.design-v1 .nav-spacer { min-height: 0; flex-grow: 0; }
+.design-v1 .lesson-title { font-size: 16px; }
+.design-v1 .lesson-status { font-size: 14px; }
+.design-v1 .readiness-image { height: 95px; }
+.design-v1 .readiness-description { font-size: 14px; }
+.design-v1 .promo-title { font-size: 22px; }
+.design-v1 .promo-description { font-size: 16px; }
+.design-onboarding .side-nav { display: none; }
+.design-onboarding-page { padding-left: 64px; padding-right: 64px; }
+.design-onboarding-page > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container > .page-title { -unity-text-align: middle-center; margin-top: 44px; font-size: 48px; }
+.design-onboarding-page > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container > .page-subtitle { -unity-text-align: middle-center; }
+.design-path-grid { flex-direction: row; margin-top: 24px; }
+.design-path-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin-left: 12px; margin-right: 12px; padding: 0; background-color: rgb(12, 32, 51); border-width: 1px; border-color: rgb(77, 97, 113); border-radius: 20px; overflow: hidden; }
+.design-path-card.design-selected { border-width: 4px; border-color: rgb(0, 128, 255); }
+.design-path-image { height: 300px; border-radius: 16px; }
+.design-path-copy { flex-direction: row; padding: 26px; min-height: 145px; }
+.design-path-copy .design-line-icon { margin-right: 20px; }
+.design-path-copy .design-item-title { font-size: 26px; }
+.design-path-copy .muted { font-size: 18px; }
+.design-step-label { font-size: 20px; }
+.design-steps { flex-grow: 1; flex-direction: row; margin-left: 40px; }
+.design-step-dot { width: 20px; height: 20px; border-radius: 12px; border-width: 1px; border-color: rgb(98, 119, 138); background-color: rgb(31, 49, 67); margin-right: 58px; }
+.design-step-active { background-color: rgb(0, 135, 255); border-color: rgb(91, 215, 249); }
+.design-onboarding-form { max-width: 960px; align-self: center; width: 100%; }
+.design-controller-art { height: 450px; background-color: rgba(0, 0, 0, 0); }
+.design-controller-center { justify-content: flex-start; }
+.design-calibration-step, .design-checklist-item { flex-direction: row; align-items: center; padding-top: 16px; padding-bottom: 16px; border-bottom-width: 1px; border-bottom-color: rgb(40, 65, 86); }
+.design-calibration-step.design-selected { border-width: 1px; border-radius: 10px; }
+.design-number { width: 34px; height: 34px; min-width: 34px; margin-right: 14px; border-width: 1px; border-color: rgb(90, 141, 186); border-radius: 18px; -unity-text-align: middle-center; font-size: 18px; }
+.design-checklist-item .product-field { flex-grow: 1; min-width: 0; }
+.design-category { flex-direction: row; align-items: center; min-height: 125px; padding: 18px; margin-top: 12px; border-width: 1px; border-color: rgb(35, 62, 87); border-radius: 12px; background-color: rgb(12, 35, 54); }
+.design-category .design-line-icon { margin-right: 18px; }
+.design-course-list { min-width: 0; }
+.design-course-item { flex-direction: row; align-items: center; margin-bottom: 18px; padding: 12px; border-width: 1px; border-color: rgb(36, 63, 88); border-radius: 12px; background-color: rgb(13, 35, 53); }
+.design-course-thumb { width: 156px; height: 95px; flex-shrink: 0; margin-right: 16px; }
+.design-course-meta { width: 112px; min-width: 0; margin-left: 10px; }
+.design-course-score { color: rgb(75, 188, 255); font-size: 14px; }
+.design-detail-image { height: 240px; margin-bottom: 18px; }
+.design-environment-hero { height: 530px; position: relative; }
+.design-environment-copy { position: absolute; left: 36px; top: 34px; width: 60%; }
+.design-hero-shade { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: rgba(1, 15, 30, 0.14); }
+.design-scene-grid { flex-direction: row; margin-top: 14px; margin-left: -6px; margin-right: -6px; }
+.design-scene-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin-left: 6px; margin-right: 6px; padding: 0 12px 12px 12px; border-width: 1px; border-color: rgb(35, 60, 80); background-color: rgb(11, 31, 48); border-radius: 12px; }
+.design-scene-thumb { height: 145px; margin-left: -12px; margin-right: -12px; margin-bottom: 10px; }
+.design-scene-card .design-item-title { font-size: 18px; }
+.design-aircraft-image { width: 100%; height: 130px; margin-bottom: 10px; }
+.design-settings-image { height: 380px; position: relative; }
+.design-preview-telemetry { position: absolute; top: 20px; left: 18px; right: 18px; border-radius: 8px; padding: 14px; flex-direction: row; align-items: center; background-color: rgba(6, 25, 41, 0.9); }
+.design-preview-telemetry .design-line-icon { margin-right: 14px; }
+.design-settings-preview { width: 42%; }
+.design-fpv-home .side-nav { display: none; }
+.design-fpv-home .content-stage, .design-fpv-home .main-content { max-width: none; margin-left: 0; margin-right: 0; }
+.design-fpv-stage { flex-grow: 1; position: relative; }
+.design-fpv-scroll { flex-grow: 1; min-height: 0; min-width: 0; }
+.design-fpv-scroll .unity-scroller { width: 8px; }
+.design-fpv-scroll .unity-scroller__low-button, .design-fpv-scroll .unity-scroller__high-button { display: none; }
+.design-fpv-scroll .unity-base-slider__dragger { background-color: rgb(65, 96, 118); border-radius: 4px; }
+.design-fpv-scroll .unity-base-slider__tracker { background-color: rgba(8, 24, 38, 0.6); }
+.design-fpv-shade { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.12); }
+.design-fpv-menu { position: absolute; right: 36px; top: 80px; width: 430px; }
+.design-fpv-tile { flex-direction: row; align-items: center; min-height: 118px; margin-bottom: 16px; padding: 26px; border-width: 1px; border-color: rgb(79, 85, 93); border-radius: 20px; background-color: rgba(20, 25, 30, 0.92); }
+.design-fpv-tile .design-line-icon { margin-right: 28px; }
+.design-fpv-tile .design-item-title { font-size: 26px; }
+.design-fpv-aircraft { position: absolute; bottom: 66px; left: 32px; width: 460px; min-height: 180px; flex-direction: row; align-items: center; padding: 22px; background-color: rgba(18, 24, 28, 0.92); border-radius: 22px; border-width: 1px; border-color: rgb(80, 85, 94); }
+.design-fpv-aircraft .design-aircraft-image { width: 180px; height: 140px; margin-right: 18px; }
+.design-fpv-quick { position: absolute; bottom: 120px; left: 37%; width: 26%; height: 95px; border-radius: 36px; }
+.design-fpv-quick .design-button-label { font-size: 32px; -unity-font-style: bold; }
+.design-fpv-progress { position: absolute; bottom: 90px; right: 36px; width: 430px; padding: 20px; background-color: rgba(18, 24, 28, 0.92); border-width: 1px; border-color: rgb(80, 85, 94); border-radius: 20px; }
+.design-fpv-disclaimer { position: absolute; bottom: 32px; left: 30%; right: 30%; font-size: 16px; -unity-text-align: middle-center; }
+.design-challenge-grid, .design-instructor-grid { flex-direction: row; flex-wrap: wrap; align-content: flex-start; }
+.design-challenge-card { width: 47%; margin-right: 14px; margin-bottom: 18px; padding: 16px; border-width: 1px; border-color: rgb(38, 63, 82); border-radius: 14px; background-color: rgb(14, 31, 46); }
+.design-challenge-image { height: 210px; margin-left: -16px; margin-right: -16px; margin-top: -16px; margin-bottom: 18px; }
+.design-challenge-best { flex-direction: row; align-items: center; padding: 12px; background-color: rgb(7, 20, 31); border-radius: 10px; }
+.design-challenge-best .design-line-icon { margin-right: 16px; }
+.design-tuning-aircraft { width: 100%; height: 360px; }
+.design-v1 .response-curve { height: 260px; background-color: rgb(7, 24, 36); }
+.design-osd-preview { height: 600px; border-width: 2px; border-color: rgb(62, 90, 112); }
+.design-dashboard-hero { min-height: 360px; padding: 30px; }
+.design-dashboard-hero .panel-title { max-width: 55%; font-size: 36px; }
+.design-dashboard-hero > .wrap { max-width: 55%; }
+.design-dashboard-hero .primary-button { max-width: 55%; margin-top: 26px; }
+.design-status-row { flex-direction: row; align-items: center; padding-top: 16px; padding-bottom: 16px; border-bottom-width: 1px; border-bottom-color: rgb(38, 62, 82); }
+.design-status-row .design-line-icon { margin-right: 20px; }
+.design-table-row { flex-direction: row; align-items: center; min-height: 62px; padding: 10px; border-width: 0; border-bottom-width: 1px; border-bottom-color: rgb(39, 62, 83); background-color: rgba(0, 0, 0, 0); }
+.design-table-row.design-selected { border-width: 2px; border-radius: 10px; background-color: rgb(7, 45, 80); }
+.design-table-header { color: rgb(170, 192, 215); font-size: 12px; }
+.design-table-thumb { width: 128px; height: 60px; margin-right: 16px; flex-shrink: 0; }
+.design-table-value { width: 90px; flex-shrink: 0; margin-left: 12px; margin-right: 8px; font-size: 14px; white-space: normal; }
+.design-mission-map { width: 100%; height: 570px; border-width: 1px; border-color: rgb(35, 68, 91); border-radius: 10px; background-color: rgb(7, 27, 43); }
+.design-brief-image { height: 550px; }
+.design-instructor-grid .design-panel { width: 47%; flex-grow: 0; margin-right: 14px; }
+.design-instructor-image { height: 230px; }
+.design-tabs { flex-direction: row; border-bottom-width: 2px; border-bottom-color: rgb(0, 128, 255); margin-bottom: 18px; }
+.design-readiness-row { flex-direction: row; align-items: center; min-height: 122px; margin-bottom: 14px; border-width: 1px; border-color: rgb(40, 65, 85); border-radius: 12px; padding-right: 16px; background-color: rgb(9, 31, 48); }
+.design-readiness-thumb { width: 220px; height: 122px; flex-shrink: 0; margin-right: 20px; }
+.design-readiness-row .design-copy { margin-right: 16px; }
+.design-results-page > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container { min-height: 900px; justify-content: center; }
+.design-results-panel { width: 92%; max-width: 1320px; align-self: center; flex-grow: 0; padding: 36px; background-color: rgba(8, 26, 42, 0.96); }
+.design-results-panel > .design-results-title { font-size: 48px; }
+.design-results-heading { flex-direction: row; align-items: center; margin-top: 10px; margin-bottom: 24px; }
+.design-results-heading .design-line-icon { color: rgb(9, 221, 169); margin-right: 24px; }
+.design-results-heading .stat-value { color: white; font-size: 58px; }
+.design-result-stats { flex-direction: row; flex-wrap: wrap; margin-bottom: 26px; }
+.design-result-stat { flex-direction: row; align-items: center; flex-grow: 1; min-width: 160px; padding: 20px; margin: 6px; border-width: 1px; border-color: rgb(48, 73, 94); border-radius: 12px; background-color: rgb(16, 38, 57); }
+.design-result-stat .design-line-icon { margin-right: 18px; }
+.design-result-stat .design-item-title { font-size: 28px; }
+.design-event-timeline { flex-direction: row; margin-top: 8px; margin-bottom: 22px; border-top-width: 3px; border-top-color: rgb(21, 187, 151); }
+.design-event-point { flex-grow: 1; flex-basis: 0; min-width: 0; margin-right: 18px; padding-top: 14px; }
+.design-event-point .design-line-icon { color: rgb(17, 221, 172); margin-bottom: 10px; }
+.design-notes-field .unity-base-field__input { min-height: 160px; }
+.design-v1 .design-selected { border-width: 2px; border-color: rgb(0, 147, 255); background-color: rgb(8, 47, 83); }
+.design-v1 .design-path-card.design-selected { border-width: 4px; }
+.design-academy-page .design-rail { width: 24%; }
+.design-academy-page .design-side { width: 35%; }
+.design-academy-page .design-panel { padding-left: 22px; padding-right: 22px; }
+.design-academy-page .design-course-thumb { width: 34%; height: 110px; margin-right: 16px; }
+.design-academy-page .design-course-meta { width: 90px; }
+.design-academy-page .design-detail-image { height: 310px; }
+.design-freeflight-page .design-side { width: 26%; }
+.design-freeflight-page .design-environment-hero { height: 540px; }
+
+/* Candidate 02: fixes from native screenshots, not image-backed imitation. */
+.design-v1 .design-brand-switch { padding: 0; margin: 0; background-color: rgba(0, 0, 0, 0); border-width: 0; min-height: 52px; }
+.design-v1 .design-brand-switch:focus { border-width: 2px; border-color: rgb(141, 192, 255); border-radius: 8px; }
+.design-v1 .design-brand-switch .brand { -unity-text-align: middle-left; }
+.design-v1 .design-top-workspace { display: none; }
+.design-v1.design-fpv-home .design-top-workspace { display: flex; }
+.design-v1 .side-nav .nav-label { flex-grow: 1; margin-left: 12px; font-size: 17px; white-space: nowrap; -unity-text-align: middle-left; }
+.design-v1.text-expanded .side-nav .nav-label { white-space: normal; }
+.design-v1 .design-copy Label, .design-v1 .design-course-meta Label { -unity-text-align: middle-left; }
+.design-v1 .design-scene-card Label, .design-v1 .design-challenge-card Label { -unity-text-align: middle-left; }
+.design-v1 .hero-copy { padding-top: 26px; padding-bottom: 26px; }
+.design-v1 .readiness-card { padding-top: 14px; padding-bottom: 14px; }
+.design-v1 .readiness-image { height: 80px; margin-top: 8px; }
+.design-v1 .readiness-title { margin-top: 6px; }
+.design-v1 .lesson-grid { margin-top: -13px; }
+.design-v1.text-expanded .lesson-grid { margin-top: 12px; }
+.design-v1 .design-controller-page .design-side { width: 350px; }
+.design-v1 .design-controller-page .design-rail { width: 280px; }
+.design-v1 .design-controller-page .design-controller-art { height: 480px; }
+.design-v1 .design-controller-page .axis-label { margin-top: 18px; margin-bottom: 8px; font-size: 18px; }
+.design-v1 .design-controller-page .unity-progress-bar { height: 28px; min-height: 28px; margin-bottom: 16px; }
+.design-v1 .design-controller-page .unity-progress-bar__progress { background-color: rgb(0, 135, 255); }
+.design-v1 .design-calibration-instruction { font-size: 22px; margin-top: 18px; -unity-text-align: middle-center; }
+.design-input-advanced { margin-top: 16px; margin-bottom: 10px; }
+.design-v1 .design-range-field .unity-slider__input { min-height: 32px; height: 32px; border-width: 0; }
+.design-v1 .design-range-field .unity-base-text-field { min-height: 32px; height: 32px; width: 62px; }
+.design-v1 .design-range-field .unity-base-text-field__input { min-height: 30px; height: 30px; }
+.design-v1 .design-range-field .unity-base-slider__tracker { height: 4px; background-color: rgb(74, 103, 129); border-radius: 3px; }
+.design-v1 .design-range-field .unity-base-slider__dragger { width: 18px; height: 18px; border-width: 0; border-radius: 10px; background-color: rgb(0, 135, 255); }
+.design-v1 .design-check-field { flex-direction: row; align-items: center; min-height: 44px; }
+.design-v1 .design-check-field .unity-base-field__label { min-width: 0; flex-grow: 1; flex-shrink: 1; margin-bottom: 0; white-space: normal; }
+.design-v1 .design-check-field .unity-toggle__input { min-width: 24px; width: 24px; min-height: 24px; height: 24px; flex-grow: 0; }
+.design-v1 .design-check-field .unity-toggle__checkmark { width: 22px; height: 22px; border-radius: 5px; border-color: rgb(73, 105, 134); border-width: 1px; }
+.design-v1 .design-check-field:checked .unity-toggle__checkmark { background-color: rgb(0, 135, 255); border-color: rgb(84, 168, 255); }
+.design-v1 .design-check-field:focus { border-width: 2px; border-color: rgb(141, 192, 255); border-radius: 5px; }
+.design-v1 .design-freeflight-page .design-side .product-field { margin-top: 6px; margin-bottom: 8px; }
+.design-v1 .design-freeflight-page .design-side .design-aircraft-image { height: 110px; margin-bottom: 4px; }
+.design-v1 .design-freeflight-page .design-side .action-button { min-height: 44px; margin-top: 4px; margin-bottom: 6px; }
+.design-v1 .design-settings-page .product-field { margin-top: 5px; margin-bottom: 7px; }
+.design-v1 .design-settings-page .panel-title { margin-bottom: 8px; }
+.design-v1 .design-settings-page .design-settings-image { height: 330px; }
+.design-v1 .design-settings-page .design-panel { padding-top: 18px; padding-bottom: 18px; }
+.design-v1 .design-fpv-quick { max-width: none; min-height: 95px; }
+.design-v1 .design-results-content { padding-top: 60px; padding-bottom: 40px; }
+.design-v1 .design-results-panel .panel-title { font-size: 24px; }
+.design-v1 .design-results-panel .design-results-title { font-size: 42px; }
+.design-v1 .design-results-heading .design-item-title { font-size: 30px; }
+.design-v1 .design-results-panel .design-panel { padding: 20px; }
+.design-evidence-grid { flex-direction: row; flex-wrap: wrap; }
+.design-v1 .design-evidence-card { width: 31%; margin-right: 2%; padding: 16px; }
+.design-evidence-image { width: 100%; height: 180px; margin-top: 8px; margin-bottom: 14px; }
+.design-v1.layout-phone .design-evidence-card, .design-v1.text-expanded .design-evidence-card { width: 100%; margin-right: 0; }
+
+/* Candidate 03: true native gradient and calibration-specific shell. */
+.design-v1 .hero-shade { background-color: rgba(0, 0, 0, 0); }
+.design-v1 .hero-copy { background-color: rgba(0, 0, 0, 0); }
+.design-v1.design-home-reference .hero-card, .design-v1.design-home-reference .controller-card { height: 474px; min-height: 474px; max-height: 474px; }
+.design-v1.design-home-reference .hero-copy { height: 472px; min-height: 472px; max-height: 472px; }
+.design-v1.design-home-reference .learning-card, .design-v1.design-home-reference .readiness-card { height: 276px; min-height: 276px; max-height: 276px; }
+.design-v1.design-home-reference .promo-card { height: 168px; min-height: 168px; max-height: 168px; }
+.design-v1.design-home-reference .promo-copy { padding-top: 16px; padding-bottom: 16px; }
+.design-v1.design-home-reference .readiness-image { height: 70px; margin-top: 6px; }
+.design-v1 .lesson-active .lesson-marker { height: 34px; min-height: 34px; width: 34px; min-width: 34px; border-radius: 18px; }
+.design-v1 .promo-arrow { width: 44px; min-width: 44px; height: 44px; min-height: 44px; margin-top: -22px; -unity-text-align: middle-center; }
+.design-v1 .side-nav .nav-label { white-space: normal; height: auto; min-height: 24px; }
+.design-v1 .nav-button.design-nav-multiline { height: auto; min-height: 64px; margin-bottom: 12px; }
+.design-v1 .design-checklist-item .design-check-field { flex-grow: 1; flex-shrink: 1; flex-basis: 0; width: auto; min-width: 0; max-width: 100%; }
+.design-v1 .design-checklist-item .design-check-field .unity-base-field__label { flex-basis: 0; flex-grow: 1; flex-shrink: 1; width: auto; min-width: 0; max-width: 100%; }
+.design-v1 .design-check-field .unity-toggle__input { flex-shrink: 0; }
+.design-v1 .design-preflight-page .design-side { width: 440px; }
+.design-v1 .design-assignment-description { flex-shrink: 0; height: auto; min-height: 52px; max-width: 55%; white-space: normal; }
+.design-v1.design-controller-mode .side-nav { display: none; }
+.design-v1.design-controller-mode .content-stage, .design-v1.design-controller-mode .main-content { margin-left: 0; margin-right: 0; max-width: none; }
+.design-v1 .design-controller-page { padding-left: 24px; padding-right: 32px; padding-top: 32px; }
+.design-v1 .design-controller-page .design-rail { width: 384px; padding-top: 28px; padding-left: 28px; padding-right: 28px; border-width: 0; border-right-width: 1px; border-radius: 0; background-color: rgba(0, 0, 0, 0); }
+.design-v1 .design-controller-page .design-side { width: 500px; align-self: flex-start; margin-top: 32px; padding: 28px; }
+.design-v1 .design-controller-center { padding-top: 26px; padding-left: 26px; padding-right: 18px; }
+.design-v1 .design-controller-center .page-title { font-size: 40px; }
+.design-v1 .design-controller-center .page-subtitle { font-size: 18px; margin-bottom: 12px; }
+.design-v1 .design-controller-page .design-controller-art { height: 540px; position: relative; }
+.design-stick-guidance { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.design-v1 .design-controller-axis-list { margin-top: 16px; margin-bottom: 18px; }
+.design-v1 .design-controller-axis-row { flex-direction: row; align-items: center; min-height: 72px; border-bottom-width: 1px; border-bottom-color: rgb(43, 65, 84); }
+.design-v1 .design-controller-axis-row .axis-label { width: 132px; min-width: 132px; margin-top: 0; margin-bottom: 0; font-size: 17px; }
+.design-v1 .design-controller-axis-row .design-controller-axis-bar { flex-grow: 1; flex-shrink: 1; min-width: 0; height: 36px; min-height: 36px; margin-bottom: 0; }
+.design-v1 .design-controller-input-description { padding: 14px; border-width: 1px; border-color: rgb(47, 109, 108); border-radius: 8px; background-color: rgb(5, 38, 43); }
+.design-v1 .design-controller-page .design-footer { justify-content: flex-end; }
+.design-v1.layout-tablet .design-controller-page .design-rail, .design-v1.layout-phone .design-controller-page .design-rail, .design-v1.text-expanded .design-controller-page .design-rail { width: 100%; border-right-width: 0; }
+.design-v1.layout-tablet .design-controller-page .design-side, .design-v1.layout-phone .design-controller-page .design-side, .design-v1.text-expanded .design-controller-page .design-side { width: 100%; margin-top: 12px; }
+.design-v1.layout-phone .design-controller-page .design-controller-art { height: 300px; }
+.design-v1.layout-phone .design-controller-center { padding-left: 0; padding-right: 0; }
+.design-v1.layout-phone .design-controller-center .page-title { font-size: 28px; }
+.design-v1.layout-phone .design-controller-page .design-side { padding: 18px; }
+.design-v1.layout-phone .design-controller-axis-row .axis-label { width: 112px; min-width: 112px; }
+.design-v1.layout-phone .design-preflight-page .design-side, .design-v1.layout-tablet .design-preflight-page .design-side, .design-v1.text-expanded .design-preflight-page .design-side { width: 100%; }
+.design-v1.layout-phone .design-assignment-description, .design-v1.text-expanded .design-assignment-description { max-width: 100%; }
+.design-v1 .design-range-field .unity-slider__input { height: auto; min-height: 40px; }
+.design-v1 .design-range-field .design-range-number { height: auto; min-height: 40px; width: 84px; min-width: 84px; padding-top: 0; padding-bottom: 0; }
+.design-v1 .design-range-number .unity-base-text-field__input { height: auto; min-height: 38px; padding-top: 0; padding-bottom: 0; }
+.design-v1 .design-range-number .design-range-value { height: auto; min-height: 30px; flex-shrink: 0; padding-top: 0; padding-bottom: 0; -unity-text-align: middle-center; }
+.design-v1 .design-range-number .unity-text-element--inner-input-field-component { height: auto; min-height: 30px; padding-top: 0; padding-bottom: 0; }
+.design-v1.text-expanded .design-number { width: 60px; min-width: 60px; height: auto; min-height: 60px; border-radius: 30px; }
+.design-v1.text-expanded .design-range-field .unity-slider__input, .design-v1.text-expanded .design-range-field .design-range-number { height: auto; min-height: 58px; }
+.design-v1.text-expanded .design-range-number .unity-base-text-field__input { height: auto; min-height: 54px; }
+.design-v1.text-expanded .design-range-number .design-range-value, .design-v1.text-expanded .design-range-number .unity-text-element--inner-input-field-component { height: auto; min-height: 46px; }

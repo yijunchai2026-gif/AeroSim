@@ -1,0 +1,138 @@
+/* 1.0 original-reference HUD structure. Metrics are live, never baked in artwork. */
+.design-v1.v1-flight-hud { background-color: rgba(0,0,0,0); }
+.v1-flight-hud .v1-flight-bar { height: 88px; min-height: 88px; max-height: 88px; padding-left: 32px; padding-right: 24px; background-color: rgba(12,29,46,0.9); }
+.v1-flight-bar .brand { margin-right: 24px; }
+.v1-flight-title { font-size: 20px; color: rgb(238,244,252); white-space: nowrap; overflow: hidden; max-width: 440px; margin-right: 28px; }
+.v1-flight-status { font-size: 17px; color: rgb(47,222,198); border-color: rgb(0,159,145); border-width: 1px; border-radius: 22px; padding-left: 16px; padding-right: 16px; padding-top: 10px; padding-bottom: 10px; flex-grow: 0; margin-left: auto; margin-right: 24px; }
+.v1-simulation-chip { font-size: 12px; color: rgb(184,201,218); margin-right: 20px; }
+.v1-flight-clock { font-size: 18px; margin-right: 20px; }
+.v1-flight-action { flex-direction: row; align-items: center; justify-content: center; min-height: 44px; height: auto; padding-left: 12px; padding-right: 12px; margin-right: 0; margin-top: 0; margin-bottom: 0; flex-shrink: 0; background-color: rgba(26,41,53,0.86); border-color: rgb(71,86,96); }
+.v1-flight-action .design-line-icon { margin-right: 8px; flex-shrink: 0; }
+.v1-flight-action .design-button-label { white-space: nowrap; flex-shrink: 0; font-size: 16px; height: auto; min-height: 0; padding-top: 0; padding-bottom: 0; }
+.v1-flight-hud .v1-objective-scroll { position: absolute; left: 32px; top: 220px; width: 440px; min-height: 0; }
+.v1-flight-hud .v1-objective-card { position: relative; left: auto; top: auto; width: 100%; max-height: none; background-color: rgba(20,28,33,0.92); border-width: 1px; border-color: rgb(66,77,83); border-radius: 14px; padding-left: 24px; padding-right: 24px; padding-top: 24px; padding-bottom: 20px; }
+.v1-objective-scroll .unity-scroller { width: 6px; }
+.v1-objective-title { font-size: 20px; -unity-font-style: bold; margin-bottom: 12px; white-space: normal; }
+.v1-objective-copy { font-size: 16px; margin-bottom: 18px; }
+.v1-objective-primary { width: 100%; background-color: rgb(0,123,255); border-color: rgb(0,149,255); font-size: 19px; min-height: 56px; margin-bottom: 16px; }
+.v1-objective-note { color: rgb(190,201,211); font-size: 14px; margin-bottom: 20px; white-space: normal; }
+.v1-rth-row { border-top-width: 1px; border-top-color: rgb(61,73,82); padding-top: 16px; margin-bottom: 20px; flex-direction: row; align-items: center; flex-wrap: wrap; }
+.v1-rth-altitude { flex-grow: 1; font-size: 22px; -unity-font-style: bold; }
+.v1-rth-row .v1-flight-action { width: 44px; margin-left: 4px; }
+.v1-rth-row .design-line-icon { display: none; }
+.v1-flight-telemetry { position: absolute; bottom: 40px; height: 80px; min-height: 80px; background-color: rgba(16,24,30,0.88); border-width: 1px; border-color: rgb(78,89,95); border-radius: 14px; flex-direction: row; align-items: center; padding-left: 8px; padding-right: 8px; }
+.v1-flight-telemetry .hud-metric { position: relative; left: auto; top: auto; width: auto; min-width: 0; height: 56px; padding-left: 14px; padding-right: 14px; padding-top: 0; padding-bottom: 0; flex-direction: row; align-items: center; justify-content: center; flex-grow: 1; flex-shrink: 1; border-right-width: 1px; border-right-color: rgb(76,89,98); background-color: rgba(0,0,0,0); border-radius: 0; }
+.v1-flight-telemetry .design-line-icon { margin-right: 8px; }
+.v1-flight-telemetry .hud-caption { font-size: 13px; color: rgb(193,204,215); margin-bottom: 0; margin-right: 8px; }
+.v1-flight-telemetry .hud-value { font-size: 21px; -unity-font-style: bold; white-space: nowrap; }
+.v1-race-timer { position: absolute; bottom: 144px; left: 36%; right: 36%; -unity-text-align: middle-center; font-size: 42px; -unity-font-style: bold; color: white; }
+.v1-flight-hud .v1-flight-map { left: 32px; top: auto; bottom: 48px; right: auto; width: 336px; height: 336px; border-radius: 168px; background-color: rgba(9,34,49,0.74); border-width: 3px; border-color: rgb(216,230,236); overflow: hidden; }
+.v1-compass-n, .v1-compass-s, .v1-compass-e, .v1-compass-w { position: absolute; font-size: 14px; color: white; }
+.v1-compass-n { left: 48%; top: 8px; }
+.v1-compass-s { left: 48%; bottom: 8px; }
+.v1-compass-w { left: 8px; top: 48%; }
+.v1-compass-e { right: 8px; top: 48%; }
+.v1-map-disclaimer { position: absolute; bottom: 36px; left: 18%; right: 18%; -unity-text-align: middle-center; font-size: 12px; color: rgb(210,224,232); }
+.v1-camera-tools { position: absolute; right: 32px; top: 24%; width: 96px; padding-left: 8px; padding-right: 8px; padding-top: 12px; padding-bottom: 12px; border-width: 1px; border-color: rgb(69,83,93); border-radius: 18px; background-color: rgba(17,28,38,0.85); }
+.v1-camera-tools .v1-flight-action { flex-direction: column; min-height: 70px; font-size: 12px; margin-bottom: 8px; padding-left: 2px; padding-right: 2px; background-color: rgba(0,0,0,0); border-width: 0; }
+.v1-camera-tools .v1-flight-action .design-button-label { width: 100%; min-width: 0; flex-shrink: 1; white-space: normal; -unity-text-align: middle-center; font-size: 12px; }
+.v1-camera-tools .design-line-icon { width: 28px; height: 28px; margin-right: 0; margin-bottom: 6px; }
+.v1-compact-actions { display: none; position: absolute; left: 0; right: 0; bottom: 0; height: 56px; flex-direction: row; justify-content: center; align-items: center; background-color: rgba(6,20,33,0.94); }
+.v1-compact-actions .v1-flight-action { margin-left: 4px; margin-right: 4px; }
+.v1-flight-disclaimer { position: absolute; bottom: 14px; left: 28%; right: 28%; font-size: 12px; color: rgb(185,202,213); -unity-text-align: middle-center; }
+.v1-flight-hud .flight-guidance { top: 100px; left: 30%; right: 30%; background-color: rgba(7,19,29,0.62); }
+.v1-flight-fpv .v1-flight-bar { background-color: rgba(0,0,0,0.12); }
+.v1-flight-fpv .v1-flight-title { font-size: 22px; }
+.v1-flight-fpv .v1-objective-scroll, .v1-flight-fpv .v1-flight-map { display: none; }
+.v1-flight-fpv .v1-flight-telemetry { background-color: rgba(9,18,26,0.58); }
+.v1-flight-fpv .flight-guidance { display: none; }
+.v1-flight-fpv .objective-toggle { display: flex; }
+.v1-flight-professional .v1-objective-scroll { left: auto; right: 24px; top: 108px; width: 440px; }
+.v1-flight-professional .v1-objective-card { background-color: rgba(3,24,43,0.94); border-color: rgb(23,68,106); }
+.v1-flight-professional .v1-camera-tools { display: none; }
+.v1-inspection-progress { font-size: 14px; color: rgb(187,211,233); margin-bottom: 12px; }
+.v1-inspection-target { min-height: 46px; flex-direction: row; align-items: center; border-bottom-width: 1px; border-bottom-color: rgb(23,54,78); padding-top: 4px; padding-bottom: 4px; }
+.v1-target-state { width: 32px; height: 32px; margin-right: 10px; border-radius: 16px; border-width: 1px; border-color: rgb(132,186,239); -unity-text-align: middle-center; font-size: 16px; }
+.v1-target-name { flex-grow: 1; font-size: 14px; }
+.v1-target-active { background-color: rgba(255,181,57,0.12); border-width: 1px; border-color: rgb(255,181,57); border-radius: 8px; }
+.v1-target-complete .v1-target-state { background-color: rgb(0,222,179); color: rgb(0,35,50); }
+.v1-inspection-distance { font-size: 18px; color: rgb(58,222,204); margin-top: 16px; margin-bottom: 12px; white-space: normal; }
+.v1-flight-hud.hud-compact .v1-objective-scroll, .v1-flight-hud.hud-compact .v1-camera-tools, .v1-flight-hud.hud-compact .v1-flight-map { display: none; }
+.v1-flight-hud.hud-compact .v1-compact-actions { display: flex; }
+.text-expanded .v1-flight-action { min-height: 52px; height: auto; }
+.text-expanded .v1-flight-action .design-button-label { flex-shrink: 1; white-space: normal; }
+.text-expanded .v1-compact-actions { min-height: 72px; height: auto; }
+.text-expanded .v1-compact-actions .v1-flight-action { min-width: 0; flex-shrink: 1; }
+.text-expanded .v1-flight-disclaimer { bottom: 80px; }
+.v1-flight-hud.hud-compact .v1-flight-telemetry { top: 96px; bottom: auto; height: auto; min-height: 64px; flex-wrap: wrap; border-radius: 8px; }
+.v1-flight-hud.hud-compact .hud-metric { min-width: 80px; min-height: 48px; flex-direction: column; height: auto; padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px; }
+.v1-flight-hud.hud-compact .hud-metric .design-line-icon { display: none; }
+.v1-flight-hud.hud-compact .hud-caption { margin-right: 0; font-size: 12px; }
+.v1-flight-hud.hud-compact .hud-value { font-size: 16px; }
+.v1-flight-hud.hud-compact .v1-flight-title, .v1-flight-hud.hud-compact .v1-simulation-chip, .v1-flight-hud.hud-compact .v1-flight-status, .v1-flight-hud.hud-compact .v1-flight-clock { display: none; }
+.v1-flight-hud.hud-narrow .brand-name, .v1-flight-hud.hud-narrow .objective-toggle { display: none; }
+.v1-flight-hud.hud-narrow .v1-compact-actions .design-line-icon { display: none; }
+.v1-flight-hud.hud-narrow .v1-compact-actions .v1-flight-action { min-width: 0; flex-shrink: 1; padding-left: 6px; padding-right: 6px; }
+.v1-flight-hud.hud-narrow .v1-compact-actions .design-button-label { white-space: normal; flex-shrink: 1; }
+.v1-flight-hud.hud-compact .brand { flex-grow: 1; min-width: 0; }
+.v1-flight-hud.hud-compact .v1-flight-bar { padding-left: 12px; padding-right: 12px; }
+.v1-flight-hud.hud-compact .v1-flight-disclaimer { bottom: 60px; left: 20%; right: 20%; }
+.v1-flight-hud.hud-compact.text-expanded .v1-flight-disclaimer { bottom: 80px; }
+.v1-flight-hud.hud-compact .v1-race-timer { bottom: 72px; left: 16px; right: 16px; font-size: 26px; }
+/* Saved non-default OSD anchors use real live metrics; safe fallback never mutates the profile. */
+.v1-custom-osd-layer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.v1-custom-osd-layer .v1-custom-osd-chip { position: absolute; min-width: 0; min-height: 0; flex-grow: 0; flex-shrink: 0; border-radius: 10px; border-width: 1px; border-color: rgb(76,104,124); background-color: rgba(8,25,38,0.86); padding-left: 10px; padding-right: 10px; padding-top: 5px; padding-bottom: 5px; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+.v1-custom-osd-layer .v1-custom-osd-chip .design-line-icon { display: none; }
+.v1-custom-osd-layer .v1-custom-osd-chip .hud-caption { font-size: 12px; margin-bottom: 2px; margin-right: 0; -unity-text-align: middle-center; }
+.v1-custom-osd-layer .v1-custom-osd-chip .hud-value { font-size: 19px; white-space: nowrap; -unity-text-align: middle-center; }
+.v1-custom-osd-layer .v1-custom-osd-timer { -unity-text-align: middle-center; }
+/* Replay uses a genuine RenderTexture, real records, graphs and seekable events. */
+.v1-replay { background-color: rgb(6,23,38); }
+.v1-replay-page { flex-grow: 1; min-height: 0; padding-left: 24px; padding-right: 24px; padding-top: 16px; padding-bottom: 16px; }
+.v1-replay-heading { flex-direction: row; align-items: center; flex-wrap: wrap; min-height: 54px; margin-bottom: 12px; }
+.v1-replay-heading .page-title { font-size: 32px; margin-right: 24px; margin-bottom: 0; }
+.v1-replay-session { flex-grow: 1; font-size: 18px; margin-right: 12px; }
+.v1-replay-status { font-size: 12px; color: rgb(58,215,193); margin-right: 12px; }
+.v1-replay-columns { flex-direction: row; min-height: 560px; }
+.v1-replay-viewport { flex-grow: 1; min-width: 0; height: 560px; border-width: 1px; border-color: rgb(63,96,120); border-radius: 14px; overflow: hidden; position: relative; margin-right: 16px; }
+.v1-replay-image { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.v1-replay-camera-tabs { position: absolute; left: 14px; top: 14px; flex-direction: row; flex-wrap: wrap; }
+.v1-replay-camera-tabs .v1-flight-action { margin-right: 4px; background-color: rgba(2,30,49,0.91); }
+.v1-replay-video-controls { position: absolute; left: 14px; right: 14px; bottom: 12px; min-height: 56px; border-radius: 10px; background-color: rgba(2,19,31,0.85); flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; padding-left: 8px; padding-right: 8px; }
+.v1-replay-time { font-size: 16px; margin-right: auto; }
+.v1-replay-video-controls .v1-flight-action { margin-left: 4px; margin-right: 4px; }
+.v1-replay .v1-replay-map { position: absolute; left: 0; right: 0; top: 0; bottom: 0; width: auto; height: auto; border-radius: 0; background-color: rgb(7,32,49); }
+.v1-replay-telemetry { width: 440px; flex-shrink: 0; background-color: rgb(7,26,43); border-width: 1px; border-color: rgb(36,72,101); border-radius: 12px; padding-left: 20px; padding-right: 20px; padding-top: 16px; padding-bottom: 16px; }
+.v1-replay-telemetry .panel-title { font-size: 22px; margin-bottom: 12px; }
+.v1-replay-chart-heading { flex-direction: row; align-items: center; margin-bottom: 4px; }
+.v1-replay-chart-title { font-size: 15px; flex-grow: 1; margin-bottom: 4px; }
+.v1-replay-chart-value { font-size: 15px; color: rgb(176,218,250); margin-right: 8px; }
+.v1-replay-chart-unit { font-size: 12px; color: rgb(158,183,205); }
+.v1-replay-graph { height: 78px; background-color: rgb(8,30,49); margin-bottom: 16px; }
+.v1-replay-stick-row { flex-direction: row; justify-content: space-around; }
+.v1-replay-stick { width: 96px; height: 96px; }
+.v1-replay-input-labels { font-size: 13px; margin-top: 8px; color: rgb(166,207,236); }
+.v1-replay-timeline { margin-top: 14px; background-color: rgb(7,27,45); border-width: 1px; border-color: rgb(39,73,100); border-radius: 12px; padding-left: 20px; padding-right: 20px; padding-top: 14px; padding-bottom: 14px; }
+.v1-replay-timeline .panel-title { font-size: 20px; }
+.v1-replay-events { min-height: 84px; height: auto; }
+.v1-replay-events-row { flex-direction: row; align-items: center; }
+.v1-replay-event { max-width: 300px; min-width: 160px; margin-right: 12px; }
+.v1-replay-event .design-button-label { min-width: 0; flex-shrink: 1; white-space: normal; -unity-text-align: middle-left; }
+.v1-replay-review-actions { flex-direction: row; justify-content: flex-end; margin-top: 8px; margin-bottom: 8px; }
+.v1-replay-review-actions .v1-flight-action { margin-left: 8px; }
+.v1-replay-controls { flex-direction: row; align-items: center; flex-wrap: wrap; }
+.v1-replay-rate { width: 140px; min-width: 140px; flex-shrink: 0; min-height: 44px; }
+.v1-replay-rate .unity-base-field__input { min-width: 0; flex-grow: 1; padding-left: 10px; padding-right: 10px; }
+.v1-replay-rate .unity-base-popup-field__text { min-width: 70px; flex-grow: 1; }
+.text-expanded .v1-replay-rate { width: 180px; min-width: 180px; min-height: 58px; }
+.v1-replay-clock { font-size: 15px; margin-left: 12px; }
+.v1-replay-disclaimer { font-size: 12px; color: rgb(158,183,205); -unity-text-align: middle-center; margin-top: 12px; }
+.layout-tablet .v1-replay-columns, .layout-phone .v1-replay-columns, .text-expanded .v1-replay-columns { flex-direction: column; }
+.layout-tablet .v1-replay-telemetry, .layout-phone .v1-replay-telemetry, .text-expanded .v1-replay-telemetry { width: 100%; margin-top: 12px; }
+.layout-phone .v1-replay-viewport { height: 340px; margin-right: 0; }
+.layout-phone .v1-replay-heading { flex-direction: column; align-items: flex-start; }
+.layout-phone .v1-replay-heading .page-title { font-size: 24px; }
+.layout-phone .v1-replay-page { padding-left: 12px; padding-right: 12px; }
+.layout-phone .v1-replay-camera-tabs .design-line-icon { display: none; }
+.layout-phone .v1-replay-camera-tabs .v1-flight-action { font-size: 12px; padding-left: 6px; padding-right: 6px; }
+.layout-phone .v1-replay-columns { min-height: 0; }

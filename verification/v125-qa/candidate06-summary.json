@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "reviewedUtc": "2026-10-10T01:58:22Z",
+  "targetVersion": "1.25",
+  "testedNativeVersion": "1.0.0",
+  "candidate": "06",
+  "status": "REVIEW_REQUIRED",
+  "manualAcceptance": "PENDING",
+  "build": {
+    "app": "/private/tmp/aerosim-v1-build.9GLOTk/AeroSim.app",
+    "runtimeAssemblyMtime": "2026-10-09T18:44:41-07:00",
+    "runtimeAssemblySha256": "fe1e7a097e140687e60fa6827feda6f473b3e18c56e232e02e8780b4ff746ef7",
+    "sourceMtimeAtReview": "2026-10-09T18:44:17-07:00",
+    "sourceSha256AtReview": {
+      "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.cs": "3a897024f773e1df4a841d532f1210a0472e622a0e21ce0d9ddf9805f977e638",
+      "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Flight.cs": "3e10974b4dd006de38c61ea2a552cdd627aa5fc2ad45e24501475bb57e61ed20",
+      "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.FlightDesignV1.cs": "fa7e64fa0d38b40844880f3edd7ec7391594c0dc8533f805af1def274b810254"
+    },
+    "scope": "Root frozen native build. Source fingerprints are review snapshots; later edits require new build/evidence."
+  },
+  "nativeEvidence": [
+    {
+      "kind": "smoke",
+      "file": "verification/v125-qa/candidate06-native-smoke.txt",
+      "sha256": "e20adee356fedd5bf50b8afd20ae39774545c600964579db324c19822ce3cefa",
+      "pass": 66,
+      "fail": 0
+    },
+    {
+      "kind": "independent-pause-telemetry-v1",
+      "file": "verification/v1-qa/results/candidate-06/pause-telemetry-844x390/pause-telemetry-report.json",
+      "sha256": "9c7c6143fb8088424e53f17be1d973fdfb7f71e891042d96bcdacc0d03a20a5e",
+      "startedUtc": "2026-10-10T01:47:06.0126350Z",
+      "viewport": [844, 390],
+      "textScales": [1, 2],
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 74,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "traces": 38,
+      "rawPngs": 10,
+      "probeSourceSha256": "22c0c2339fe1ddb73b2bf453faa992d8b1f42591e84b53cbe9499d4d940c9694",
+      "physicalIosTest": false
+    },
+    {
+      "kind": "independent-space-submit-v3",
+      "file": "verification/v1-qa/results/candidate-06/space-submit-v3/space-submit-v3-report.json",
+      "sha256": "e1a2f62adcb7c08db91605acc414f19d155200f13570b2870b09c2e3b4f28342",
+      "startedUtc": "2026-10-10T01:51:23.2211990Z",
+      "viewport": [1920, 1080],
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 1911,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "unrenderedPresentationNotes": 24,
+      "unrenderedIsPass": false,
+      "physicalInputTest": false
+    }
+  ],
+  "independentVisualInspection": {
+    "scope": "Six unedited pause/nested/telemetry/back captures, Text100 and Text200. Not 23-screen parity or user acceptance.",
+    "observedToastPointerFix": true,
+    "captures": [
+      {"file": "verification/v1-qa/results/candidate-06/pause-telemetry-844x390/Text100-nested-confirm.png", "sha256": "0e0cacf0b0e76b67f720758a52b39b2d6ec293e9baa6ac11315e6678b82fd227"},
+      {"file": "verification/v1-qa/results/candidate-06/pause-telemetry-844x390/Text200-nested-confirm.png", "sha256": "a8d0cf8b344cb722de0aa024a0304107d5123b96477ae61970e04563e3bbc8a5"},
+      {"file": "verification/v1-qa/results/candidate-06/pause-telemetry-844x390/Text100-telemetry-sixth-value.png", "sha256": "f859c6d6e1bc592e7ef3382d001dd7f1ce5b71f9c6a1d516434537cf91ab2bef"},
+      {"file": "verification/v1-qa/results/candidate-06/pause-telemetry-844x390/Text200-telemetry-sixth-value.png", "sha256": "ae64a1f8d1b49016fb75d416685e541d8150f9eb9e665bccc28d5c0316651a5b"},
+      {"file": "verification/v1-qa/results/candidate-06/pause-telemetry-844x390/Text100-telemetry-back-paused.png", "sha256": "1c398ff276af6dc421a627909f61d6aaffacc3229b62890ef1b90445b18e70d4"},
+      {"file": "verification/v1-qa/results/candidate-06/pause-telemetry-844x390/Text200-telemetry-back-paused.png", "sha256": "f97075a72cc29798c1a43d444733441f4f94b52b6e80fe927b2339182dd9c143"}
+    ]
+  },
+  "catalogReviewQa": {
+    "command": "node --test verification/v125-qa/test-catalog-review.mjs",
+    "tests": 25,
+    "pass": 25,
+    "fail": 0,
+    "skip": 0,
+    "baseResearchItems": 132,
+    "independentAppearanceVariants": 9,
+    "galleryReviewItems": 141,
+    "reviewDrafts": 2,
+    "allSeedItemsPendingUser": true,
+    "realModelApprovalsCreatedByQa": 0,
+    "openCoverageGaps": 13,
+    "sources": {
+      "assets/catalog-v125/dji-aircraft.json": "4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c",
+      "assets/catalog-v125/review-template.html": "00fe5f10e2878a4d9c727554c6b5c454ea227f2c792d27a392b953ef296d2e90",
+      "verification/v125-qa/build-catalog-review.mjs": "3d7f469d8d6ae7d09d188baf8b654af5ddfeadae7fe78a126974661cc95d7e79",
+      "verification/v125-qa/test-catalog-review.mjs": "901b4ac55032f15cb4e7bf5c88be5db1da1520f4426d3280d3a4373fa8a2efce"
+    },
+    "generatedGallerySha256": "bb1019831243b8e7ea9ac0a9fb49b36c8f24f99e99a08d7441cd347f64c99f47",
+    "scope": "Synthetic DOM and isolated generator fixtures plus actual catalog/art integration in a temporary copy. Official domains validated, not all source content independently browsed. Browser layout and user approval are separate.",
+    "integrationDefectsResolved": ["Research schema version/asOfDate adapter", "cutoffStatus release-hold guard", "Phantom draft uses exact dji-phantom-1 ID"],
+    "browserValidationByIndependentQa": "NOT_RUN",
+    "rootBrowserValidation": "BLOCKED_FILE_URL_POLICY",
+    "browserLayoutAndZoomTested": false,
+    "engineeringAcceptance": "pending_root_verification"
+  },
+  "pureInputAlgorithmQa": {
+    "command": "bash verification/v125-qa/build-input-router-tests.sh",
+    "checks": 3050,
+    "failures": 0,
+    "compilerWarningsAreErrors": true,
+    "unityEditorOrPlayerLaunched": false,
+    "wiredIntoFlightInput": false,
+    "scope": "Pure C# algorithms only. No three-device runtime/controller claim.",
+    "sourceSha256": {
+      "AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs": "aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d",
+      "AeroSim/Assets/AeroSim/Runtime/Input/InputRouter.cs": "991a36ee16244bb3d1e1e60578331c0481cc994464bcc6be105076d4cb5006ef",
+      "verification/v125-qa/InputRouterTests.cs": "ced96011c456c7ca0c4376a32ed0b1a9f25454a2064dadf327b89b7396898129",
+      "verification/v125-qa/build-input-router-tests.sh": "31d898b0c64d64f096d69063cebfd451009dd4992645b925a76c500669e01c22"
+    }
+  },
+  "openFindings": [
+    {
+      "id": "P1-dynamic-modal-text-scale",
+      "status": "OPEN",
+      "evidence": "Text100 and Text200 nested/telemetry screenshots retain same dynamic font size; six telemetry bounds/required line heights are identical while background pause menu scales.",
+      "currentProbeCoversFontMultiplier": false,
+      "nextGate": "Apply configured text scaling to newly created modal trees; new freeze/build and independent font multiplier plus existing interaction checks."
+    },
+    {
+      "id": "review-file-byte-binding",
+      "status": "BOUNDARY_RECORDED",
+      "evidence": "Generator hashes PNG at build time; gallery links local files, so replacing PNG without regeneration can display changed bytes with old inline hash.",
+      "nextGate": "Engineering acceptance must recompute PNG SHA and verify user record binds current exact model/revision/hash; consider frozen or embedded bitmap bytes."
+    }
+  ],
+  "remainingGates": [
+    "Complete seven-viewport UI/HUD/Text matrix and original 23-screen visual review",
+    "Validate physical desktop controllers and iPad/iPhone touch/safe-area/interruption/performance separately",
+    "Close historical catalog coverage gaps and obtain each model's user appearance approval",
+    "Verify final branch commit push and remote SHA; preserve v0.4/v1.0 and do not merge main without authorization"
+  ]
+}

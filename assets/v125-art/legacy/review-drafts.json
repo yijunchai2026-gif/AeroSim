@@ -1,0 +1,23 @@
+[
+  {
+    "aircraftId": "dji-phantom-1",
+    "revision": "draft-02",
+    "image": "assets/v125-art/legacy/phantom-first-generation-draft-02.png",
+    "sha256": "0bd916ac7627cfb0d07957199ced134358e593ddeaaaa6334e6df4cd0b18f698",
+    "kind": "generated_review_bitmap",
+    "sourceUrls": [
+      "https://www.dji.com/downloads/products/phantom",
+      "https://dl.djicdn.com/downloads/phantom/en/PHANTOM_Quick_Start_Manual_v1.7_en.pdf",
+      "https://download.dji-innovations.com/downloads/phantom/en/PHANTOM_Quick_Start_Manual_v1.5_en.pdf"
+    ],
+    "appearanceStatus": "pending_user",
+    "notes": [
+      "Original first-generation DJI Phantom, not FC40 / Phantom 2 / Vision; no integrated camera.",
+      "1536x1024 generated 3D-style bitmap turnaround; not a mesh or final PBR asset.",
+      "Supersedes draft-01 for review; draft-01 retained with SHA-256 in docs/V125_ART_LEGACY.md.",
+      "Corrected front battery-door direction and removed suspect vibration isolators.",
+      "Unresolved: top hatch height, original GoPro bracket topology, strict orthographic geometry, compass handedness, rear LED and underside detail.",
+      "No user approval recorded; cannot enter official flight selection or final 3D assets."
+    ]
+  }
+]

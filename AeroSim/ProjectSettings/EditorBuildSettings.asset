@@ -8,5 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/AeroSim/Scenes/Main.unity
     guid: 5f74a3473cb5c493c93dc105e19e59fb
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 6e9f85b004ece4958b4de848e0f0b068, type: 3}
   m_UseUCBPForAssetBundles: 0

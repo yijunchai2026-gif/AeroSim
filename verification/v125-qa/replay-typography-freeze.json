@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "contract": "independent-replay-uss-typography-v1",
+  "frozenUtc": "2026-10-10T07:21:52Z",
+  "nativeRunAtFreeze": "NOT_RUN",
+  "sourceSha256": {
+    "verification/v125-qa/ReplayTypographyProbe.cs": "743ff1707c065fb228bdfc20af50a94e0d7e4f26e8240ba0fe0688544dfe2d7b",
+    "verification/v125-qa/build-replay-typography-probe.sh": "3ab5090d1850244e4165b8ca9c444d22c8bc20a6e705d50442d9f48e59026ea0",
+    "verification/v125-qa/replay-typography-contract.md": "229f1e13cfed76f25d9b13a5f28e24ba946370ec77618423a56f1a55573f2252"
+  },
+  "expectedTokenSourcesSha256": {
+    "AeroSim/Assets/AeroSim/Resources/UI/Product.uss": "05f2ac3a8c07458f2c87f2b57d9cf7ff5ffd5846523e247443780293a7adea2c",
+    "AeroSim/Assets/AeroSim/Resources/UI/FlightDesignV1.uss": "acc3d0bbcc865290ba5408949adf2494ced23588d201ed8139a9b36dbcd583d7"
+  },
+  "fixedTokens": [
+    { "selector": ".design-v1 .side-nav .nav-label", "source": "Product.uss:303", "fontPx": 17, "expectedReplayCount": 6 },
+    { "selector": ".v1-flight-action .design-button-label", "source": "FlightDesignV1.uss:11", "fontPx": 16, "expectedReplayCount": 12 },
+    { "selector": ".v1-replay-disclaimer", "source": "FlightDesignV1.uss:129", "fontPx": 12, "expectedReplayCount": 1 }
+  ],
+  "entryPolicy": "Actual product Home and Records->Replay through InputSystem pointer; saved fixture is isolated and synthetic, never user records. No reflection callback invoke or replacement UI.",
+  "matrix": { "textMultipliers": [1, 1.25, 1.5, 2], "uiScale": "100%", "hudScale": "100%", "initialViewport": "1920x1080", "paths": ["Home", "Records->Replay", "Replay reapply3", "Home->Records->Replay reopen"] },
+  "compile": { "status": "PASS_COMPILE_AND_COPY_INJECTION_ONLY", "candidate06Copy": "/private/tmp/aerosim-replay-typography.i69Yrn/AeroSim-UIQA.app", "applicationLaunchedByQa": false, "originalModified": false },
+  "comparisonPolicy": "Same frozen probe first06 and07b, then new07c. Do not derive expectation from potentially wrong binaryText100 or change USS/contract to manufacture pass.",
+  "limitations": "Native macOS logical typography token/linebox gates only, not complete pixel parity, physical iOS or controller validation"
+}

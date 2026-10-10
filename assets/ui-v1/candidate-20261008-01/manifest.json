@@ -1,0 +1,489 @@
+{
+  "schemaVersion": 1,
+  "batch": "candidate-20261008-01",
+  "version": "1.0.0",
+  "startedUtc": "2026-10-09T04:22:50.3725960Z",
+  "generatedUtc": "2026-10-09T04:26:05.544Z",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "uiScale": 100,
+  "hudScale": 100,
+  "textScale": 100,
+  "captureSource": "Native Unity screenshot — isolated QA candidate and profile",
+  "sourceReportSha256": "7458d309f3e571dd2bc1d53ca6d18f72a93d912b2af70c41103e4693ca450d4e",
+  "sourceReportRelativePath": "verification/v1-qa/results/candidate-01/native/desktop-1920x1080/report.json",
+  "referenceManifestSha256": "54100c6a1a108827e8edf09440864ec12aace0acbde0005199c86fb4f6107799",
+  "runtimeErrors": 0,
+  "imageProcessing": "Byte-identical PNG copy only; no resizing, painting, overlays, or masks",
+  "visualAcceptance": "PENDING",
+  "userAcceptance": "PENDING",
+  "limitations": [
+    "Synthetic QA session data, not user achievements.",
+    "Concept artwork and native screenshots are distinctly labeled.",
+    "No claim of pixel equality, complete features, mobile hardware validation, real online classrooms or FAA/Google Maps integration."
+  ],
+  "screens": [
+    {
+      "id": "01",
+      "state": "Aerial-Onboarding",
+      "reference": "assets/aerosim-us-01-onboarding-learning-path.png",
+      "referenceSha256": "0c03886b7542a72cc2fd0938e4c9de7f0200e639177579e39a7d7c59f0179669",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Onboarding.png",
+      "actualSha256": "071f3ca324d66800cb618f653e5569fecc70166eebb11b7df4b5b91d964269dd",
+      "sourceScreenshot": "100-text100-Aerial-Onboarding.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Learning path selection (not profile entry step)",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "02",
+      "state": "Aerial-Controller",
+      "reference": "assets/aerosim-us-02-controller-calibration.png",
+      "referenceSha256": "aff35fef57082ceff060d6623f5a813538bc4e813edd9302bfb6caffdc43e618",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Controller.png",
+      "actualSha256": "6e32875f1e1f4e735b1b12ce9738b787c057c1f4e25d595a9a0c2849e9b68941",
+      "sourceScreenshot": "100-text100-Aerial-Controller.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "03",
+      "state": "Aerial-Home",
+      "reference": "assets/aerosim-us-03-aerial-home.png",
+      "referenceSha256": "e24a8936787bd945a09a16c69e2fa0cd3814396c0070799c82f18c84cb7dd4dc",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Home.png",
+      "actualSha256": "f3468aaf4e6389da62db79ef50edbadacdb70106dda6a5c82bbf84a8789d1ea4",
+      "sourceScreenshot": "100-text100-Aerial-Home.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 6,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "04",
+      "state": "Aerial-Academy",
+      "reference": "assets/aerosim-us-04-aerial-academy.png",
+      "referenceSha256": "5ee04e6d61c7457f4cc95f5d8351d9e5a2b4375a17efcf3888cdefbb311583cf",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Academy.png",
+      "actualSha256": "11fcc07d6c81be9723e267f27442dd09bc3ec151d043af1d400ec719e714cd60",
+      "sourceScreenshot": "100-text100-Aerial-Academy.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "05",
+      "state": "Aerial-FreeFlight",
+      "reference": "assets/aerosim-us-05-free-flight-setup.png",
+      "referenceSha256": "351a24b76181992d0bce7304a1543f38c1bcffaab047087884f3db038025243a",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-FreeFlight.png",
+      "actualSha256": "275d0908418d0732d8cd2a4b945da0588ce68ab684db34607daaee625156e633",
+      "sourceScreenshot": "100-text100-Aerial-FreeFlight.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "06",
+      "state": "FPV-Home",
+      "reference": "assets/aerosim-us-06-fpv-home.png",
+      "referenceSha256": "e28c5556c27fcbb573b035bfdc6a4a4e10b1fadf7e78ac6dcfff94499da1bce4",
+      "actual": "assets/ui-v1/candidate-20261008-01/FPV-Home.png",
+      "actualSha256": "87b3f460e14d26c452ec9af1c708b9a8429054169abc128af1bd5a0de9b03f81",
+      "sourceScreenshot": "100-text100-FPV-Home.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "07",
+      "state": "FPV-Challenges",
+      "reference": "assets/aerosim-us-07-fpv-challenges.png",
+      "referenceSha256": "8d92a0a703fc28f20d4e98347c8937fef4f780a6ae4982bb8f28cc5614c854ef",
+      "actual": "assets/ui-v1/candidate-20261008-01/FPV-Challenges.png",
+      "actualSha256": "f14fa934ff53fbe898a09d9c1b202e2ac7295797cb76a77cccdef79aeeb6ab91",
+      "sourceScreenshot": "100-text100-FPV-Challenges.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "08",
+      "state": "FPV-Tuning",
+      "reference": "assets/aerosim-us-08-fpv-tuning.png",
+      "referenceSha256": "a7d9ca2ec8b687668eeb4451bcbcfc961458196d5272c58c2703991b83f32ef7",
+      "actual": "assets/ui-v1/candidate-20261008-01/FPV-Tuning.png",
+      "actualSha256": "4b57c00fd487b022786997d39e041d0d978e55522bd7932b55a7508a008d6584",
+      "sourceScreenshot": "100-text100-FPV-Tuning.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "09",
+      "state": "FPV-Flight",
+      "reference": "assets/aerosim-us-09-fpv-race-osd.png",
+      "referenceSha256": "b6ffb63b2ed699692b45cddf8e544b70f6193d68019294b9f30ea6a8f7a9df25",
+      "actual": "assets/ui-v1/candidate-20261008-01/FPV-Flight.png",
+      "actualSha256": "3bca71bc112463b8468a938d95b5134588a0a7e8f3d562ea470fda27990ac5f0",
+      "sourceScreenshot": "100-text100-FPV-Flight.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 0,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "10",
+      "state": "Professional-Home",
+      "reference": "assets/aerosim-us-10-professional-dashboard.png",
+      "referenceSha256": "78795b88ace57024e8a2c198bda99b4e02cad84dea3ca7047700e22ccefaaf64",
+      "actual": "assets/ui-v1/candidate-20261008-01/Professional-Home.png",
+      "actualSha256": "8c866ab3255b3475955c3e9ef4f2363c1229e681e045039f083a99a718a100ed",
+      "sourceScreenshot": "100-text100-Professional-Home.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 3,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "11",
+      "state": "Professional-Preflight",
+      "reference": "assets/aerosim-us-11-professional-preflight.png",
+      "referenceSha256": "d82e639254461cff9a98963e2ef05db9a3a4110c15b1e190080689d33cd4a09e",
+      "actual": "assets/ui-v1/candidate-20261008-01/Professional-Preflight.png",
+      "actualSha256": "3d60ef63b5d439a96cbdfb2451c194d0936de849a1d855d08ecf21540aeddc57",
+      "sourceScreenshot": "100-text100-Professional-Preflight.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 3,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "12",
+      "state": "Professional-Flight",
+      "reference": "assets/aerosim-us-12-professional-mission.png",
+      "referenceSha256": "235ce331d4632b4a1186ac3d746a575e3a35b7a89fa1bb9b4d11e1ff234e9914",
+      "actual": "assets/ui-v1/candidate-20261008-01/Professional-Flight.png",
+      "actualSha256": "f63b227579ccbcc42ff808283e5917b04cae3e8364666fd1b8b0d49680f32fb4",
+      "sourceScreenshot": "100-text100-Professional-Flight.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 0,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "13",
+      "state": "Professional-Instructor",
+      "reference": "assets/aerosim-us-13-instructor-live-session.png",
+      "referenceSha256": "177de0233e1a12d3647a7ba07a896cb3b06490a1acd5a3720fe0a98b2bce97c5",
+      "actual": "assets/ui-v1/candidate-20261008-01/Professional-Instructor.png",
+      "actualSha256": "2ffb3f7cab0eae95a766d950fc5efe1a36c3add448989f0d6cbd93b0d215a7f6",
+      "sourceScreenshot": "100-text100-Professional-Instructor.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Instructor four-view observed sessions (local simulation must be labeled)",
+      "failedChecks": 3,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "14",
+      "state": "Aerial-Results",
+      "reference": "assets/aerosim-us-14-flight-results.png",
+      "referenceSha256": "3ab7f1bd318bbb013a70abb906217f6f190aa96275ce09f956c276a23c61c221",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Results.png",
+      "actualSha256": "9a87720e7ccc3940ba036cfc0d594e08c8544dbe395da66784cca436e69671db",
+      "sourceScreenshot": "100-text100-Aerial-Results.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Synthetic QA results fixture (not a real achievement)",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "15",
+      "state": "Aerial-Replay",
+      "reference": "assets/aerosim-us-15-replay-analysis.png",
+      "referenceSha256": "192cd3a041761c4e0a61ecac80da26b445128542f152201fbe6c8561a518cf1e",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Replay.png",
+      "actualSha256": "a1b3170ebf4bb7ec8549fe5d49703dabe8a8e5c840986dafd1a949109e22414f",
+      "sourceScreenshot": "100-text100-Aerial-Replay.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 11,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "16",
+      "state": "Aerial-Readiness",
+      "reference": "assets/aerosim-us-16-us-flight-readiness.png",
+      "referenceSha256": "c695330aee2685e8b3241ada318cbebacb154780ca3757a13660636ce6194433",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Readiness.png",
+      "actualSha256": "b9f300f82ec3d83ed391f9423cd70f63d4979418dec606bdcb240139d86ace13",
+      "sourceScreenshot": "100-text100-Aerial-Readiness.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "17",
+      "state": "Aerial-Report",
+      "reference": "assets/aerosim-us-17-professional-report.png",
+      "referenceSha256": "f54b925773739a78e9f4f56251d179682422d0f4de3a69fff809ce6e22c8f513",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Report.png",
+      "actualSha256": "ecc8b6771b344541d7cb945ba1b694bd978cc9e697a87398b3c8ed2204a331be",
+      "sourceScreenshot": "100-text100-Aerial-Report.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "18",
+      "state": "FPV-OsdEditor",
+      "reference": "assets/aerosim-us-18-fpv-osd-editor.png",
+      "referenceSha256": "c151a5fde6a88ebe0cda77e88cf87b551fa7c4bb2c72a97da1381e347f60fc21",
+      "actual": "assets/ui-v1/candidate-20261008-01/FPV-OsdEditor.png",
+      "actualSha256": "c5104b54c1e65219e4ded41642d03dfad8b98aae420a43a3c0c7909e8ac03302",
+      "sourceScreenshot": "100-text100-FPV-OsdEditor.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "19",
+      "state": "Professional-Brief",
+      "reference": "assets/aerosim-us-19-professional-mission-brief.png",
+      "referenceSha256": "298926de53b7a29ff16a7b385d882203541f9afdee7e74a0e3c668749f96fbb5",
+      "actual": "assets/ui-v1/candidate-20261008-01/Professional-Brief.png",
+      "actualSha256": "f2a0cf53e6f463c1533605f80771fa82af8e0b585746c5f5349389a20c771fe0",
+      "sourceScreenshot": "100-text100-Professional-Brief.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 3,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "20",
+      "state": "Professional-Catalog",
+      "reference": "assets/aerosim-us-20-professional-training-catalog.png",
+      "referenceSha256": "3da96167f71ab686373299298b36093061aba4117462d363ab224dc8c4ed8641",
+      "actual": "assets/ui-v1/candidate-20261008-01/Professional-Catalog.png",
+      "actualSha256": "f26528142e37c39caf5dea1b4173f12ac76aea4a567724918b9aff6211ea8a9c",
+      "sourceScreenshot": "100-text100-Professional-Catalog.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 3,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "21",
+      "state": "Professional-MissionEditor",
+      "reference": "assets/aerosim-us-21-professional-mission-editor.png",
+      "referenceSha256": "05d1947d3b8f1997d3a1a4383755c67d4e9a9d0222d0a561e6f81d248685bc3b",
+      "actual": "assets/ui-v1/candidate-20261008-01/Professional-MissionEditor.png",
+      "actualSha256": "27308d7684ec1e1758eed1a351e4eb376fae6f6064b2629d672c70443451787f",
+      "sourceScreenshot": "100-text100-Professional-MissionEditor.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 4,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "22",
+      "state": "Aerial-Settings",
+      "reference": "assets/aerosim-us-22-global-settings.png",
+      "referenceSha256": "6d678132b25464a833cb6d2994a99a196dbd4cc81d43bd7e225aef2128704d86",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Settings.png",
+      "actualSha256": "2091c784e1c63346b9ef1d17bf029437747e27d117c230e9c54a04801b1a6794",
+      "sourceScreenshot": "100-text100-Aerial-Settings.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 2,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    },
+    {
+      "id": "23",
+      "state": "Aerial-Flight",
+      "reference": "assets/aerosim-us-flight-training-ui-v1.png",
+      "referenceSha256": "9629a175214a232617c618d5987edfce98deb0721f4191ec3fc0d6f0541db97c",
+      "actual": "assets/ui-v1/candidate-20261008-01/Aerial-Flight.png",
+      "actualSha256": "3c0d4052ceb76323e103a90b3a4aa3f8932681e8717b670b4d8b9193687c5e31",
+      "sourceScreenshot": "100-text100-Aerial-Flight.png",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiScale": 100,
+      "hudScale": 100,
+      "textScale": 100,
+      "semanticState": "Target page as shown in locked reference",
+      "failedChecks": 0,
+      "visualAcceptance": "PENDING",
+      "userAcceptance": "PENDING"
+    }
+  ]
+}

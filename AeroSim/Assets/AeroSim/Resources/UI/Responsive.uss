@@ -1,0 +1,175 @@
+/* 0.4 layout contract. Dimensions are logical pixels; panel scale is independent of text size. */
+.app-body { min-height: 0; min-width: 0; }
+.top-bar { height: 64px; min-height: 64px; max-height: 64px; flex-shrink: 0; }
+.brand { width: auto; min-width: 200px; }
+.top-settings .icon-button-label { min-width: 30px; white-space: nowrap; }
+.top-settings { position: absolute; right: 24px; top: 9px; margin-left: 0; }
+.status-strip { margin-right: 64px; }
+.status-strip { min-width: 0; }
+.side-nav { width: 240px; min-width: 240px; flex-shrink: 0; }
+.layout-tablet .side-nav, .layout-phone .side-nav { width: 72px; min-width: 72px; padding-left: 6px; padding-right: 6px; }
+.nav-button { height: auto; min-height: 44px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0; }
+.layout-tablet .nav-button, .layout-phone .nav-button { justify-content: center; padding-left: 6px; padding-right: 6px; }
+.layout-tablet .nav-icon, .layout-phone .nav-icon { width: 32px; -unity-text-align: middle-center; }
+.content-stage { flex-grow: 1; min-width: 0; min-height: 0; align-items: center; background-color: rgb(6,23,38); }
+.main-content { width: 100%; max-width: 1600px; min-width: 0; min-height: 0; flex-grow: 1; }
+.home-scroll, .product-scroll { min-height: 0; padding-left: 32px; padding-right: 32px; padding-top: 24px; padding-bottom: 24px; }
+.layout-tablet .home-scroll, .layout-tablet .product-scroll { padding-left: 24px; padding-right: 24px; }
+.layout-phone .home-scroll, .layout-phone .product-scroll { padding-left: 16px; padding-right: 16px; }
+.layout-narrow .home-scroll, .layout-narrow .product-scroll { padding-left: 24px; padding-right: 24px; }
+.layout-wide .home-scroll, .layout-wide .product-scroll { padding-left: 40px; padding-right: 40px; }
+.text-expanded .nav-button { padding-left: 8px; padding-right: 8px; }
+.text-expanded .nav-icon { width: 24px; }
+.text-expanded .nav-label { margin-left: 4px; }
+.text-expanded.layout-desktop .nav-icon { display: none; }
+.text-expanded.layout-desktop .nav-label { margin-left: 0; flex-grow: 1; -unity-text-align: middle-left; }
+.text-expanded.layout-desktop .workspace-switcher { height: auto; min-height: 48px; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; }
+.text-expanded.layout-desktop .workspace-icon, .text-expanded.layout-desktop .workspace-chevron { display: none; }
+Label, Button { white-space: normal; }
+.hero-card, .layout-phone .hero-card { min-width: 0; min-height: 412px; height: auto; flex-shrink: 0; }
+.hero-copy { width: 480px; max-width: 100%; height: auto; min-height: 412px; }
+.text-expanded .hero-copy { width: 100%; }
+.hero-title { font-size: 32px; }
+.hero-description { width: auto; font-size: 14px; }
+.hero-metrics { flex-wrap: wrap; }
+.primary-button, .layout-phone .primary-button { width: auto; max-width: 285px; min-width: 0; height: auto; min-height: 44px; padding-left: 16px; padding-right: 16px; padding-top: 8px; padding-bottom: 8px; margin-top: 6px; font-size: 15px; }
+.controller-card { min-width: 300px; width: 314px; height: auto; min-height: 412px; flex-shrink: 0; }
+.controller-status { height: auto; min-height: 68px; flex-shrink: 0; }
+.controller-labels { min-width: 0; }
+.secondary-row-button { height: auto; min-height: 44px; padding-top: 8px; padding-bottom: 8px; }
+.row-icon { font-size: 12px; }
+.learning-card, .layout-phone .learning-card { height: auto; min-height: 240px; min-width: 0; flex-shrink: 0; }
+.section-heading { height: auto; min-height: 34px; flex-wrap: wrap; }
+.section-subtitle { white-space: normal; }
+.lesson-grid { margin-top: 12px; flex-wrap: wrap; }
+.lesson, .layout-phone .lesson { min-width: 0; height: auto; min-height: 166px; flex-shrink: 0; }
+.readiness-card, .layout-tablet .readiness-card, .layout-phone .readiness-card { height: auto; min-height: 240px; min-width: 0; flex-shrink: 0; }
+.promo-card { height: auto; min-height: 145px; min-width: 0; flex-shrink: 0; }
+.promo-copy { height: auto; max-width: 100%; }
+.text-action { min-height: 44px; height: auto; }
+.product-panel { flex-grow: 0; flex-shrink: 0; }
+.page-title { font-size: 32px; }
+.product-grid .product-panel { width: 48%; min-width: 0; margin-right: 2%; }
+.product-field { min-width: 0; }
+.product-field .unity-base-field__input { min-width: 0; }
+.layout-tablet .top-row, .layout-tablet .middle-row, .layout-tablet .promo-row,
+.layout-phone .top-row, .layout-phone .middle-row, .layout-phone .promo-row,
+.text-expanded .top-row, .text-expanded .middle-row, .text-expanded .promo-row { flex-direction: column; }
+.layout-tablet .controller-card, .layout-phone .controller-card, .text-expanded .controller-card { width: 100%; min-width: 0; height: auto; min-height: 412px; margin-left: 0; margin-top: 14px; }
+.layout-tablet .controller-art { position: relative; right: auto; top: auto; width: auto; height: 190px; }
+.layout-tablet .controller-status, .layout-tablet .secondary-row-button { width: 100%; }
+.layout-tablet .readiness-card, .layout-phone .readiness-card, .text-expanded .readiness-card { width: 100%; margin-left: 0; margin-top: 14px; }
+.layout-tablet .promo-card, .layout-phone .promo-card, .text-expanded .promo-card { width: 100%; margin-left: 0; margin-bottom: 14px; }
+.layout-phone .product-grid .product-panel, .text-expanded .product-grid .product-panel { width: 100%; margin-right: 0; }
+.text-expanded .product-field { flex-direction: column; }
+.text-expanded .product-field .unity-base-field__label { min-width: 0; margin-bottom: 8px; }
+.text-expanded .lesson-grid { flex-direction: column; }
+.text-expanded .lesson { width: 100%; margin-bottom: 12px; }
+.text-expanded .status-strip { display: none; }
+.layout-phone .side-nav .action-button { font-size: 12px; }
+.flight-bar { height: 48px; min-height: 48px; max-height: 48px; padding-left: 16px; padding-right: 16px; }
+.flight-status { min-width: 0; flex-shrink: 1; font-size: 14px; }
+.flight-bar .action-button { min-height: 44px; height: 44px; margin-top: 0; margin-bottom: 0; padding-top: 2px; padding-bottom: 2px; padding-left: 8px; padding-right: 8px; font-size: 12px; }
+.objective-toggle { display: none; }
+.hud-compact .objective-toggle { display: flex; }
+.hud-compact .flight-brand { display: none; }
+.objective-card { top: 128px; }
+.hud-compact .objective-card, .hud-compact .mini-map, .hud-compact .flight-guidance { display: none; }
+.input-readout { display: none; }
+.mini-map { left: 24px; bottom: 72px; right: auto; top: auto; width: 240px; height: 180px; }
+.hud-metric, .layout-phone .hud-metric { min-width: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; }
+.hud-caption { font-size: 12px; margin-bottom: 2px; }
+.hud-value { font-size: 18px; }
+.hud-metric Label { margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; }
+.hud-metric .hud-caption { margin-bottom: 2px; }
+.flight-guidance { left: 32%; right: 32%; top: 128px; bottom: auto; min-height: 32px; max-height: 48px; }
+.flight-bottom, .layout-phone .flight-bottom { height: 56px; min-height: 56px; max-height: 56px; flex-wrap: nowrap; }
+.hud-actions-scroll { flex-grow: 1; min-width: 0; height: 56px; }
+.hud-actions-row { height: 56px; flex-direction: row; align-items: center; }
+.hud-actions-row .action-button, .hud-actions-row .primary-button { flex-shrink: 0; width: auto; min-height: 44px; margin-top: 0; margin-bottom: 0; margin-right: 8px; }
+.touch-stick, .layout-phone .touch-stick { display: none; width: 100px; height: 100px; bottom: 84px; }
+.hud-touch .touch-stick { display: flex; }
+.stick-left, .layout-phone .stick-left { left: 24px; }
+.stick-right, .layout-phone .stick-right { right: 24px; }
+.stick-caption, .layout-phone .stick-caption { top: 104px; font-size: 12px; }
+.modal-scroll { width: 540px; max-width: 90%; height: 90%; max-height: 520px; min-height: 0; flex-grow: 0; }
+.modal-overlay .modal-scroll .product-panel { width: 100%; max-width: 100%; margin-bottom: 0; flex-grow: 0; }
+.modal-overlay .action-button, .modal-overlay .primary-button { flex-shrink: 0; max-width: 100%; }
+.modal-scroll .unity-scroller { width: 8px; }
+.modal-scroll .unity-scroller__low-button, .modal-scroll .unity-scroller__high-button { display: none; }
+.modal-scroll .unity-base-slider__dragger { background-color: rgb(57,89,111); border-radius: 4px; }
+.modal-scroll .unity-base-slider__tracker { background-color: rgb(8,24,38); }
+.replay-slider { min-width: 150px; flex-shrink: 0; }
+.toast { min-width: 0; width: 80%; max-width: 540px; left: 10%; margin-left: 0; }
+/* Source-image contract only for 1.0; the 0.4 branch and build stay untouched. */
+.design-v1 .top-bar { height: 88px; min-height: 88px; max-height: 88px; }
+.design-v1 .main-content { max-width: none; }
+.design-v1 .side-nav { width: 248px; min-width: 248px; }
+.design-v1 .home-scroll { padding-left: 16px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; }
+.design-v1 .hero-card, .design-v1 .hero-copy { min-height: 474px; }
+.design-v1 .controller-card { width: 372px; min-width: 372px; min-height: 474px; }
+.design-v1 .learning-card, .design-v1 .readiness-card { min-height: 276px; }
+.design-v1 .readiness-card { width: 396px; }
+.design-v1 .promo-card { min-height: 168px; }
+.design-v1 .design-button-label { min-width: 0; flex-shrink: 1; white-space: normal; }
+.design-v1 .design-icon-action { height: auto; flex-shrink: 0; max-width: 100%; }
+.design-v1 .nav-label { min-width: 0; white-space: normal; }
+.design-v1.text-expanded .nav-button { height: auto; min-height: 60px; padding-top: 14px; padding-bottom: 14px; }
+.design-v1.text-expanded .design-columns, .design-v1.layout-tablet .design-columns, .design-v1.layout-phone .design-columns { flex-direction: column; margin-left: 0; margin-right: 0; }
+.design-v1.text-expanded .design-column, .design-v1.text-expanded .design-side, .design-v1.text-expanded .design-rail,
+.design-v1.layout-tablet .design-column, .design-v1.layout-tablet .design-side, .design-v1.layout-tablet .design-rail,
+.design-v1.layout-phone .design-column, .design-v1.layout-phone .design-side, .design-v1.layout-phone .design-rail { width: 100%; flex-basis: auto; flex-grow: 0; margin-left: 0; margin-right: 0; margin-bottom: 12px; }
+.design-v1.layout-tablet .side-nav, .design-v1.layout-phone .side-nav { width: 72px; min-width: 72px; padding-left: 6px; padding-right: 6px; padding-top: 16px; }
+.design-v1.layout-tablet .nav-button, .design-v1.layout-phone .nav-button { padding-left: 6px; padding-right: 6px; }
+.design-v1.layout-tablet .nav-label, .design-v1.layout-phone .nav-label { display: none; }
+.design-v1.layout-phone .brand { min-width: 0; width: auto; }
+.design-v1.layout-phone .brand-name { font-size: 20px; margin-left: 8px; }
+.design-v1.layout-phone .brand .design-line-icon { width: 30px; height: 30px; }
+.design-v1.layout-phone .top-bar { padding-left: 12px; padding-right: 12px; }
+.design-v1.layout-phone .design-top-workspace { max-width: 136px; min-width: 0; margin-left: 8px; padding-left: 8px; padding-right: 8px; }
+.design-v1.layout-phone .design-top-workspace .workspace-label { font-size: 12px; margin-left: 4px; margin-right: 4px; }
+.design-v1.layout-phone .design-top-workspace .design-line-icon { display: none; }
+.design-v1.layout-phone .top-settings { right: 8px; }
+.design-v1.layout-tablet .hero-copy, .design-v1.layout-phone .hero-copy, .design-v1.text-expanded .hero-copy { width: 100%; padding-left: 24px; padding-right: 24px; }
+.design-v1.layout-tablet .controller-card, .design-v1.layout-phone .controller-card, .design-v1.text-expanded .controller-card { width: 100%; min-width: 0; }
+.design-v1.layout-tablet .readiness-card, .design-v1.layout-phone .readiness-card, .design-v1.text-expanded .readiness-card { width: 100%; }
+.design-v1.layout-phone .page-title { font-size: 28px; }
+.design-v1.layout-phone .page-subtitle { font-size: 16px; }
+.design-v1.layout-phone .panel-title { font-size: 22px; }
+.design-v1.layout-phone .design-page, .design-v1.layout-phone .design-onboarding-page { padding-left: 16px; padding-right: 16px; }
+.design-v1.layout-phone .design-panel { padding-left: 16px; padding-right: 16px; }
+.design-v1.layout-phone .design-path-grid, .design-v1.text-expanded .design-path-grid { flex-direction: column; }
+.design-v1.layout-phone .design-path-card, .design-v1.text-expanded .design-path-card { flex-basis: auto; flex-grow: 0; width: 100%; margin-left: 0; margin-right: 0; margin-bottom: 16px; }
+.design-v1.layout-phone .design-path-image { height: 200px; }
+.design-v1.layout-phone .design-path-copy { padding: 16px; }
+.design-v1.layout-phone .design-course-item, .design-v1.text-expanded .design-course-item { flex-direction: column; align-items: stretch; }
+.design-v1.layout-phone .design-course-thumb, .design-v1.text-expanded .design-course-thumb { width: 100%; height: 150px; margin-right: 0; margin-bottom: 10px; }
+.design-v1.layout-phone .design-course-meta, .design-v1.text-expanded .design-course-meta { width: 100%; margin-left: 0; margin-top: 8px; }
+.design-v1.layout-phone .design-scene-grid, .design-v1.text-expanded .design-scene-grid { flex-wrap: wrap; }
+.design-v1.layout-phone .design-scene-card, .design-v1.text-expanded .design-scene-card { flex-basis: auto; flex-grow: 0; width: 46%; margin-bottom: 12px; }
+.design-v1.layout-phone .design-challenge-card, .design-v1.text-expanded .design-challenge-card { width: 100%; margin-right: 0; }
+.design-v1.layout-phone .design-readiness-row, .design-v1.text-expanded .design-readiness-row { flex-direction: column; align-items: stretch; padding-right: 0; }
+.design-v1.layout-phone .design-readiness-thumb, .design-v1.text-expanded .design-readiness-thumb { width: 100%; margin-right: 0; height: 160px; }
+.design-v1.layout-phone .design-readiness-row .design-copy { padding-left: 12px; padding-right: 12px; }
+.design-v1.layout-phone .design-table-row, .design-v1.text-expanded .design-table-row { flex-wrap: wrap; }
+.design-v1.layout-phone .design-table-thumb, .design-v1.text-expanded .design-table-thumb { width: 100%; height: 150px; margin-right: 0; }
+.design-v1.layout-phone .design-table-value, .design-v1.text-expanded .design-table-value { width: auto; min-width: 56px; flex-grow: 1; margin-bottom: 8px; }
+.design-v1.layout-phone .design-instructor-grid .design-panel, .design-v1.text-expanded .design-instructor-grid .design-panel { width: 100%; margin-right: 0; }
+.design-v1.layout-phone .design-steps { margin-left: 16px; }
+.design-v1.layout-phone .design-step-dot { margin-right: 16px; }
+.design-v1.layout-phone .design-settings-image { height: 260px; }
+.design-v1.layout-phone .design-preview-telemetry { left: 8px; right: 8px; padding-left: 8px; padding-right: 8px; }
+.design-v1.layout-phone .design-preview-telemetry .design-line-icon { display: none; }
+.design-v1.layout-phone .design-environment-hero { height: 300px; }
+.design-v1.layout-phone .design-environment-copy { left: 16px; top: 16px; width: 86%; }
+.design-v1.layout-phone .design-controller-art { height: 260px; }
+.design-v1.layout-phone .design-brief-image { height: 300px; }
+.design-v1.layout-phone .design-results-panel { width: 100%; padding: 20px; }
+.design-v1.layout-phone .design-dashboard-hero .panel-title, .design-v1.layout-phone .design-dashboard-hero > .wrap, .design-v1.layout-phone .design-dashboard-hero .primary-button,
+.design-v1.text-expanded .design-dashboard-hero .panel-title, .design-v1.text-expanded .design-dashboard-hero > .wrap, .design-v1.text-expanded .design-dashboard-hero .primary-button { max-width: 100%; }
+.design-v1.layout-phone .design-fpv-stage, .design-v1.text-expanded .design-fpv-stage, .design-v1.layout-tablet .design-fpv-stage { min-height: 1150px; }
+.design-v1.layout-phone .design-fpv-menu, .design-v1.text-expanded .design-fpv-menu, .design-v1.layout-tablet .design-fpv-menu { position: relative; top: auto; right: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
+.design-v1.layout-phone .design-fpv-aircraft, .design-v1.text-expanded .design-fpv-aircraft, .design-v1.layout-tablet .design-fpv-aircraft { position: relative; left: auto; bottom: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
+.design-v1.layout-phone .design-fpv-quick, .design-v1.text-expanded .design-fpv-quick, .design-v1.layout-tablet .design-fpv-quick { position: relative; left: auto; bottom: auto; width: auto; height: auto; min-height: 64px; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
+.design-v1.layout-phone .design-fpv-progress, .design-v1.text-expanded .design-fpv-progress, .design-v1.layout-tablet .design-fpv-progress { position: relative; right: auto; bottom: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; margin-bottom: 24px; }
+.design-v1.layout-phone .design-fpv-disclaimer, .design-v1.text-expanded .design-fpv-disclaimer, .design-v1.layout-tablet .design-fpv-disclaimer { position: relative; left: auto; right: auto; bottom: auto; margin-left: 16px; margin-right: 16px; margin-bottom: 24px; white-space: normal; }
