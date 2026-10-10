@@ -59,6 +59,10 @@
 
 上传通道当前阻塞：终端HTTPS无可用凭据，GitHub Desktop电脑操作通道多次超时；GitHub connector只读该私有仓库返回404（不能推断仓库不存在或自行改可见性）。Desktop标准凭据helper需DESKTOP_PORT、不能独立正常调用；标准Credential Manager在禁止交互下也没有可用认证。未打印/提取凭据、未更改权限。尚无本批push成功与新远端SHA，不声称已上传。后继恢复先核实际Git及上传状态，再处理下一批。
 
+本批代码/图稿/文档已**本地提交**为 `7a23c00619987733698b6e8c39a8455cf708f012`，[GitHub提交目标链接（尚未上传，当前可能不可访问）](https://github.com/yijunchai2026-gif/AeroSim/commit/7a23c00619987733698b6e8c39a8455cf708f012)。实际`git push origin HEAD:refs/heads/codex/v125-product-lines`与随后`ls-remote`均exit128：`could not read Username ... terminal prompts disabled`。因此上传状态为 **UNPUSHED_AUTH_BLOCKED**；本地缓存origin仍`6b47aac516c7f5113cec82fc4beb4357467d5942`，不是本轮新远端证据。main、1.0与0.4分支SHA未变，0.4应用未覆盖。
+
+下一次恢复先检查GitHub访问和本地ahead提交，上传本批及此断点记录后再核远端SHA；不得重复生成图稿/构建/重跑已完成合同，也不得把缓存origin或构建成功当push成功。用户可在GitHub Desktop的AeroSim仓库中完成正常Push origin/Fetch origin；若登录或仓库权限需要用户操作，明确请求恢复访问，不提取密码或擅改账号安全设置。需先补上传；待确认的机型和三端未完成项继续如实保留。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
