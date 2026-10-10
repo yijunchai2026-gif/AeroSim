@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "1.25",
+  "candidate": "07",
+  "testedNativeVersion": "1.0.0",
+  "statusAtFreeze": "NOT_RUN",
+  "baseCommit": "6b47aac516c7f5113cec82fc4beb4357467d5942",
+  "sourceSha256": {
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Responsive.cs": "1a965308e3d699df2803d47173aab1412f536090380663216b2f596d247d8216",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Flight.cs": "709525aadfb1b9e6f30dbfbf4b888efbfdea4a851e6c47ffc09b3b2e1d225dfe",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.FlightDesignV1.cs": "a77b47a0ac4d8a26527f84aa241e8af7bb980bf13e0a7616a97d0311aa8ea00e",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.cs": "749cd8f01ccbc44227f75829fa1929db39cdd7960f9c4555c604d4f6b5d19644"
+  },
+  "scope": "Dynamic Confirm, Objective and Telemetry typography plus deferred scheduler cleanup. Runtime sources frozen before root build. Full device and original 23-screen visual acceptance remain pending.",
+  "oldContractsUnchanged": true,
+  "productionAssetApprovalsCreated": 0
+}

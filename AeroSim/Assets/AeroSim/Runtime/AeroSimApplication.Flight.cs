@@ -138,6 +138,7 @@ namespace AeroSim
             _flightDialogClose = Close;
             p.Add(Row(ActionButton("Keep Flying", Close), ActionButton("Confirm Exit", () => { Close(); confirm(); }, true)));
             overlay.Add(ModalScroll(p)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            ApplyTypography(overlay);
             overlay.Query<Button>().First()?.Focus();
         }
         private void ShowObjective()
@@ -152,6 +153,7 @@ namespace AeroSim
             _flightDialogClose = Close;
             panel.Add(ActionButton("Back to Flight", Close, true));
             overlay.Add(ModalScroll(panel)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            ApplyTypography(overlay);
             overlay.Query<Button>().First()?.Focus();
         }
         private void RestoreFlightDialogFocus()

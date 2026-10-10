@@ -248,6 +248,7 @@ namespace AeroSim
             _flightDialogClose = Close;
             panel.Add(ActionButton("Back to Flight", Close, true));
             overlay.Add(ModalScroll(panel)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            ApplyTypography(overlay);
             overlay.Query<Button>().First()?.Focus();
         }
 

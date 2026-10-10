@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "1.25",
+  "candidate": "07b",
+  "testedNativeVersion": "1.0.0",
+  "statusAtFreeze": "NOT_RUN",
+  "baseCommit": "6b47aac516c7f5113cec82fc4beb4357467d5942",
+  "previousAttempt": {
+    "sourceFreeze": "verification/v125-qa/candidate07-source-freeze.json",
+    "status": "BUILD_FAILED",
+    "log": "/private/tmp/aerosim-v1-candidate07-build.log",
+    "evidence": "CS0029: ExecuteLater returns void; InputRouter.cs.meta had a 33-digit GUID and Unity ignored the asset."
+  },
+  "sourceSha256": {
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Responsive.cs": "aeb602c63e142540b62b4a9e781ea963338afa342458e4b2086cda33bcaca305",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Flight.cs": "709525aadfb1b9e6f30dbfbf4b888efbfdea4a851e6c47ffc09b3b2e1d225dfe",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.FlightDesignV1.cs": "a77b47a0ac4d8a26527f84aa241e8af7bb980bf13e0a7616a97d0311aa8ea00e",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.cs": "749cd8f01ccbc44227f75829fa1929db39cdd7960f9c4555c604d4f6b5d19644",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputRouter.cs.meta": "ba890bdbbef941638a5be1425d4b74faa4decb41f7a9f1ad19b7ae1c6f68370d"
+  },
+  "metadataVerification": { "validAndUniqueGuidCount": 87, "allGuidLengths": 32, "oldInvalidGuidHasNoAssetReferences": true },
+  "scope": "Root fixes Execute/ExecuteLater API use and unreferenced invalid metadata, then refreezes. No old QA contract or reference changed. Native/device/visual acceptance remain pending.",
+  "productionAssetApprovalsCreated": 0
+}

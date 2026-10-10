@@ -10,6 +10,12 @@ namespace AeroSim
     public sealed partial class AeroSimApplication
     {
         private readonly Dictionary<TextElement, float> _baseFonts = new();
+        private readonly Dictionary<TextElement, StyleLength> _originalFonts = new();
+        private readonly HashSet<VisualElement> _typographyScopes = new();
+        private IVisualElementScheduledItem _typographySchedule;
+        private VisualElement _typographyRoot;
+        private int _typographyGeneration;
+        private int _typographyReadyFrame;
         private bool _typographyScheduled;
         private int _lastWindowWidth, _lastWindowHeight;
         private readonly Dictionary<VisualElement, StyleLength> _designColumnWidths = new();
@@ -40,33 +46,120 @@ namespace AeroSim
             return device;
         }
 
-        private void ApplyTypography()
+        private void ApplyTypography(VisualElement scope = null)
         {
+            if (!isActiveAndEnabled || _root?.panel == null) return;
+            if (_typographyRoot != _root)
+            {
+                CancelTypography();
+                _typographyRoot = _root;
+                _typographyRoot.RegisterCallback<DetachFromPanelEvent>(OnTypographyRootDetached);
+            }
+            scope ??= _root;
+            // A whole-page pass includes any dynamic overlays added before it runs.
+            // Otherwise keep the request local to the newly attached tree.
+            if (scope == _root) { _typographyScopes.Clear(); _typographyScopes.Add(_root); }
+            else if (!_typographyScopes.Contains(_root)) _typographyScopes.Add(scope);
+            // Milliseconds alone do not guarantee a USS pass: a new page can be
+            // attached late in a slow frame. Read fresh bases only after the
+            // following panel style/layout update has had a complete frame.
+            _typographyReadyFrame = Mathf.Max(_typographyReadyFrame, Time.frameCount + 2);
             if (_typographyScheduled) return;
             _typographyScheduled = true;
-            _root.schedule.Execute(() => {
+            var scheduledRoot = _root;
+            int generation = _typographyGeneration;
+            _typographySchedule = scheduledRoot.schedule.Execute(() => {
+                if (generation != _typographyGeneration || scheduledRoot != _root) return;
+                if (Time.frameCount < _typographyReadyFrame) return;
+                _typographySchedule?.Pause();
                 _typographyScheduled = false;
+                _typographySchedule = null;
+                var scopes = new List<VisualElement>(_typographyScopes);
+                _typographyScopes.Clear();
                 // Release removed page elements without losing bases on a live font change.
                 var stale = new List<TextElement>();
                 foreach (var pair in _baseFonts) if (pair.Key.panel == null) stale.Add(pair.Key);
-                foreach (var item in stale) _baseFonts.Remove(item);
+                foreach (var item in stale) RestoreTypographyFont(item);
+                if (!isActiveAndEnabled || scheduledRoot.panel == null || LocalStore.Profile == null) return;
                 float multiplier = Mathf.Clamp(LocalStore.Profile.settings.textScale, 1, 2);
-                foreach (var element in _root.Query<TextElement>().ToList())
+                var textElements = new HashSet<TextElement>();
+                foreach (var tree in scopes)
                 {
-                    if (element.ClassListContains("nav-icon") || element.ClassListContains("brand-mark-glyph") ||
-                        element.ClassListContains("device-icon-glyph") || element.ClassListContains("workspace-icon") ||
-                        element.ClassListContains("workspace-chevron") || element.ClassListContains("brand-name") ||
-                        element.ClassListContains("row-icon") || element.ClassListContains("row-chevron")) continue;
-                    if (!_baseFonts.TryGetValue(element, out float font))
-                    {
-                        font = element.resolvedStyle.fontSize;
-                        if (float.IsNaN(font) || font <= 0) continue;
-                        font = Mathf.Max(12, font); _baseFonts[element] = font;
-                    }
+                    // A dialog can close while waiting for its first style/layout pass.
+                    if (tree.panel != null && tree.panel == scheduledRoot.panel && IsTypographyTreeUnder(tree, scheduledRoot))
+                        foreach (var element in tree.Query<TextElement>().ToList()) textElements.Add(element);
+                }
+                ApplyTypographyToElements(textElements, multiplier);
+            });
+            _typographySchedule.Every(1); // Retry the frame gate, not a new font baseline.
+            // ExecuteLater mutates the item and returns void in Unity 6.3.
+            _typographySchedule.ExecuteLater(30); // Read USS tokens after the first style/layout pass.
+        }
+
+        private void OnTypographyRootDetached(DetachFromPanelEvent evt)
+        {
+            if (evt.target == _typographyRoot) CancelTypography();
+        }
+
+        private void CancelTypography()
+        {
+            _typographyGeneration++;
+            _typographySchedule?.Pause();
+            _typographySchedule = null;
+            _typographyScheduled = false;
+            _typographyReadyFrame = 0;
+            _typographyScopes.Clear();
+            _typographyRoot?.UnregisterCallback<DetachFromPanelEvent>(OnTypographyRootDetached);
+            _typographyRoot = null;
+            // Detached elements may be reused. Restore their original inline state
+            // before discarding a base, so a later attach cannot sample Text200.
+            foreach (var item in new List<TextElement>(_baseFonts.Keys)) RestoreTypographyFont(item);
+        }
+
+        private void RestoreTypographyFont(TextElement element)
+        {
+            if (_originalFonts.TryGetValue(element, out var original)) element.style.fontSize = original;
+            else if (_baseFonts.TryGetValue(element, out float font)) element.style.fontSize = font;
+            _originalFonts.Remove(element);
+            _baseFonts.Remove(element);
+        }
+
+        private static bool IsTypographyTreeUnder(VisualElement tree, VisualElement root)
+        {
+            for (var ancestor = tree; ancestor != null; ancestor = ancestor.parent)
+                if (ancestor == root) return true;
+            return false;
+        }
+
+        private static bool ScalesTypography(TextElement element)
+        {
+            return !(element.ClassListContains("nav-icon") || element.ClassListContains("brand-mark-glyph") ||
+                element.ClassListContains("device-icon-glyph") || element.ClassListContains("workspace-icon") ||
+                element.ClassListContains("workspace-chevron") || element.ClassListContains("brand-name") ||
+                element.ClassListContains("row-icon") || element.ClassListContains("row-chevron"));
+        }
+
+        private void ApplyTypographyToElements(HashSet<TextElement> elements, float multiplier)
+        {
+            // Capture the entire fresh tree before changing any parent TextElement;
+            // inherited child styles must not observe a just-expanded parent.
+            foreach (var element in elements)
+            {
+                if (!ScalesTypography(element) || _baseFonts.ContainsKey(element)) continue;
+                float font = element.resolvedStyle.fontSize;
+                if (float.IsNaN(font) || float.IsInfinity(font) || font <= 0) continue;
+                _originalFonts[element] = element.style.fontSize;
+                // Capture once, not from expanded inline values on resize/reapply.
+                _baseFonts[element] = Mathf.Max(12, font);
+            }
+            foreach (var element in elements)
+            {
+                if (ScalesTypography(element) && _baseFonts.TryGetValue(element, out float font))
+                {
                     if (Mathf.Abs(element.resolvedStyle.fontSize - font * multiplier) > .1f)
                         element.style.fontSize = font * multiplier;
                 }
-            }).ExecuteLater(30); // Read USS font tokens after the first style/layout pass, not default 14px.
+            }
         }
 
         private void LayoutDesignPages(float width, float height)

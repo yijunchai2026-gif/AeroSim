@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "contract": "independent-replay-uss-typography-v2",
+  "frozenUtc": "2026-10-10T07:32:45Z",
+  "nativeRunAtFreeze": "NOT_RUN",
+  "sourceSha256": {
+    "verification/v125-qa/ReplayTypographyProbeV2.cs": "a5856f7e0a14ba6287d1ba9874c0c9cacbe2ae3f96b8428f3dd2280e86518013",
+    "verification/v125-qa/build-replay-typography-probe-v2.sh": "5fcb41a1fa323e152cfb5a25dad5bf203499ae75003fa282a5ac13dd950a6406",
+    "verification/v125-qa/replay-typography-contract-v2.md": "3e248db889cd0f493dedc8dc2b79252927328cc06662656f9d75a8acc2098d5f"
+  },
+  "expectedTokenSourcesSha256": {
+    "AeroSim/Assets/AeroSim/Resources/UI/Product.uss": "05f2ac3a8c07458f2c87f2b57d9cf7ff5ffd5846523e247443780293a7adea2c",
+    "AeroSim/Assets/AeroSim/Resources/UI/FlightDesignV1.uss": "acc3d0bbcc865290ba5408949adf2494ced23588d201ed8139a9b36dbcd583d7"
+  },
+  "fixedTokens": [
+    { "selector": ".design-v1 .side-nav .nav-label", "source": "Product.uss:303", "fontPx": 17, "expectedReplayCount": 6 },
+    { "selector": ".v1-flight-action .design-button-label", "source": "FlightDesignV1.uss:11", "fontPx": 16, "expectedReplayCount": 12 },
+    { "selector": ".v1-replay-disclaimer", "source": "FlightDesignV1.uss:129", "fontPx": 12, "expectedReplayCount": 1 }
+  ],
+  "entryPolicy": "Retain all v1 actual Pointer stages, then add public BeginReplay coroutine after original Space predecessors FPV Tuning, Aerial Settings, Aerial Controller, Professional Home. Real product tree, no reflection callbacks or font mutations.",
+  "matrix": { "textMultipliers": [1, 1.25, 1.5, 2], "uiScale": "100%", "hudScale": "100%", "initialViewport": "1920x1080", "addedPaths": ["predecessors->BeginReplay", "Replay reapply3", "Home->BeginReplay reopen"], "spaceSettleSeconds": 0.10, "spaceSettleYieldFrames": 2, "spaceSettleRepetitions": 2 },
+  "compile": { "status": "PASS_COMPILE_AND_COPY_INJECTION_ONLY", "candidate06Copy": "/private/tmp/aerosim-replay-typography-v2.jN0Fe9/AeroSim-UIQA.app", "applicationLaunchedByQa": false, "originalModified": false },
+  "comparisonPolicy": "Same frozen probe06,07b,07c. v1/assertions/font0.25/layout3 tokens unchanged; no derivation from wrongbinaryText100.",
+  "limitations": "Additional public coroutine entry is not a Pointer/device test. macOS typography gates only, no23concept or fullzoom/physicaliOS acceptance. All old raw failures retained."
+}

@@ -217,3 +217,61 @@ test('actual catalog and current art manifests generate in an isolated copy', {s
   for (const d of drafts) { assert.ok(ids.has(d.aircraftId), d.aircraftId); assert.equal(d.appearanceStatus, 'pending_user'); }
   assert.ok(!r.html.includes('__CATALOG_DATA__')); assert.ok(!r.html.includes('__DRAFT_DATA__'));
 });
+
+// Additive second-batch gates. Preserve the original 25 tests above unchanged.
+const expectedArtIds = {
+  legacy: 'dji-phantom-1',
+  current: 'dji-mini-4-pro',
+  inspire: 'dji-inspire-1',
+  mavic: 'dji-mavic-pro'
+};
+test('four real art namespaces bind exact aircraft IDs, current PNG bytes and pending revisions', () => {
+  const source = JSON.parse(fs.readFileSync(path.join(root, 'assets/catalog-v125/dji-aircraft.json'), 'utf8'));
+  const realIds = new Set(source.aircraft.flatMap(a => [a.id, ...(a.variants || []).map(v => v.id)]));
+  const sources = runtime({data: source, drafts: []});
+  const seen = new Set();
+  for (const [namespace, id] of Object.entries(expectedArtIds)) {
+    const manifest = JSON.parse(fs.readFileSync(path.join(root, `assets/v125-art/${namespace}/review-drafts.json`), 'utf8'));
+    const rows = Array.isArray(manifest) ? manifest : manifest.drafts;
+    assert.equal(rows.length, 1, namespace + ' must contain exactly the frozen review entry');
+    const d = rows[0]; assert.equal(d.aircraftId, id, namespace); assert.ok(realIds.has(id));
+    assert.ok(!seen.has(id)); seen.add(id);
+    assert.match(d.image, new RegExp(`^assets/v125-art/${namespace}/[a-z0-9-]+\\.png$`));
+    assert.equal(d.sha256, digest(fs.readFileSync(path.join(root, d.image))), id);
+    assert.equal(d.appearanceStatus, 'pending_user', id); assert.equal(d.kind, 'generated_review_bitmap');
+    assert.ok(d.revision && d.sourceUrls.length); assert.ok(d.sourceUrls.every(sources.qa.safeSource), id);
+  }
+  assert.equal(seen.size, 4);
+});
+test('isolated real gallery contains 132 main plus 9 variants and exactly four pending art IDs', () => {
+  const r = generateWorkspaceFixture(); assert.equal(r.status, 0, r.stderr);
+  const inline = id => JSON.parse(r.html.match(new RegExp('<script id="' + id + '" type="application/json">([\\s\\S]*?)<\\/script>'))[1]);
+  const data = inline('catalog-data'), drafts = inline('draft-data');
+  assert.equal(data.reviewBaseCount, 132); assert.equal(data.reviewVariantCount, 9); assert.equal(data.aircraft.length, 141);
+  assert.equal(drafts.length, 4);
+  assert.deepEqual(drafts.map(d => d.aircraftId).sort(), Object.values(expectedArtIds).sort());
+  assert.deepEqual([...new Set(drafts.map(d => d.image.split('/')[2]))].sort(), Object.keys(expectedArtIds).sort());
+  const review = runtime({data, drafts});
+  assert.ok(data.aircraft.every(a => review.qa.state(a) === 'pending_user'));
+  assert.equal(Object.keys(review.qa.getSaved()).length, 0, 'QA must not create real aircraft approval records');
+  for (const id of Object.values(expectedArtIds)) {
+    review.qa.select(id); assert.equal(review.registry.get('approve-model').disabled, false, id);
+  }
+  const withoutDraft = data.aircraft.filter(a => !Object.values(expectedArtIds).includes(a.id));
+  assert.equal(withoutDraft.length, 137);
+  for (const a of withoutDraft) {
+    review.qa.select(a.id); assert.equal(review.registry.get('approve-model').disabled, true, a.id);
+  }
+  assert.equal(Object.keys(review.qa.getSaved()).length, 0);
+});
+test('two additional official CDN hosts are exact HTTPS allowlist entries, not wildcard domains', () => {
+  const r = runtime();
+  for (const url of ['https://www1.djicdn.com/reference.png', 'https://www4.djicdn.com/reference.jpg']) assert.equal(r.qa.safeSource(url), true, url);
+  for (const url of ['http://www1.djicdn.com/reference.png', 'ftp://www4.djicdn.com/reference.jpg', 'https://www1.djicdn.com.evil.test/p.png', 'https://evildjicdn.com/p.png', 'https://www2.djicdn.com/p.png', 'https://www3.djicdn.com/p.png', 'https://www4-djicdn.com/p.png', 'javascript:alert(1)']) {
+    assert.equal(r.qa.safeSource(url), false, url);
+    const a = aircraft(); a.sourceUrls = [url]; assert.notEqual(generateFixture({data: catalog([a])}).status, 0, url);
+  }
+  for (const url of ['https://www1.djicdn.com/reference.png', 'https://www4.djicdn.com/reference.jpg']) {
+    const a = aircraft(); a.sourceUrls = [url]; const result = generateFixture({data: catalog([a])}); assert.equal(result.status, 0, result.stderr);
+  }
+});

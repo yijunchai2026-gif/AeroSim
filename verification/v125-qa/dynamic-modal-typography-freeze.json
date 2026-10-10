@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "contract": "independent-dynamic-modal-typography-v1",
+  "frozenUtc": "2026-10-10T06:52:08Z",
+  "nativeRunAtFreeze": "NOT_RUN",
+  "sourceSha256": {
+    "verification/v125-qa/DynamicModalTypographyProbe.cs": "44d0b86611c75f3eb0a0de2f0c19593bb67de67e746b7d921af82010b58a85fe",
+    "verification/v125-qa/build-dynamic-modal-typography-probe.sh": "fdb41d5eaea8f1ea7a907c5ee6f4c9baf85417692c91018847767d5facd01092",
+    "verification/v125-qa/dynamic-modal-typography-contract.md": "61700642505c1c7fe11d3401ca3559e44cf971a6991124942ab83bb158069ece"
+  },
+  "legacyUnchangedSha256": {
+    "verification/v1-qa/PauseTelemetryProbe.cs": "22c0c2339fe1ddb73b2bf453faa992d8b1f42591e84b53cbe9499d4d940c9694",
+    "verification/v1-qa/build-pause-telemetry-probe.sh": "e6ffe6e9b82b8d2579c10931924c1994dbbb8dddbc303df9047d41623d20c720",
+    "verification/v1-qa/SpaceSubmitProbeV3.cs": "e39ca0305f40fc68b373fdf253c221e7632f1677eb93828e90970ac9ed504a72"
+  },
+  "compile": {
+    "status": "PASS_COMPILE_AND_COPY_INJECTION_ONLY",
+    "unityContents": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents",
+    "candidate06OriginalRuntimeSha256": "fe1e7a097e140687e60fa6827feda6f473b3e18c56e232e02e8780b4ff746ef7",
+    "candidate06Copy": "/private/tmp/aerosim-dynamic-typography.3wTDEa/AeroSim-UIQA.app",
+    "compiledProbeDllSha256": "9977ddce195cea09e612a7c430521ffa7d2b475fe1542575faec903cb9c2534e",
+    "originalApplicationModified": false,
+    "applicationLaunchedByQa": false,
+    "preFreezeCompileRepair": "Qualified InputSystem.LowLevel.MouseButton to resolve C# namespace ambiguity before freezing. No native results existed and assertions unchanged."
+  },
+  "comparisonPolicy": "Run candidate06 negative baseline first, then candidate07 with identical source/contract. Never weaken assertions to suit the fix. New revision requires transparent reason plus both candidates rerun.",
+  "deviceScope": "macOS native logical viewport and synthetic InputSystem pointer only; not physical iOS/touch/gamepad or full original-art visual acceptance"
+}

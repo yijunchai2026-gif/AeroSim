@@ -63,6 +63,7 @@ namespace AeroSim
 
         private void OnDisable()
         {
+            CancelTypography();
             ReleaseDesignFlightInputGuard();
             ReleaseDesignEvidenceTextures();
             ReleaseDesignReplayView();

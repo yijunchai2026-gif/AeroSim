@@ -23,7 +23,7 @@
 - 18:40 左右根运行候选05隔离 Pause/Telemetry 原生 probe：58 checks、26 FAIL、0 runtime errors；真实复现 OSD toast 遮挡暂停菜单点击。原始 probe 合同保留，修复后用新候选复测。
 - 当前没有新机型经过用户确认，没有 1.25 iPhone/iPad 真机记录。
 
-## 本批已冻结的进展
+## 第一批已冻结的进展
 
 - 目录冻结：132 个主机型/硬件研究条目、9 个独立配色/涂装版本，共 **141 个审核项目**；19 家族、8 类别、72 条官方来源。包含 2 个 `hold_release_evidence` 条目；全量无遗漏仍 `not_proven`，不能把计数当成完整性证明。所有项目仍待用户确认。
 - 逐机型审核入口：[AeroSim-1.25-机型逐一审核.html](../AeroSim-1.25-机型逐一审核.html)。搜索、分类、介绍、官方出处、单机型确认/修改和导出；132+9 分别审核，子版本不继承主机型确认。初始 0 个批准、2 幅外观位图。无图和截至日证据待核项禁确认。
@@ -36,6 +36,29 @@
 - 候选06本机稳定副本：`AeroSim/Builds/macOS-V1-Candidate-20261009-06/AeroSim.app`，从被测构建原样复制，Runtime DLL SHA256同为 `fe1e7a097e140687e60fa6827feda6f473b3e18c56e232e02e8780b4ff746ef7`。该目录受.gitignore保护，不提交应用二进制；0.4及候选03仍原位保留。
 - 网页本机记录只是用户选择草稿：正式接入需用户交付逐机型记录，根负责人重新核对目录、稿件 revision 和当前 PNG 字节 SHA256。外链 PNG 在生成 HTML 后变化时不得接受旧散列确认，localStorage/普通 JSON 不是认证签名。
 
+## 第二批：动态弹层字体、两份新稿与输入接线方案
+
+恢复日期：2026-10-09 23:45 左右（America/Los_Angeles）额度检查恢复可用；期间失败成员接力恢复，没有购买额度或使用 reset。本批跨过本地午夜，日志保留实际UTC时间，稳定副本以保存日期2026-10-10命名，历史断点不覆盖。
+
+- 页面程序员完成 Confirm / Session Objective / Flight Telemetry 新树字体倍率及调度生命周期修复。根冻结后首次07构建失败（`ExecuteLater`返回void被赋给item、InputRouter.meta为33hex）；保留[07初始冻结](../verification/v125-qa/candidate07-source-freeze.json)，根修复API调用和无引用的GUID后重新[冻结07b](../verification/v125-qa/candidate07b-source-freeze.json)，Unity实际构建成功。不用算法编译代替Unity集成。
+- 07b实际应用版本仍 **1.0.0**；Runtime DLL SHA256为 `6f487a915564c1a5ab62e4ca57e9c5345f858e1526328984dd7537191537ea96`。稳定副本为 `AeroSim/Builds/macOS-V1-Candidate-20261010-07b/AeroSim.app`，字节与被测构建一致，受.gitignore保护；06、03和0.4保留。
+- 新独立动态字体v1合同在06为2185检查/208FAIL/0runtime，在07b为2185/48FAIL/0runtime。06的160个字体倍率失败在07b转通过，但两版均有48个快速Pointer状态时序失败，不能把v1整份报告标通过。独立QA据真实trace另冻v2，只添加release后事件分派flush，不删断言/放宽字体裁切容差，两个binary须重新跑；最终结果见[07独立QA](V125_CANDIDATE07_QA.md)。
+- 07b原生smoke66PASS/0FAIL、原Pause/Telemetry合同74/0/0runtime；新1440×900 Space v3覆盖为1911/3FAIL/0runtime、24UNRENDERED。暴露Tab首焦点和Professional Home两个Text100行框问题。根补同视口实际06为1911/3/0、07b1920为1911/0/0；3条FAIL逐字相同，故为既存缺口。另有77条Replay Text200 PASS evidence的字体不同，不能声称全报告相同。原错误旧CLI参数运行未启动v3，已终止，不计测试通过。
+- 新两名美术分工交付原版Inspire 1 + X3和原版Mavic Pro四视图，根实际打开检查并纳入[PRD第二批图稿](../飞行模拟器产品设计文档.md#255-第二批逐机型外观稿inspire-1-与-mavic-pro)。前者TOP框架拓扑明显漂移、后者投影/云台/桨叶细节未闭合；均为pending_user位图，不是最终网格。目录保持132+9、现4幅稿、0用户批准。
+- 审核生成器支持legacy/current/inspire/mavic四个受限文件路径；只增加实际核对的HTTPS `www1.djicdn.com` / `www4.djicdn.com` 精确官方图片host，不泛放CDN任意域。独立测试28PASS/0FAIL/0SKIP，保留原25项，并增加四namespace/精确ID与散列/域名负例。浏览器实测边界仍未解除。
+- 技术负责人交付[三端输入接线方案](V125_INPUT_INTEGRATION_PLAN.md)，明确源身份/旧校准迁移、双触点owner、后台中断与中立重启、各端文件所有权及Gate A–D。它是下一波可执行计划，不是已经接线；原纯输入算法3,050/0复跑通过，尚无真机或物理控制器证据。
+- 动态v2只修probe事件flush，真实06为2209/160字体FAIL，07b为2209/4快速scroll FAIL；追加v3只允许一次有界重ScrollTo、不删原断言，真实06为2209/160字体FAIL，07b为2209/0/0runtime。各版合同、原JSON/散列及失败不覆盖。
+- 根根据Replay旧PASS evidence中的错误字体基准，追加实际两帧USS读取边界，冻结并构建[07c](../verification/v125-qa/candidate07c-source-freeze.json)。构建Success、Runtime DLL SHA256 `caf2331190601b9bddab0ccfbc312fab894baa0c20a9d58a101a208e15d5e061`；稳定原样副本 `AeroSim/Builds/macOS-V1-Candidate-20261010-07c/AeroSim.app`，实际版本仍1.0.0开发候选。07b/06/03/0.4不覆盖。
+- 07c实际smoke66/0、Pause844×390为74/0/0runtime、动态v3为2209/0/0runtime、Space1920×1080为1911/0/0runtime。Space1440×900仍1911/3/0，24UNRENDERED不计通过；该份全部1911 rule/evidence/pass独立比对与06一致，77条字号漂移证据恢复为侧栏34、动作32、免责声明24。其余桌面布局缺口没有解决，见[诊断与下一波方案](V125_DESKTOP1440_TRIAGE.md)。
+- 独立固定USS字号Replay v1在06/07b/07c各778/0/0runtime，覆盖真实Records Pointer进入、Text100/125/150/200及重开/偏好/档案不变。此入口没有复现旧coroutine路径差异；追加[冻结v2](../verification/v125-qa/replay-typography-freeze-v2.json)保留全部v1、补同Space页面顺序与public BeginReplay帧阶段，实际06为1454/0/0runtime、07b为1454/38字号FAIL/0runtime、07c为1454/0/0runtime。保留07b失败和原合同，不修改token/容差制造通过；这只关闭局部字号门禁，不代表全缩放/23图/三端交付完成。
+- 23张原概念图与旧05/06原始报告不改；本批精选截图分别标06/07b历史与07c当前局部实际运行证据，已[同步PRD](../飞行模拟器产品设计文档.md#257-候选07c字体基准调度与实际截图)，不替代视觉目标或用户验收。独立QA实际看图另记Replay图表重复单位“ft ft / mph mph”，未修改冻结源码，留下一批修复；旧自动字号/行框合同不覆盖文案语义。
+
+本批最后Replay入口对照已实际跑完，独立QA冻结并停止写入：[QA文档](V125_CANDIDATE07_QA.md)、[紧凑证据](../verification/v125-qa/candidate07-summary.json)，51个指纹复核一致。根复跑28目录测试、3050纯输入检查及新文档路径检查；仅本批53个明确文件纳入本地提交，历史无关改动保留。
+
+提交前空白检查仅提示新增Replay v2探针与注入脚本各一个EOF空行；为保留被编译/测试的冻结字节及散列，未在验证后格式化这两个文件。业务源码及目录改动无该提示，不影响编译或上述实际断言；不是隐藏测试失败。
+
+上传通道当前阻塞：终端HTTPS无可用凭据，GitHub Desktop电脑操作通道多次超时；GitHub connector只读该私有仓库返回404（不能推断仓库不存在或自行改可见性）。Desktop标准凭据helper需DESKTOP_PORT、不能独立正常调用；标准Credential Manager在禁止交互下也没有可用认证。未打印/提取凭据、未更改权限。尚无本批push成功与新远端SHA，不声称已上传。后继恢复先核实际Git及上传状态，再处理下一批。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
@@ -46,6 +69,11 @@
 | 独立 QA | 候选05已有证据、源码/binary边界、审核页复核 | docs/V125_BASELINE_QA.md、verification/v125-qa/ 紧凑证据 |
 | 早期机型美术 | 首个经典机型的官方对照与待确认图 | assets/v125-art/legacy/、docs/V125_ART_LEGACY.md |
 | 现代机型美术 | 首个现代机型的官方对照与待确认图 | assets/v125-art/current/、docs/V125_ART_CURRENT.md |
+| 第二波页面程序员 | 三类动态弹层字号与字体队列生命周期 | Responsive.cs、Flight.cs、FlightDesignV1.cs、OnDisable字体取消 |
+| 第二波技术负责人 | 三端输入迁移/接线方案与只读风险复核 | docs/V125_INPUT_INTEGRATION_PLAN.md |
+| 第二波电影机型美术 | Inspire 1原版X3稿及官方对照 | assets/v125-art/inspire/、docs/V125_ART_INSPIRE.md |
+| 第二波折叠机型美术 | Mavic Pro原版稿及官方对照 | assets/v125-art/mavic/、docs/V125_ART_MAVIC.md |
+| 第二波独立QA | 新旧动态字体、旧Space/Pause合同复核、4稿门禁测试 | docs/V125_CANDIDATE07_QA.md、verification/v125-qa/新冻结/紧凑证据 |
 
 并发上限四个运行成员，角色按波次接力，不并行争用 Unity 构建。后续设备程序员/QA 按技术审查分配，跨线支援由根负责人记录交接。
 
@@ -53,7 +81,7 @@
 
 1. 对账目录历史/地区/硬件缺口，继续按官方材料补齐；132+9 是当前待确认清单，不标成完整闭合。
 2. 等用户逐机型看初稿、提交确认或修改意见；其他美术继续按机型制作。程序与美术不得批量代确认或默认接受。
-3. 下一批先修动态弹层字体倍率并增加独立倍率断言，再冻结构建、实看 Text100/125/150/200；随后接入三端输入和分端布局。23 原图、候选05和06历史失败/边界不删除。
+3. 最新字体源码/构建为07c，完成最后Replay入口对照和本批交付后按输入接线Gate A–D推进；1440桌面布局/焦点缺口、完整缩放矩阵和23原图视觉仍需修。历史失败与原图不删除。三端实际接线还未完成，方案不是实测。
 4. 安装/确认当前 Unity iOS Support 和 Xcode 后再导出/真机；当前技术检查发现这些依赖缺失，历史导出不可替代本版本验证。
 5. 审核稿逐机型获得用户确认后才可制作/接入最终资产；共享核心与设备端其他工作不因此暂停。
 6. 达到三端可交付候选后提供链接，停改等待用户验收。

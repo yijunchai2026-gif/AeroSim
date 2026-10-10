@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "contract": "independent-dynamic-modal-typography-v3",
+  "frozenUtc": "2026-10-10T07:10:08Z",
+  "nativeRunAtFreeze": "NOT_RUN",
+  "sourceSha256": {
+    "verification/v125-qa/DynamicModalTypographyProbeV3.cs": "01a92042c5c4831ba06463c5d53ecbe2bc5af14392f7af10abb4b3b1cda6d5d7",
+    "verification/v125-qa/build-dynamic-modal-typography-probe-v3.sh": "0e759ed9106d598ecc5accd512b67f7459025b39c3732fc30525c3b5d000414c",
+    "verification/v125-qa/dynamic-modal-typography-contract-v3.md": "b54f6330ea158896ca6ccd36d7305cd531b73ec554c8dac9c80849997825ea08"
+  },
+  "unchangedPreviousFreezes": ["verification/v125-qa/dynamic-modal-typography-freeze.json", "verification/v125-qa/dynamic-modal-typography-freeze-v2.json"],
+  "revisionReason": "One v2 Telemetry125 rapid close ScrollTo is followed by deferred font layout: button y398..442 is outside viewport y20..371, while the next same ScrollTo succeeds. v3 allows exactly one same ScrollTo+settle if first settled bounds are outside viewport, logs before/after, and retains all original containment/Pick/font/data assertions.",
+  "originalAssertionsRetained": true,
+  "all20CheckRuleKindsAndOrderEqualV1": true,
+  "v2NativeEvidence": {
+    "candidate06": { "path": "verification/v1-qa/results/candidate-06/dynamic-fonts-v2-844x390/dynamic-modal-typography-report.json", "sha256": "3802bca89bbdbb43d6be1d956800a2d4f6b1e48931f419b63a4278acaa10be08", "checks": 2209, "failures": 160, "fontFailures": 160, "runtimeErrors": 0 },
+    "candidate07b": { "path": "verification/v1-qa/results/candidate-07b/dynamic-fonts-v2-844x390/dynamic-modal-typography-report.json", "sha256": "b7b6df04dcecd6235d9eb0d41ba52236e764a2f52080ad5f6e666856541bc4d8", "checks": 2209, "failures": 4, "fontFailures": 0, "runtimeErrors": 0 }
+  },
+  "compile": { "status": "PASS_COMPILE_AND_COPY_INJECTION_ONLY", "originalApplicationModified": false, "applicationLaunchedByQa": false },
+  "comparisonPolicy": "Retain v1/v2 failures; rerun both candidate06 and candidate07b under identical v3. No unlimited retries, skipped checks, callback invocation or altered product geometry.",
+  "limitations": "macOS logical viewports and synthetic pointer; no full original-art or physical iOS/gamepad acceptance"
+}

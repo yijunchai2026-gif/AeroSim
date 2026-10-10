@@ -1,0 +1,31 @@
+[
+  {
+    "aircraftId": "dji-mavic-pro",
+    "image": "assets/v125-art/mavic/mavic-pro-draft-01.png",
+    "sha256": "70570d7d9b15aabf4ef7f1c7d0b65c0da8fd3cb1eacbc003bc1351a686cddeb4",
+    "revision": "draft-01",
+    "kind": "generated_review_bitmap",
+    "appearanceStatus": "pending_user",
+    "sourceUrls": [
+      "https://u.dji.com/cn/articles/36",
+      "https://www.dji.com/mavic/info",
+      "https://www.dji.com/support/product/mavic",
+      "https://www.dji.com/downloads/products/mavic",
+      "https://dl.djicdn.com/downloads/mavic/Mavic%20Pro%20User%20Manual%20V1.0.pdf",
+      "https://www4.djicdn.com/cms_uploads/ckeditor/pictures/724/content_mavic__7_.jpg",
+      "https://www4.djicdn.com/cms_uploads/ckeditor/pictures/725/content_4.jpg",
+      "https://www1.djicdn.com/uploads/share_image/image/203/f37f548d7e85eb6d9aeb75460c808072.png",
+      "https://www1.djicdn.com/uploads/share_image/image/204/45c6a77550dd736bdbbd45100e9aafbd.jpg"
+    ],
+    "notes": [
+      "Original 2016 dark-gray Mavic Pro identity; not Platinum, Alpine White, Mavic 2, Mini, or a color/combo variant.",
+      "Generated once with built-in image_gen; 1536 x 1024 RGB PNG four-view review bitmap; not an official photo, runnable mesh, CAD model, UV/LOD/collider or final PBR asset.",
+      "Official DJI 2016 launch photographs, original gimbal comparison images and 2016.10 user manual v1.0 pages 6-8 were visually inspected before generation.",
+      "All four panels show an unfolded dark-gray four-motor aircraft, two round nose vision windows, single small gimbal camera and yellow front-arm bands.",
+      "Observed risk: FRONT is slightly elevated rather than level orthographic, so front/rear motor height relationships cannot be confirmed consistently against LEFT SIDE.",
+      "Observed risk: propeller phases, hub details and visible tip bands are not proven identical or correct across all views; marked/unmarked quick-release hubs need explicit verification.",
+      "Observed risk: camera/gimbal supports, arm cross-sections, side ports, yellow-band placement and dimensions require corrections against official high-resolution references.",
+      "No user confirmation recorded. Not eligible for formal flight selection or final Unity 3D integration."
+    ]
+  }
+]

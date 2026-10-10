@@ -16,7 +16,7 @@ catalog.aircraft=catalog.aircraft.flatMap(a=>[a,...(a.variants||[]).map(v=>({...
 catalog.reviewBaseCount=baseCount;
 catalog.reviewVariantCount=catalog.aircraft.length-baseCount;
 const ids=new Set(),families=new Set(catalog.families.map(x=>x.id)),categories=new Set(catalog.categories.map(x=>x.id));
-function official(url){try{const u=new URL(url);return u.protocol==='https:'&&(/(^|\.)dji\.com$/.test(u.hostname)||u.hostname==='dl.djicdn.com'||u.hostname==='se-cdn.djiits.com'||u.hostname==='download.dji-innovations.com'||/(^|\.)ryzerobotics\.com$/.test(u.hostname));}catch{return false;}}
+function official(url){try{const u=new URL(url);return u.protocol==='https:'&&(/(^|\.)dji\.com$/.test(u.hostname)||['dl.djicdn.com','www1.djicdn.com','www4.djicdn.com'].includes(u.hostname)||u.hostname==='se-cdn.djiits.com'||u.hostname==='download.dji-innovations.com'||/(^|\.)ryzerobotics\.com$/.test(u.hostname));}catch{return false;}}
 for(const a of catalog.aircraft){
   if(!/^[a-z0-9][a-z0-9-]+$/.test(a.id)||ids.has(a.id))throw Error('Invalid/duplicate aircraft ID '+a.id);ids.add(a.id);
   if(!a.englishName||!a.introductionZh||!families.has(a.familyId)||!categories.has(a.categoryId))throw Error('Incomplete aircraft '+a.id);
@@ -25,12 +25,12 @@ for(const a of catalog.aircraft){
   if(a.releaseYear!=null&&(!Number.isInteger(a.releaseYear)||!official(a.releaseYearEvidenceUrl)))throw Error('Year lacks official source '+a.id);
 }
 const drafts=[];
-for(const p of ['assets/v125-art/legacy/review-drafts.json','assets/v125-art/current/review-drafts.json']){
+for(const p of ['assets/v125-art/legacy/review-drafts.json','assets/v125-art/current/review-drafts.json','assets/v125-art/inspire/review-drafts.json','assets/v125-art/mavic/review-drafts.json']){
   if(!fs.existsSync(path.join(root,p)))continue;
   const raw=JSON.parse(read(p));
   for(const d of Array.isArray(raw)?raw:raw.drafts||[]){
     if(!ids.has(d.aircraftId)||drafts.some(x=>x.aircraftId===d.aircraftId))throw Error('Unknown/duplicate draft '+d.aircraftId);
-    if(!/^assets\/v125-art\/(legacy|current)\/[a-z0-9-]+\.png$/.test(d.image)||sha(d.image)!==d.sha256)throw Error('Draft file/hash mismatch '+d.image);
+    if(!/^assets\/v125-art\/(legacy|current|inspire|mavic)\/[a-z0-9-]+\.png$/.test(d.image)||sha(d.image)!==d.sha256)throw Error('Draft file/hash mismatch '+d.image);
     if(d.kind!=='generated_review_bitmap'||d.appearanceStatus!=='pending_user'||!d.revision||!d.sourceUrls?.length||d.sourceUrls.some(u=>!official(u)))throw Error('Invalid review draft '+d.aircraftId);
     drafts.push(d);
   }
