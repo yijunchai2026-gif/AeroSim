@@ -63,6 +63,19 @@
 
 下一次恢复先检查GitHub访问和本地ahead提交，上传本批及此断点记录后再核远端SHA；不得重复生成图稿/构建/重跑已完成合同，也不得把缓存origin或构建成功当push成功。用户可在GitHub Desktop的AeroSim仓库中完成正常Push origin/Fetch origin；若登录或仓库权限需要用户操作，明确请求恢复访问，不提取密码或擅改账号安全设置。需先补上传；待确认的机型和三端未完成项继续如实保留。
 
+## 第三批：双杆触点纯核心与两机型修订稿
+
+2026-10-10 恢复时 HTTPS 认证仍不可用；只读 SSH 检查亦没有已加载身份或默认密钥，没有创建密钥、接受未知主机密钥、读取秘密或更改账号安全。前述 `7a23c00` 与上传断点 `94c0df6` 仍为本地 ahead 提交，不能当作已上传。前批“先补上传”的建议没有实现；本波依据用户继续本地可做工作及 AGENTS 的上传失败记录规则，限定推进不依赖认证/外观批准的纯核心与审核位图。最终交付仍必须恢复上传并核对真实远端 SHA。
+
+- 根作为共享输入技术负责人先冻结 [双杆触点契约](V125_TOUCH_CONTRACT.md)，[冻结指纹](../verification/v125-qa/touch-contract-freeze.json) 为 `119e8e576033ecbd1bc1c6de7ceb4dde50a3518745479fa524b07fbe9e72f952`；契约开头“尚未执行测试”是冻结时状态，后续实际结果另记，不修改已冻结契约。
+- 触点程序员只新增 `TouchInputState.cs/.meta`、开发者测试/runner 和 [实现交接](V125_TOUCH_IMPLEMENTATION.md)，停止写入后交独立 QA。源 SHA `2319cdc4e7dd9aa4510565caba6b1d0be5a712fadd8e032328f0ec236b470fb6`；根复跑严格编译为 **17,175 开发者检查/0失败**，原输入回归 **3,050/0**。这是 Gate B 纯状态子集，未接旧 FlightInput/UI、未新建 Unity binary，不能把07c旧应用证据移作本源码的集成通过。
+- 左右 owner 共享一个 Touch source；第三指、跨杆、重复 Down 拒绝，取消只清对应杆，Suspend/Resume 清零后须新 Down；无效 owner Move 清该杆两轴。仅有 pointerId 无法辨别复用同 ID 的迟到旧事件，后续适配器必须加入会话/绑定代际，不能宣称真实 capture/OS 中断已经验证。
+- 独立 QA 另写数组参考状态机逐事件比对：**514,425检查/0失败**，25,746事件（178定向、13,568主动高占用、12,000确定性随机），实际双owner事件13,443，13项纯router组合；根另读全源并严格编译复跑同值。三个临时错误实现都成功严格编译、被未改测试拒绝，而非拿编译错误当检出；具体负例和SHA见 [独立QA](V125_TOUCH_QA.md) / [紧凑证据](../verification/v125-qa/touch-state-independent-summary.json)。不称真实触控或应用生命周期验收。
+- 两名美术分别冻结原版 Inspire 1 X3 **draft-03**（SHA `94a2245bd26a4bfdd930ea0b6d51f596e9bf4d1459f88861329a4c4e695e4491`）和 Mavic Pro **draft-02**（SHA `ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931`）。根实际查看两份current及Inspire02中间稿：纵杆/斜撑及紧凑相机局部改善，但机械连接、脚/云台、跨视图、投影、底部/材质仍未通过。01旧稿、02失败中间稿与真实提示词不覆盖。当前均 `pending_user`，不是最终3D，不接正式飞行。
+- 审核页重新生成为同四个机型的唯一current，目录仍132+9、4幅current、0用户批准；目录SHA `4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c` 不变。原28目录门禁根/独立QA复跑PASS/0FAIL/0SKIP，涵盖revision/hash变更使旧确认失效，但不替代实际浏览器交互。新稿用相对路径同步 [PRD25.8](../飞行模拟器产品设计文档.md#258-第三批当前机型审核稿局部修订不是最终3d)，[25.9](../飞行模拟器产品设计文档.md#259-双虚拟摇杆纯触点实现边界) 另记三端待接线/真机界限；23原始目标不变。
+
+全部成员冻结停止写后，根最终核对独立报告30个指纹与三个mutation的精确替换重建散列；30条本批文档本地链接有效、生成页当前03/02与pending状态一致，88个Assets meta GUID有效且唯一。07c稳定副本Runtime DLL实际SHA仍 `caf2331190601b9bddab0ccfbc312fab894baa0c20a9d58a101a208e15d5e061`，未作新Unity构建或冒用旧native通过。只纳入本批24个明确文件，历史3个meta及候选04/Wave B无关项继续保留；最终上传状态在实际commit/push之后补记。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
@@ -78,6 +91,10 @@
 | 第二波电影机型美术 | Inspire 1原版X3稿及官方对照 | assets/v125-art/inspire/、docs/V125_ART_INSPIRE.md |
 | 第二波折叠机型美术 | Mavic Pro原版稿及官方对照 | assets/v125-art/mavic/、docs/V125_ART_MAVIC.md |
 | 第二波独立QA | 新旧动态字体、旧Space/Pause合同复核、4稿门禁测试 | docs/V125_CANDIDATE07_QA.md、verification/v125-qa/新冻结/紧凑证据 |
+| 第三波根/共享核心技术负责人 | 冻结触点接口、页面/文档整合、验证和Git | V125_TOUCH_CONTRACT.md、touch-contract-freeze.json、本文/PRD/生成审核页 |
+| 第三波触点程序员 | 三端共享双杆纯触点所有权与开发者自测 | TouchInputState.cs/.meta、TouchInputStateDeveloperTests.cs、开发runner及V125_TOUCH_IMPLEMENTATION.md |
+| 第三波独立QA | 另写参考状态机、错误实现负例及当前图稿门禁 | 新独立触点tests/runner/summary、V125_TOUCH_QA.md |
+| 第三波两名美术 | 原版Inspire/Mavic局部修订，保留旧稿，逐机型待确认 | 各自inspire/mavic资产目录与专项美术文档 |
 
 并发上限四个运行成员，角色按波次接力，不并行争用 Unity 构建。后续设备程序员/QA 按技术审查分配，跨线支援由根负责人记录交接。
 

@@ -1,6 +1,49 @@
 # AeroSim 1.25 首代折叠机型美术审核稿
 
-## DJI Mavic Pro (2016 原版深灰) · draft-01
+## 当前审核稿：DJI Mavic Pro (2016 原版深灰) · draft-02
+
+外观状态：`pending_user`。精确机型 ID：`dji-mavic-pro`。本稿仍只对应 2016 年原版深灰，不对应 Platinum、Alpine White 或警用版本。没有用户确认记录，也不继承其他机型或旧稿确认。
+
+![Original 2016 DJI Mavic Pro generated exterior review draft 02](../assets/v125-art/mavic/mavic-pro-draft-02.png)
+
+- 当前版本：`draft-02`；`review-drafts.json` 对此机型只有一个当前条目，旧版没有重复进入当前清单。
+- 图像：`assets/v125-art/mavic/mavic-pro-draft-02.png`
+- SHA-256：`ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931`
+- 文件：1536 × 1024、8-bit RGB、非交错 PNG。生成源与仓库副本 `cmp` 通过；`file` 核对真实 PNG 和尺寸，`shasum -a 256` 核对真实文件字节。
+- 当前审核记录：[review-drafts.json](../assets/v125-art/mavic/review-drafts.json)
+- 完整实际编辑提示词：[mavic-pro-draft-02.prompt.txt](../assets/v125-art/mavic/mavic-pro-draft-02.prompt.txt)
+- 生成方式：2026-10-10 内置 `image_gen`，单次 `precise-object-edit`。`referenced_image_paths` 只传旧稿 `mavic-pro-draft-01.png` 作为编辑目标，`transparent_background=false`；没有传官方照片作为生成输入，没有 CLI/API fallback，没有用 Python、SVG 或其他图像加工代替工具生成。
+- 默认工具输出 `/Users/bytedance/.codex/generated_images/01a125a9-b1fa-7e03-bde7-b1c64a9d3026/exec-260b3c83-2f3c-4bf1-b1ce-614b7bbc97ae.png` 原字节复制为上述版本化文件，保留默认源及旧 `draft-01`。没有覆盖旧 PNG 或旧提示词。
+- 类型仍为 `generated_review_bitmap`：这是生成的摄影级 3D 式审核位图，不是 DJI 官方照片、经标定的 CAD 正交图或最终 3D 资产。没有网格、UV、LOD、碰撞器或最终 PBR 材质，也没有实机/转台验证。
+
+### 本次官方核查和修改范围
+
+2026-10-10（America/Los_Angeles）先通过 `view_image` 实际查看仓库旧稿，再重新读取 [DJI 2016 发布正文](https://u.dji.com/cn/articles/36)、[Mavic Pro 官方支持/规格](https://www.dji.com/support/product/mavic) 和 [原版产品信息页](https://www.dji.com/mavic/info)；随后在浏览器实际查看支持页链接的 [云台图 203](https://www1.djicdn.com/uploads/share_image/image/203/f37f548d7e85eb6d9aeb75460c808072.png)、[云台图 204](https://www1.djicdn.com/uploads/share_image/image/204/45c6a77550dd736bdbbd45100e9aafbd.jpg) 和 [2016 深灰发布照片 724](https://www4.djicdn.com/cms_uploads/ckeditor/pictures/724/content_mavic__7_.jpg)。本次没有重读或重渲染手册；下面手册第 6–8 页的检查属于旧稿历史证据，不冒充本次新检查。
+
+官方正文支持原版前视双目与小型三轴云台身份；实际照片用于观察紧凑银灰单摄、鼻角小圆窗和支架形态。230 × 130 的云台小图和含运输罩的发布照片无法提供精确测量或完整轴拓扑。本次提示局部缩小旧稿偏粗相机/云台支架，并明确双圆窗是鼻角暗色角形凹座中的圆形光学开口；不是改成后代方盒主相机、双/三摄、Platinum 银壳或白机身。
+
+### draft-02 实际看图检查与剩余差异
+
+工具结果已显示，复制后的仓库 `draft-02` 又通过 `view_image` 实际打开检查。正面与三分之四视图的单镜头银灰相机比旧稿显得更小、较少下垂，横向轴件可见细节更收敛；前双圆窗仍位于鼻角暗色凹座。布局、六个原有文字标签、展开臂、深灰外壳、四电机、黑色双叶桨和前臂黄色双条在整体观察中保留。未观察到后代方盒、多摄、Platinum 银壳或白壳混型。
+
+保留以下未解决项，不能把本次局部改善写成全面外观复刻：
+
+- LEFT SIDE 前支脚遮挡了相机的大部分，侧面相机变化不充分可见；FRONT 与 THREE-QUARTER 有局部缩小，但不能证明三视图云台轴拓扑、实体间隙、相机相对机身比例完全一致。TOP 自然遮住鼻下相机，没有添出顶面相机。
+- 云台仍是简化的银色横向筒体/轴件；支架真实形状、镜头深度、相机和双窗比例均未测量。双圆窗凹座保留而非已证实完全纠正；没有高清多角度逐面核对。
+- 原视角、尺度和阴影只作视觉保留检查，没有逐像素不变证明。FRONT 仍轻微俯视，TOP 仍可见部分电机侧面；不是同一标定三维对象生成的真正正交四视图。
+- 黑桨及既有浅色桨尖细节本次按局部编辑约束保留，快拆桨标记、桨尖条带与四图相位仍未按原版近照验证。保留不是认可它们准确。
+- 前/后臂横截面、铰链、前后电机高度、侧接口归属、黄色双条位置/宽度、字体、底部双下视/超声波/散热板和状态灯仍沿用下面旧稿未通过项；本次没有偷偷更改或宣布关闭。
+- 生成位图不是可运行网格或最终材质；没有移动端、飞行性能或真实设备证明。用户人工确认尚未发生。
+
+本稿只可进入审核画廊。用户确认必须绑定 `dji-mavic-pro`、`draft-02` 与 `ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931`；根负责人、美术、程序员与自动化不得代用户确认。未经逐机型确认不得加入正式选机飞行或最终 Unity 3D 资产。后续改变已确认外观仍需重新确认。
+
+### 本轮文件范围与冻结
+
+本美术成员只修改 `assets/v125-art/mavic/` 内版本化 PNG、完整提示词、当前清单，以及本文档；未改共享 catalog、产品文档、进度、Unity 或其他美术目录，未执行 Git 写操作。根负责人统一同步产品文档/画廊、验证并提交推送；本页不声称已上传 GitHub，也不代替其提交证据。
+
+## 历史审核稿：DJI Mavic Pro (2016 原版深灰) · draft-01
+
+以下保留 `draft-01` 原始生成与检查记录；它已由 `draft-02` 替代为当前审核稿，但 PNG、提示词和散列不变，仍未获用户确认。历史中的“本次/本轮”指 `draft-01` 的 2026-10-09 工作，不是上述本轮操作。
 
 外观状态：`pending_user`。精确机型 ID：`dji-mavic-pro`。本稿只对应 2016 年原版深灰机身，不对应独立的 `dji-mavic-pro-platinum`、`dji-mavic-pro-alpine-white` 或警用版本，也不从它们继承用户确认。
 

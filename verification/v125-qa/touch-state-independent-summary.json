@@ -1,0 +1,98 @@
+{
+  "task": "INPUT-TOUCH-01",
+  "verifiedAtUtc": "2026-10-10T16:15:24Z",
+  "status": "passed_pure_csharp_subset_only",
+  "scope": "Gate B pure dual-stick ownership plus InputRouter algorithm compatibility; not UI/device acceptance",
+  "referenceStateMachine": true,
+  "finalUserAcceptance": "pending_user",
+  "product125Complete": false,
+  "baselineGitHead": "94c0df61221936a1dc8a81ca3558bd29d009b5b4",
+  "environment": {
+    "compiler": "Unity 6000.3.25f1 bundled Roslyn csc.dll invoked by dotnet; -warn:4 -warnaserror+",
+    "runtime": "Unity bundled Mono 6.13.0 arm64; no Unity editor/player launched",
+    "node": "v24.18.0"
+  },
+  "independentSuite": {
+    "command": "bash verification/v125-qa/build-touch-state-independent-tests.sh",
+    "exitCode": 0,
+    "strictCompilationPassed": true,
+    "shellSyntaxPassed": true,
+    "checks": 514425,
+    "failures": 0,
+    "events": 25746,
+    "directedEvents": 178,
+    "heldStressEvents": 13568,
+    "requiredDualOwnerEvents": 12544,
+    "randomEvents": 12000,
+    "oracleDualOwnedEvents": 13443,
+    "actualDualOwnedEvents": 13443,
+    "routerCases": 13,
+    "seed": 1251010,
+    "outputDirectory": "/private/tmp/aerosim-touch-independent.fVH5aW",
+    "compareAfterEveryEvent": ["return", "left/right owner", "four unfiltered axes", "suspension", "fixed source identity", "snapshot availability/kind/axis order", "owner uniqueness", "finite axes"],
+    "coverage": ["third pointer", "cross-stick pointer", "repeated Down", "owner and nonowner NaN/Infinity", "invalid side enums", "negative/zero/max pointer IDs", "finite coordinate extremes", "single-stick End/Cancel/CaptureOut isolation", "Clear/Suspend/Resume repeated and out of order", "late released or different-ID events", "same-ID reuse boundary", "square axis clamp without geometry normalization", "raw snapshot mapping", "single source", "one filter pass", "unavailable samples", "Fixed no fallback", "router context/suspension/duplicate IDs"]
+  },
+  "mutations": {
+    "scope": "Three deliberate faults in temporary source copies only; identical frozen independent test suite rejects all three after successful strict compilation",
+    "temporaryTool": "/private/tmp/aerosim-touch-mutation.TR0RqU/create-mutants.mjs",
+    "workingImplementationModified": false,
+    "cases": [
+      {"name": "owner-steal", "temporarySource": "/private/tmp/aerosim-touch-mutation.TR0RqU/owner-steal.cs", "fault": "Remove occupied-target checks from both Begin branches", "replacements": [{"from": "if (LeftPointerId.HasValue || RightPointerId == pointerId) return false;", "to": "if (RightPointerId == pointerId) return false;"}, {"from": "if (RightPointerId.HasValue || LeftPointerId == pointerId) return false;", "to": "if (LeftPointerId == pointerId) return false;"}], "sha256": "717ab124e6f4030fe91260927e15de2c608a35b46cb32c2bdadbaeb4bd529c6e", "strictCompilationPassed": true, "exitCode": 1, "checks": 514425, "failures": 64919, "firstFailure": "directed event 5: third-pointer Down must reject and preserve left owner/axes"},
+      {"name": "wrong-capture-out-side", "temporarySource": "/private/tmp/aerosim-touch-mutation.TR0RqU/wrong-capture-out-side.cs", "fault": "CaptureOut calls End on opposite stick", "replacements": [{"from": "public bool CaptureOut(TouchStickSide side, int pointerId) => End(side, pointerId);", "to": "public bool CaptureOut(TouchStickSide side, int pointerId) => End(side == TouchStickSide.Left ? TouchStickSide.Right : TouchStickSide.Left, pointerId);"}], "sha256": "326fbe97807954ccd096d8f3feff20e861e21f681da055c2f7ac86e114e8e268", "strictCompilationPassed": true, "exitCode": 1, "checks": 514425, "failures": 4235, "firstFailure": "directed event 14: left CaptureOut with right owner must not release right"},
+      {"name": "clear-retains-right", "temporarySource": "/private/tmp/aerosim-touch-mutation.TR0RqU/clear-retains-right.cs", "fault": "Clear omits right owner and right axes reset", "replacements": [{"from": "            RightPointerId = null;\n            LeftX = 0; LeftY = 0; RightX = 0; RightY = 0;", "to": "            LeftX = 0; LeftY = 0;"}], "sha256": "539c8755875e7a7f615556c9e9807fe0f14b7d8819bf6314cf45c5abc4f47c82", "strictCompilationPassed": true, "exitCode": 1, "checks": 514425, "failures": 28953, "firstFailure": "directed event 38: Clear must release and zero right stick"}
+    ],
+    "detected": 3,
+    "total": 3
+  },
+  "regressions": {
+    "originalInputRouter": {"command": "bash verification/v125-qa/build-input-router-tests.sh", "checks": 3050, "failures": 0, "exitCode": 0, "outputDirectory": "/private/tmp/aerosim-input-core.rXWj9z", "suiteUnmodified": true},
+    "catalogAfterBothArtistsFroze": {"command": "node --test verification/v125-qa/test-catalog-review.mjs", "tests": 28, "pass": 28, "fail": 0, "skip": 0, "exitCode": 0, "mainModels": 132, "variants": 9, "currentArtIds": 4, "noRealApprovalRecordsWritten": true, "generatedWorkspacePageByQa": false}
+  },
+  "fingerprintsRechecked": true,
+  "sha256": {
+    "docs/V125_TOUCH_CONTRACT.md": "119e8e576033ecbd1bc1c6de7ceb4dde50a3518745479fa524b07fbe9e72f952",
+    "verification/v125-qa/touch-contract-freeze.json": "09fb2d6aefb5f9d1cd63139ee29ea762b6015950d46781ec4c3c5e8e772a5b0a",
+    "docs/V125_TOUCH_IMPLEMENTATION.md": "6595e66d1bc7e4fe09feade15d6d3d5dea8f79047d1824c611bf9930b972c32d",
+    "AeroSim/Assets/AeroSim/Runtime/Input/TouchInputState.cs": "2319cdc4e7dd9aa4510565caba6b1d0be5a712fadd8e032328f0ec236b470fb6",
+    "AeroSim/Assets/AeroSim/Runtime/Input/TouchInputState.cs.meta": "fe88669a9ae8a31d977953a2d1f823ca279f86ddd7be4b9be059d88cbb37a0d9",
+    "AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs": "aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputRouter.cs": "991a36ee16244bb3d1e1e60578331c0481cc994464bcc6be105076d4cb5006ef",
+    "verification/v125-qa/TouchInputStateIndependentTests.cs": "38bc0844c436fd54f711a1c7ca39e986293f9f718b6efe59c8476dc34eab79fe",
+    "verification/v125-qa/build-touch-state-independent-tests.sh": "5491ae9499d030f5d3b637b123ff1e73c5737123669b34206f4ae286065fca15",
+    "verification/v125-qa/TouchInputStateDeveloperTests.cs": "89c073df679934bff79597e67413b3e77fac1ff570f54dc77cc903b0818bcdca",
+    "verification/v125-qa/build-touch-state-developer-tests.sh": "54734682501d4f531e727cc81b42b28fdf78eb536674b035d8cb53007805c068",
+    "verification/v125-qa/InputRouterTests.cs": "ced96011c456c7ca0c4376a32ed0b1a9f25454a2064dadf327b89b7396898129",
+    "verification/v125-qa/build-input-router-tests.sh": "31d898b0c64d64f096d69063cebfd451009dd4992645b925a76c500669e01c22",
+    "verification/v125-qa/test-catalog-review.mjs": "4d6bde38f526fb55acc23e51e428772b347f24957d86b6c0d6c458fc6d4a14e6",
+    "verification/v125-qa/build-catalog-review.mjs": "eaac5b5db8f6c7c77509f97822aa5e6e4365e4f4911d052e185821d3c0d5d8f8",
+    "assets/catalog-v125/dji-aircraft.json": "4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c",
+    "assets/catalog-v125/review-template.html": "4dee4e66fb9bb3cd978358270b917ed7bb8213512b02f36f45add6c060933304",
+    "assets/v125-art/mavic/review-drafts.json": "cd300a36398eef56ffbad5eef69e8f889efc0e21c01a8515ab8a0fb19b22085c",
+    "assets/v125-art/inspire/review-drafts.json": "3c6f7a1cfa7676d6db06735434e2ea235df4e888b4c370176e4fe4dd8a47104f"
+  },
+  "artByteAndManifestChecks": {
+    "visualAccuracyAcceptance": "not_claimed_by_this_mechanical_qa",
+    "current": [
+      {"aircraftId": "dji-mavic-pro", "revision": "draft-02", "currentManifestRows": 1, "appearanceStatus": "pending_user", "path": "assets/v125-art/mavic/mavic-pro-draft-02.png", "sha256": "ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931", "pngHeaderVerified": true, "width": 1536, "height": 1024},
+      {"aircraftId": "dji-inspire-1", "revision": "draft-03", "currentManifestRows": 1, "appearanceStatus": "pending_user", "path": "assets/v125-art/inspire/inspire-1-x3-draft-03.png", "sha256": "94a2245bd26a4bfdd930ea0b6d51f596e9bf4d1459f88861329a4c4e695e4491", "pngHeaderVerified": true, "width": 1536, "height": 1024}
+    ],
+    "originalHistory": [
+      {"path": "assets/v125-art/mavic/mavic-pro-draft-01.png", "sha256": "70570d7d9b15aabf4ef7f1c7d0b65c0da8fd3cb1eacbc003bc1351a686cddeb4", "byteIdenticalToBaselineHead": true},
+      {"path": "assets/v125-art/mavic/mavic-pro-draft-01.prompt.txt", "sha256": "670668149ba22e709915385a44bad0541b9d11c813ae1816eaad9a120c970a4d", "byteIdenticalToBaselineHead": true},
+      {"path": "assets/v125-art/inspire/inspire-1-x3-draft-01.png", "sha256": "9ca8f89268abcb28b73a2e3b910a5838bdc034b0188ab01b6bf0a6a08380f3a2", "byteIdenticalToBaselineHead": true},
+      {"path": "assets/v125-art/inspire/inspire-1-x3-draft-01.prompt.txt", "sha256": "280b58a0ca2aa042ba4b5330118b31e86cc0bc9133b3108f49909ff1fc2d79f3", "byteIdenticalToBaselineHead": true}
+    ],
+    "retainedIntermediate": [
+      {"path": "assets/v125-art/inspire/inspire-1-x3-draft-02.png", "sha256": "d7ee1ee8d9ae193f520618a688042a6f12db0449264c587a167b56d819a3fc60"},
+      {"path": "assets/v125-art/inspire/inspire-1-x3-draft-02.prompt.txt", "sha256": "6f50113ed89d3838e6fabd421b3c4fe1681329020af087e30332ca59c0bc427b"}
+    ]
+  },
+  "limitations": [
+    "Same pointer ID reused after release cannot distinguish a late old-generation event. The future adapter must enforce generation/session/lifecycle guards before this core API.",
+    "Pure tests do not verify actual pointer capture, release reentrancy, Unity UI adapters, rotations, safe areas, operating-system interruption or true two-hand touch.",
+    "Desktop keyboard/gamepad/joystick and iPad/iPhone real-device operation, performance and input-interruption tests remain unverified by this suite.",
+    "Gate A migration, complete Gate B coordinator, Gate C application wiring and Gate D device acceptance are not completed by this result.",
+    "Catalog tests use isolated copies and synthetic approval fixtures; they do not prove DJI coverage completeness, real browser acceptance, aircraft accuracy, runnable meshes/materials or user appearance confirmation.",
+    "No Unity/native build or Git write/push performed by independent QA; root owns integration and Git delivery."
+  ]
+}

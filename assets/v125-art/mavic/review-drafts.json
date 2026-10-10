@@ -1,9 +1,9 @@
 [
   {
     "aircraftId": "dji-mavic-pro",
-    "image": "assets/v125-art/mavic/mavic-pro-draft-01.png",
-    "sha256": "70570d7d9b15aabf4ef7f1c7d0b65c0da8fd3cb1eacbc003bc1351a686cddeb4",
-    "revision": "draft-01",
+    "image": "assets/v125-art/mavic/mavic-pro-draft-02.png",
+    "sha256": "ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931",
+    "revision": "draft-02",
     "kind": "generated_review_bitmap",
     "appearanceStatus": "pending_user",
     "sourceUrls": [
@@ -19,12 +19,15 @@
     ],
     "notes": [
       "Original 2016 dark-gray Mavic Pro identity; not Platinum, Alpine White, Mavic 2, Mini, or a color/combo variant.",
-      "Generated once with built-in image_gen; 1536 x 1024 RGB PNG four-view review bitmap; not an official photo, runnable mesh, CAD model, UV/LOD/collider or final PBR asset.",
-      "Official DJI 2016 launch photographs, original gimbal comparison images and 2016.10 user manual v1.0 pages 6-8 were visually inspected before generation.",
-      "All four panels show an unfolded dark-gray four-motor aircraft, two round nose vision windows, single small gimbal camera and yellow front-arm bands.",
+      "Generated 2026-10-10 with one built-in image_gen precise-object edit, referenced_image_paths containing only draft-01 and transparent_background=false; no CLI/API fallback. Source output copied byte-for-byte and cmp verified; workspace copy actually opened with view_image.",
+      "1536 x 1024 8-bit RGB PNG four-view generated review bitmap; not an official photograph, calibrated CAD orthographic drawing, runnable mesh, UV/LOD/collider or final PBR asset.",
+      "Draft-01 was actually viewed before editing. DJI support/specification and 2016 launch text were re-read; official original-gimbal images 203/204 and dark-gray 2016 launch photograph 724 were actually viewed in the browser before this local edit. Manual pages 6-8 remain draft-01 historical research, not a new manual inspection in draft-02.",
+      "Observed local improvement: FRONT and THREE-QUARTER have a visually smaller/less tall silver-gray single-lens camera and slimmer visible axis details. Two round vision windows in compact dark angular corner sockets are retained; no measured nose-window correction is claimed.",
+      "Four-panel layout, labels, dark-gray body, unfolded four-motor outline, black two-leaf propellers and yellow front-arm double bands are visually retained. LEFT SIDE front landing strut occludes much of the camera, so identical camera/gimbal geometry and physical clearance across views remain unproven.",
       "Observed risk: FRONT is slightly elevated rather than level orthographic, so front/rear motor height relationships cannot be confirmed consistently against LEFT SIDE.",
       "Observed risk: propeller phases, hub details and visible tip bands are not proven identical or correct across all views; marked/unmarked quick-release hubs need explicit verification.",
-      "Observed risk: camera/gimbal supports, arm cross-sections, side ports, yellow-band placement and dimensions require corrections against official high-resolution references.",
+      "Observed risk: the gimbal still has a simplified silver transverse barrel/support; original axis topology, camera/nose-window ratios and clearance are not measured or fully matched to official references. Arm cross-sections, side ports, yellow-band placement and dimensions remain unverified.",
+      "Draft-01 PNG/prompt and SHA 70570d7d9b15aabf4ef7f1c7d0b65c0da8fd3cb1eacbc003bc1351a686cddeb4 are retained unchanged as history in docs/V125_ART_MAVIC.md; this manifest contains exactly one current row for dji-mavic-pro, draft-02.",
       "No user confirmation recorded. Not eligible for formal flight selection or final Unity 3D integration."
     ]
   }

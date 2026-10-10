@@ -1,0 +1,15 @@
+{
+  "task": "INPUT-TOUCH-01",
+  "scope": "Gate B pure touch ownership subset only; no UI adapter or device acceptance",
+  "contract": {
+    "path": "docs/V125_TOUCH_CONTRACT.md",
+    "sha256": "119e8e576033ecbd1bc1c6de7ceb4dde50a3518745479fa524b07fbe9e72f952"
+  },
+  "frozenBy": "root",
+  "independentQaRequired": true,
+  "finalAcceptance": "pending_user",
+  "limitations": [
+    "Pointer IDs alone cannot disambiguate delayed events after the same ID is reused; the future adapter needs generation/lifecycle guards.",
+    "Pure C# tests do not verify Unity event capture, operating-system interruptions or physical desktop/iPad/iPhone input."
+  ]
+}
