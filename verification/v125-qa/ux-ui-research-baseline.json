@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-10T20:24:25.792Z",
+  "startHead": "241aa545ff3e35bd5c436bc7cadcdb37948496d3",
+  "scope": "Read-only UX/UI/scene research guard; captures existing dirty source, not a native build or per-model approval",
+  "originalConceptBaseline": "verification/v125-qa/prd-review/baseline.json",
+  "files": [
+    {
+      "file": "飞行模拟器产品设计文档.md",
+      "sha256": "cc72557d8f3fa0bb899495516418908fba811d63d80fa553631a3c87bdbbf1a6"
+    },
+    {
+      "file": "AeroSim/Packages/manifest.json",
+      "sha256": "bf0dd81a8c4a2fcccda9749ef84068ae864e7c1e8c963921fa11bf4eafbf267a"
+    },
+    {
+      "file": "AeroSim/ProjectSettings/GraphicsSettings.asset",
+      "sha256": "40de98f4d46d02fb08e268ad3a722a00eed7289f4ef6d2e759984b1b4a85d2af"
+    },
+    {
+      "file": "AeroSim/ProjectSettings/QualitySettings.asset",
+      "sha256": "f1f893b1be47ad2442f58338dd7c860dc1986bb317e2f5bb31084454ffabbf4c"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.cs",
+      "sha256": "749cd8f01ccbc44227f75829fa1929db39cdd7960f9c4555c604d4f6b5d19644"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Responsive.cs",
+      "sha256": "ae7b80aeecc5d8c49f81907236022861d7fd59ea4d8073353a54b38bfdbc9a25"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.DesignV1.cs",
+      "sha256": "197bd9fc9f4945d41a3779cb88ace2304fcb6efda23d4603311e5f48d6936f96"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Pages.cs",
+      "sha256": "d9896393cf1cbc3fe59bb66e84fab0db83142a932059f6167575c517a9fdf456"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Flight.cs",
+      "sha256": "8c3482128bad17361bfe10cc1540d24c153ffd21c350bda2af2199c43d78458a"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.FlightDesignV1.cs",
+      "sha256": "987e6fd81586443e7e20107c3a448527ab3975c94e1223eb3fa729257ddb02f5"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Hangar.cs",
+      "sha256": "21bb883300f052d421d4b638ea97f8744476f48d25bacbcfcd06ad6fe99e4240"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/Input/FlightInput.cs",
+      "sha256": "113676769109ce041f09248b8b254dbe6302e7af700f82e68066966a988c33d9"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/Input/TouchInputState.cs",
+      "sha256": "2319cdc4e7dd9aa4510565caba6b1d0be5a712fadd8e032328f0ec236b470fb6"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/Input/InputRouter.cs",
+      "sha256": "991a36ee16244bb3d1e1e60578331c0481cc994464bcc6be105076d4cb5006ef"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/Domain/AircraftCatalog.cs",
+      "sha256": "696c345b885438801698044017754941084408ccb9378be6782d19519721b5b3"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/Simulation/FlightSimulator.cs",
+      "sha256": "5be0d2f6a2293fefa331085c12a62fc1454768ad2b60e6c5ec20fe15fa6f0172"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/Simulation/FlightSimulator.Visuals.cs",
+      "sha256": "6fff7c9502bb789f6df41d66f0aae386f73d2f9c5131ae0c53c0afda094c61f7"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Runtime/Simulation/FlightSimulator.EnvironmentV1.cs",
+      "sha256": "691887a15183e3fdef6e760305f3c333610c2928cb97ad94e9f593038eb7e869"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/UI/Product.uss",
+      "sha256": "0b0f3f76696d24d8f6f16ddca6c3e36281b08df60b1f021e8b51cd7637504d8e"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/UI/Responsive.uss",
+      "sha256": "2cd2ce8fa9abb26248e99188c623e11ae11ba175142b27acffb643b07d793afd"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/UI/FlightDesignV1.uss",
+      "sha256": "acc3d0bbcc865290ba5408949adf2494ced23588d201ed8139a9b36dbcd583d7"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/LandscapeSurface.shader",
+      "sha256": "2e94c8ad388f7d3da79470ac09912ac4f5917999c9f81c7b6600dfccf237c69f"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/IndustrialSurfaceV1.shader",
+      "sha256": "12c818e2b781a20f603c1b18dd205e4068165493b4f7d34359332a633d588453"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/OceanSurface.shader",
+      "sha256": "1e800c4c1f3e04608a1366af74225a990099fcf565467a9a19bc599d7d456c3c"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/RiverSurfaceV1.shader",
+      "sha256": "0cdef7599d541b6b234284d9a8a5e239e62b819214c67bc8de24acb1957b4733"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/NeedleFoliage.shader",
+      "sha256": "b4c989e5e3bdee2e275d7d547ab72bd74fe51b95b78e80a178f8244192b0c153"
+    },
+    {
+      "file": "AeroSim/Assets/AeroSim/Resources/Atmosphere.shader",
+      "sha256": "54e25551b0a22a6b5601eab12df97bc5744c2a525c8c41532966190525d7814d"
+    },
+    {
+      "file": "assets/catalog-v125/dji-aircraft.json",
+      "sha256": "4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c"
+    },
+    {
+      "file": "assets/v125-art/mavic/review-drafts.json",
+      "sha256": "2d4cf32ab294592476de301d17b3d3b48911b3fbf5a4d45b15c96862229dee32"
+    },
+    {
+      "file": "assets/v125-art/mavic/mavic-4-pro-draft-01.png",
+      "sha256": "efdc1b0d6c5bf307968731e1c5f0afd9f40aa3e4e5a4eb3deb5382e090eaa9ab"
+    },
+    {
+      "file": "verification/v125-qa/prd-review/baseline.json",
+      "sha256": "b4357e4b16eb7477fac6f3372a872288faea7b1437dad6269097b97d18e1af1f"
+    }
+  ]
+}

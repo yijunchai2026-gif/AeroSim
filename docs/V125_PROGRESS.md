@@ -111,6 +111,21 @@
 
 本轮27个明确文件已本地提交为 `e5519fa9c781674d6c0557b79d0aeb0310e0f48e`：[GitHub提交目标（尚未上传，可能无法访问）](https://github.com/yijunchai2026-gif/AeroSim/commit/e5519fa9c781674d6c0557b79d0aeb0310e0f48e)。实际非交互push与随后新ls-remote均exit128：`could not read Username for 'https://github.com': terminal prompts disabled`。状态为 **UNPUSHED_AUTH_BLOCKED**，没有新远端SHA，旧origin缓存不作证明。最后追加已完成QA文档的本地依赖复查为844/0、251处链接，与独立816/0检查的输入范围不同，不改写独立结果。此前未选业务源码仍留在工作区，未合并main或force-push。此上传回执另作本地提交并实际重试；认证恢复后须正常Push origin并核对远端，不重做本轮图稿和验证。
 
+## 本轮：UX / UI / 场景优化调研（2026-10-10）
+
+用户要求先由UX/UI调研是否需要优化，强调界面简单清楚、操作前后一致、iPad/iPhone适配及真实纹理；随后要求继续。根本轮按调研范围执行，不继续之前未完08业务/纯身份实现，不直接改应用或替用户确认新机型。
+
+- 三路分别完成[UX流程](V125_UX_FLOW_AUDIT.md)、[UI/移动布局](V125_UI_MOBILE_AUDIT.md)、[场景材质](V125_SCENE_REALISM_AUDIT.md)，根整合为[优化调研报告](V125_UX_UI_OPTIMIZATION_RESEARCH.md)。已有源码和PNG按静态风险/历史观察/当前合同分层，不伪称用户访谈、新native运行或真机验证。场景成员曾因额度中断，用户继续后恢复到原范围，未购买额度/使用reset。
+- 重点建议：统一命令/暂停原因/中立恢复、修设备后返回保留SessionDraft、分组保存策略；按可用空间做iPad宽窄布局和iPhone横竖屏HUD，真机验证pt与panel/像素和safeArea；先改材质类别与米尺度、法线/光滑度、近景结构/水面/光照，再扩场景。移动/预算均为待实施建议，不降低23原图或继承功能要求。
+- 后续独立QA指出UI首次稿的“全部设置draft”与现PRD的UI/HUD/Text独立即时保存冲突；作者修正并保留首次SHA。根再按QA意见去掉矩阵旧30映射的固定当前状态基数，改按冻结实现清单；旧PRD/V1映射和课程基数不重写。
+- 4报告及源守卫已[冻结](../verification/v125-qa/ux-ui-research-freeze.json)，其中31个已存在源/PRD/目录/新稿指纹按本轮真实dirty工作区捕获，是“只读保持”守卫而非运行构建冻结。root复核31/31及5/5研究指纹一致；PRD仍v1.6、原始23图、机型PNG和批准状态均不改。当前仍6个旧运行原型与141个独立审核项目，5个current稿/0用户批准，新Mavic 4 Pro不接正式飞行。
+- root文档工具对PRD＋4报告（require-tracked）复查为1075/0、329处本地文件链接、未发布依赖0；它只查文档/引用/既有门禁，不能当UI/UX可用性、场景真实感、3端性能或用户验收通过。独立终验见下方，实际Git上传结果另记，不预称上传成功。
+- 开始HEAD `241aa545ff3e35bd5c436bc7cadcdb37948496d3`；既存未选业务源、3个旧meta、纯身份/旧候选04/Wave B与原QA产物均保留，本轮只选调研文档和紧凑证据。认证此前仍阻塞，本批提交后再次实际push并核远端，不把origin缓存当新上传证据。
+
+独立终验已实际完成，范围为 **PASS_DOCUMENT_REVIEW_ONLY**：PRD＋4冻结报告1075检查/0失败、329处本地文件引用、未发布依赖0；另独立复跑目录30项与文档检查器隔离反例10项，合计40 PASS/0 FAIL/0 SKIP。研究冻结5/5、只读源守卫31/31、原23图23/23、旧Mavic与精选/历史核对PNG均字节一致；141目录仍pending_user、5份current稿、0用户批准。两项文档口径冲突已关闭，不代表对应运行行为已实现。见[独立QA](V125_UX_UI_RESEARCH_QA.md)，SHA `4ed4b96a8d8c54799d7d47a2b7b721b8838effead85188923b22ffee5ad99c02`；[紧凑结果](../verification/v125-qa/ux-ui-research-results.json)，SHA `ebdc8c088e92587eaa70b0f73800adfed34510bd0258dfba3ee65e31e6f76521`。本轮没有新Unity构建、移动真机、运行性能或材质改造；1.25仍未完成交付，Git上传结果另记。
+
+追加自身QA文档后，root与独立成员分别只读复查同一扩大范围：PRD＋4报告＋QA文档1142检查/0失败、351处本地文件链接、未发布依赖0，暂存空白检查exit0；不覆盖原四报告1075/0的冻结证据。独立成员已停止写入，源与报告保持冻结。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
@@ -135,6 +150,10 @@
 | 第四波技术负责人 | Gate A raw/身份/旁路事务精确候选及真实依赖边界 | V125_GATE_A_CONTRACT.md，只读其他源码/本机SDK |
 | 第四波两名UI美术 | 原图与08实际Dashboard、Replay质性对照，不代签像素验收 | V125_DESKTOP08_DASHBOARD_VISUAL.md、V125_DESKTOP08_REPLAY_VISUAL.md |
 | 下一波纯身份程序员/独立QA | descriptor解析首子集；独立预期和mutation在冻结后接力 | InputDeviceIdentity新文件、identity开发/独立tests各自互斥、专项实现/QA文档 |
+| 本轮UX技术/页面审查 | 导航、保存、暂停、返航与输入上下文静态调研 | V125_UX_FLOW_AUDIT.md，只读运行源码 |
+| 本轮UI美术/移动布局审查 | 原图与历史候选对照、iPad/iPhone布局与触点建议 | V125_UI_MOBILE_AUDIT.md，不改图稿或移动代码 |
+| 本轮场景3D美术审查 | 材质类别、米尺度、shader/几何/水面与性能调研 | V125_SCENE_REALISM_AUDIT.md，不生成/接入新资产 |
+| 本轮根整合/独立QA | 建议整合、冻结与只读守卫、独立检查器回归和交付 | V125_UX_UI_OPTIMIZATION_RESEARCH.md、V125_UX_UI_RESEARCH_QA.md、ux-ui-research-*.json、本文 |
 
 并发上限四个运行成员，角色按波次接力，不并行争用 Unity 构建。后续设备程序员/QA 按技术审查分配，跨线支援由根负责人记录交接。
 
