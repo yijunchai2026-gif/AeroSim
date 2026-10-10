@@ -1,0 +1,27 @@
+[
+  {
+    "aircraftId": "dji-mini-4-pro",
+    "revision": "draft-01",
+    "image": "assets/v125-art/current/mini-4-pro-draft-01.png",
+    "sha256": "5d41de5113d0a0da95109807d479b4392c28052adb802383278db6deb90b360d",
+    "kind": "generated_review_bitmap",
+    "sourceUrls": [
+      "https://www.dji.com/mini-4-pro",
+      "https://www.dji.com/mini-4-pro/downloads",
+      "https://www.dji.com/mini-4-pro/specs",
+      "https://store.dji.com/product/dji-mini-4-pro",
+      "https://dl.djicdn.com/downloads/DJI_Mini_4_Pro/20240627/DJI_Mini_4_Pro_User_Manual_en.pdf",
+      "https://se-cdn.djiits.com/tpc/uploads/in_the_box/cover/f255909c0783c37eb297b38f96b21729%40retina_small.png"
+    ],
+    "appearanceStatus": "pending_user",
+    "notes": [
+      "Generated with built-in image_gen; 1536 x 1024 RGB review bitmap, not a runnable mesh, CAD model, certified product photo, or final material asset.",
+      "Official Mini 4 Pro manual v1.4 pages 11 and 14 and official folded top product photograph were visually reviewed before generation.",
+      "Four views have unfolded arms, single gimbal camera, matte light-gray shell, black two-leaf orange-tip propellers and short front-arm landing struts.",
+      "Observed risk: gimbal side supports and nose vent treatment are stylized and more prominent than official structural line art; exact dimensions are not measured.",
+      "Observed risk: sensor-window placement and scale differ in projection across front, top and three-quarter views and need per-view correction against official photos.",
+      "Observed risk: left-side view uses slight perspective, rather than a calibrated orthographic projection; this sheet must not serve as a modeling blueprint.",
+      "No user confirmation has been recorded. Not eligible for production Unity aircraft selection or final 3D asset integration."
+    ]
+  }
+]

@@ -595,8 +595,8 @@ namespace AeroSim
             var footer = Element("design-footer"); footer.Add(Text("Training record only. Review personal information before sharing an export.", "muted", "wrap")); footer.Add(DesignButton("Export CSV", "chart", () => ExportCsv(r))); footer.Add(DesignButton("Replay Evidence", "play", () => BeginReplay(r))); footer.Add(DesignButton("Export Printable Report", "save", () => ExportPrintableReport(r), true)); s.Add(footer); return s;
         }
 
-        // A vertex-colour gradient remains editable native UI, scales without bitmap blur,
-        // and avoids a hard rectangular edge behind the learning hero's text.
+        // Shared vertices interpolate colour continuously, without antialiased strip seams.
+        // UI Toolkit's official Allocate example uses BL -> TL -> TR winding.
         private sealed class DesignHeroGradient : VisualElement
         {
             public DesignHeroGradient() { pickingMode = PickingMode.Ignore; generateVisualContent += Draw; }
@@ -616,9 +616,10 @@ namespace AeroSim
                 }
                 for (int i = 0; i < segments; i++)
                 {
+                    // a=TL, b=BL, c=TR, d=BR: the reverse winding is backface-culled.
                     ushort a = (ushort)(i * 2), b = (ushort)(i * 2 + 1), c = (ushort)(i * 2 + 2), d = (ushort)(i * 2 + 3);
-                    mesh.SetNextIndex(a); mesh.SetNextIndex(b); mesh.SetNextIndex(c);
-                    mesh.SetNextIndex(c); mesh.SetNextIndex(b); mesh.SetNextIndex(d);
+                    mesh.SetNextIndex(a); mesh.SetNextIndex(c); mesh.SetNextIndex(b);
+                    mesh.SetNextIndex(c); mesh.SetNextIndex(d); mesh.SetNextIndex(b);
                 }
             }
         }

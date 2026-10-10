@@ -8,7 +8,7 @@
 .v1-flight-clock { font-size: 18px; margin-right: 20px; }
 .v1-flight-action { flex-direction: row; align-items: center; justify-content: center; min-height: 44px; height: auto; padding-left: 12px; padding-right: 12px; margin-right: 0; margin-top: 0; margin-bottom: 0; flex-shrink: 0; background-color: rgba(26,41,53,0.86); border-color: rgb(71,86,96); }
 .v1-flight-action .design-line-icon { margin-right: 8px; flex-shrink: 0; }
-.v1-flight-action .design-button-label { white-space: nowrap; flex-shrink: 0; font-size: 16px; }
+.v1-flight-action .design-button-label { white-space: nowrap; flex-shrink: 0; font-size: 16px; height: auto; min-height: 0; padding-top: 0; padding-bottom: 0; }
 .v1-flight-hud .v1-objective-scroll { position: absolute; left: 32px; top: 220px; width: 440px; min-height: 0; }
 .v1-flight-hud .v1-objective-card { position: relative; left: auto; top: auto; width: 100%; max-height: none; background-color: rgba(20,28,33,0.92); border-width: 1px; border-color: rgb(66,77,83); border-radius: 14px; padding-left: 24px; padding-right: 24px; padding-top: 24px; padding-bottom: 20px; }
 .v1-objective-scroll .unity-scroller { width: 6px; }
@@ -59,15 +59,25 @@
 .v1-inspection-distance { font-size: 18px; color: rgb(58,222,204); margin-top: 16px; margin-bottom: 12px; white-space: normal; }
 .v1-flight-hud.hud-compact .v1-objective-scroll, .v1-flight-hud.hud-compact .v1-camera-tools, .v1-flight-hud.hud-compact .v1-flight-map { display: none; }
 .v1-flight-hud.hud-compact .v1-compact-actions { display: flex; }
+.text-expanded .v1-flight-action { min-height: 52px; height: auto; }
+.text-expanded .v1-flight-action .design-button-label { flex-shrink: 1; white-space: normal; }
+.text-expanded .v1-compact-actions { min-height: 72px; height: auto; }
+.text-expanded .v1-compact-actions .v1-flight-action { min-width: 0; flex-shrink: 1; }
+.text-expanded .v1-flight-disclaimer { bottom: 80px; }
 .v1-flight-hud.hud-compact .v1-flight-telemetry { top: 96px; bottom: auto; height: auto; min-height: 64px; flex-wrap: wrap; border-radius: 8px; }
 .v1-flight-hud.hud-compact .hud-metric { min-width: 80px; min-height: 48px; flex-direction: column; height: auto; padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px; }
 .v1-flight-hud.hud-compact .hud-metric .design-line-icon { display: none; }
 .v1-flight-hud.hud-compact .hud-caption { margin-right: 0; font-size: 12px; }
 .v1-flight-hud.hud-compact .hud-value { font-size: 16px; }
 .v1-flight-hud.hud-compact .v1-flight-title, .v1-flight-hud.hud-compact .v1-simulation-chip, .v1-flight-hud.hud-compact .v1-flight-status, .v1-flight-hud.hud-compact .v1-flight-clock { display: none; }
+.v1-flight-hud.hud-narrow .brand-name, .v1-flight-hud.hud-narrow .objective-toggle { display: none; }
+.v1-flight-hud.hud-narrow .v1-compact-actions .design-line-icon { display: none; }
+.v1-flight-hud.hud-narrow .v1-compact-actions .v1-flight-action { min-width: 0; flex-shrink: 1; padding-left: 6px; padding-right: 6px; }
+.v1-flight-hud.hud-narrow .v1-compact-actions .design-button-label { white-space: normal; flex-shrink: 1; }
 .v1-flight-hud.hud-compact .brand { flex-grow: 1; min-width: 0; }
 .v1-flight-hud.hud-compact .v1-flight-bar { padding-left: 12px; padding-right: 12px; }
 .v1-flight-hud.hud-compact .v1-flight-disclaimer { bottom: 60px; left: 20%; right: 20%; }
+.v1-flight-hud.hud-compact.text-expanded .v1-flight-disclaimer { bottom: 80px; }
 .v1-flight-hud.hud-compact .v1-race-timer { bottom: 72px; left: 16px; right: 16px; font-size: 26px; }
 /* Saved non-default OSD anchors use real live metrics; safe fallback never mutates the profile. */
 .v1-custom-osd-layer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
@@ -111,7 +121,10 @@
 .v1-replay-review-actions { flex-direction: row; justify-content: flex-end; margin-top: 8px; margin-bottom: 8px; }
 .v1-replay-review-actions .v1-flight-action { margin-left: 8px; }
 .v1-replay-controls { flex-direction: row; align-items: center; flex-wrap: wrap; }
-.v1-replay-rate { width: 90px; min-height: 44px; }
+.v1-replay-rate { width: 140px; min-width: 140px; flex-shrink: 0; min-height: 44px; }
+.v1-replay-rate .unity-base-field__input { min-width: 0; flex-grow: 1; padding-left: 10px; padding-right: 10px; }
+.v1-replay-rate .unity-base-popup-field__text { min-width: 70px; flex-grow: 1; }
+.text-expanded .v1-replay-rate { width: 180px; min-width: 180px; min-height: 58px; }
 .v1-replay-clock { font-size: 15px; margin-left: 12px; }
 .v1-replay-disclaimer { font-size: 12px; color: rgb(158,183,205); -unity-text-align: middle-center; margin-top: 12px; }
 .layout-tablet .v1-replay-columns, .layout-phone .v1-replay-columns, .text-expanded .v1-replay-columns { flex-direction: column; }

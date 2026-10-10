@@ -364,7 +364,7 @@
 .design-v1 .design-checklist-item .design-check-field .unity-base-field__label { flex-basis: 0; flex-grow: 1; flex-shrink: 1; width: auto; min-width: 0; max-width: 100%; }
 .design-v1 .design-check-field .unity-toggle__input { flex-shrink: 0; }
 .design-v1 .design-preflight-page .design-side { width: 440px; }
-.design-v1 .design-assignment-description { flex-shrink: 0; height: auto; min-height: 42px; max-width: 55%; white-space: normal; }
+.design-v1 .design-assignment-description { flex-shrink: 0; height: auto; min-height: 52px; max-width: 55%; white-space: normal; }
 .design-v1.design-controller-mode .side-nav { display: none; }
 .design-v1.design-controller-mode .content-stage, .design-v1.design-controller-mode .main-content { margin-left: 0; margin-right: 0; max-width: none; }
 .design-v1 .design-controller-page { padding-left: 24px; padding-right: 32px; padding-top: 32px; }
@@ -390,6 +390,12 @@
 .design-v1.layout-phone .design-controller-axis-row .axis-label { width: 112px; min-width: 112px; }
 .design-v1.layout-phone .design-preflight-page .design-side, .design-v1.layout-tablet .design-preflight-page .design-side, .design-v1.text-expanded .design-preflight-page .design-side { width: 100%; }
 .design-v1.layout-phone .design-assignment-description, .design-v1.text-expanded .design-assignment-description { max-width: 100%; }
-.design-v1 .design-range-field .design-range-number { height: 36px; min-height: 36px; padding-top: 0; padding-bottom: 0; }
-.design-v1 .design-range-number .unity-base-text-field__input { height: 34px; min-height: 34px; padding-top: 0; padding-bottom: 0; }
-.design-v1 .design-range-number .unity-text-element { padding-top: 0; padding-bottom: 0; -unity-text-align: middle-center; }
+.design-v1 .design-range-field .unity-slider__input { height: auto; min-height: 40px; }
+.design-v1 .design-range-field .design-range-number { height: auto; min-height: 40px; width: 84px; min-width: 84px; padding-top: 0; padding-bottom: 0; }
+.design-v1 .design-range-number .unity-base-text-field__input { height: auto; min-height: 38px; padding-top: 0; padding-bottom: 0; }
+.design-v1 .design-range-number .design-range-value { height: auto; min-height: 30px; flex-shrink: 0; padding-top: 0; padding-bottom: 0; -unity-text-align: middle-center; }
+.design-v1 .design-range-number .unity-text-element--inner-input-field-component { height: auto; min-height: 30px; padding-top: 0; padding-bottom: 0; }
+.design-v1.text-expanded .design-number { width: 60px; min-width: 60px; height: auto; min-height: 60px; border-radius: 30px; }
+.design-v1.text-expanded .design-range-field .unity-slider__input, .design-v1.text-expanded .design-range-field .design-range-number { height: auto; min-height: 58px; }
+.design-v1.text-expanded .design-range-number .unity-base-text-field__input { height: auto; min-height: 54px; }
+.design-v1.text-expanded .design-range-number .design-range-value, .design-v1.text-expanded .design-range-number .unity-text-element--inner-input-field-component { height: auto; min-height: 46px; }

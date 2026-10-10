@@ -23,6 +23,8 @@ namespace AeroSim
         private readonly List<Label> _designTargetStates = new();
         private VisualElement _designOsdLayer, _designSpeedMetric, _designAltitudeMetric, _designBatteryMetric;
         private string _designOsdSafetyNotice;
+        private Label _designOsdPauseNotice;
+        private VisualElement _designOsdIndicator;
         private VisualElement _designFlightInputGuardRoot;
 
         private void BuildFlightUi(bool replay)
@@ -39,21 +41,49 @@ namespace AeroSim
                 _designFlightStyleLoaded = true;
             }
             RefreshUiPreferences();
-            if (_designFlightInputGuardRoot != _root)
-            {
-                _designFlightInputGuardRoot = _root;
-                _root.RegisterCallback<NavigationMoveEvent>(e => {
-                    // Also handle the no-focused-element case, where the event targets the root.
-                    if (_page != Page.Flight || _sim == null || _sim.Paused || e.direction == NavigationMoveEvent.Direction.Next || e.direction == NavigationMoveEvent.Direction.Previous) return;
-                    _root.panel?.focusController.IgnoreEvent(e); e.StopImmediatePropagation();
-                }, TrickleDown.TrickleDown);
-            }
+            InstallDesignFlightInputGuard();
+            _root.schedule.Execute(InstallDesignFlightInputGuard);
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
             if (replay) BuildDesignReplay();
             else BuildDesignFlight();
-            var toast = Element("toast", "toast-hidden");
-            _toastLabel = Text("", "toast-label"); toast.Add(_toastLabel); _root.Add(toast);
+            InstallToast();
             OnGeometryChanged(null);
+        }
+
+        private void InstallDesignFlightInputGuard()
+        {
+            // With no focused element, Unity dispatches navigation to the PANEL root,
+            // which is above UIDocument.rootVisualElement. A document-only callback
+            // cannot see that event and lets an arrow select the first HUD action.
+            var guardRoot = _root?.panel?.visualTree;
+            if (guardRoot == null || guardRoot == _designFlightInputGuardRoot) return;
+            ReleaseDesignFlightInputGuard();
+            _designFlightInputGuardRoot = guardRoot;
+            guardRoot.RegisterCallback<NavigationMoveEvent>(GuardDesignFlightNavigation, TrickleDown.TrickleDown);
+            guardRoot.RegisterCallback<KeyDownEvent>(GuardDesignFlightArrow, TrickleDown.TrickleDown);
+        }
+
+        private void ReleaseDesignFlightInputGuard()
+        {
+            if (_designFlightInputGuardRoot == null) return;
+            _designFlightInputGuardRoot.UnregisterCallback<NavigationMoveEvent>(GuardDesignFlightNavigation, TrickleDown.TrickleDown);
+            _designFlightInputGuardRoot.UnregisterCallback<KeyDownEvent>(GuardDesignFlightArrow, TrickleDown.TrickleDown);
+            _designFlightInputGuardRoot = null;
+        }
+
+        private void GuardDesignFlightNavigation(NavigationMoveEvent e)
+        {
+            if (_page != Page.Flight || _sim == null || _sim.Paused || e.direction == NavigationMoveEvent.Direction.Next || e.direction == NavigationMoveEvent.Direction.Previous) return;
+            _designFlightInputGuardRoot?.panel?.focusController.IgnoreEvent(e);
+            e.StopImmediatePropagation();
+        }
+
+        private void GuardDesignFlightArrow(KeyDownEvent e)
+        {
+            if (_page != Page.Flight || _sim == null || _sim.Paused) return;
+            if (e.keyCode != KeyCode.UpArrow && e.keyCode != KeyCode.DownArrow && e.keyCode != KeyCode.LeftArrow && e.keyCode != KeyCode.RightArrow) return;
+            // Only consume the UI event: FlightInput still reads the raw arrow state.
+            e.StopImmediatePropagation();
         }
 
         private void BuildDesignFlight()
@@ -69,6 +99,11 @@ namespace AeroSim
             _flightStatus = Text(_sim.Status, "flight-status", "v1-flight-status"); bar.Add(_flightStatus);
             bar.Add(Text("SIMULATION · LOCAL", "v1-simulation-chip"));
             _designFlightClock = Text(Duration(0), "v1-flight-clock"); bar.Add(_designFlightClock);
+            _designOsdIndicator = DesignIcon("chart", 16);
+            _designOsdIndicator.name = "osd-availability-indicator";
+            _designOsdIndicator.pickingMode = PickingMode.Position;
+            _designOsdIndicator.style.display = DisplayStyle.None;
+            _designOsdIndicator.style.marginRight = 8; bar.Add(_designOsdIndicator);
             bar.Add(FlightAction("Objective", "target", ShowObjective, "objective-toggle"));
             bar.Add(FlightAction("Pause", "pause", TogglePause)); hud.Add(bar);
 
@@ -180,11 +215,40 @@ namespace AeroSim
             _pauseOverlay = Element("modal-overlay", "is-hidden");
             var pause = Panel("Flight paused", "Physics, clock and scoring are frozen. Your session is preserved.");
             pause.Add(ActionButton("Resume Flight", TogglePause, true));
+            pause.Add(ActionButton("Session Objective", ShowObjective));
+            pause.Add(ActionButton("Flight Telemetry", ShowDesignFlightTelemetry));
             pause.Add(ActionButton("Reset Aircraft", () => { _sim.ResetAircraft(); TogglePause(); }));
             pause.Add(ActionButton("Simulate Signal Loss", () => { TogglePause(); _sim.SignalLoss(); }));
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
             pause.Add(ActionButton("Exit Without Saving", () => ShowConfirm("Leave this flight?", "The current session will not be saved. Existing records are unaffected.", () => ShowPage(Page.Home))));
+            pause.Add(Text("Touch controls: left stick = throttle / yaw; right stick = pitch / roll.", "muted", "wrap"));
+            _designOsdPauseNotice = Text("", "muted", "wrap");
+            _designOsdPauseNotice.name = "osd-availability-description";
+            _designOsdPauseNotice.style.display = DisplayStyle.None; pause.Add(_designOsdPauseNotice);
             _pauseOverlay.Add(ModalScroll(pause)); InstallDesignModalFocus(_pauseOverlay); hud.Add(_pauseOverlay);
+        }
+
+        private void ShowDesignFlightTelemetry()
+        {
+            if (_page != Page.Flight || _sim == null) return;
+            _flightDialogClose?.Invoke();
+            bool pauseForReading = !_sim.Paused;
+            if (pauseForReading) _sim.Pause(true);
+            DismissToast();
+            FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            var overlay = Element("modal-overlay");
+            var panel = Panel("Flight Telemetry", "Actual simulator values, frozen while this panel is open. All metrics remain available when the HUD has no readable safe slot.");
+            panel.Add(Text("Altitude   " + Length(_sim.Position.y), "panel-title", "wrap"));
+            panel.Add(Text("Distance from home   " + Length(new Vector2(_sim.Position.x, _sim.Position.z).magnitude), "wrap"));
+            panel.Add(Text("Horizontal speed   " + Velocity(new Vector2(_sim.Body.linearVelocity.x, _sim.Body.linearVelocity.z).magnitude), "wrap"));
+            panel.Add(Text("Vertical speed   " + Velocity(_sim.Body.isKinematic ? 0 : _sim.Body.linearVelocity.y), "wrap"));
+            panel.Add(Text("Battery   " + _sim.Battery.ToString("F0") + "%", "wrap"));
+            panel.Add(Text("Elapsed   " + Duration(_sim.Elapsed), "wrap"));
+            void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim.Pause(false); RestoreFlightDialogFocus(); }
+            _flightDialogClose = Close;
+            panel.Add(ActionButton("Back to Flight", Close, true));
+            overlay.Add(ModalScroll(panel)); InstallDesignModalFocus(overlay); _root.Add(overlay);
+            overlay.Query<Button>().First()?.Focus();
         }
 
         private static void InstallDesignModalFocus(VisualElement modal)
@@ -346,8 +410,12 @@ namespace AeroSim
         {
             bool compact = width < 1560 || height < 700 || LocalStore.Profile.settings.textScale > 1.1f;
             _root.EnableInClassList("hud-compact", compact);
+            _root.EnableInClassList("hud-narrow", width < 480);
             _root.EnableInClassList("hud-touch", (Application.isMobilePlatform || width < 760 || height < 500 || LocalStore.Profile.settings.showTouchControls) && _page != Page.Replay);
             if (_page == Page.Replay) return;
+            float touchSize = Mathf.Clamp(width * .3f - 32, 44, height < 500 ? 80 : 100);
+            float actionHeight = LocalStore.Profile.settings.textScale > 1.1f ? 72 : 56;
+            foreach (var stick in _root.Query<TouchStick>().ToList()) stick.ConfigureLayout(touchSize, actionHeight + 24, 16, touchSize < 100 || LocalStore.Profile.settings.textScale > 1.1f);
             var objective = _root.Q<VisualElement>(className: "v1-objective-scroll");
             if (objective != null) objective.style.maxHeight = Mathf.Max(200, height - 380);
             var telemetry = _root.Q<VisualElement>(className: "v1-flight-telemetry");
@@ -363,15 +431,15 @@ namespace AeroSim
         {
             if (_designOsdLayer == null || _page != Page.Flight) return;
             var settings = LocalStore.Profile.settings;
-            var anchors = new[] { settings.speedPosition, settings.altitudePosition, settings.batteryPosition, settings.timerPosition };
+            var anchors = new[] { settings.speedPosition, settings.altitudePosition, settings.batteryPosition, settings.timerPosition, new Vector2(.02f,.1f), new Vector2(.77f,.4f) };
             var defaults = new[] { new Vector2(.6f,.78f), new Vector2(.23f,.78f), new Vector2(.78f,.32f), new Vector2(.46f,.13f) };
-            var enabled = new[] { settings.osdSpeed, settings.osdAltitude, settings.osdBattery, settings.osdTimer };
-            var metrics = new[] { _designSpeedMetric, _designAltitudeMetric, _designBatteryMetric, (VisualElement)_timer };
+            var enabled = new[] { settings.osdSpeed, settings.osdAltitude, settings.osdBattery, settings.osdTimer, true, true };
+            var metrics = new[] { _designSpeedMetric, _designAltitudeMetric, _designBatteryMetric, (VisualElement)_timer, _designDistance?.parent, _designVerticalSpeed?.parent };
             var custom = new bool[4];
             bool anyCustom = false;
             for (int i = 0; i < custom.Length; i++) { custom[i] = (anchors[i] - defaults[i]).sqrMagnitude > .000001f; anyCustom |= enabled[i] && custom[i]; }
             // A narrow custom layout temporarily relocates all enabled OSD items together; this is not a profile mutation.
-            bool compactCustom = compact && anyCustom;
+            bool compactCustom = compact && (anyCustom || width < 760 || height < 500);
             var telemetry = _root.Q<VisualElement>(className: "v1-flight-telemetry");
             telemetry.style.display = compactCustom ? DisplayStyle.None : DisplayStyle.Flex;
             _root.EnableInClassList("v1-custom-osd-active", anyCustom);
@@ -386,10 +454,11 @@ namespace AeroSim
             }
             if (width < 64 || height < 120) return;
             float text = Mathf.Clamp(settings.textScale,1,2);
-            float chipWidth = Mathf.Min(184*text, Mathf.Max(110,(width-48)/2));
+            float chipWidth = Mathf.Min(184*text, Mathf.Max(110,width*.3f-32));
             float chipHeight = text > 1.1f ? 84 : 60;
+            float bottomReserve = text > 1.1f ? 80 : 64;
             var center = new Rect(width*.3f,height*.31f,width*.4f,height*.38f);
-            var occupied = new List<Rect> { new Rect(0,0,width,88), center, new Rect(0,height-56,width,56) };
+            var occupied = new List<Rect> { new Rect(0,0,width,88), center, new Rect(0,height-bottomReserve,width,bottomReserve) };
             if (!compactCustom)
             {
                 float available = compact ? width-32 : Mathf.Min(1040,width-760);
@@ -409,58 +478,61 @@ namespace AeroSim
             }
             if (_root.ClassListContains("hud-touch"))
             {
-                occupied.Add(new Rect(24,height-184,100,116));
-                occupied.Add(new Rect(width-124,height-184,100,116));
+                float size = Mathf.Clamp(width*.3f-32,44,height<500?80:100);
+                float bottom = (text>1.1f?72:56)+24;
+                float caption = width<480 || text>1.1f ? 0 : 20;
+                occupied.Add(new Rect(16,height-bottom-size,size,size+caption));
+                occupied.Add(new Rect(width-16-size,height-bottom-size,size,size+caption));
             }
             bool Fits(Rect rectangle)
             {
-                if (!float.IsFinite(rectangle.x) || !float.IsFinite(rectangle.y) || rectangle.xMin < 16 || rectangle.xMax > width-16 || rectangle.yMin < 96 || rectangle.yMax > height-64) return false;
+                if (!float.IsFinite(rectangle.x) || !float.IsFinite(rectangle.y) || rectangle.xMin < 16 || rectangle.xMax > width-16 || rectangle.yMin < 96 || rectangle.yMax > height-bottomReserve) return false;
                 return !occupied.Any(other => rectangle.Overlaps(other));
             }
             var fallbackSlots = new List<Rect>();
             var xSlots = new List<float> {16,width-chipWidth-16,width*.3f-chipWidth-8,width*.7f+8};
             for (float x=16;x+chipWidth<=width-16;x+=chipWidth+8) xSlots.Add(x);
-            var ySlots = new List<float> {100,center.yMin-chipHeight-8,center.yMax+8,height-64-chipHeight};
-            for (float y=100;y+chipHeight<=height-64;y+=chipHeight+8) ySlots.Add(y);
+            var ySlots = new List<float> {100,center.yMin-chipHeight-8,center.yMax+8,height-bottomReserve-chipHeight};
+            for (float y=100;y+chipHeight<=height-bottomReserve;y+=chipHeight+8) ySlots.Add(y);
             foreach (float y in ySlots.Distinct().OrderBy(value=>value))
                 foreach (float x in xSlots.Distinct().OrderBy(value=>value)) fallbackSlots.Add(new Rect(x,y,chipWidth,chipHeight));
             int fallbackCount=0, unavailableCount=0;
             for (int i=0;i<metrics.Length;i++)
             {
                 var metric = metrics[i]; if (metric == null) continue;
-                bool floating = enabled[i] && (custom[i] || compactCustom);
+                bool floating = enabled[i] && ((i<4 && custom[i]) || compactCustom);
                 metric.EnableInClassList("v1-custom-osd-chip",floating);
                 metric.EnableInClassList("v1-custom-osd-timer",floating && i==3);
                 if (!floating)
                 {
                     // Restore the exact default hierarchy and remove only the overrides owned by custom positioning.
-                    if (i<3 && metric.parent!=telemetry)
+                    if (i!=3 && metric.parent!=telemetry)
                     {
-                        int order = i==0 ? 2 : i==1 ? 0 : 4;
+                        int order = i==0 ? 2 : i==1 ? 0 : i==2 ? 4 : i==4 ? 1 : 3;
                         telemetry.Insert(Mathf.Min(order,telemetry.childCount),metric);
                     }
                     else if (i==3 && metric.parent!=_designOsdLayer.parent) _designOsdLayer.parent.Insert(2,metric);
                     metric.style.left=new StyleLength(StyleKeyword.Null); metric.style.top=new StyleLength(StyleKeyword.Null);
                     metric.style.right=new StyleLength(StyleKeyword.Null); metric.style.bottom=new StyleLength(StyleKeyword.Null);
                     metric.style.width=new StyleLength(StyleKeyword.Null); metric.style.height=new StyleLength(StyleKeyword.Null);
-                    metric.style.display=enabled[i] && (i<3 || fpv || compact) ? DisplayStyle.Flex : DisplayStyle.None;
+                    metric.style.display=enabled[i] && (i!=3 || fpv || compact) ? DisplayStyle.Flex : DisplayStyle.None;
                     metric.tooltip=""; metric.userData=null;
                     if(i==3) { _baseFonts[_timer]=compact?26:42; _timer.style.fontSize=(compact?26:42)*text; }
                     continue;
                 }
                 if (metric.parent!=_designOsdLayer) _designOsdLayer.Add(metric);
                 var preferred = new Rect(anchors[i].x*width,anchors[i].y*height,chipWidth,chipHeight);
-                bool preferredFits = !compact && Fits(preferred);
+                bool preferredFits = Fits(preferred);
                 var placement = preferred;
                 bool placed = preferredFits;
                 if (!placed)
                 {
-                    foreach(var candidate in fallbackSlots) if(Fits(candidate)) { placement=candidate;placed=true;break; }
+                    foreach(var candidate in fallbackSlots.OrderBy(slot=>(slot.position-preferred.position).sqrMagnitude)) if(Fits(candidate)) { placement=candidate;placed=true;break; }
                 }
                 // Extreme mixed zoom can leave no readable peripheral slot: never cover controls or the flight centre.
                 metric.style.display=placed ? DisplayStyle.Flex : DisplayStyle.None;
                 metric.userData=placed ? preferredFits ? "osd-saved-anchor" : "osd-safe-fallback" : "osd-no-safe-slot";
-                metric.tooltip=preferredFits ? "Saved OSD position" : placed ? "Temporary safe position; saved anchor is unchanged." : "No readable safe slot at this zoom. Reduce HUD or text scaling.";
+                metric.tooltip=preferredFits ? "Saved OSD position" : placed ? "Temporary safe position; saved anchor is unchanged." : "No readable safe slot at this zoom. Pause → Flight Telemetry shows all values.";
                 if (!placed) { unavailableCount++; continue; }
                 if (!preferredFits) fallbackCount++;
                 occupied.Add(placement);
@@ -474,13 +546,26 @@ namespace AeroSim
             int defaultIndex=0;
             foreach(var metric in defaultOrder)
                 if(metric!=null && metric.parent==telemetry) { if(telemetry.IndexOf(metric)!=defaultIndex)telemetry.Insert(defaultIndex,metric);defaultIndex++; }
-            string notice=unavailableCount>0 ? "Some OSD items cannot fit safely at this zoom. Reduce HUD or text scaling; saved positions are unchanged."
+            string notice=unavailableCount>0 ? "Some OSD items cannot fit safely at this zoom. Pause → Flight Telemetry shows all values; saved positions are unchanged."
                 : fallbackCount>0 ? "OSD uses temporary safe positions to keep the view and controls clear. Saved positions are unchanged." : "";
             if(notice!=_designOsdSafetyNotice)
             {
                 _designOsdSafetyNotice=notice;
-                if(notice.Length>0) _root.schedule.Execute(()=> { if(_page==Page.Flight && _toastLabel!=null)ShowToast(notice); });
             }
+            // A large, transient toast covers the exact view this layout protects.
+            // Keep the persistent status discoverable without covering live flight.
+            if (_designOsdPauseNotice != null)
+            {
+                _designOsdPauseNotice.text = notice;
+                _designOsdPauseNotice.style.display = notice.Length > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+            if (_designOsdIndicator != null)
+            {
+                _designOsdIndicator.style.display = notice.Length > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+                _designOsdIndicator.tooltip = notice;
+            }
+            var pauseAction = _root.Q<Button>("action-pause");
+            if (pauseAction != null) pauseAction.tooltip = "Pause flight. Flight Telemetry shows all real simulator values." + (notice.Length > 0 ? " " + notice : "");
         }
 
         private sealed class ReplayTelemetryGraph : VisualElement

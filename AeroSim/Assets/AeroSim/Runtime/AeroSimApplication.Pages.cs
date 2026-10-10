@@ -97,8 +97,15 @@ namespace AeroSim
         {
             var f = new Slider(label, low, high) { value = value, showInputField = true }; f.AddToClassList("product-field");
             f.AddToClassList("design-range-field");
-            var numeric = f.Q<FloatField>();
-            if (numeric != null) numeric.AddToClassList("design-range-number");
+            // Slider creates a TextField for showInputField in Unity 6, not a FloatField.
+            // Style the actual editable text node rather than an unrelated outer box.
+            VisualElement numeric = f.Q<TextField>();
+            numeric ??= f.Q<FloatField>();
+            if (numeric != null)
+            {
+                numeric.AddToClassList("design-range-number");
+                foreach (var text in numeric.Query<TextElement>().ToList()) text.AddToClassList("design-range-value");
+            }
             f.RegisterValueChangedCallback(e => changed(e.newValue)); parent.Add(f);
         }
         private static void Check(VisualElement parent, string label, bool value, Action<bool> changed)

@@ -63,6 +63,7 @@ namespace AeroSim
 
         private void OnDisable()
         {
+            ReleaseDesignFlightInputGuard();
             ReleaseDesignEvidenceTextures();
             ReleaseDesignReplayView();
             ReleaseHangarPreviews();
@@ -99,10 +100,7 @@ namespace AeroSim
             _workspaceMenu = BuildWorkspaceMenu();
             _root.Add(_workspaceMenu);
 
-            var toast = Element("toast", "toast-hidden");
-            _toastLabel = Text("", "toast-label");
-            toast.Add(_toastLabel);
-            _root.Add(toast);
+            InstallToast();
             OnGeometryChanged(null);
         }
 
@@ -448,9 +446,36 @@ namespace AeroSim
             }
         }
 
+        private void InstallToast()
+        {
+            DismissToast();
+            var toast = Element("toast", "toast-hidden");
+            // Transient information must never intercept flight or modal controls.
+            toast.pickingMode = PickingMode.Ignore;
+            _toastLabel = Text("", "toast-label");
+            _toastLabel.pickingMode = PickingMode.Ignore;
+            toast.Add(_toastLabel);
+            _root.Add(toast);
+        }
+
+        private void DismissToast()
+        {
+            if (_toastRoutine != null) StopCoroutine(_toastRoutine);
+            _toastRoutine = null;
+            _toastLabel?.parent?.AddToClassList("toast-hidden");
+        }
+
         private void ShowToast(string message)
         {
+            if (_toastLabel?.parent == null) return;
             _toastLabel.text = message;
+            // The pause panel has a persistent OSD availability description.
+            // Suppress transient overlays while the user reads or acts on a modal.
+            if (_page == Page.Flight && _sim != null && _sim.Paused)
+            {
+                DismissToast();
+                return;
+            }
             _toastLabel.parent.RemoveFromClassList("toast-hidden");
             if (_toastRoutine != null) StopCoroutine(_toastRoutine);
             _toastRoutine = StartCoroutine(HideToastAfterDelay());
@@ -459,7 +484,8 @@ namespace AeroSim
         private IEnumerator HideToastAfterDelay()
         {
             yield return new WaitForSecondsRealtime(3f);
-            _toastLabel.parent.AddToClassList("toast-hidden");
+            _toastLabel?.parent?.AddToClassList("toast-hidden");
+            _toastRoutine = null;
         }
 
         private static VisualElement StatusPill(string icon, string text, bool highlighted = false)

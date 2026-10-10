@@ -1,0 +1,17 @@
+{
+  "contract": "independent-space-submit-v3-foldout-rendered-raw-arrow",
+  "baselineCandidate04V2ReportSha256": "469f4d14bf5f5bb87eadb5ed73d65cf7cd4025bc6b93386a71c1e4ac4b605292",
+  "baselineCandidate04V2Checks": 1739,
+  "baselineCandidate04V2Fails": 55,
+  "baseV1Sha256": "fe75cf13cdaf6d59d85e225f470b73ff212be8b73798ce9a546d97f592c1c6bd",
+  "sourceSha256": {
+    "SpaceSubmitProbeV3.cs": "e39ca0305f40fc68b373fdf253c221e7632f1677eb93828e90970ac9ed504a72",
+    "prepare-space-v3.py": "08acedc51886d456326ce3cf2d5003e568e4ff19e795d480d81dbde27f0de083",
+    "build-space-submit-probe-v3.sh": "ea70a551f69c4fd293693952c9339a0a30c382c2c94626f6bc6641e3dddaf775",
+    "test_prepare_space_v3.py": "58dafd785935b32e095b4bb5431357ce8c928ce6931b872532c23f4d9a42d262"
+  },
+  "staticValidation": "8 v2/v3 generator unit tests PASS; supplemental C# Roslyn against uninstrumented candidate03 Managed compile exit0; Bash syntax PASS. No Unity/native execution by independent QA.",
+  "nativeStatus": "NOT_RUN",
+  "manualAcceptance": "PENDING",
+  "rules": "Keep new v3 sources and immutable v1/v2/34-state contracts unchanged during the next native batch. UNRENDERED metadata is not PASS; only known closed Advanced Input Mapping content descendants are classified separately. Original candidate04 55FAIL report remains unchanged; all input and Replay width assertions retained."
+}

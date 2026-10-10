@@ -1,0 +1,11 @@
+{
+  "contract": "independent-pause-telemetry-v1",
+  "sourceSha256": {
+    "PauseTelemetryProbe.cs": "22c0c2339fe1ddb73b2bf453faa992d8b1f42591e84b53cbe9499d4d940c9694",
+    "build-pause-telemetry-probe.sh": "e6ffe6e9b82b8d2579c10931924c1994dbbb8dddbc303df9047d41623d20c720"
+  },
+  "staticValidation": "C# Roslyn compile against candidate05 uninstrumented Managed exit0; Bash syntax PASS. No Unity/native launch by QA.",
+  "nativeStatus": "NOT_RUN",
+  "manualAcceptance": "PENDING",
+  "rules": "One Flight-page independent pointer/Pick/modal/telemetry/profile diagnostic. Keep this source unchanged during native batch; v1/v2/v3/34-state contracts and original reports remain unchanged. No button Invoke shortcut; no false PASS for confirmation that never opened."
+}

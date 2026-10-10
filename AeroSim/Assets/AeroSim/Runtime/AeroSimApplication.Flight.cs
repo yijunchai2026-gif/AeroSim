@@ -107,7 +107,7 @@ namespace AeroSim
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
             pause.Add(ActionButton("Exit Without Saving", () => ShowConfirm("Leave this flight?", "The current session will not be saved. Existing records are unaffected.", () => ShowPage(Page.Home))));
             _pauseOverlay.Add(ModalScroll(pause)); hud.Add(_pauseOverlay);
-            var toast = Element("toast", "toast-hidden"); _toastLabel = Text("", "toast-label"); toast.Add(_toastLabel); _root.Add(toast);
+            InstallToast();
             OnGeometryChanged(null);
         }
         private static Label HudMetric(VisualElement hud, string caption, Vector2 position, bool show)
@@ -122,6 +122,7 @@ namespace AeroSim
             if (_page != Page.Flight || _sim == null) return;
             if (_flightDialogClose != null) { _flightDialogClose(); return; }
             _sim.Pause(!_sim.Paused); _pauseOverlay.EnableInClassList("is-hidden", !_sim.Paused);
+            if (_sim.Paused) DismissToast();
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
             if (_sim.Paused) _pauseOverlay.Query<Button>().ToList().Find(b => b.enabledInHierarchy)?.Focus();
             else (_root.panel?.focusController.focusedElement as VisualElement)?.Blur();
@@ -132,6 +133,7 @@ namespace AeroSim
             var overlay = Element("modal-overlay"); var p = Panel(title, description);
             bool pauseForReading = _page == Page.Flight && !_sim.Paused;
             if (pauseForReading) _sim.Pause(true);
+            DismissToast();
             void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
             _flightDialogClose = Close;
             p.Add(Row(ActionButton("Keep Flying", Close), ActionButton("Confirm Exit", () => { Close(); confirm(); }, true)));
@@ -145,6 +147,7 @@ namespace AeroSim
             var panel = Panel("Session objective", _objective.text);
             bool pauseForReading = _page == Page.Flight && !_sim.Paused;
             if (pauseForReading) _sim.Pause(true);
+            DismissToast();
             void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
             _flightDialogClose = Close;
             panel.Add(ActionButton("Back to Flight", Close, true));
@@ -219,12 +222,24 @@ namespace AeroSim
                 RegisterCallback<PointerUpEvent>(e => { if (_pointer == e.pointerId) { Reset(); this.ReleasePointer(e.pointerId); } });
                 RegisterCallback<PointerCaptureOutEvent>(e => Reset());
             }
+            public void ConfigureLayout(float size, float bottom, float edge, bool hideCaption)
+            {
+                style.width = size; style.height = size; style.bottom = bottom;
+                if (_left) style.left = edge; else style.right = edge;
+                float knobSize = Mathf.Max(16, size * .4f);
+                _knob.style.width = knobSize; _knob.style.height = knobSize;
+                var caption = this.Q<Label>(className: "stick-caption");
+                caption.style.top = size + 4; caption.style.left = -8; caption.style.right = -8;
+                caption.style.display = hideCaption ? DisplayStyle.None : DisplayStyle.Flex;
+                tooltip = _left ? "Throttle / yaw touch control" : "Pitch / roll touch control";
+            }
             private void Move(Vector3 position)
             {
                 var local = this.WorldToLocal(position); float radius = resolvedStyle.width * .5f;
-                var v = Vector2.ClampMagnitude(new Vector2(local.x - radius, radius - local.y) / (radius - 20), 1);
+                float travel = Mathf.Max(1, radius - _knob.resolvedStyle.width * .5f);
+                var v = Vector2.ClampMagnitude(new Vector2(local.x - radius, radius - local.y) / travel, 1);
                 if (_left) FlightInput.TouchLeft = v; else FlightInput.TouchRight = v;
-                _knob.style.translate = new Translate(v.x * (radius - 20), -v.y * (radius - 20));
+                _knob.style.translate = new Translate(v.x * travel, -v.y * travel);
             }
             private void Reset() { _pointer = -1; if (_left) FlightInput.TouchLeft = Vector2.zero; else FlightInput.TouchRight = Vector2.zero; _knob.style.translate = new Translate(0, 0); }
         }

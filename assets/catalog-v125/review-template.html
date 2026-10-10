@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>AeroSim 1.25 · DJI 机型逐一审核</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1018;--card:#151e2b;--line:#2a384c;--muted:#b2bfd1;--blue:#82b1ff;--green:#74dfb4;--amber:#ffd181}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f4f7fd;font:16px/1.55 system-ui,-apple-system,sans-serif}
+    button,input,select,textarea{font:inherit}button,a,input,select,textarea{touch-action:manipulation}button{cursor:pointer}
+    button:disabled{cursor:default;opacity:.5}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+    a{color:var(--blue);overflow-wrap:anywhere}header{padding:24px max(20px,env(safe-area-inset-right)) 20px max(20px,env(safe-area-inset-left));border-bottom:1px solid var(--line)}
+    .brand{font-size:.85rem;color:var(--blue);letter-spacing:.12em}h1{font-size:clamp(1.5rem,3vw,2.1rem);margin:8px 0}h2{font-size:1.55rem;margin:8px 0;overflow-wrap:anywhere}h3{font-size:1.05rem;margin:24px 0 8px}
+    p{margin:10px 0}.muted{color:var(--muted)}.notice{border:1px solid #735830;border-radius:10px;background:#2b2319;padding:14px;color:var(--amber)}
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}.toolbar label{display:flex;gap:6px;flex-direction:column;font-size:.9rem}.toolbar input{width:min(100%,330px)}
+    input,select,textarea{background:#101722;color:#f4f7fd;border:1px solid #3d4c65;border-radius:8px;padding:11px;min-height:46px;max-width:100%}
+    textarea{width:100%;resize:vertical;min-height:96px}.action{min-height:48px;border:1px solid #485b7b;border-radius:8px;background:#202e43;color:#fff;padding:10px 16px;white-space:normal;overflow-wrap:anywhere}
+    .primary{background:#174eab;border-color:#6c9ae5}.approve{background:#174b3c;border-color:#5fbd97}.summary{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.chip{font-size:.86rem;background:#1d293a;border:1px solid #3a4b62;border-radius:20px;padding:6px 12px;overflow-wrap:anywhere}
+    .workspace{display:grid;grid-template-columns:minmax(250px,330px) minmax(0,1fr);gap:24px;max-width:1500px;margin:auto;padding:24px 20px}
+    aside{min-width:0}.list{display:grid;gap:8px;max-height:72vh;overflow:auto;padding:4px;scrollbar-gutter:stable}.model{background:#121b27;text-align:left;border:1px solid var(--line);border-radius:10px;color:#f4f7fd;padding:13px;width:100%;min-height:68px;overflow-wrap:anywhere}
+    .model[aria-current=true]{border-color:#86b3ff;background:#1c2e49}.model strong,.model span{display:block}.model span{font-size:.83rem;color:var(--muted);margin-top:4px}.panel{min-width:0;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:24px}
+    .eyebrow{font-size:.83rem;color:var(--blue)}.preview{border:1px solid #38465c;background:#0b111b;border-radius:10px;min-height:240px;display:grid;place-items:center;overflow:hidden;margin:16px 0}
+    .preview img{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain}.empty{max-width:540px;padding:24px;text-align:center;color:var(--muted)}
+    .fact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.fact{background:#0e1724;border:1px solid var(--line);border-radius:8px;padding:12px;overflow-wrap:anywhere}.fact small{display:block;color:var(--muted);margin-bottom:4px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.actions button{flex:1 1 180px}.sources{display:grid;gap:8px;padding-left:24px}.sources li{min-width:0}.status{color:var(--amber)}.status.approved{color:var(--green)}.status.changes{color:#ff9e9e}
+    #feedback{padding:10px 0;min-height:42px;overflow-wrap:anywhere}details{margin:16px 0;border:1px solid var(--line);border-radius:8px;padding:12px}summary{cursor:pointer}.footer{padding:20px;color:var(--muted);text-align:center;font-size:.9rem}
+    @media(max-width:960px){.workspace{grid-template-columns:minmax(220px,270px) minmax(0,1fr);gap:16px;padding:16px}.panel{padding:18px}.fact-grid{grid-template-columns:1fr}}
+    @media(max-width:680px){header{padding-top:max(16px,env(safe-area-inset-top))}.workspace{display:block;padding:14px}.list{max-height:270px;margin-bottom:18px}.panel{padding:16px}.preview{min-height:200px}.toolbar label,.toolbar input,.toolbar select{width:100%}.toolbar button{width:100%}.preview img{max-height:none}.footer{padding-bottom:max(20px,env(safe-area-inset-bottom))}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">AEROSIM · 1.25 REVIEW WORKSPACE</div>
+    <h1>DJI 机型 · 逐一确认外观</h1>
+    <p class="muted">选机型模块的独立审核原型。正式飞行应用仍为 1.0 开发候选；这一页用于核查目录和具体版本的美术初稿。</p>
+    <div class="notice">每个机型均需你单独确认。没有外观稿时无法确认；有图也只是待确认初稿。本机保存与导出记录不会自动批准工程资产，修改稿件后需重新确认。</div>
+    <div class="toolbar">
+      <label>搜索机型<input id="search" type="search" placeholder="Phantom / Mini / Matrice / Agras" autocomplete="off"></label>
+      <label>产品线<select id="category"><option value="all">全部产品线</option></select></label>
+      <label>审核状态<select id="filter"><option value="all">全部机型</option><option value="pending_user">待你确认</option><option value="approved">已记录确认</option><option value="changes_requested">需要修改</option><option value="draft">已有外观稿</option></select></label>
+      <button class="action" id="export" type="button">导出逐机型审核记录</button>
+    </div>
+    <div id="stats" class="summary" aria-live="polite"></div>
+    <div id="feedback" role="status" aria-live="polite"></div>
+  </header>
+  <main class="workspace">
+    <aside aria-label="机型目录"><p id="count" class="muted"></p><div class="list" id="list"></div></aside>
+    <article class="panel" id="detail" aria-label="机型详情"></article>
+  </main>
+  <details style="margin:0 20px 20px"><summary>目录完整性与验证边界</summary><div id="coverage"></div><p class="muted">资料截至日期 <span id="asof"></span>。旧/地区/行业资料持续核查；不将候选清单数量当成已证明无遗漏。美术图为生成的审核位图，未完成可运行 3D 网格、飞行参数或真实设备验证。</p></details>
+  <div class="footer">Local review · 无账号、联网保存或批量确认 · 每次导出包含目录版本与图稿 SHA256</div>
+  <noscript><p class="notice">需要启用 JavaScript 才能使用逐机型审核。官方清单见 assets/catalog-v125/dji-aircraft.json。</p></noscript>
+  <script id="catalog-data" type="application/json">__CATALOG_DATA__</script>
+  <script id="draft-data" type="application/json">__DRAFT_DATA__</script>
+  <script id="build-data" type="application/json">__BUILD_DATA__</script>
+  <script>
+  'use strict';
+  const catalog=JSON.parse(document.getElementById('catalog-data').textContent);
+  const drafts=JSON.parse(document.getElementById('draft-data').textContent);
+  const build=JSON.parse(document.getElementById('build-data').textContent);
+  const key='aerosim-v125-review-v1';
+  const aircraft=catalog.aircraft;
+  const byDraft=new Map(drafts.map(d=>[d.aircraftId,d]));
+  const families=new Map(catalog.families.map(f=>[f.id,f]));
+  const categories=new Map(catalog.categories.map(c=>[c.id,c]));
+  let saved={},selected=aircraft[0]?.id,storageAvailable=true,visible=[];
+  try{saved=JSON.parse(localStorage.getItem(key)||'{}');if(!saved||typeof saved!=='object'||Array.isArray(saved))saved={};}catch(e){storageAvailable=false;}
+  const $=id=>document.getElementById(id);
+  function el(tag,text,cls){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;}
+  function labelOf(entry){return entry?.labelZh||entry?.nameZh||entry?.name||entry?.label||entry?.id||'待核查';}
+  function isHeld(a){return a.recordKind==='hold_release_evidence'||a.cutoffStatus==='hold_release_evidence';}
+  function record(a){const r=saved[a.id],d=byDraft.get(a.id);if(r&&d&&r.aircraftId===a.id&&r.reviewSource==='local_user_review'&&r.engineeringAcceptance==='pending_root_verification'&&r.imageSha256===d.sha256&&r.revision===d.revision&&r.catalogSha256===build.catalogSha256&&['approved','changes_requested'].includes(r.status)&&!(r.status==='approved'&&isHeld(a)))return r;return null;}
+  function state(a){return record(a)?.status||'pending_user';}
+  function statusText(a){return state(a)==='approved'?'已记录你的确认 · 待工程核收':state(a)==='changes_requested'?'已记录修改意见':'待你逐一确认';}
+  function feedback(t){$('feedback').textContent=t;}
+  function store(){try{localStorage.setItem(key,JSON.stringify(saved));return true;}catch(e){storageAvailable=false;feedback('此浏览器不能本机保存，请导出记录保留本次选择。');return false;}}
+  function renderStats(){const approved=aircraft.filter(a=>state(a)==='approved').length,changes=aircraft.filter(a=>state(a)==='changes_requested').length;
+    $('stats').replaceChildren(...[aircraft.length+' 个研究条目',drafts.length+' 个待确认外观稿',approved+' 已记录确认',changes+' 需要修改',(aircraft.length-approved-changes)+' 待确认'].map(t=>el('span',t,'chip')));}
+  function renderList(){const q=$('search').value.trim().toLowerCase(),cat=$('category').value,f=$('filter').value;
+    visible=aircraft.filter(a=>[a.englishName,a.chineseName,a.familyId,a.introductionZh].join(' ').toLowerCase().includes(q)&&(cat==='all'||cat===a.categoryId)&&(f==='all'||(f==='draft'?byDraft.has(a.id):state(a)===f)));
+    if(!visible.some(a=>a.id===selected))selected=visible[0]?.id;
+    const rows=visible.map(a=>{const b=el('button',null,'model');b.type='button';b.dataset.aircraftId=a.id;b.setAttribute('aria-current',String(a.id===selected));b.append(el('strong',a.englishName),el('span',labelOf(categories.get(a.categoryId))+' · '+statusText(a)));b.addEventListener('click',()=>{selected=a.id;renderList();renderDetail();});return b;});
+    $('list').replaceChildren(...rows);if(!rows.length)$('list').append(el('p','没有匹配机型。可清空搜索或调整筛选。','muted'));$('count').textContent='显示 '+visible.length+' / '+aircraft.length+' 个条目';renderStats();}
+  function fact(label,value){const n=el('div',null,'fact');n.append(el('small',label),el('div',value));return n;}
+  function safeSource(url){try{const u=new URL(url);return u.protocol==='https:'&&(/(^|\.)dji\.com$/.test(u.hostname)||u.hostname==='dl.djicdn.com'||u.hostname==='se-cdn.djiits.com'||u.hostname==='download.dji-innovations.com'||/(^|\.)ryzerobotics\.com$/.test(u.hostname));}catch(e){return false;}}
+  function renderDetail(){const a=aircraft.find(a=>a.id===selected),box=$('detail');box.replaceChildren();if(!a){box.append(el('h2','请选择机型'),el('p','目录为空或筛选没有匹配。','muted'));return;}
+    const d=byDraft.get(a.id),r=record(a);box.dataset.aircraftId=a.id;
+    box.append(el('div',labelOf(categories.get(a.categoryId))+' / '+labelOf(families.get(a.familyId)),'eyebrow'),el('h2',a.englishName),el('p',statusText(a),'status '+(state(a)==='approved'?'approved':state(a)==='changes_requested'?'changes':'')),el('p',a.introductionZh));
+    const facts=el('div',null,'fact-grid');facts.append(fact('已证实发布年份',a.releaseYear==null?'待证实':String(a.releaseYear)),fact('条目类型',a.recordKind||'待核查'),fact('正式 3D / 飞行接入','等待用户确认与后续制作'),fact('机型 ID',a.id));box.append(facts);
+    const preview=el('div',null,'preview');
+    if(d){const img=el('img');img.src=d.image;img.alt=a.englishName+' '+d.revision+' 待用户确认四视图概念稿';preview.append(img);box.append(preview,el('p','生成的审核位图 · '+d.revision+' · 不是运行网格或官方照片','muted'),el('p','稿件 SHA256: '+d.sha256,'muted'));}
+    else{preview.append(el('div','外观稿待制作。可先核查下方官方资料和型号介绍；每个机型会分别交图供你确认。','empty'));box.append(preview);}
+    if((a.notes||[]).length||(d?.notes||[]).length){box.append(el('h3','核查与外观注意项'));for(const note of [...(a.notes||[]),...(d?.notes||[])])box.append(el('p',note,'muted'));}
+    box.append(el('h3','你的逐机型审核意见'));
+    const noteLabel=el('label','修改意见 / 确认备注');noteLabel.htmlFor='review-note';const note=el('textarea');note.id='review-note';note.placeholder='例如：正面传感器位置、相机尺寸、桨叶或起落架需要修改。';note.value=r?.note||'';note.maxLength=4000;box.append(noteLabel,note);
+    const controls=el('div',null,'actions'),approve=el('button','确认此机型外观','action approve'),change=el('button','此机型需要修改','action'),pending=el('button','恢复待确认','action');for(const b of [approve,change,pending])b.type='button';approve.id='approve-model';change.id='request-changes';pending.id='pending-model';approve.disabled=!d||isHeld(a);change.disabled=!d;
+    function update(status){if(!d||!['approved','changes_requested'].includes(status)||(status==='approved'&&isHeld(a)))return;const text=note.value.trim();if(status==='changes_requested'&&!text){feedback('请先写明这个机型需要修改的地方。');note.focus();return;}
+      saved[a.id]={aircraftId:a.id,status,note:text,revision:d.revision,imageSha256:d.sha256,catalogSha256:build.catalogSha256,recordedAt:new Date().toISOString(),reviewSource:'local_user_review',engineeringAcceptance:'pending_root_verification'};store();renderList();renderDetail();feedback(a.englishName+'：已记录，导出审核记录后交给负责人核收。');}
+    approve.addEventListener('click',()=>update('approved'));change.addEventListener('click',()=>update('changes_requested'));pending.addEventListener('click',()=>{delete saved[a.id];store();renderList();renderDetail();feedback(a.englishName+'：已恢复待确认。');});controls.append(approve,change,pending);box.append(controls);
+    box.append(el('p',isHeld(a)?'截至日发布证据尚未闭合，本条目保持待核查，确认按钮不可用。':d?'确认仅适用于当前机型和当前稿件。工程接入还需核收你导出的记录并做网格、材质与飞行 QA。':'没有外观稿，确认按钮保持不可用。介绍/官方图片的正确性不能替代对最终稿件的确认。','muted'));
+    box.append(el('h3','官方参考资料'));const sources=el('ul',null,'sources');for(const url of [...new Set([...(a.sourceUrls||[]),...(d?.sourceUrls||[])])]){if(!safeSource(url))continue;const li=el('li'),link=el('a',url);link.href=url;link.target='_blank';link.rel='noopener noreferrer';li.append(link);sources.append(li);}box.append(sources);
+  }
+  for(const c of catalog.categories){const o=el('option',labelOf(c));o.value=c.id;$('category').append(o);}
+  $('search').addEventListener('input',()=>{renderList();renderDetail();});for(const id of ['category','filter'])$(id).addEventListener('change',()=>{renderList();renderDetail();});
+  $('export').addEventListener('click',()=>{const records=aircraft.map(record).filter(Boolean);const data={schemaVersion:1,targetVersion:'1.25',catalogAsOf:catalog.asOf,catalogSha256:build.catalogSha256,exportedAt:new Date().toISOString(),engineeringAcceptance:'pending_root_verification',records,counts:{totalAircraft:aircraft.length,withDrafts:drafts.length,reviewed:records.length}};const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'}));const a=el('a');a.href=url;a.download='AeroSim-1.25-机型审核-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);feedback('已导出 '+records.length+' 个逐机型记录。把导出文件交给负责人核收；未记录的机型仍待你确认。');});
+  $('asof').textContent=catalog.asOf;for(const g of catalog.coverageGaps||[])$('coverage').append(el('p',typeof g==='string'?g:(g.summaryZh||g.id||'待核查')+(g.nextActionZh?' 下一步：'+g.nextActionZh:''),'muted'));
+  renderList();renderDetail();if(!storageAvailable)feedback('本机保存不可用，请在审核后导出记录。');
+  </script>
+</body>
+</html>

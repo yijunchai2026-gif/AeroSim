@@ -49,6 +49,8 @@ Candidate02独立结论见 `verification/v1-qa/candidate-02-review.md`：原生3
 
 Candidate03真实复核见 `verification/v1-qa/candidate-03-review.md`：冻结snapshot37/3926/55/0（54legacy＋1文字候选，无该合同硬失败）；独立Space54checks仍3FAIL为DownArrow窃取Pause焦点。Space一次翻转、真实launch、Stick导航和nestedconfirm焦点通过；额外实看发现Tuning内部numeric TextElement16px字号仅8px字框，未被Label/Button门禁覆盖，仍是真裁切。23页仍VISUAL_DIFFERENT。不得把冻结几何无hard失败或checkpoint提交等同全面视觉验收。
 
+另新增独立v2（`verification/v1-qa/space-probe-v2-contract.md` / `space-probe-v2-freeze.json`）：原v1字节及34-state契约不动。通过临时生成partial base，保留原断言并加3恢复模式×4方向实际Arrow→Space、刻意Tab→Space、五页Text100/125/150/200所有渲染TextElement/Slider内部行框检查。输出独立 `space-submit-v2-report.json`，10张100/200文字真实截图。4单元测试与静态C#编译通过，native仍NOT_RUN；根负责人统一候选04后执行，不代替原矩阵和人工验收。
+
 ## 发布精选真实图册
 
 ```bash
