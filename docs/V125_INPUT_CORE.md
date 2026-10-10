@@ -65,7 +65,7 @@
 
 脚本用 Unity 6000.3.25f1 附带 Roslyn、.NET 编译启动器和 Mono，引用 4.8 API，以 `-warnaserror+` 编译两个核心源文件和测试文件后执行测试程序。输出在独立 `/private/tmp/aerosim-input-core.*` 中，不写运行应用、用户存档或冻结探针，也不启动 Unity Editor/Player。
 
-结果：**3050 checks / 0 failures，exit 0**；shell `bash -n` 通过。此为作者算法自测，等待独立 QA 审查；不是设备或视觉验收。
+结果：**3050 checks / 0 failures，exit 0**；shell `bash -n` 通过。作者算法自测后，独立QA已按相同冻结源码另行复跑3050/0，指纹与范围见 [候选06/输入/审核工具独立QA](V125_CANDIDATE06_QA.md)。这仍不是设备或视觉验收。
 
 针对现有真实缺口的测试包括：两源同时输入不叠加、连接但中立控制器不吞键盘、Fixed 掉线无隐式接管、四轴顺序/反向/deadzone/expo、校准不影响键盘/触控/Gamepad、不同设备不套外来校准、非对称中心量程、畸形范围逐轴清零、巨大/很小有限范围、NaN/Infinity、暂停/菜单/回放/失去样本清零。另有固定 seed 125 的3000组畸形参数组合检查有限值和范围。
 

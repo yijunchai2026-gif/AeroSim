@@ -17,6 +17,8 @@
 - 当前分支：`codex/v125-product-lines`；基础提交 `eb29e81bfe6f50793e1729eb55229a5a55a7f666`。
 - 1.0 候选03基础提交曾未上传；本次 GitHub Desktop 恢复可操作，Publish branch 返回 `push complete`，本地远端分支 `origin/codex/v1-design-parity` 为上述 SHA。新 1.25 批次另行提交/推送。
 - 开始时存在候选04/05源码、图册和未提交探针；保留这些改动。新目录审核工具的提交不盲目包含全部旧改动。
+- 本批代码/文档/图稿已提交并推送：[c48121ee4bc592d4329a877bfa25544fece0d952](https://github.com/yijunchai2026-gif/AeroSim/commit/c48121ee4bc592d4329a877bfa25544fece0d952)，[开发分支](https://github.com/yijunchai2026-gif/AeroSim/tree/codex/v125-product-lines)。GitHub Desktop `push complete` 后另执行 Fetch origin，返回 `fetch complete`，`HEAD` 与 `origin/codex/v125-product-lines` 精确一致。main 仍 `07a9f091ebd24d37e8889a94f286c11237168d46`，没有合并。
+- 本次未纳入的历史项仍在工作区：3个旧图像meta的尾空格diff、候选04图册/复核、3份Wave B方案文档。没有丢弃或假称已交付这些未选范围。
 - 候选05原始 smoke/缩放/Space/视觉结果见 [独立基线 QA](V125_BASELINE_QA.md)。源码时间晚于 binary，后续修改需要新冻结构建，不能套用旧通过结果。
 - 18:40 左右根运行候选05隔离 Pause/Telemetry 原生 probe：58 checks、26 FAIL、0 runtime errors；真实复现 OSD toast 遮挡暂停菜单点击。原始 probe 合同保留，修复后用新候选复测。
 - 当前没有新机型经过用户确认，没有 1.25 iPhone/iPad 真机记录。
