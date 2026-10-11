@@ -323,7 +323,16 @@ namespace AeroSim
             camera.transform.LookAt(stage.transform.position + Vector3.up * .02f * profile.VisualScale);
             var mode = RenderSettings.ambientMode; var sky = RenderSettings.ambientSkyColor; var equator = RenderSettings.ambientEquatorColor;
             var ground = RenderSettings.ambientGroundColor; bool fog = RenderSettings.fog;
-            var rt = new RenderTexture(768, 432, 24, RenderTextureFormat.ARGB32) { antiAliasing = 2 }; rt.Create();
+            int previewWidth = Screen.width >= 2400 ? 1536 : Screen.width >= 1400 ? 1024 : 768;
+            int previewHeight = Mathf.RoundToInt(previewWidth * 9f / 16f);
+            var rt = new RenderTexture(previewWidth, previewHeight, 24, RenderTextureFormat.ARGB32)
+            {
+                antiAliasing = previewWidth >= 1024 ? 4 : 2,
+                filterMode = FilterMode.Bilinear,
+                useMipMap = false,
+                autoGenerateMips = false
+            };
+            rt.Create();
             try
             {
                 RenderSettings.fog = false; RenderSettings.ambientMode = AmbientMode.Trilight;

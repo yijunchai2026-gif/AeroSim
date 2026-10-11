@@ -168,7 +168,7 @@ namespace AeroSim
             var records = LocalStore.Sessions();
             var s = Canvas(fpv ? "FPV / Race ready" : "Professional / Local operations", fpv ? "Find your next line." : "Train with evidence.", fpv ? "From your first hover to manual flight. Tune your response, choose a course, and take off." : "Plan an inspection, validate the preflight checklist, then review recorded flight evidence.");
             var hero = Panel(fpv ? "Desert Range · Open session" : "Bridge Inspection · Mission training", fpv ? "Manual flight · Six route gates · Reset without losing your progress" : "Three capture targets · Ordered evidence · Local instructor review");
-            var image = Element("scene-banner"); SetBackground(image, fpv ? "Art/Sunset" : "Art/Readiness"); hero.Add(image);
+            var image = Element("scene-banner"); SetBackground(image, fpv ? "Art/DesignV1/FpvIndustrialSunset" : "Art/DesignV1/ControllerCutout"); hero.Add(image);
             hero.Add(Row(ActionButton(fpv ? "Quick Flight" : "Mission Brief", () => { if (fpv) ShowPage(Page.FreeFlight); else { _mission = LocalStore.Profile.missions[0]; ShowPage(Page.Brief); } }, true), ActionButton(fpv ? "Tune Aircraft" : "Edit Mission", () => ShowPage(fpv ? Page.Tuning : Page.MissionEditor))));
             s.Add(hero);
             var stats = Panel("Your progress", "Real local records — no sample scores.");
@@ -297,7 +297,7 @@ namespace AeroSim
             var config = _config;
             var s = Canvas(WorkspaceName + " / Free Flight", "Make the sky your practice space.", "Configure a local training environment. Settings below affect the next flight.");
             var card = Panel("Flight setup", "Procedural practice maps — not photorealistic scans or DJI hardware models.");
-            var image = Element("scene-banner"); SetBackground(image, "Art/CoastHero"); card.Add(image);
+            var image = Element("scene-banner"); SetBackground(image, "Art/DesignV1/CoastHeroV1"); card.Add(image);
             Choice(card, "Environment", new[] { "Pacific Coast", "Desert Range", "City Park", "Warehouse" }, config.environment, v => config.environment = v);
             Choice(card, "Aircraft", AircraftCatalog.Names, config.aircraft, v => { config.aircraft = v; LocalStore.Profile.selectedAircraft = AircraftCatalog.Resolve(v).Id; LocalStore.Save(); });
             card.Add(ActionButton("Browse Aircraft in Hangar", () => ShowPage(Page.Hangar)));
@@ -344,7 +344,7 @@ namespace AeroSim
             var settings = LocalStore.Profile.settings;
             var s = Canvas("FPV / OSD layout", "The information you need. Where you need it.", "Drag a telemetry item to reposition it. The layout is shared with the in-flight HUD.");
             var p = Panel("Telemetry overlay", "Positions are normalized to the screen, so the layout scales across desktop and tablet.");
-            var preview = Element("osd-preview"); SetBackground(preview, "Art/CoastHero");
+            var preview = Element("osd-preview"); SetBackground(preview, "Art/DesignV1/CoastHeroV1");
             OsdToken(preview, "65 mph", settings.speedPosition, v => settings.speedPosition = v);
             OsdToken(preview, "120 ft", settings.altitudePosition, v => settings.altitudePosition = v);
             OsdToken(preview, "02:18", settings.timerPosition, v => settings.timerPosition = v);

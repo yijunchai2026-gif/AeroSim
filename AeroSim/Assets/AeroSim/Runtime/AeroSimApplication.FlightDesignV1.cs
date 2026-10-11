@@ -383,8 +383,8 @@ namespace AeroSim
         private void ResizeDesignReplayTexture()
         {
             if (_designReplayImage == null || _sim?.View == null || _designReplayImage.layout.width < 16) return;
-            int width = Mathf.Clamp(Mathf.RoundToInt(_designReplayImage.layout.width * _document.panelSettings.scale), 320, 1920);
-            int height = Mathf.Clamp(Mathf.RoundToInt(_designReplayImage.layout.height * _document.panelSettings.scale), 180, 1080);
+            int width = Mathf.Clamp(Mathf.CeilToInt(_designReplayImage.layout.width * _document.panelSettings.scale), 320, 3072);
+            int height = Mathf.Clamp(Mathf.CeilToInt(_designReplayImage.layout.height * _document.panelSettings.scale), 180, 1728);
             if (_designReplayTexture != null && _designReplayTexture.width == width && _designReplayTexture.height == height) return;
             if (_designReplayTexture != null) { _sim.View.targetTexture = null; _designReplayTexture.Release(); Destroy(_designReplayTexture); }
             _designReplayTexture = new RenderTexture(width, height, 24) { name = "AeroSim recorded session viewport" }; _designReplayTexture.Create();

@@ -64,8 +64,8 @@ namespace AeroSim
         private static VisualElement DesignCopy(string title, string body)
         { var copy = Element("design-copy"); copy.Add(Text(title, "design-item-title", "wrap")); copy.Add(Text(body, "muted", "wrap")); return copy; }
         private static string DesignSceneArt(string environment) => environment switch
-        { "Desert Range" => "Art/Sunset", "Warehouse" => "Art/DesignV1/FpvIndustrialSunset", "City Park" => "Art/Readiness", _ => "Art/DesignV1/CoastHeroV1" };
-        private static string DesignCourseArt(Course course) => course.Id == "a02" ? "Art/Takeoff" : course.Id == "a04" ? "Art/Orientation" : course.Workspace == "FPV" ? "Art/Sunset" : course.Category == "Camera Skills" ? "Art/Cinematic" : course.Category == "Safety & Emergencies" ? "Art/Emergency" : "Art/ReturnHome";
+        { "Desert Range" => "Art/DesignV1/FpvIndustrialSunset", "Warehouse" => "Art/DesignV1/FpvIndustrialSunset", "City Park" => "Art/DesignV1/CoastHeroV1", _ => "Art/DesignV1/CoastHeroV1" };
+        private static string DesignCourseArt(Course course) => course.Id == "a02" ? "Art/DesignV1/CoastHeroV1" : course.Id == "a04" ? "Art/DesignV1/ControllerCutout" : course.Workspace == "FPV" ? "Art/DesignV1/FpvIndustrialSunset" : course.Category == "Camera Skills" ? "Art/DesignV1/CoastHeroV1" : course.Category == "Safety & Emergencies" ? "Art/DesignV1/FpvIndustrialSunset" : "Art/DesignV1/CoastHeroV1";
         private VisualElement DesignAircraftImage(string css = "design-aircraft-image")
         {
             var rt = RenderAircraftPreview(AircraftCatalog.Selected); _hangarPreviews.Add(rt);
@@ -83,7 +83,7 @@ namespace AeroSim
                 var cards = Element("design-path-grid");
                 string[] titles = { "Aerial Basics", "FPV Flight", "Professional Training" };
                 string[] keys = { "Aerial", "FPV", "Professional" };
-                string[] arts = { "Art/DesignV1/CoastHeroV1", "Art/DesignV1/FpvIndustrialSunset", "Art/Readiness" };
+                string[] arts = { "Art/DesignV1/CoastHeroV1", "Art/DesignV1/FpvIndustrialSunset", "Art/DesignV1/ControllerCutout" };
                 string[] bodies = { "Safe takeoff, camera moves, and Return-to-Home", "Manual control, freestyle, and racing", "Standardized missions, checklists, and local reports" };
                 for (int i = 0; i < keys.Length; i++)
                 {
@@ -512,10 +512,10 @@ namespace AeroSim
             string official = _designReadinessTab == "Part 107" ? "https://www.faa.gov/uas/commercial_operators" : _designReadinessTab == "Visiting the U.S." ? "https://www.faa.gov/uas/resources/foreign_operators" : "https://www.faa.gov/uas/recreational_flyers";
             for (int i = 0; i < titles.Length; i++)
             {
-                int index = i; var row = Element("design-readiness-row"); row.Add(DesignImage(i == 0 ? "Art/DesignV1/CoastHeroV1" : "Art/Readiness", "design-readiness-thumb")); row.Add(Text((i + 1).ToString(), "design-number")); row.Add(DesignCopy(titles[i], descriptions[Math.Min(i, descriptions.Length - 1)]));
+                int index = i; var row = Element("design-readiness-row"); row.Add(DesignImage(i == 0 ? "Art/DesignV1/CoastHeroV1" : "Art/DesignV1/ControllerCutout", "design-readiness-thumb")); row.Add(Text((i + 1).ToString(), "design-number")); row.Add(DesignCopy(titles[i], descriptions[Math.Min(i, descriptions.Length - 1)]));
                 row.Add(DesignButton(i == 3 ? "Open FAA Resources" : "Learn", "flight", () => Application.OpenURL(index == 3 ? "https://www.faa.gov/uas" : official))); content.Add(row);
             }
-            var side = DesignPanel("Before You Fly Outdoors", "Use current information, not simulated map conditions.", "design-side"); side.Insert(0, DesignImage("Art/Readiness", "design-detail-image"));
+            var side = DesignPanel("Before You Fly Outdoors", "Use current information, not simulated map conditions.", "design-side"); side.Insert(0, DesignImage("Art/DesignV1/ControllerCutout", "design-detail-image"));
             side.Add(DesignStatus("Know the Rules", "TRUST, registration and Remote ID as applicable", "book")); side.Add(DesignStatus("Check Your Location", "Airspace, site access and local restrictions", "map")); side.Add(DesignStatus("Fly Safely", "Weather, people and other aircraft", "shield"));
             side.Add(Text("AeroSim training is not flight authorization. The app cannot verify your legal eligibility, issue certificates or approve real-world flight.", "muted", "wrap"));
             side.Add(DesignButton("FAA Drone Resources", "flight", () => Application.OpenURL("https://www.faa.gov/uas"), true)); side.Add(DesignButton("Continue Safety Course", "play", () => OpenCourse(CourseCatalog.Find("s02")))); s.Add(DesignColumns(content, side)); return s;

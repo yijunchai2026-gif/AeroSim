@@ -277,8 +277,10 @@ namespace AeroSim.Diagnostics
                         var root=_app.GetComponent<UIDocument>().rootVisualElement;
                         var main=root.Q<VisualElement>(className:"main-content");
                         var cards=root.Query<VisualElement>(className:"aircraft-card").ToList();
+                        var previews=root.Query<Image>(className:"aircraft-preview").ToList();
                         Check("Wide layout caps primary content width",root.resolvedStyle.width<2200||(main!=null&&main.resolvedStyle.width<=1921));
                         Check("Wide Hangar caps aircraft card width",root.resolvedStyle.width<2200||(cards.Count>0&&cards.All(card=>card.resolvedStyle.width<=461)));
+                        Check("Wide Hangar uses high-density preview textures",root.resolvedStyle.width<2200||(previews.Count>0&&previews.All(image=>image.image is RenderTexture texture&&texture.width>=1536)));
                     }
                     yield return Capture(Path.Combine(dir, "aerial-" + page + ".png"));
                     if(page==Page.Onboarding)
@@ -315,6 +317,11 @@ namespace AeroSim.Diagnostics
                 Check("Unknown aircraft has safe fallback",AircraftCatalog.Resolve("missing-id").Id=="mini4");
                 foreach(var name in new[]{"mini-shell-v3","air-shell-v3","mavic-shell-v3","avata-shell-v3","carbon-weave-v3"})
                     Check("Aircraft V3 texture bundled: "+name,Resources.Load<Texture2D>("Art/AircraftV3/"+name)!=null);
+                foreach(var path in new[]{"Art/DesignV1/CoastHeroV1","Art/DesignV1/ControllerCutout","Art/DesignV1/FpvIndustrialSunset"})
+                {
+                    var texture=Resources.Load<Texture2D>(path);
+                    Check("High-density UI art bundled: "+path,texture!=null&&texture.width>=1600&&texture.height>=700);
+                }
                 _app.ChangeWorkspace("Aerial");
                 var runtimeProfiles = AircraftCatalog.All.Where(profile =>
                     profile.Status == AircraftCatalogStatus.Runtime && profile.IsSelectable).ToArray();

@@ -188,13 +188,13 @@ namespace AeroSim
 
             var promoRow = Element("promo-row");
             promoRow.Add(BuildPromoCard(
-                "Art/Cinematic",
+                "Art/DesignV1/CoastHeroV1",
                 "PRACTICE YOUR SKILLS",
                 "Cinematic Challenge",
                 "Apply what you’ve learned with a guided flight route and capture a cinematic coastal shot.",
                 "promo-cinematic"));
             promoRow.Add(BuildPromoCard(
-                "Art/Emergency",
+                "Art/DesignV1/FpvIndustrialSunset",
                 "BE PREPARED",
                 "Emergency Practice",
                 "Build confidence with real-world scenarios like low battery, signal loss, and obstacle avoidance.",
@@ -274,10 +274,10 @@ namespace AeroSim
             card.Add(track);
 
             var lessons = Element("lesson-grid");
-            lessons.Add(BuildLesson("Art/Takeoff", "1", "1.  Takeoff", LessonStatus("a02"), "complete"));
-            lessons.Add(BuildLesson("Art/Orientation", "2", "2.  Orientation", LessonStatus("a04"), "complete"));
-            lessons.Add(BuildLesson("Art/ReturnHome", "3", "3.  Return-to-Home", LessonStatus("a10"), "active"));
-            lessons.Add(BuildLesson("Art/Sunset", "4", "4.  Cinematic Moves", LessonStatus("c01"), "active"));
+            lessons.Add(BuildLesson("Art/DesignV1/CoastHeroV1", "1", "1.  Takeoff", LessonStatus("a02"), "complete"));
+            lessons.Add(BuildLesson("Art/DesignV1/ControllerCutout", "2", "2.  Orientation", LessonStatus("a04"), "complete"));
+            lessons.Add(BuildLesson("Art/DesignV1/CoastHeroV1", "3", "3.  Return-to-Home", LessonStatus("a10"), "active"));
+            lessons.Add(BuildLesson("Art/DesignV1/FpvIndustrialSunset", "4", "4.  Cinematic Moves", LessonStatus("c01"), "active"));
             card.Add(lessons);
             return card;
         }
@@ -304,7 +304,7 @@ namespace AeroSim
             card.Add(Text("U.S. Flight Readiness", "card-title"));
 
             var image = Element("readiness-image");
-            SetBackground(image, "Art/Readiness");
+            SetBackground(image, "Art/DesignV1/ControllerCutout");
             card.Add(image);
 
             card.Add(Text("Review FAA resources", "readiness-title"));
