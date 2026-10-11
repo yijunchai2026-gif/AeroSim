@@ -78,8 +78,17 @@ namespace AeroSim.Diagnostics
             {
                 if (_mouse == null) _mouse=InputSystem.AddDevice<Mouse>("AeroSimCaptureMouse");
                 var root = _app.GetComponent<UIDocument>().rootVisualElement;
-                var button = root.Query<Button>().ToList().Find(b =>
-                    b.text == title || b.Q<Label>(className: "design-button-label")?.text == title);
+                var buttons = root.Query<Button>().ToList();
+                var button = buttons.Find(b =>
+                    b.name == title || b.text == title ||
+                    (title == "hangar-filter-all" && (b.text == "All" || b.text == "✓ All")) ||
+                    b.Q<Label>(className: "design-button-label")?.text == title);
+                if (button == null && title.StartsWith("hangar-select-", StringComparison.Ordinal))
+                {
+                    string profileId = title.Substring("hangar-select-".Length);
+                    var card = root.Q<VisualElement>("aircraft-card-" + profileId);
+                    button = card?.Query<Button>().ToList().FirstOrDefault();
+                }
                 if (button == null) { Check("Button exists: " + title, false); yield break; }
                 var scroll = button.GetFirstAncestorOfType<ScrollView>();
                 scroll?.ScrollTo(button); yield return null; yield return null;
@@ -92,6 +101,32 @@ namespace AeroSim.Diagnostics
             private IEnumerator SmokeTest()
             {
                 Check("Diagnostics uses isolated storage", Argument("--data-dir") != null);
+                var candidateIds = new[] { "dji-mavic-4-pro", "dji-matrice-350-rtk", "dji-agras-t50", "dji-inspire-3" };
+                Check("Aircraft catalog contains ten entries with six runtime aircraft",
+                    AircraftCatalog.All.Length == 10 &&
+                    AircraftCatalog.All.Select(profile => profile.CatalogId).Distinct().Count() == 10 &&
+                    AircraftCatalog.All.Count(profile => profile.Status == AircraftCatalogStatus.Runtime) == 6);
+                foreach (string candidateId in candidateIds)
+                {
+                    var candidate = AircraftCatalog.All.FirstOrDefault(profile => profile.Id == candidateId);
+                    Check("Candidate aircraft is locked from flight: " + candidateId,
+                        candidate != null &&
+                        (candidate.Status == AircraftCatalogStatus.Candidate || candidate.Status == AircraftCatalogStatus.Locked) &&
+                        !candidate.IsSelectable && !string.IsNullOrWhiteSpace(candidate.IncompatibleReasonKey));
+                }
+                LocalStore.Profile.selectedAircraft = "removed-smoke-aircraft";
+                LocalStore.Save();
+                Check("Unavailable selected aircraft falls back with migration evidence",
+                    AircraftCatalog.Selected.Id == "mini4" && LocalStore.SelectedAircraftNeedsConfirmation &&
+                    LocalStore.Profile.selectedAircraftFallbackFrom == "removed-smoke-aircraft");
+                LocalStore.Profile.selectedAircraft = "air3s";
+                LocalStore.Save(); LocalStore.Initialize();
+                Check("Selected aircraft and version metadata persist across reload",
+                    LocalStore.Profile.selectedAircraft == "dji-air-3s" && AircraftCatalog.Selected.Id == "air3s" &&
+                    !LocalStore.SelectedAircraftNeedsConfirmation &&
+                    !string.IsNullOrEmpty(LocalStore.Profile.selectedAircraftCatalogVersion) &&
+                    !string.IsNullOrEmpty(LocalStore.Profile.selectedAircraftVisualVersion) &&
+                    !string.IsNullOrEmpty(LocalStore.Profile.selectedAircraftPhysicsVersion));
                 foreach(var name in new[]{"meadow-grass-v2","coastal-rock-v2","aircraft-shell-v2","evergreen-needles-v2"})
                     Check("Art texture bundled: "+name, Resources.Load<Texture2D>("Art/MaterialsV2/"+name)!=null);
                 foreach(var name in new[]{"TrainingSurface","LandscapeSurface","Atmosphere","OceanSurface","RotorBlur","NeedleFoliage","IndustrialSurfaceV1","RiverSurfaceV1"})
@@ -108,6 +143,12 @@ namespace AeroSim.Diagnostics
                 _app.ShowPage(Page.FreeFlight); yield return null; yield return null;
                 yield return Click("Launch Free Flight"); Check("Pointer click launches real flight", _app.CurrentPage == Page.Flight);
                 if (_app.CurrentPage != Page.Flight) _app.StartFlight(new FlightConfig());
+                var flightRoot = _app.GetComponent<UIDocument>().rootVisualElement;
+                Check("Flight exposes left and right touch controls",
+                    flightRoot.Q<VisualElement>(className: "stick-left") != null &&
+                    flightRoot.Q<VisualElement>(className: "stick-right") != null &&
+                    flightRoot.Query<VisualElement>(className: "touch-stick").ToList().Count >= 2);
+                Check("Touch pointer owner contract rejects third and cross-stick pointers", _app.RunTouchPointerContractDiagnostic());
                 var sim = _app.Simulator;
                 InputSystem.QueueStateEvent(_keyboard, new KeyboardState(Key.R)); yield return new WaitForSeconds(1.5f);
                 InputSystem.QueueStateEvent(_keyboard, new KeyboardState()); yield return null;
@@ -123,7 +164,10 @@ namespace AeroSim.Diagnostics
                 FlightInput.TouchLeft = new Vector2(.5f, .8f); FlightInput.TouchRight = new Vector2(-.5f, .7f);
                 input = FlightInput.Raw(); Check("Touch four-channel input", input.x > .7f && input.y > .4f && input.z > .6f && input.w < -.4f);
                 FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
-                _app.StartFlight(new FlightConfig { task = "gates", courseId = "test-gates", title = "QA · Gate circuit" }); yield return null;
+                _app.StartFlight(new FlightConfig {
+                    task = "gates", courseId = "test-gates", title = "QA · Gate circuit",
+                    aircraft = LocalStore.Profile.selectedAircraft
+                }); yield return null;
                 sim = _app.Simulator;
                 var gates = new[] { new Vector3(0,8,25), new Vector3(20,10,50), new Vector3(30,12,85), new Vector3(0,10,110), new Vector3(-25,9,80), new Vector3(-15,8,40) };
                 foreach (var position in gates) { sim.Body.position = position; sim.Body.linearVelocity = Vector3.zero; yield return new WaitForSeconds(.15f); }
@@ -132,6 +176,12 @@ namespace AeroSim.Diagnostics
                 sim.Finish(); yield return null;
                 var r = LocalStore.Sessions().FirstOrDefault();
                 Check("Session persists with score and telemetry", r != null && r.score == 92 && r.passed && r.frames.Count > 0);
+                Check("Session persists an aircraft identity and version snapshot",
+                    r?.aircraftSnapshot != null && r.aircraftSnapshot.catalogId == "dji-air-3s" &&
+                    r.aircraftSnapshot.displayName == "DJI Air 3S" && r.aircraftSnapshot.availableAtCapture &&
+                    !string.IsNullOrEmpty(r.aircraftSnapshot.catalogVersion) &&
+                    !string.IsNullOrEmpty(r.aircraftSnapshot.visualVersion) &&
+                    !string.IsNullOrEmpty(r.aircraftSnapshot.physicsVersion) && r.aircraftSnapshot.capabilities.Count > 0);
                 Check("Result screen is shown", _app.CurrentPage == Page.Results);
                 if (r != null)
                 {
@@ -257,12 +307,17 @@ namespace AeroSim.Diagnostics
                 foreach(var name in new[]{"mini-shell-v3","air-shell-v3","mavic-shell-v3","avata-shell-v3","carbon-weave-v3"})
                     Check("Aircraft V3 texture bundled: "+name,Resources.Load<Texture2D>("Art/AircraftV3/"+name)!=null);
                 _app.ChangeWorkspace("Aerial");
-                // Select a different starting aircraft so every real selection button can be exercised.
-                LocalStore.Profile.selectedAircraft="micro";LocalStore.Save();
-                foreach(var profile in AircraftCatalog.All)
+                var runtimeProfiles = AircraftCatalog.All.Where(profile =>
+                    profile.Status == AircraftCatalogStatus.Runtime && profile.IsSelectable).ToArray();
+                Check("CaptureAircraft exercises six runtime aircraft",runtimeProfiles.Length==6);
+                var initiallySelectedId = AircraftCatalog.Selected.Id;
+                var profiles = runtimeProfiles.Where(profile => profile.Id != initiallySelectedId)
+                    .Concat(runtimeProfiles.Where(profile => profile.Id == initiallySelectedId)).ToArray();
+                foreach(var profile in profiles)
                 {
                     _app.ShowPage(Page.Hangar);yield return null;yield return null;
-                    yield return Click("Select "+profile.Name.Replace("DJI ",""));
+                    yield return Click("hangar-filter-all");yield return null;yield return null;
+                    yield return Click("hangar-select-"+profile.Id);
                     Check("Hangar selection: "+profile.Id,AircraftCatalog.Selected.Id==profile.Id);
                     LocalStore.Initialize();
                     Check("Aircraft selection reload: "+profile.Id,AircraftCatalog.Selected.Id==profile.Id);
@@ -274,8 +329,10 @@ namespace AeroSim.Diagnostics
                     RenderTexture.active=active;preview.Release();Destroy(preview);Destroy(image);
                     yield return Click("Fly Selected Aircraft");yield return null;
                     var root=_app.GetComponent<UIDocument>().rootVisualElement;
-                    var aircraftField=root.Query<DropdownField>().ToList().FirstOrDefault(f=>f.label=="Aircraft");
-                    Check("Free Flight uses hangar aircraft: "+profile.Id,aircraftField!=null&&aircraftField.value==profile.Name&&aircraftField.choices.Count==6);
+                    var aircraftField=root.Query<DropdownField>().ToList().FirstOrDefault(field=>field.label=="Aircraft");
+                    Check("Free Flight uses hangar aircraft: "+profile.Id,
+                        aircraftField!=null&&aircraftField.value==profile.Name&&
+                        aircraftField.choices.SequenceEqual(runtimeProfiles.Select(entry=>entry.Name)));
                     if(profile.Id=="mavic3p")yield return Capture(Path.Combine(dir,"selected-free-flight.png"));
                     yield return Click("Launch Free Flight");yield return null;
                     var sim=_app.Simulator;var model=sim.Body.GetComponentInChildren<AircraftVisualModel>();
@@ -287,22 +344,82 @@ namespace AeroSim.Diagnostics
                     if(profile.Shape==AirframeShape.Ducted||profile.Shape==AirframeShape.Micro)
                         Check("Four integrated prop guards: "+profile.Id,nodes.Count(n=>n.name=="Integrated prop guard")==4);
                     Check("No unsupported aircraft materials: "+profile.Id,model.GetComponentsInChildren<Renderer>().All(r=>r.sharedMaterial!=null&&r.sharedMaterial.shader.isSupported));
+                    Check("Aircraft shared material budget is six or fewer: "+profile.Id,model.DistinctSharedMaterialCount<=6);
                     sim.Body.position=new Vector3(0,8,10);sim.Pause(true);sim.Body.transform.position=sim.Body.position;yield return new WaitForSeconds(.3f);
                     yield return SceneImage(Path.Combine(dir,profile.Id+"-detail.png"),sim.Position+new Vector3(1.70f,.85f,1.95f)*profile.VisualScale,sim.Position,38);
                     yield return Capture(Path.Combine(dir,profile.Id+"-flight.png"));
                     Check("Course launch keeps selected aircraft: "+profile.Id,CourseCatalog.Find("a10").Config().aircraft==profile.Name);
-                    var record=new SessionRecord {aircraft=profile.Name,title="Aircraft replay QA",environment="Pacific Coast",workspace="Aerial",duration=1};
-                    record.config=new FlightConfig{aircraft=profile.Name};
-                    record.frames.Add(new TelemetryFrame{time=0,position=new Vector3(0,8,10)});
-                    _app.BeginReplay(record);yield return null;
-                    Check("Replay retains recorded aircraft: "+profile.Id,_app.Simulator.Body.GetComponentInChildren<AircraftVisualModel>().Profile.Id==profile.Id);
+                    sim.Pause(false);yield return new WaitForSeconds(.2f);
+                    var completedRecord=sim.Record;
+                    sim.Finish();yield return null;
+                    Check("Flight finishes to Results with saved aircraft: "+profile.Id,
+                        _app.CurrentPage==Page.Results&&LocalStore.Sessions().Any(saved=>saved.id==completedRecord.id&&saved.aircraftSnapshot?.catalogId==profile.CatalogId));
+                    _app.ShowPage(Page.Records);yield return null;
+                    _app.BeginReplay(completedRecord);yield return null;
+                    Check("Records replay retains completed aircraft: "+profile.Id,_app.Simulator.Body.GetComponentInChildren<AircraftVisualModel>().Profile.Id==profile.Id);
                     _app.ChangeWorkspace("FPV");_app.ShowPage(Page.FreeFlight);yield return null;
                     Check("Leaving replay stops simulation cleanly: "+profile.Id,!sim.Running&&!sim.ReplayMode&&sim.Body==null);
                     aircraftField=root.Query<DropdownField>().ToList().FirstOrDefault(f=>f.label=="Aircraft");
                     Check("Workspace change preserves aircraft: "+profile.Id,aircraftField!=null&&aircraftField.value==profile.Name);
                     _app.ChangeWorkspace("Aerial");
                 }
-                LocalStore.Profile.selectedAircraft="avata2";LocalStore.Save();_app.ShowPage(Page.Hangar);yield return null;yield return null;
+                var candidateIds = new[] { "dji-mavic-4-pro", "dji-matrice-350-rtk", "dji-agras-t50", "dji-inspire-3" };
+                foreach(var candidateId in candidateIds)
+                {
+                    var candidate = AircraftCatalog.All.FirstOrDefault(profile => profile.Id == candidateId);
+                    string selectedBefore = AircraftCatalog.Selected.Id;
+                    _app.ShowPage(Page.Hangar);yield return null;yield return null;
+                    yield return Click("hangar-filter-all");yield return null;yield return null;
+                    var root = _app.GetComponent<UIDocument>().rootVisualElement;
+                    var search = root.Query<TextField>().ToList().FirstOrDefault(field=>field.label=="Search");
+                    if(search!=null)search.value=candidate.Name;
+                    yield return null;
+                    var card = root.Q<VisualElement>("aircraft-card-"+candidateId);
+                    var select = root.Q<Button>("hangar-select-"+candidateId);
+                    var details=card?.Q<Foldout>();if(details!=null)details.value=true;
+                    bool lockReasonVisible = card != null && card.Query<Label>().ToList().Any(label =>
+                        label.text != null && label.text.Contains("LOCKED") && label.text.Contains("Runtime access is not approved"));
+                    Check("Candidate search and details remain browsable: "+candidateId,
+                        search!=null&&card!=null&&card.resolvedStyle.display!=DisplayStyle.None&&details!=null&&details.value);
+                    Check("Candidate is visible and locked in Hangar: "+candidateId,
+                        candidate!=null&&card!=null&&card.resolvedStyle.display!=DisplayStyle.None&&
+                        select!=null&&!select.enabledInHierarchy&&lockReasonVisible);
+                    Check("Disabled candidate does not change selected aircraft: "+candidateId,
+                        AircraftCatalog.Selected.Id==selectedBefore);
+                    yield return Capture(Path.Combine(dir,candidateId+"-locked.png"));
+                }
+                {
+                    var root=_app.GetComponent<UIDocument>().rootVisualElement;
+                    var search=root.Query<TextField>().ToList().FirstOrDefault(field=>field.label=="Search");
+                    string selectedBefore=AircraftCatalog.Selected.Id;
+                    if(search!=null)search.value="no-aircraft-qa-empty-state";
+                    yield return null;
+                    bool noCards=root.Query<VisualElement>(className:"aircraft-card").ToList().All(card=>card.resolvedStyle.display==DisplayStyle.None);
+                    bool emptyCopy=root.Query<Label>().ToList().Any(label=>label.text!=null&&label.text.Contains("No aircraft match these filters"));
+                    Check("Hangar no-result empty state preserves selection",search!=null&&noCards&&emptyCopy&&AircraftCatalog.Selected.Id==selectedBefore);
+                    if(search!=null)search.value="";
+                }
+                _app.ShowPage(Page.Home);yield return null;yield return Resources.UnloadUnusedAssets();
+                int baselineMaterials=Resources.FindObjectsOfTypeAll<Material>().Length;
+                int baselineRenderTextures=Resources.FindObjectsOfTypeAll<RenderTexture>().Length;
+                for(int cycle=0;cycle<20;cycle++)
+                {
+                    _app.ShowPage(Page.Hangar);yield return null;
+                    _app.ShowPage(Page.Home);yield return null;
+                }
+                yield return Resources.UnloadUnusedAssets();
+                int finalMaterials=Resources.FindObjectsOfTypeAll<Material>().Length;
+                int finalRenderTextures=Resources.FindObjectsOfTypeAll<RenderTexture>().Length;
+                Check("Twenty Hangar cycles do not grow Material instances",finalMaterials<=baselineMaterials+2);
+                Check("Twenty Hangar cycles do not grow RenderTexture instances",finalRenderTextures<=baselineRenderTextures);
+                if(AircraftCatalog.Selected.Id!="avata2")
+                {
+                    _app.ShowPage(Page.Hangar);yield return null;yield return null;
+                    yield return Click("hangar-filter-all");yield return null;yield return null;
+                    yield return Click("hangar-select-avata2");yield return null;
+                }
+                Check("Hangar UI selects Avata 2 for cross-workspace checks",AircraftCatalog.Selected.Id=="avata2");
+                _app.ShowPage(Page.Hangar);yield return null;yield return null;
                 yield return Capture(Path.Combine(dir,"hangar-top.png"));
                 var scroll=_app.GetComponent<UIDocument>().rootVisualElement.Q<ScrollView>(className:"product-scroll");
                 scroll.scrollOffset=new Vector2(0,530);yield return null;yield return null;
@@ -317,8 +434,10 @@ namespace AeroSim.Diagnostics
                 _app.ShowPage(Page.Challenges);yield return null;yield return null;
                 yield return Click("Start Challenge");yield return null;
                 Check("Challenge uses selected aircraft",_app.CurrentPage==Page.Flight&&_app.Simulator.Config.aircraft=="DJI Avata 2");
-                _app.ChangeWorkspace("Aerial");
-                LocalStore.Profile.selectedAircraft="mini4";LocalStore.Save();_app.ShowPage(Page.Hangar);
+                _app.ShowPage(Page.Hangar);yield return null;yield return null;
+                yield return Click("hangar-filter-all");yield return null;yield return null;
+                yield return Click("hangar-select-mini4");yield return null;
+                Check("Professional mission blocks incompatible Mini 4 Pro selection",AircraftCatalog.Selected.Id=="avata2");
             }
 
             private IEnumerator CaptureGraphics(string dir)

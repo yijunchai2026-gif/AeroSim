@@ -17,6 +17,7 @@ namespace AeroSim
         private readonly List<ReplayTelemetryGraph> _designGraphs = new();
         private readonly List<ReplayStickDiagram> _designSticks = new();
         private Label _designDistance, _designVerticalSpeed, _designFlightClock;
+        private Label _designInputSource;
         private Label _designReplayTime, _designTargetProgress, _designTargetDistance;
         private Label _designReplayInputs;
         private VisualElement _designReplayMap;
@@ -44,6 +45,9 @@ namespace AeroSim
             InstallDesignFlightInputGuard();
             _root.schedule.Execute(InstallDesignFlightInputGuard);
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            _flightInputInterrupt = null;
+            _leftTouchStick = _rightTouchStick = null;
+            _flightScreenWidth = Screen.width; _flightScreenHeight = Screen.height;
             if (replay) BuildDesignReplay();
             else BuildDesignFlight();
             InstallToast();
@@ -98,6 +102,13 @@ namespace AeroSim
             var session = Text(_config.title, "v1-flight-title"); bar.Add(session);
             _flightStatus = Text(_sim.Status, "flight-status", "v1-flight-status"); bar.Add(_flightStatus);
             bar.Add(Text("SIMULATION · LOCAL", "v1-simulation-chip"));
+            _designInputSource = Text("INPUT · READY", "v1-simulation-chip");
+            _designInputSource.name = "flight-input-source";
+            _designInputSource.style.display = DisplayStyle.Flex;
+            _designInputSource.style.fontSize = 11;
+            _designInputSource.style.marginRight = 8;
+            _designInputSource.tooltip = "Current flight input source. Mode 2: left throttle/yaw, right pitch/roll.";
+            bar.Add(_designInputSource);
             _designFlightClock = Text(Duration(0), "v1-flight-clock"); bar.Add(_designFlightClock);
             _designOsdIndicator = DesignIcon("chart", 16);
             _designOsdIndicator.name = "osd-availability-indicator";
@@ -165,7 +176,9 @@ namespace AeroSim
             compact.Add(FlightAction("Finish Session", "save", _sim.Finish)); hud.Add(compact);
             if (settings.showControls) hud.Add(Text("WASD move · R/F altitude · Q/E yaw · H RTH · C camera · P photo · Esc pause", "flight-guidance", "wrap"));
             hud.Add(Text("SIMULATION — NOT FOR NAVIGATION", "v1-flight-disclaimer"));
-            hud.Add(new TouchStick(true)); hud.Add(new TouchStick(false));
+            bool holdThrottle = string.Equals(_config.mode, "Manual", StringComparison.OrdinalIgnoreCase);
+            _leftTouchStick = new TouchStick(true, holdThrottle); _rightTouchStick = new TouchStick(false);
+            hud.Add(_leftTouchStick); hud.Add(_rightTouchStick);
             BuildDesignPause(hud);
         }
 
@@ -235,7 +248,8 @@ namespace AeroSim
             bool pauseForReading = !_sim.Paused;
             if (pauseForReading) _sim.Pause(true);
             DismissToast();
-            FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            _flightInputInterrupt = "Telemetry open · touch again after closing";
+            ReleaseTouchControls("Paused");
             var overlay = Element("modal-overlay");
             var panel = Panel("Flight Telemetry", "Actual simulator values, frozen while this panel is open. All metrics remain available when the HUD has no readable safe slot.");
             panel.Add(Text("Altitude   " + Length(_sim.Position.y), "panel-title", "wrap"));
@@ -414,18 +428,86 @@ namespace AeroSim
             _root.EnableInClassList("hud-narrow", width < 480);
             _root.EnableInClassList("hud-touch", (Application.isMobilePlatform || width < 760 || height < 500 || LocalStore.Profile.settings.showTouchControls) && _page != Page.Replay);
             if (_page == Page.Replay) return;
-            float touchSize = Mathf.Clamp(width * .3f - 32, 44, height < 500 ? 80 : 100);
+            float scale = Mathf.Max(.01f, _document.panelSettings.scale);
+            float safeLeft = 0, safeRight = 0;
+            if (Application.isMobilePlatform)
+            {
+                var safe = Screen.safeArea;
+                safeLeft = safe.xMin / scale;
+                safeRight = (Screen.width - safe.xMax) / scale;
+            }
+            // The parent flight HUD is already inset to Screen.safeArea by OnGeometryChanged.
+            // Use safe dimensions for sizing, then position children within that local rectangle.
+            float safeWidth = Mathf.Max(176, width - safeLeft - safeRight);
+            float touchSize = Mathf.Clamp(safeWidth * .22f, 88, height < 500 ? 112 : 140);
             float actionHeight = LocalStore.Profile.settings.textScale > 1.1f ? 72 : 56;
-            foreach (var stick in _root.Query<TouchStick>().ToList()) stick.ConfigureLayout(touchSize, actionHeight + 24, 16, touchSize < 100 || LocalStore.Profile.settings.textScale > 1.1f);
+            bool shortWide = height < 520 || safeWidth / Mathf.Max(1, height) > 1.9f;
+            bool compactStickStatus = shortWide || touchSize < 112 || LocalStore.Profile.settings.textScale > 1.1f;
+            foreach (var stick in _root.Query<TouchStick>().ToList())
+                stick.ConfigureLayout(touchSize, actionHeight + 24, _root.ClassListContains("hud-narrow") ? 8 : 16, compactStickStatus);
             var objective = _root.Q<VisualElement>(className: "v1-objective-scroll");
             if (objective != null) objective.style.maxHeight = Mathf.Max(200, height - 380);
             var telemetry = _root.Q<VisualElement>(className: "v1-flight-telemetry");
+            if (shortWide)
+            {
+                LayoutShortWideTelemetry(telemetry, safeWidth, height, touchSize, actionHeight);
+                return;
+            }
+            RestoreShortWideTelemetry(telemetry, compact);
+            if (_designOsdLayer != null) _designOsdLayer.style.display = DisplayStyle.Flex;
             if (telemetry != null)
             {
                 float available = compact ? width - 32 : Mathf.Min(1040, width - 760);
                 telemetry.style.width = Mathf.Max(240, available); telemetry.style.left = compact ? 16 : (width - available) / 2;
             }
             LayoutDesignOsdAnchors(width, height, compact);
+        }
+
+        private void LayoutShortWideTelemetry(VisualElement telemetry, float safeWidth, float height, float touchSize, float actionHeight)
+        {
+            if (telemetry == null) return;
+            var settings = LocalStore.Profile.settings;
+            float telemetryTop = 96;
+            float stickTop = height - (actionHeight + 24) - touchSize;
+            float telemetryHeight = Mathf.Min(64, stickTop - telemetryTop - 8);
+            foreach (var metric in new[] { _designAltitudeMetric, _designBatteryMetric })
+            {
+                if (metric == null) continue;
+                if (metric.parent != telemetry) telemetry.Add(metric);
+                metric.RemoveFromClassList("v1-custom-osd-chip");
+                metric.RemoveFromClassList("v1-custom-osd-timer");
+                metric.style.left = new StyleLength(StyleKeyword.Null); metric.style.top = new StyleLength(StyleKeyword.Null);
+                metric.style.right = new StyleLength(StyleKeyword.Null); metric.style.bottom = new StyleLength(StyleKeyword.Null);
+                metric.style.width = new StyleLength(StyleKeyword.Null); metric.style.height = new StyleLength(StyleKeyword.Null);
+            }
+            telemetry.style.display = telemetryHeight >= 48 && (settings.osdAltitude || settings.osdBattery) ? DisplayStyle.Flex : DisplayStyle.None;
+            telemetry.style.top = telemetryTop; telemetry.style.bottom = new StyleLength(StyleKeyword.Auto);
+            telemetry.style.height = Mathf.Max(48, telemetryHeight); telemetry.style.minHeight = Mathf.Max(48, telemetryHeight);
+            telemetry.style.width = Mathf.Min(360, safeWidth - 32);
+            telemetry.style.left = Mathf.Max(16, (safeWidth - Mathf.Min(360, safeWidth - 32)) * .5f);
+            telemetry.style.flexWrap = Wrap.NoWrap;
+            _designAltitudeMetric.style.display = settings.osdAltitude ? DisplayStyle.Flex : DisplayStyle.None;
+            _designBatteryMetric.style.display = settings.osdBattery ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_designDistance?.parent != null) _designDistance.parent.style.display = DisplayStyle.None;
+            if (_designSpeedMetric != null) _designSpeedMetric.style.display = DisplayStyle.None;
+            if (_designVerticalSpeed?.parent != null) _designVerticalSpeed.parent.style.display = DisplayStyle.None;
+            if (_timer != null) _timer.style.display = DisplayStyle.None;
+            if (_designFlightClock != null) _designFlightClock.style.display = DisplayStyle.None;
+            if (_designOsdLayer != null) _designOsdLayer.style.display = DisplayStyle.None;
+        }
+
+        private void RestoreShortWideTelemetry(VisualElement telemetry, bool compact)
+        {
+            if (telemetry == null) return;
+            var settings = LocalStore.Profile.settings;
+            telemetry.style.top = new StyleLength(StyleKeyword.Null); telemetry.style.bottom = new StyleLength(StyleKeyword.Null);
+            telemetry.style.height = new StyleLength(StyleKeyword.Null); telemetry.style.minHeight = new StyleLength(StyleKeyword.Null);
+            telemetry.style.flexWrap = compact ? Wrap.Wrap : Wrap.NoWrap;
+            _designAltitudeMetric.style.display = settings.osdAltitude ? DisplayStyle.Flex : DisplayStyle.None;
+            _designBatteryMetric.style.display = settings.osdBattery ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_designDistance?.parent != null) _designDistance.parent.style.display = DisplayStyle.Flex;
+            if (_designSpeedMetric != null) _designSpeedMetric.style.display = settings.osdSpeed ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_designVerticalSpeed?.parent != null) _designVerticalSpeed.parent.style.display = DisplayStyle.Flex;
         }
 
         private void LayoutDesignOsdAnchors(float width, float height, bool compact)
@@ -643,6 +725,7 @@ namespace AeroSim
             if (_designReplayTexture != null) { _designReplayTexture.Release(); Destroy(_designReplayTexture); _designReplayTexture = null; }
             _designReplayImage = null; _designReplayMap = null; _designGraphs.Clear(); _designSticks.Clear(); _designTargetStates.Clear();
             _designDistance = _designVerticalSpeed = _designFlightClock = _designReplayTime = _designTargetProgress = _designTargetDistance = _designReplayInputs = null;
+            _designInputSource = null;
             _designOsdLayer = _designSpeedMetric = _designAltitudeMetric = _designBatteryMetric = null;
             _designOsdSafetyNotice=null;
             if (_root == null) return;

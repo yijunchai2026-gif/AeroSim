@@ -73,9 +73,16 @@ namespace AeroSim.Domain
         public bool hasTarget;
         public Vector3 aircraftPosition, aircraftRotation, cameraPosition, cameraRotation, targetPosition;
     }
+    [Serializable] public class AircraftSessionSnapshot
+    {
+        public string catalogId, displayName, catalogVersion, visualVersion, physicsVersion;
+        public bool availableAtCapture;
+        public List<string> capabilities = new();
+    }
     [Serializable] public class SessionRecord
     {
         public FlightConfig config;
+        public AircraftSessionSnapshot aircraftSnapshot;
         public string id, startedUtc, title, workspace, environment, aircraft, mode, courseId, physicsVersion = "AeroSim-0.2";
         public int score, collisions, photos, gates;
         public float duration, distance, maxAltitude;
@@ -88,9 +95,12 @@ namespace AeroSim.Domain
     [Serializable] public class CourseProgress { public string id; public int bestScore, attempts; }
     [Serializable] public class Profile
     {
-        public int schemaVersion = 2;
+        public int schemaVersion = 3;
         public bool onboarded;
         public string workspace = "Aerial", selectedAircraft = "mini4";
+        public string selectedAircraftCatalogVersion = "", selectedAircraftVisualVersion = "", selectedAircraftPhysicsVersion = "";
+        public string selectedAircraftSource = "default", selectedAircraftUpdatedUtc = "";
+        public string selectedAircraftFallbackFrom = "", selectedAircraftResolution = "current";
         public UserSettings settings = new();
         public List<CourseProgress> courses = new();
         public List<string> sessions = new();
@@ -101,8 +111,80 @@ namespace AeroSim.Domain
 
     public static class LocalStore
     {
+        private const int CurrentSchemaVersion = 3;
+        private const string DefaultAircraftId = "mini4";
+        private static string _lastSelectedAircraftId;
         public static string DirectoryPath { get; private set; }
         public static Profile Profile { get; private set; }
+        public static bool SelectedAircraftNeedsConfirmation =>
+            Profile != null && string.Equals(Profile.selectedAircraftResolution, "fallback", StringComparison.Ordinal);
+
+        private static AircraftProfile FindAvailableAircraft(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            return AircraftCatalog.All.FirstOrDefault(profile => profile.IsSelectable &&
+                (string.Equals(profile.Id, value, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(profile.CatalogId, value, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(profile.Name, value, StringComparison.OrdinalIgnoreCase) ||
+                 (profile.LegacyIds ?? Array.Empty<string>()).Any(alias =>
+                     string.Equals(alias, value, StringComparison.OrdinalIgnoreCase))));
+        }
+
+        private static void NormalizeSelectedAircraft()
+        {
+            string stored = Profile.selectedAircraft;
+            bool migrating = Profile.schemaVersion < CurrentSchemaVersion;
+            bool persistedFallback = string.Equals(Profile.selectedAircraftResolution, "fallback", StringComparison.Ordinal) &&
+                !string.IsNullOrEmpty(Profile.selectedAircraftFallbackFrom);
+            bool selectionChanged = !migrating && _lastSelectedAircraftId != null &&
+                !string.Equals(stored, _lastSelectedAircraftId, StringComparison.OrdinalIgnoreCase);
+            var selected = FindAvailableAircraft(stored);
+            if (selected == null && string.Equals(stored, "Camera Drone", StringComparison.OrdinalIgnoreCase))
+                selected = FindAvailableAircraft(DefaultAircraftId);
+            if (selected == null)
+            {
+                Profile.selectedAircraftFallbackFrom = stored ?? "";
+                Profile.selectedAircraftResolution = "fallback";
+                selected = FindAvailableAircraft(DefaultAircraftId) ?? AircraftCatalog.All.First();
+                Debug.LogWarning("Selected aircraft '" + (stored ?? "<null>") + "' is unavailable; using " + selected.Id + " until the pilot confirms another aircraft.");
+            }
+            else if (!persistedFallback || selectionChanged || !string.Equals(selected.Id, DefaultAircraftId, StringComparison.OrdinalIgnoreCase))
+            {
+                Profile.selectedAircraftFallbackFrom = "";
+                Profile.selectedAircraftResolution = "current";
+            }
+            Profile.selectedAircraft = selected.CatalogId;
+            Profile.selectedAircraftCatalogVersion = AircraftCatalog.CatalogVersion;
+            Profile.selectedAircraftVisualVersion = selected.VisualVersion ?? selected.Texture ?? "";
+            Profile.selectedAircraftPhysicsVersion = selected.PhysicsVersion ?? "AeroSim-0.2";
+            if (migrating) Profile.selectedAircraftSource = "migration";
+            else if (selectionChanged && (string.IsNullOrEmpty(Profile.selectedAircraftSource) ||
+                     Profile.selectedAircraftSource == "default" || Profile.selectedAircraftSource == "migration"))
+                Profile.selectedAircraftSource = "user";
+            if (migrating || selectionChanged || string.IsNullOrEmpty(Profile.selectedAircraftUpdatedUtc))
+                Profile.selectedAircraftUpdatedUtc = DateTime.UtcNow.ToString("O");
+            Profile.schemaVersion = CurrentSchemaVersion;
+            _lastSelectedAircraftId = Profile.selectedAircraft;
+        }
+
+        private static void EnsureAircraftSnapshot(SessionRecord record, bool capturedNow)
+        {
+            if (record.aircraftSnapshot != null) return;
+            string identity = record.config?.aircraft ?? record.aircraft;
+            var profile = FindAvailableAircraft(identity);
+            record.aircraftSnapshot = new AircraftSessionSnapshot
+            {
+                catalogId = profile?.CatalogId ?? identity ?? "",
+                displayName = profile?.Name ?? record.aircraft ?? identity ?? "",
+                catalogVersion = capturedNow ? AircraftCatalog.CatalogVersion : "legacy-unversioned",
+                visualVersion = capturedNow ? profile?.VisualVersion ?? profile?.Texture ?? "unavailable" : "legacy-unversioned",
+                physicsVersion = capturedNow ? profile?.PhysicsVersion ?? (string.IsNullOrEmpty(record.physicsVersion) ? "AeroSim-0.2" : record.physicsVersion) : record.physicsVersion ?? "legacy-unversioned",
+                availableAtCapture = capturedNow && profile != null,
+                capabilities = capturedNow && profile != null
+                    ? new List<string>(profile.Capabilities ?? Array.Empty<string>())
+                    : new List<string>()
+            };
+        }
         public static void Initialize()
         {
             DirectoryPath = Path.Combine(Application.persistentDataPath, "AeroSim");
@@ -115,10 +197,12 @@ namespace AeroSim.Domain
             Profile ??= new Profile(); Profile.settings ??= new UserSettings(); Profile.settings.calibration ??= new Calibration();
             Profile.courses ??= new List<CourseProgress>(); Profile.sessions ??= new List<string>(); Profile.missions ??= new List<MissionDefinition>();
             Profile.assignedCourses ??= new List<string>(); Profile.readinessCompleted ??= new List<string>();
+            NormalizeSelectedAircraft();
             if (Profile.missions.Count == 0) Profile.missions.Add(new MissionDefinition());
         }
         public static void Save()
         {
+            NormalizeSelectedAircraft();
             var path = Path.Combine(DirectoryPath, "profile.json");
             File.WriteAllText(path + ".tmp", JsonUtility.ToJson(Profile, true));
             if (File.Exists(path)) File.Replace(path + ".tmp", path, path + ".backup");
@@ -128,6 +212,7 @@ namespace AeroSim.Domain
         {
             if (record == null) throw new ArgumentException("A session record is required.");
             EvidencePaths.ValidateSessionId(record.id);
+            EnsureAircraftSnapshot(record, true);
             File.WriteAllText(EvidencePaths.ResolveOutput(record.id + ".json"), JsonUtility.ToJson(record));
             if (!Profile.sessions.Contains(record.id)) Profile.sessions.Insert(0, record.id);
             if (!string.IsNullOrEmpty(record.courseId))
@@ -159,6 +244,7 @@ namespace AeroSim.Domain
                     if (record == null || record.id != id) { Debug.LogWarning("Session identity does not match its file."); continue; }
                     record.frames ??= new List<TelemetryFrame>(); record.events ??= new List<FlightEvent>();
                     record.photoEvidence ??= new List<PhotoEvidence>(); // Old records have no evidence metadata; do not fabricate it.
+                    EnsureAircraftSnapshot(record, false); // Preserve identity without inventing versions for a legacy record.
                     result.Add(record);
                 }
                 catch (Exception ex) { Debug.LogWarning("Session load: " + ex.Message); }
