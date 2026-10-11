@@ -103,7 +103,9 @@ Label, Button { white-space: normal; }
 .toast { min-width: 0; width: 80%; max-width: 540px; left: 10%; margin-left: 0; }
 /* Source-image contract only for 1.0; the 0.4 branch and build stay untouched. */
 .design-v1 .top-bar { height: 88px; min-height: 88px; max-height: 88px; }
-.design-v1 .main-content { max-width: none; }
+.design-v1 .main-content { max-width: 1920px; }
+.design-v1.v1-flight-hud .main-content, .design-v1.v1-replay .main-content,
+.design-v1.design-controller-mode .main-content, .design-v1.design-fpv-home .main-content { max-width: none; }
 .design-v1 .side-nav { width: 248px; min-width: 248px; }
 .design-v1 .home-scroll { padding-left: 16px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; }
 .design-v1 .hero-card, .design-v1 .hero-copy { min-height: 474px; }

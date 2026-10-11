@@ -156,8 +156,12 @@ namespace AeroSim
             grid.RegisterCallback<GeometryChangedEvent>(e =>
             {
                 var width = e.newRect.width;
-                var cardWidth = width < 720 ? 100f : width < 1180 ? 48f : 31.5f;
-                foreach (var pair in cards) pair.Value.style.width = new Length(cardWidth, LengthUnit.Percent);
+                var cardWidth = width < 720 ? 100f : width < 1100 ? 48f : width < 1500 ? 31.5f : 23.5f;
+                foreach (var pair in cards)
+                {
+                    pair.Value.style.width = new Length(cardWidth, LengthUnit.Percent);
+                    pair.Value.style.maxWidth = 460;
+                }
             });
 
             Refresh();

@@ -271,7 +271,16 @@ namespace AeroSim.Diagnostics
                 _app.ChangeWorkspace("Aerial");
                 foreach (var page in pages)
                 {
-                    _app.PreparePreview(page); yield return null; yield return null; yield return Capture(Path.Combine(dir, "aerial-" + page + ".png"));
+                    _app.PreparePreview(page); yield return null; yield return null;
+                    if(page==Page.Hangar)
+                    {
+                        var root=_app.GetComponent<UIDocument>().rootVisualElement;
+                        var main=root.Q<VisualElement>(className:"main-content");
+                        var cards=root.Query<VisualElement>(className:"aircraft-card").ToList();
+                        Check("Wide layout caps primary content width",root.resolvedStyle.width<2200||(main!=null&&main.resolvedStyle.width<=1921));
+                        Check("Wide Hangar caps aircraft card width",root.resolvedStyle.width<2200||(cards.Count>0&&cards.All(card=>card.resolvedStyle.width<=461)));
+                    }
+                    yield return Capture(Path.Combine(dir, "aerial-" + page + ".png"));
                     if(page==Page.Onboarding)
                     {
                         yield return Click("Continue"); yield return Capture(Path.Combine(dir,"aerial-Onboarding-2.png"));

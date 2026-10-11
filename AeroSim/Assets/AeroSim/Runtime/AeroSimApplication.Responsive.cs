@@ -40,7 +40,7 @@ namespace AeroSim
         {
             float device = Application.isMobilePlatform && Screen.dpi > 0 ? Mathf.Clamp(Screen.dpi / 163f, 1, 4) : 1;
             if (string.IsNullOrEmpty(preference) || preference == "Auto")
-                return device * (Application.isMobilePlatform ? 1 : Screen.width >= 3200 ? 1.5f : Screen.width >= 2400 ? 1.25f : 1);
+                return device;
             if (float.TryParse(preference.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture, out float percent))
                 return device * Mathf.Clamp(percent / 100f, .8f, 3);
             return device;

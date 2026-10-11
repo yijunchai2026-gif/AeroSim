@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using AeroSim.Input;
 using AeroSim.Navigation;
 using AeroSim.Domain;
@@ -420,8 +421,11 @@ namespace AeroSim
 
         private void OnGeometryChanged(GeometryChangedEvent evt)
         {
-            var scale = _document.panelSettings.scale;
-            var width = Screen.width / scale; var height = Screen.height / scale;
+            var scale = Mathf.Max(.01f, _document.panelSettings.scale);
+            var resolvedWidth = _root.resolvedStyle.width;
+            var resolvedHeight = _root.resolvedStyle.height;
+            var width = float.IsNaN(resolvedWidth) || resolvedWidth <= 0 ? Screen.width / scale : resolvedWidth;
+            var height = float.IsNaN(resolvedHeight) || resolvedHeight <= 0 ? Screen.height / scale : resolvedHeight;
             bool phone = width < 760 || height < 500;
             _root.EnableInClassList("layout-desktop", width >= 1280 && !phone);
             _root.EnableInClassList("layout-tablet", width >= 760 && width < 1280 && !phone);
@@ -437,13 +441,37 @@ namespace AeroSim
             {
                 LayoutFlightHud(width, height);
             }
-            if(Application.isMobilePlatform)
+            var safe = Screen.safeArea;
+            float safeLeft = Mathf.Max(0, safe.xMin / scale);
+            float safeRight = Mathf.Max(0, (Screen.width - safe.xMax) / scale);
+            float safeTop = Mathf.Max(0, (Screen.height - safe.yMax) / scale);
+            float safeBottom = Mathf.Max(0, safe.yMin / scale);
+            _root.style.paddingLeft = safeLeft; _root.style.paddingRight = safeRight;
+            _root.style.paddingTop = safeTop; _root.style.paddingBottom = safeBottom;
+            var hud = _root.Q<VisualElement>(className: "flight-hud");
+            if (hud != null)
             {
-                var safe=Screen.safeArea;
-                _root.style.paddingLeft=safe.xMin/scale; _root.style.paddingRight=(Screen.width-safe.xMax)/scale;
-                _root.style.paddingTop=(Screen.height-safe.yMax)/scale; _root.style.paddingBottom=safe.yMin/scale;
-                var hud=_root.Q<VisualElement>(className:"flight-hud");
-                if(hud!=null) { hud.style.left=safe.xMin/scale; hud.style.right=(Screen.width-safe.xMax)/scale; hud.style.top=(Screen.height-safe.yMax)/scale; hud.style.bottom=safe.yMin/scale; }
+                hud.style.left = 0; hud.style.right = 0;
+                hud.style.top = 0; hud.style.bottom = 0;
+            }
+            _root.schedule.Execute(ClampScrollOffsets);
+        }
+
+        private void ClampScrollOffsets()
+        {
+            if (_root?.panel == null) return;
+            foreach (var scroll in _root.Query<ScrollView>().ToList())
+            {
+                float viewportWidth = scroll.contentViewport.resolvedStyle.width;
+                float viewportHeight = scroll.contentViewport.resolvedStyle.height;
+                float contentWidth = scroll.contentContainer.resolvedStyle.width;
+                float contentHeight = scroll.contentContainer.resolvedStyle.height;
+                if (float.IsNaN(viewportWidth) || float.IsNaN(viewportHeight) ||
+                    float.IsNaN(contentWidth) || float.IsNaN(contentHeight)) continue;
+                var offset = scroll.scrollOffset;
+                scroll.scrollOffset = new Vector2(
+                    Mathf.Clamp(offset.x, 0, Mathf.Max(0, contentWidth - viewportWidth)),
+                    Mathf.Clamp(offset.y, 0, Mathf.Max(0, contentHeight - viewportHeight)));
             }
         }
 
