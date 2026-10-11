@@ -125,8 +125,10 @@ namespace AeroSim
         {
             var p = LocalStore.Profile.courses.Find(c => c.id == id); return p == null ? "Ready to start" : "Best " + p.bestScore + " / 100";
         }
-        private string Length(float meters) => LocalStore.Profile.settings.units == "Metric" ? meters.ToString("F0") + " m" : (meters * 3.28084f).ToString("F0") + " ft";
-        private string Velocity(float mps) => LocalStore.Profile.settings.units == "Metric" ? (mps * 3.6f).ToString("F1") + " km/h" : (mps * 2.23694f).ToString("F1") + " mph";
+        private string LengthValue(float meters) => (LocalStore.Profile.settings.units == "Metric" ? meters : meters * 3.28084f).ToString("F0");
+        private string VelocityValue(float mps) => (mps * (LocalStore.Profile.settings.units == "Metric" ? 3.6f : 2.23694f)).ToString("F1");
+        private string Length(float meters) => LengthValue(meters) + (LocalStore.Profile.settings.units == "Metric" ? " m" : " ft");
+        private string Velocity(float mps) => VelocityValue(mps) + (LocalStore.Profile.settings.units == "Metric" ? " km/h" : " mph");
         private static string Duration(float seconds) => TimeSpan.FromSeconds(Mathf.Max(0, seconds)).ToString(@"mm\:ss");
         private static string LocalDate(string utc) => DateTimeOffset.TryParse(utc, out var date) ? date.ToLocalTime().ToString("MMM d, yyyy · h:mm tt", System.Globalization.CultureInfo.GetCultureInfo("en-US")) : utc;
 

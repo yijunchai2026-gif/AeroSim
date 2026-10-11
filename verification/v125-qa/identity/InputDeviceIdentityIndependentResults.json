@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "status": "PASSED_PURE_IDENTITY_SUBSET",
+  "executedUtc": "2026-10-10 22:31:35 UTC",
+  "scope": "Independent pure single-descriptor identity resolution; not full Gate A or three-device acceptance",
+  "preparation": {
+    "priorQaDocSha256": "4e6978001ebd9013a9ef3c4c1797de7df5297497ac5a753e936c48b4dd592b2d",
+    "fixedVectorsBeforeProductionRead": 4,
+    "modelHashesMatched": 4,
+    "serialHashesMatched": 4,
+    "oracle": "Independent UTF8 byte-prefix Node cross-check plus original C# MemoryStream oracle; fixed expectations unchanged"
+  },
+  "sourceFreeze": {
+    "path": "verification/v125-qa/identity/identity-source-freeze.json",
+    "sha256": "ff4b9d6c3ecd29975a58bc7227d281b000d17e9747f82d3fe70977cc49415c05",
+    "matchingFilesBefore": 8,
+    "matchingFilesAfter": 8,
+    "files": [
+      {
+        "path": "docs/V125_GATE_A_CONTRACT.md",
+        "sha256": "f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697",
+        "matched": true
+      },
+      {
+        "path": "verification/v125-qa/identity-contract-freeze.json",
+        "sha256": "3db85a4f2dd502fa8755673019f9ea736894dda27df58b0baccf5e95e813d3ed",
+        "matched": true
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs",
+        "sha256": "aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d",
+        "matched": true
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs",
+        "sha256": "88a215d7431824c3c3062d377c4d2e35a7bdd3af81348bf1add4aca2adca084f",
+        "matched": true
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs.meta",
+        "sha256": "5068d83ae1380509460d35606b10f3037379e668d5bcd2dd96ad59837b971e7d",
+        "matched": true
+      },
+      {
+        "path": "verification/v125-qa/identity/InputDeviceIdentityDeveloperTests.cs",
+        "sha256": "3cb4d9264419a2999bc488c8f77a98def6e5a22bef4f26e3984e329b1dbecb50",
+        "matched": true
+      },
+      {
+        "path": "verification/v125-qa/identity/build-identity-developer-tests.sh",
+        "sha256": "7c4d8fd76dead55869e0556977f764ad81589aa3cca7cbaa4b0a1f8a49518007",
+        "matched": true
+      },
+      {
+        "path": "docs/V125_IDENTITY_IMPLEMENTATION.md",
+        "sha256": "79d41f55e01c34e1104bed5d3de8b707166e0d9b164bb6c83ae04ae9efd899e3",
+        "matched": true
+      }
+    ]
+  },
+  "baseline": {
+    "command": "bash verification/v125-qa/identity/build-identity-independent-tests.sh",
+    "strictCompilePassed": true,
+    "exitCode": 0,
+    "checks": 310390,
+    "failures": 0,
+    "directedCases": 3300,
+    "randomCases": 6000,
+    "invalidCases": 46,
+    "cultureCases": 4,
+    "seed": 1251011,
+    "executableDirectory": "/private/tmp/aerosim-identity-independent.1B6P9C"
+  },
+  "mutations": {
+    "sourceDirectory": "/private/tmp/aerosim-identity-mutations.3Bw2Ae",
+    "testExpectationsChanged": false,
+    "strictlyCompiledAndRejected": 3,
+    "requiredExitCode": 1,
+    "results": [
+      {
+        "name": "CaseFoldIdentity.cs",
+        "source": {
+          "path": "/private/tmp/aerosim-identity-mutations.3Bw2Ae/CaseFoldIdentity.cs",
+          "sha256": "6c5359a7a14c146b4133470262ef66d55b535a1125939cc62aa6411693c85cc5"
+        },
+        "strictCompilePassed": true,
+        "exitCode": 1,
+        "checks": 310390,
+        "failures": 54190,
+        "directedCases": 3300,
+        "randomCases": 6000,
+        "invalidCases": 46,
+        "cultureCases": 4,
+        "seed": 1251011,
+        "executableDirectory": "/private/tmp/aerosim-identity-independent.P2HA2T"
+      },
+      {
+        "name": "Utf16LengthIdentity.cs",
+        "source": {
+          "path": "/private/tmp/aerosim-identity-mutations.3Bw2Ae/Utf16LengthIdentity.cs",
+          "sha256": "a9865abfb288584165385096738ad6b7f3b51ff03a7906ad3a022d0bb5e22b27"
+        },
+        "strictCompilePassed": true,
+        "exitCode": 1,
+        "checks": 310390,
+        "failures": 23053,
+        "directedCases": 3300,
+        "randomCases": 6000,
+        "invalidCases": 46,
+        "cultureCases": 4,
+        "seed": 1251011,
+        "executableDirectory": "/private/tmp/aerosim-identity-independent.9AeyHw"
+      },
+      {
+        "name": "WeakModelIdentity.cs",
+        "source": {
+          "path": "/private/tmp/aerosim-identity-mutations.3Bw2Ae/WeakModelIdentity.cs",
+          "sha256": "2d02e2759689abc5d3ee799fc4d69a0dc54f4eb0fe4e460d421ee87283d87573"
+        },
+        "strictCompilePassed": true,
+        "exitCode": 1,
+        "checks": 310390,
+        "failures": 9326,
+        "directedCases": 3300,
+        "randomCases": 6000,
+        "invalidCases": 46,
+        "cultureCases": 4,
+        "seed": 1251011,
+        "executableDirectory": "/private/tmp/aerosim-identity-independent.eXESMy"
+      }
+    ],
+    "edits": [
+      {
+        "name": "CaseFoldIdentity.cs",
+        "before": "string normalized = (value ?? string.Empty).Normalize(NormalizationForm.FormC).Trim();",
+        "after": "string normalized = (value ?? string.Empty).Normalize(NormalizationForm.FormC).Trim().ToLowerInvariant();",
+        "detects": "Ordinal case preservation and exact canonical hashes"
+      },
+      {
+        "name": "Utf16LengthIdentity.cs",
+        "before": "byte[] prefix = StrictUtf8.GetBytes(value.Length.ToString(CultureInfo.InvariantCulture) + \":\");",
+        "after": "byte[] prefix = StrictUtf8.GetBytes(field.Length.ToString(CultureInfo.InvariantCulture) + \":\");",
+        "detects": "UTF8 byte length versus UTF16 character length"
+      },
+      {
+        "name": "WeakModelIdentity.cs",
+        "before": "? descriptor.SerialKey : \"session:\" + sourceId;",
+        "after": "? descriptor.SerialKey : descriptor.ModelKey;",
+        "detects": "Weak same-model instances and restart identities remain session-isolated"
+      }
+    ]
+  },
+  "regressions": [
+    {
+      "name": "InputRouter",
+      "command": "bash verification/v125-qa/build-input-router-tests.sh",
+      "strictCompilePassed": true,
+      "exitCode": 0,
+      "checks": 3050,
+      "failures": 0,
+      "executableDirectory": "/private/tmp/aerosim-input-core.6iswB8"
+    },
+    {
+      "name": "TouchInputStateIndependent",
+      "command": "bash verification/v125-qa/build-touch-state-independent-tests.sh",
+      "strictCompilePassed": true,
+      "exitCode": 0,
+      "checks": 514425,
+      "failures": 0,
+      "events": 25746,
+      "directedEvents": 178,
+      "heldStressEvents": 13568,
+      "requiredDualOwnerEvents": 12544,
+      "randomEvents": 12000,
+      "oracleDualOwnedEvents": 13443,
+      "actualDualOwnedEvents": 13443,
+      "routerCases": 13,
+      "seed": 1251010,
+      "referenceStateMachine": true,
+      "executableDirectory": "/private/tmp/aerosim-touch-independent.kkuR2K"
+    }
+  ],
+  "filesUnchanged": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "52a30e1d1ce42d5c11ac7ab1efadbd081e846e62ebd399ee9c030fa2cc0d999d"
+    },
+    {
+      "path": "verification/v125-qa/identity/InputDeviceIdentityIndependentTests.cs",
+      "sha256": "7d0f66dd9c17333ce3b6d3ee4bfe746adadef9fa5bc2baa0dfa5ba2fd1c249bb"
+    },
+    {
+      "path": "verification/v125-qa/identity/build-identity-independent-tests.sh",
+      "sha256": "d176f2f0128af30a122689ba7a42dba31174bddbeecdfe3bb0faca99428e17ba"
+    },
+    {
+      "path": "verification/v125-qa/InputRouterTests.cs",
+      "sha256": "ced96011c456c7ca0c4376a32ed0b1a9f25454a2064dadf327b89b7396898129"
+    },
+    {
+      "path": "verification/v125-qa/TouchInputStateIndependentTests.cs",
+      "sha256": "38bc0844c436fd54f711a1c7ca39e986293f9f718b6efe59c8476dc34eab79fe"
+    },
+    {
+      "path": "verification/v125-qa/build-input-router-tests.sh",
+      "sha256": "31d898b0c64d64f096d69063cebfd451009dd4992645b925a76c500669e01c22"
+    },
+    {
+      "path": "verification/v125-qa/build-touch-state-independent-tests.sh",
+      "sha256": "5491ae9499d030f5d3b637b123ff1e73c5737123669b34206f4ae286065fca15"
+    },
+    {
+      "path": "AeroSim/Assets/AeroSim/Runtime/Input/InputRouter.cs",
+      "sha256": "991a36ee16244bb3d1e1e60578331c0481cc994464bcc6be105076d4cb5006ef"
+    },
+    {
+      "path": "AeroSim/Assets/AeroSim/Runtime/Input/TouchInputState.cs",
+      "sha256": "2319cdc4e7dd9aa4510565caba6b1d0be5a712fadd8e032328f0ec236b470fb6"
+    }
+  ],
+  "compilerAndReferences": [
+    {
+      "path": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/NetCoreRuntime/dotnet",
+      "sha256": "f67be57bba338b304ad4f6904a160c7f415627d9c15a9ccc0f2390b9d97b08be"
+    },
+    {
+      "path": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/DotNetSdkRoslyn/csc.dll",
+      "sha256": "da60224e49f5a12fffa0245eb9da814d69429dbe5a4f2ce03812956a1c60decb"
+    },
+    {
+      "path": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/bin/mono",
+      "sha256": "ed57742caacc3f9e424070702682d5965d1efd09cf352284f5ace6e5380be5c6"
+    },
+    {
+      "path": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/lib/mono/4.8-api/mscorlib.dll",
+      "sha256": "736e8a3068b2c5e21e31ed2d7fcd81a11958e885798cfdacb33b20662ce29b50"
+    },
+    {
+      "path": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/lib/mono/4.8-api/System.dll",
+      "sha256": "6906a72d0c320697cac46820740fd67976e0b270378a772ea42968c463a2b8e5"
+    },
+    {
+      "path": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/lib/mono/4.8-api/System.Core.dll",
+      "sha256": "b06c0c07ffd912013cc35987d05ce9e6415cc04882b4b9b5c8ebf8a65fbea556"
+    }
+  ],
+  "limits": [
+    "No Unity editor/player/native build or API polling",
+    "Synthetic descriptor and serial fixtures only; no physical controller or iPad/iPhone sampling",
+    "Live registry duplicate-serial ambiguous handling NOT_RUN",
+    "Mapping/raw registry/calibration binding/migration/sidecar IO/FlightInput or UI lifecycle integration NOT_RUN",
+    "ReportedSerial is evidence, not uniqueness authorization or cryptographic attestation",
+    "Existing Touch same-pointerId reuse boundary remains; router/touch algorithm regression is not UI capture or device acceptance",
+    "No production/developer test changes, Git writes, catalog approval or user milestone confirmation"
+  ]
+}

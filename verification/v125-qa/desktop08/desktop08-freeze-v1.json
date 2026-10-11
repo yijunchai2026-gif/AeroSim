@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "contract": "independent-desktop08-v1",
+  "frozenUtc": "2026-10-10T16:31:38Z",
+  "nativeRunAtFreeze": "NOT_RUN",
+  "sourceSha256": {
+    "verification/v125-qa/desktop08/Desktop08Probe.cs": "9fd8a17e9b792c4040ba24faa036bb77d8d8b605d6f6ed8c4399163d4fee65c2",
+    "verification/v125-qa/desktop08/build-desktop08-probe.sh": "a5019e31e4e8e5e0481cd8c3ba9febe19fb4439020373a1a2020b51080a8b60e",
+    "verification/v125-qa/desktop08/desktop08-contract-v1.md": "be1edde9f33472032b36a94da2ef8d6d06d490d4f805ff2a4f73892f7deb5302",
+    "verification/ui-qa-tools/Instrument.cs": "b07a315deb29754b3b661c633e903b850d182583a6b65cdf9e7b8d307975bfd9"
+  },
+  "unchangedRegressionSourcesSha256": {
+    "verification/v1-qa/SpaceSubmitProbe.cs": "fe75cf13cdaf6d59d85e225f470b73ff212be8b73798ce9a546d97f592c1c6bd",
+    "verification/v1-qa/SpaceSubmitProbeV2.cs": "87d4033dc4bd14f495e25cf9f7393c71c5890cfc93c33bad730ad21dc7baf141",
+    "verification/v1-qa/SpaceSubmitProbeV3.cs": "e39ca0305f40fc68b373fdf253c221e7632f1677eb93828e90970ac9ed504a72",
+    "verification/v1-qa/build-space-submit-probe-v3.sh": "ea70a551f69c4fd293693952c9339a0a30c382c2c94626f6bc6641e3dddaf775",
+    "verification/v1-qa/prepare-space-v3.py": "08acedc51886d456326ce3cf2d5003e568e4ff19e795d480d81dbde27f0de083",
+    "verification/v1-qa/PauseTelemetryProbe.cs": "22c0c2339fe1ddb73b2bf453faa992d8b1f42591e84b53cbe9499d4d940c9694",
+    "verification/v1-qa/build-pause-telemetry-probe.sh": "e6ffe6e9b82b8d2579c10931924c1994dbbb8dddbc303df9047d41623d20c720",
+    "verification/v125-qa/DynamicModalTypographyProbeV3.cs": "01a92042c5c4831ba06463c5d53ecbe2bc5af14392f7af10abb4b3b1cda6d5d7",
+    "verification/v125-qa/build-dynamic-modal-typography-probe-v3.sh": "0e759ed9106d598ecc5accd512b67f7459025b39c3732fc30525c3b5d000414c",
+    "verification/v125-qa/ReplayTypographyProbeV2.cs": "a5856f7e0a14ba6287d1ba9874c0c9cacbe2ae3f96b8428f3dd2280e86518013",
+    "verification/v125-qa/build-replay-typography-probe-v2.sh": "5fcb41a1fa323e152cfb5a25dad5bf203499ae75003fa282a5ac13dd950a6406"
+  },
+  "baseline": {
+    "candidate": "07c",
+    "application": "AeroSim/Builds/macOS-V1-Candidate-20261010-07c/AeroSim.app",
+    "uninstrumentedRuntimeDllSha256": "caf2331190601b9bddab0ccfbc312fab894baa0c20a9d58a101a208e15d5e061",
+    "nativeRunByQa": false
+  },
+  "matrix": {
+    "viewports": ["1440x900", "1920x1080"],
+    "uiScale": "100%",
+    "hudScale": "100%",
+    "textMultipliers": [1, 2],
+    "replayUnits": ["Imperial", "Metric"],
+    "replayChannels": ["Altitude", "Ground Speed", "Battery"],
+    "heroTokens": { "title": 36, "description": 16 },
+    "fontTolerance": 0.25,
+    "lineboxTolerance": 3,
+    "nonintersectionTolerance": 0
+  },
+  "staticValidation": {
+    "status": "PASS_COMPILE_ONLY",
+    "compiler": "Unity6000.3.25f1 bundled Roslyn against uninstrumented07c Managed; exit0",
+    "bashSyntax": "PASS",
+    "unityLaunched": false,
+    "nativeApplicationLaunched": false,
+    "originalApplicationModified": false
+  },
+  "policy": "Same frozen source for baseline07c and candidate08. Root alone builds and launches. Retain old failures and UNRENDERED, no PASS from grep or absent results. A probe timing repair requires added v2 with v1 preserved.",
+  "limitations": "Local macOS logical viewport and synthetic keyboard, no physical controller/iOS/iPad or23concept fullvisual/useracceptance proof. Replay setup is public product API, not userinput."
+}

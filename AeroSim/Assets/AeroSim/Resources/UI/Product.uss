@@ -251,8 +251,8 @@
 .design-v1 .response-curve { height: 260px; background-color: rgb(7, 24, 36); }
 .design-osd-preview { height: 600px; border-width: 2px; border-color: rgb(62, 90, 112); }
 .design-dashboard-hero { min-height: 360px; padding: 30px; }
-.design-dashboard-hero .panel-title { max-width: 55%; font-size: 36px; }
-.design-dashboard-hero > .wrap { max-width: 55%; }
+.design-dashboard-hero .panel-title { width: 55%; max-width: 100%; height: auto; flex-shrink: 0; font-size: 36px; }
+.design-dashboard-hero > .wrap { width: 55%; max-width: 100%; height: auto; flex-shrink: 0; }
 .design-dashboard-hero .primary-button { max-width: 55%; margin-top: 26px; }
 .design-status-row { flex-direction: row; align-items: center; padding-top: 16px; padding-bottom: 16px; border-bottom-width: 1px; border-bottom-color: rgb(38, 62, 82); }
 .design-status-row .design-line-icon { margin-right: 20px; }
@@ -364,7 +364,7 @@
 .design-v1 .design-checklist-item .design-check-field .unity-base-field__label { flex-basis: 0; flex-grow: 1; flex-shrink: 1; width: auto; min-width: 0; max-width: 100%; }
 .design-v1 .design-check-field .unity-toggle__input { flex-shrink: 0; }
 .design-v1 .design-preflight-page .design-side { width: 440px; }
-.design-v1 .design-assignment-description { flex-shrink: 0; height: auto; min-height: 52px; max-width: 55%; white-space: normal; }
+.design-v1 .design-assignment-description { flex-shrink: 0; height: auto; min-height: 52px; width: 55%; max-width: 100%; white-space: normal; }
 .design-v1.design-controller-mode .side-nav { display: none; }
 .design-v1.design-controller-mode .content-stage, .design-v1.design-controller-mode .main-content { margin-left: 0; margin-right: 0; max-width: none; }
 .design-v1 .design-controller-page { padding-left: 24px; padding-right: 32px; padding-top: 32px; }
@@ -389,7 +389,7 @@
 .design-v1.layout-phone .design-controller-page .design-side { padding: 18px; }
 .design-v1.layout-phone .design-controller-axis-row .axis-label { width: 112px; min-width: 112px; }
 .design-v1.layout-phone .design-preflight-page .design-side, .design-v1.layout-tablet .design-preflight-page .design-side, .design-v1.text-expanded .design-preflight-page .design-side { width: 100%; }
-.design-v1.layout-phone .design-assignment-description, .design-v1.text-expanded .design-assignment-description { max-width: 100%; }
+.design-v1.layout-phone .design-assignment-description, .design-v1.layout-tablet .design-assignment-description, .design-v1.text-expanded .design-assignment-description { width: 100%; max-width: 100%; }
 .design-v1 .design-range-field .unity-slider__input { height: auto; min-height: 40px; }
 .design-v1 .design-range-field .design-range-number { height: auto; min-height: 40px; width: 84px; min-width: 84px; padding-top: 0; padding-bottom: 0; }
 .design-v1 .design-range-number .unity-base-text-field__input { height: auto; min-height: 38px; padding-top: 0; padding-bottom: 0; }

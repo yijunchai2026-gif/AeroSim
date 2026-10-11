@@ -105,7 +105,10 @@ namespace AeroSim
             _designOsdIndicator.style.display = DisplayStyle.None;
             _designOsdIndicator.style.marginRight = 8; bar.Add(_designOsdIndicator);
             bar.Add(FlightAction("Objective", "target", ShowObjective, "objective-toggle"));
-            bar.Add(FlightAction("Pause", "pause", TogglePause)); hud.Add(bar);
+            var pauseAction = FlightAction("Pause", "pause", TogglePause);
+            // Keep the visual order, but make intentional Tab start at Pause even when Objective is visible.
+            pauseAction.tabIndex = 1;
+            bar.Add(pauseAction); hud.Add(bar);
 
             var objective = Element("objective-card", "v1-objective-card");
             objective.Add(Text(_config.title, "v1-objective-title"));

@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_DOCUMENT_DELIVERY_REVIEW_ONLY",
+  "reviewedAt": "2026-10-10T22:37:29.487Z",
+  "scope": "Read-only staged continuation delivery review after independent identity QA and candidate08 closure; not a new native/algorithm/device/visual test",
+  "allowedNewArtifact": "verification/v125-qa/continuation-20261010-results.json",
+  "documentAudit": {
+    "command": "node verification/v125-qa/prd-review/prd-document-check.mjs --require-tracked --doc docs/V125_PROGRESS.md --doc docs/V125_DESKTOP08_QA.md --doc docs/V125_DESKTOP_FIX_IMPLEMENTATION.md --doc docs/V125_IDENTITY_IMPLEMENTATION.md --doc docs/V125_IDENTITY_QA.md --doc docs/V125_CANDIDATE08_RELEASE_VISUAL_REVIEW.md",
+    "checkerSha256": "995f114c5355b367602a73d05a52624d2d85d3e72d34577c2a5f6c5ca8c9d3ef",
+    "baselineSha256": "b4357e4b16eb7477fac6f3372a872288faea7b1437dad6269097b97d18e1af1f",
+    "exitCode": 0,
+    "stderr": "",
+    "mode": "frozen_document_audit",
+    "requireTracked": true,
+    "checkedAt": "2026-10-10T22:37:29.487Z",
+    "sourceSha256": {
+      "飞行模拟器产品设计文档.md": "3e773c07372e2b5bef62356150c2473ca4fe2403b6805b180e276843de670c0b",
+      "docs/V125_PROGRESS.md": "e8d6dcb0230c046fdfb769bb67d2f44d9f73fd63f5fb0fa1c2abc0447bed7854",
+      "docs/V125_DESKTOP08_QA.md": "24a0b0d83029a33f0a3635ff9d123f4654b970db7c70ff06ae3af47ce2d7bf28",
+      "docs/V125_DESKTOP_FIX_IMPLEMENTATION.md": "3d1e0a5d0fb9e7b10906df7663f2b067eab7ec8b4d4572f26a48795cbb310846",
+      "docs/V125_IDENTITY_IMPLEMENTATION.md": "79d41f55e01c34e1104bed5d3de8b707166e0d9b164bb6c83ae04ae9efd899e3",
+      "docs/V125_IDENTITY_QA.md": "620eab6039c5ef7b40d80d032d4b6ba0a36b2ab5958def12dcb2652a34835df5",
+      "docs/V125_CANDIDATE08_RELEASE_VISUAL_REVIEW.md": "7efeac13a5f97184920d6cc84b99a9d59265d367056f0bd2bb20dffda9c12609"
+    },
+    "summary": {
+      "checks": 1032,
+      "failed": 0,
+      "localLinkOccurrences": 314,
+      "originalConcepts": 23,
+      "currentDrafts": 5,
+      "inheritedMissingOccurrences": 0,
+      "publicationPendingUnique": 0,
+      "status": "PASS_AUTOMATED_ONLY"
+    },
+    "localLinkTrackedCount": 314,
+    "invalidLocalLinks": [],
+    "failures": [],
+    "publicationPending": [],
+    "historicalBrokenLinks": [],
+    "notes": [
+      "Automated documentation/byte checks do not establish visual equality, user acceptance, iOS hardware coverage, real flight dynamics or copyright authorization."
+    ]
+  },
+  "stagedSnapshot": {
+    "expectedCount": 29,
+    "beforeCount": 29,
+    "afterCount": 29,
+    "allWorktreeBytesEqualIndex": true,
+    "stableBeforeAfter": true,
+    "cachedWhitespace": {
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    "files": [
+      {
+        "path": "AeroSim/Assets/AeroSim/Resources/UI/Product.uss",
+        "sha256": "0b0f3f76696d24d8f6f16ddca6c3e36281b08df60b1f021e8b51cd7637504d8e"
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Resources/UI/Responsive.uss",
+        "sha256": "2cd2ce8fa9abb26248e99188c623e11ae11ba175142b27acffb643b07d793afd"
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Flight.cs",
+        "sha256": "8c3482128bad17361bfe10cc1540d24c153ffd21c350bda2af2199c43d78458a"
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.FlightDesignV1.cs",
+        "sha256": "987e6fd81586443e7e20107c3a448527ab3975c94e1223eb3fa729257ddb02f5"
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Pages.cs",
+        "sha256": "d9896393cf1cbc3fe59bb66e84fab0db83142a932059f6167575c517a9fdf456"
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs",
+        "sha256": "88a215d7431824c3c3062d377c4d2e35a7bdd3af81348bf1add4aca2adca084f"
+      },
+      {
+        "path": "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs.meta",
+        "sha256": "5068d83ae1380509460d35606b10f3037379e668d5bcd2dd96ad59837b971e7d"
+      },
+      {
+        "path": "docs/V125_CANDIDATE08_RELEASE_VISUAL_REVIEW.md",
+        "sha256": "7efeac13a5f97184920d6cc84b99a9d59265d367056f0bd2bb20dffda9c12609"
+      },
+      {
+        "path": "docs/V125_DESKTOP08_QA.md",
+        "sha256": "24a0b0d83029a33f0a3635ff9d123f4654b970db7c70ff06ae3af47ce2d7bf28"
+      },
+      {
+        "path": "docs/V125_DESKTOP_FIX_IMPLEMENTATION.md",
+        "sha256": "3d1e0a5d0fb9e7b10906df7663f2b067eab7ec8b4d4572f26a48795cbb310846"
+      },
+      {
+        "path": "docs/V125_IDENTITY_IMPLEMENTATION.md",
+        "sha256": "79d41f55e01c34e1104bed5d3de8b707166e0d9b164bb6c83ae04ae9efd899e3"
+      },
+      {
+        "path": "docs/V125_IDENTITY_QA.md",
+        "sha256": "620eab6039c5ef7b40d80d032d4b6ba0a36b2ab5958def12dcb2652a34835df5"
+      },
+      {
+        "path": "docs/V125_PROGRESS.md",
+        "sha256": "e8d6dcb0230c046fdfb769bb67d2f44d9f73fd63f5fb0fa1c2abc0447bed7854"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/Desktop08Probe.cs",
+        "sha256": "9fd8a17e9b792c4040ba24faa036bb77d8d8b605d6f6ed8c4399163d4fee65c2"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/build-desktop08-probe.sh",
+        "sha256": "a5019e31e4e8e5e0481cd8c3ba9febe19fb4439020373a1a2020b51080a8b60e"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/candidate08-native-smoke.txt",
+        "sha256": "e20adee356fedd5bf50b8afd20ae39774545c600964579db324c19822ce3cefa"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/candidate08-source-freeze.json",
+        "sha256": "9019e93263722ceb61bc306eba77ff1956c0328f7313cac53b860f6840cfd497"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/desktop08-contract-v1.md",
+        "sha256": "be1edde9f33472032b36a94da2ef8d6d06d490d4f805ff2a4f73892f7deb5302"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/desktop08-freeze-v1.json",
+        "sha256": "02f4249fe8f2b442922734f893ba46eb79cd41a909f24cefd89d608fd878cc1e"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/desktop08-summary.json",
+        "sha256": "23155ac1f779411e3fab512031bff1f53e99f0f4a892caefe54d3f4f4c7650c9"
+      },
+      {
+        "path": "verification/v125-qa/desktop08/gate-a-contract-freeze.json",
+        "sha256": "070f2b67753f9932e04b88ce94410aae7a4af5bb36d9eefc1850716d401f9471"
+      },
+      {
+        "path": "verification/v125-qa/identity-contract-freeze.json",
+        "sha256": "3db85a4f2dd502fa8755673019f9ea736894dda27df58b0baccf5e95e813d3ed"
+      },
+      {
+        "path": "verification/v125-qa/identity/InputDeviceIdentityDeveloperTests.cs",
+        "sha256": "3cb4d9264419a2999bc488c8f77a98def6e5a22bef4f26e3984e329b1dbecb50"
+      },
+      {
+        "path": "verification/v125-qa/identity/InputDeviceIdentityIndependentResults.json",
+        "sha256": "2c508ccccce5acdabe8803326d7fccc879de9d3980f4727ccec99f9a2f04a707"
+      },
+      {
+        "path": "verification/v125-qa/identity/InputDeviceIdentityIndependentTests.cs",
+        "sha256": "7d0f66dd9c17333ce3b6d3ee4bfe746adadef9fa5bc2baa0dfa5ba2fd1c249bb"
+      },
+      {
+        "path": "verification/v125-qa/identity/build-identity-developer-tests.sh",
+        "sha256": "7c4d8fd76dead55869e0556977f764ad81589aa3cca7cbaa4b0a1f8a49518007"
+      },
+      {
+        "path": "verification/v125-qa/identity/build-identity-independent-tests.sh",
+        "sha256": "d176f2f0128af30a122689ba7a42dba31174bddbeecdfe3bb0faca99428e17ba"
+      },
+      {
+        "path": "verification/v125-qa/identity/identity-source-freeze.json",
+        "sha256": "ff4b9d6c3ecd29975a58bc7227d281b000d17e9747f82d3fe70977cc49415c05"
+      },
+      {
+        "path": "飞行模拟器产品设计文档.md",
+        "sha256": "3e773c07372e2b5bef62356150c2473ca4fe2403b6805b180e276843de670c0b"
+      }
+    ],
+    "mismatches": [],
+    "newOrMissing": [],
+    "forbiddenStaged": [],
+    "note": "This report is created after the frozen 29-file review and is deliberately excluded from its own fingerprint set; root may separately stage it as the 30th file. No self-referential SHA."
+  },
+  "sourceFreezes": [
+    {
+      "path": "verification/v125-qa/desktop08/candidate08-source-freeze.json",
+      "sha256": "9019e93263722ceb61bc306eba77ff1956c0328f7313cac53b860f6840cfd497",
+      "count": 10,
+      "matched": 10,
+      "mismatches": []
+    },
+    {
+      "path": "verification/v125-qa/identity/identity-source-freeze.json",
+      "sha256": "ff4b9d6c3ecd29975a58bc7227d281b000d17e9747f82d3fe70977cc49415c05",
+      "count": 8,
+      "matched": 8,
+      "mismatches": []
+    }
+  ],
+  "originalConcepts": {
+    "count": 23,
+    "matched": 23,
+    "mismatches": []
+  },
+  "artGate": {
+    "catalogCount": 141,
+    "currentDraftCount": 5,
+    "approvedCount": 0,
+    "unexpectedStates": [],
+    "onlyHumanUserMayApprove": true,
+    "unapprovedMayAppearInProductionFlight": false
+  },
+  "proseReview": {
+    "status": "NO_BLOCKING_SCOPE_CONTRADICTION_FOUND",
+    "failures": [],
+    "actuallyRead": [
+      "AGENTS.md",
+      "PRD header/chapter0 and 25.9-25.13",
+      "V125_PROGRESS latest 22:28UTC continuation and subsequent gates",
+      "Full V125_DESKTOP08_QA.md",
+      "Full V125_DESKTOP_FIX_IMPLEMENTATION.md",
+      "Full V125_IDENTITY_IMPLEMENTATION.md",
+      "Full V125_IDENTITY_QA.md from identity QA handoff",
+      "Full V125_CANDIDATE08_RELEASE_VISUAL_REVIEW.md",
+      "Full desktop08-summary.json and independent identity compact results",
+      "Full existing 213-line document checker"
+    ],
+    "acceptedBoundaries": [
+      "PRD v1.7 is document/local-validation revision; actual application remains 1.0.0 development candidate08, not completed1.25",
+      "PRD25.13 and PROGRESS match prior independent identity310390/0, three strictly compiled rejected mutations, InputRouter3050/0 and Touch514425/0; resolver is not inside tested08binary and not formally called by FlightInput",
+      "ReportedSerial does not grant live uniqueness or calibration installation; registry duplicate-serial ambiguous handling, raw mapping/cache, persistence and GateA/B/C wiring remain open",
+      "Candidate08 supplement435/0 and Space1911x3/Pause74/dynamic2209/Replay1454 are described as scoped existing reports, not full visual/device acceptance",
+      "Each Space report retains24UNRENDERED not counted as PASS; smoke66PASS preserves process exit NOT_RECORDED and synthetic controller/touch boundary",
+      "VISUAL_DIFFERENT remains; Text200 offscreen Home/Replay scrolling/clicking and normal defaultFlightHUD are not silently approved",
+      "iOS module files present is separate from unverified Editor target/export/native/signing/device support; active completeXcode unavailable claim remains bounded",
+      "Latest state in chapter0 and25.12 supersedes historical25.10 awaiting-closure wording without deleting old failures; author handoff awaiting-QA and visual lookup-time smokeNOT_RUN remain historical role records",
+      "141catalog projects/5current drafts/0user approvals and per-model/per-variant user SHA/revision confirmation gate remain; old2016Mavic/Mavic4/512GB do not inherit approvals",
+      "Build app paths and full raw QA are local evidence, not public trial URL; this batch commit/push/remoteSHA still require root verification"
+    ]
+  },
+  "intentionallyNotExecuted": [
+    "Unity Editor/Player/native build or application launch",
+    "Completed InputRouter/Touch/Identity algorithm suites or mutations",
+    "Real controller or iPad/iPhone sampling",
+    "New UI geometry/scroll/tap or23page human visual approval",
+    "Git mutation, commit, push, remote query or user approval"
+  ],
+  "preservedOwnership": "Only this new compact JSON is written by this delivery-review task; old QA, source, tests, PRD, PROGRESS and freezes remain untouched.",
+  "gitDelivery": "Root owns subsequent stage/commit/push and fresh remote SHA verification; this report is not proof of uploaded changes"
+}

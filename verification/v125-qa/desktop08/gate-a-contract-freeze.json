@@ -1,0 +1,7 @@
+{
+  "status": "CONTRACT_CANDIDATE_FROZEN_FOR_NEXT_WAVE",
+  "contract": "docs/V125_GATE_A_CONTRACT.md",
+  "sha256": "f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697",
+  "review": "Root reviewed source identity, exact mapping, raw availability, sidecar migration, commit point and unknown-IO boundaries; no Gate A implementation in this batch.",
+  "limits": "No formal FlightInput integration, UI pointer adapter, device export, physical controller or mobile device acceptance. Module files present is not verified Editor target support."
+}

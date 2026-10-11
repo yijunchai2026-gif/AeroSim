@@ -186,8 +186,13 @@ namespace AeroSim
             _uiTick += Time.unscaledDeltaTime; if (_uiTick < .05f) return; _uiTick = 0;
             bool replay = _page == Page.Replay;
             _flightStatus.text = replay ? (_sim.ReplayPlaying ? "REPLAY PLAYING" : "REPLAY PAUSED") : _sim.Status;
-            _speed.text = Velocity(replay ? ReplaySpeedAtTime() : _sim.Speed); _altitude.text = Length(_sim.Position.y);
-            _timer.text = Duration(replay ? _sim.ReplayTime : _sim.Elapsed); _battery.text = _sim.Battery.ToString("F0") + "%";
+            float speed = replay ? ReplaySpeedAtTime() : _sim.Speed;
+            // Replay chart headings render a separate unit label. Flight/legacy
+            // HUD values retain their suffix so no metric becomes unitless there.
+            _speed.text = replay && _speed.ClassListContains("v1-replay-chart-value") ? VelocityValue(speed) : Velocity(speed);
+            _altitude.text = replay && _altitude.ClassListContains("v1-replay-chart-value") ? LengthValue(_sim.Position.y) : Length(_sim.Position.y);
+            _timer.text = Duration(replay ? _sim.ReplayTime : _sim.Elapsed);
+            _battery.text = _sim.Battery.ToString("F0") + (replay && _battery.ClassListContains("v1-replay-chart-value") ? "" : "%");
             _battery.EnableInClassList("warning-text", _sim.Battery < 25);
             var i4 = _sim.CurrentInput; _sticks.text = "INPUT   T " + i4.x.ToString("F2") + "   Y " + i4.y.ToString("F2") + "   P " + i4.z.ToString("F2") + "   R " + i4.w.ToString("F2");
             if (replay)
