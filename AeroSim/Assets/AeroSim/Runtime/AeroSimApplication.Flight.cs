@@ -24,6 +24,8 @@ namespace AeroSim
         private float _uiTick;
         private string _flightInputInterrupt;
         private int _flightScreenWidth, _flightScreenHeight;
+        private Rect _flightSafeArea;
+        private float _flightPanelScale;
         private TouchStick _leftTouchStick, _rightTouchStick;
 
         public void StartFlight(FlightConfig config)
@@ -57,6 +59,7 @@ namespace AeroSim
             _flightInputInterrupt = null;
             _leftTouchStick = _rightTouchStick = null;
             _flightScreenWidth = Screen.width; _flightScreenHeight = Screen.height;
+            _flightSafeArea = Screen.safeArea; _flightPanelScale = _document.panelSettings.scale;
             var hud = Element("flight-hud"); hud.pickingMode = PickingMode.Ignore; _root.Add(hud);
             var bar = Element("flight-bar");
             bar.Add(Text(replay ? "AEROSIM  /  REPLAY" : "AEROSIM  /  " + _config.workspace.ToUpperInvariant(), "flight-brand"));
@@ -114,6 +117,7 @@ namespace AeroSim
             pause.Add(ActionButton("Resume Flight", TogglePause, true));
             pause.Add(ActionButton("Reset Aircraft", () => { _sim.ResetAircraft(); TogglePause(); }));
             pause.Add(ActionButton("Simulate Signal Loss", () => { TogglePause(); _sim.SignalLoss(); }));
+            pause.Add(ActionButton("Camera & FOV", ShowFlightFovSettings));
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
             pause.Add(ActionButton("Exit Without Saving", () => ShowConfirm("Leave this flight?", "The current session will not be saved. Existing records are unaffected.", () => ShowPage(Page.Home))));
             _pauseOverlay.Add(ModalScroll(pause)); hud.Add(_pauseOverlay);
@@ -235,11 +239,16 @@ namespace AeroSim
 
         private void Update()
         {
-            if (_page == Page.Flight && _flightScreenWidth > 0 && (_flightScreenWidth != Screen.width || _flightScreenHeight != Screen.height))
+            bool flightLayoutChanged = _page == Page.Flight && _flightScreenWidth > 0 &&
+                (_flightScreenWidth != Screen.width || _flightScreenHeight != Screen.height ||
+                 _flightSafeArea != Screen.safeArea || Mathf.Abs(_flightPanelScale - _document.panelSettings.scale) > .0001f);
+            if (flightLayoutChanged)
             {
                 _flightScreenWidth = Screen.width; _flightScreenHeight = Screen.height;
+                _flightSafeArea = Screen.safeArea; _flightPanelScale = _document.panelSettings.scale;
                 ReleaseTouchControls("Layout changed · touch again");
                 _flightInputInterrupt = "Layout changed · touch again";
+                OnGeometryChanged(null);
             }
             if (_lastWindowWidth != Screen.width || _lastWindowHeight != Screen.height) RefreshUiPreferences();
             if (_page == Page.Controller && _axisLabels != null)
@@ -332,12 +341,14 @@ namespace AeroSim
 
             public bool Active => _pointer >= 0;
 
-            public void ConfigureLayout(float size, float bottom, float edge, bool compactCaption)
+            public void ConfigureLayout(Rect envelope, bool compactCaption)
             {
                 _compactCaption = compactCaption;
-                style.width = size; style.height = size; style.bottom = bottom;
-                style.left = _left ? edge : new StyleLength(StyleKeyword.Auto);
-                style.right = _left ? new StyleLength(StyleKeyword.Auto) : edge;
+                float size = Mathf.Min(envelope.width, envelope.height - (compactCaption ? 18 : 24));
+                style.display = DisplayStyle.Flex;
+                style.width = size; style.height = size;
+                style.left = envelope.x; style.top = envelope.y;
+                style.right = new StyleLength(StyleKeyword.Auto); style.bottom = new StyleLength(StyleKeyword.Auto);
                 float knobSize = Mathf.Max(44, size * .4f);
                 _knob.style.width = knobSize; _knob.style.height = knobSize;
                 _caption.style.top = size + (compactCaption ? 1 : 4);
@@ -348,6 +359,12 @@ namespace AeroSim
                 SetStatus(CurrentStatus());
                 tooltip = (_left ? "Left stick. Mode 2 throttle and yaw. " : "Right stick. Mode 2 pitch and roll. ") +
                     (_holdThrottle ? "Throttle holds on release; interruptions clear it. " : "Axes spring to centre on release. ") + CurrentStatus();
+            }
+
+            public void SetLayoutProtected(bool protectedState)
+            {
+                style.display = protectedState ? DisplayStyle.None : DisplayStyle.Flex;
+                if (protectedState && Active) Interrupt("Layout protected");
             }
 
             public void Interrupt(string reason)

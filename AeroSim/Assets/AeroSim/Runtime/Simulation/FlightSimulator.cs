@@ -40,7 +40,14 @@ namespace AeroSim.Simulation
         public bool ReturningHome { get; private set; }
         public bool ObjectiveComplete { get; private set; }
         public bool ReplayMode { get; private set; }
-        public bool ChaseView { get; set; } = true;
+        public bool ChaseView
+        {
+            get => _activeFovViewId != "fpv";
+            set => SetCameraView(value ? "near-follow" : "fpv");
+        }
+        public string ActiveFovViewId => _activeFovViewId;
+        public float VerticalFieldOfView => View == null ? LocalStore.GetVerticalFov(ActiveFovViewId) : View.fieldOfView;
+        public float HorizontalFieldOfView => VerticalToHorizontalFov(VerticalFieldOfView, View == null ? CurrentAspect() : View.aspect);
         public bool ReplayPlaying { get; set; }
         public float ReplayTime { get; private set; }
         public float ReplaySpeed { get; set; } = 1;
@@ -68,6 +75,7 @@ namespace AeroSim.Simulation
         private Vector3 _lastPosition;
         private Vector3 _pausedVelocity, _pausedAngularVelocity, _landingPoint;
         private bool _landing;
+        private string _activeFovViewId = "near-follow";
         private AudioSource _audio;
         private Material _activeGateMaterial;
 
@@ -77,9 +85,10 @@ namespace AeroSim.Simulation
             Record.config=JsonUtility.FromJson<FlightConfig>(JsonUtility.ToJson(config));
             Battery=config.courseId=="s02"?24:100; Elapsed=0; GateIndex=0; ObjectiveComplete=false; ReturningHome=false; ReplayMode=false; Paused=false; _landing=false;
             _yaw=0; _hoverTime=0; _sampleTime=0; _collisionCooldown=0; _rotationTravel=0; _lastYaw=0; _leftHome=false; _braked=false; _hasTakenOff=false; _acroInverted=false; _batteryWarned=false;
+            _activeFovViewId=config.workspace=="FPV"?"fpv":"near-follow";
             BuildWorld(config.environment); BuildAircraft(); BuildGates();
             HighlightTarget();
-            ChaseView=config.workspace!="FPV"; Running=true; _lastPosition=Body.position;
+            Running=true; _lastPosition=Body.position; ApplyConfiguredFieldOfView(); ApplyCameraViewPose(true);
             Event("session","Flight started"); Status="Ready to Fly";
         }
 
@@ -190,6 +199,38 @@ namespace AeroSim.Simulation
         }
         public void Stop() { Running=false; ReplayMode=false; ReplayPlaying=false; CleanWorld(); }
         public void Event(string kind,string message) => Record?.events.Add(new FlightEvent {time=Elapsed,kind=kind,message=message});
+
+        public bool SetCameraView(string viewId)
+        {
+            var definition = FovViewDefinitions.Find(viewId);
+            if (definition == null) return false;
+            _activeFovViewId = definition.viewId;
+            ApplyConfiguredFieldOfView();
+            ApplyCameraViewPose(true);
+            return true;
+        }
+        public bool PreviewCameraView(string viewId, float verticalFov)
+        {
+            if (!SetCameraView(viewId)) return false;
+            PreviewVerticalFov(verticalFov);
+            return true;
+        }
+        public void PreviewVerticalFov(float verticalFov)
+        {
+            if (View == null || global::AeroSim.AeroSimApplication.IsFovXrControlled) return;
+            var definition = LocalStore.Definition(ActiveFovViewId);
+            View.fieldOfView = Mathf.Clamp(verticalFov, definition.minimumDeg, definition.maximumDeg);
+        }
+        public void ApplyConfiguredFieldOfView()
+        {
+            if (View != null && !global::AeroSim.AeroSimApplication.IsFovXrControlled) View.fieldOfView = LocalStore.GetVerticalFov(ActiveFovViewId);
+        }
+        public static float VerticalToHorizontalFov(float verticalFov, float aspect)
+        {
+            float safeAspect = !float.IsNaN(aspect) && !float.IsInfinity(aspect) && aspect > 0 ? aspect : 16f / 9f;
+            return 2f * Mathf.Atan(Mathf.Tan(verticalFov * Mathf.Deg2Rad * .5f) * safeAspect) * Mathf.Rad2Deg;
+        }
+        private static float CurrentAspect() => Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f;
 
         private void Update()
         {
@@ -375,22 +416,58 @@ namespace AeroSim.Simulation
             if(GateIndex>=_gateVisuals.Count) return;
             foreach(var renderer in _gateVisuals[GateIndex].GetComponentsInChildren<Renderer>()) renderer.sharedMaterial=_activeGateMaterial;
         }
-        private void LateUpdate()
+        private void LateUpdate() => ApplyCameraViewPose(false);
+
+        public void ApplyCameraViewPose(bool immediate)
         {
-            if(View==null||Body==null) return;
-            if(ChaseView)
+            if(View==null||Body==null||Config==null) return;
+            float size=Mathf.Max(.1f,AircraftCatalog.Resolve(Config.aircraft).VisualScale);
+            float distance=Mathf.Max(2f,AircraftCatalog.Resolve(Config.aircraft).ChaseDistance);
+            Vector3 desired;
+            Quaternion rotation;
+            float followRate;
+            switch(_activeFovViewId)
             {
-                float distance=AircraftCatalog.Resolve(Config.aircraft).ChaseDistance;
-                var behind=Body.rotation*new Vector3(0,distance*.43f,-distance); var desired=Position+behind;
-                View.transform.position=LocalStore.Profile.settings.reducedMotion?desired:Vector3.Lerp(View.transform.position,desired,1-Mathf.Exp(-Time.unscaledDeltaTime*8));
-                View.transform.LookAt(Position+Body.rotation*Vector3.forward*distance*.6f);
+                case "fpv":
+                    desired=Position+Body.rotation*new Vector3(0,size*.03f,size*.60f);
+                    rotation=Body.rotation*Quaternion.Euler(-LocalStore.Profile.settings.cameraAngle,0,0);
+                    followRate=0;
+                    break;
+                case "cockpit":
+                    desired=Position+Body.rotation*new Vector3(0,size*.24f,size*.18f);
+                    rotation=Body.rotation*Quaternion.Euler(-Mathf.Max(4,LocalStore.Profile.settings.cameraAngle*.55f),0,0);
+                    followRate=0;
+                    break;
+                case "gimbal":
+                    desired=Position+Body.rotation*new Vector3(size*.16f,-size*.12f,size*.38f);
+                    rotation=Body.rotation*Quaternion.Euler(18,0,0);
+                    followRate=18;
+                    break;
+                case "far-follow":
+                    desired=Position+Body.rotation*new Vector3(distance*.18f,distance*.82f,-distance*2.25f);
+                    rotation=Quaternion.LookRotation(Position+Body.rotation*Vector3.forward*distance*.85f-desired,Vector3.up);
+                    followRate=4;
+                    break;
+                case "external":
+                    desired=Position+new Vector3(distance*1.65f,distance*.72f,-distance*.65f);
+                    rotation=Quaternion.LookRotation(Position+Vector3.up*size*.15f-desired,Vector3.up);
+                    followRate=2.5f;
+                    break;
+                default:
+                    desired=Position+Body.rotation*new Vector3(0,distance*.43f,-distance);
+                    rotation=Quaternion.LookRotation(Position+Body.rotation*Vector3.forward*distance*.6f-desired,Vector3.up);
+                    followRate=8;
+                    break;
             }
-            else
+            if(immediate||followRate<=0||LocalStore.Profile.settings.reducedMotion)
             {
-                float size=AircraftCatalog.Resolve(Config.aircraft).VisualScale;
-                View.transform.position=Position+Body.rotation*new Vector3(0,size*.03f,size*.60f);
-                View.transform.rotation=Body.rotation*Quaternion.Euler(-LocalStore.Profile.settings.cameraAngle,0,0);
+                View.transform.position=desired;
+                View.transform.rotation=rotation;
+                return;
             }
+            float blend=1-Mathf.Exp(-Time.unscaledDeltaTime*followRate);
+            View.transform.position=Vector3.Lerp(View.transform.position,desired,blend);
+            View.transform.rotation=Quaternion.Slerp(View.transform.rotation,rotation,blend);
         }
         private void CleanWorld()
         {

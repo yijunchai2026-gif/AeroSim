@@ -48,6 +48,7 @@ namespace AeroSim
             _flightInputInterrupt = null;
             _leftTouchStick = _rightTouchStick = null;
             _flightScreenWidth = Screen.width; _flightScreenHeight = Screen.height;
+            _flightSafeArea = Screen.safeArea; _flightPanelScale = _document.panelSettings.scale;
             if (replay) BuildDesignReplay();
             else BuildDesignFlight();
             InstallToast();
@@ -230,6 +231,7 @@ namespace AeroSim
             pause.Add(ActionButton("Resume Flight", TogglePause, true));
             pause.Add(ActionButton("Session Objective", ShowObjective));
             pause.Add(ActionButton("Flight Telemetry", ShowDesignFlightTelemetry));
+            pause.Add(ActionButton("Camera & FOV", ShowFlightFovSettings));
             pause.Add(ActionButton("Reset Aircraft", () => { _sim.ResetAircraft(); TogglePause(); }));
             pause.Add(ActionButton("Simulate Signal Loss", () => { TogglePause(); _sim.SignalLoss(); }));
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
@@ -423,47 +425,186 @@ namespace AeroSim
 
         private void LayoutDesignFlightHud(float width, float height)
         {
-            bool compact = width < 1560 || height < 700 || LocalStore.Profile.settings.textScale > 1.1f;
+            var space = ResolveFlightHudLayoutSpace(width, height);
+            var content = space.ContentRect;
+            width = content.width; height = content.height;
+            var comfort = new Rect(Mathf.Max(0, (width - Mathf.Min(width, 2240)) * .5f), 0, Mathf.Min(width, 2240), height);
+            bool compact = comfort.width < 1560 || height < 700 || LocalStore.Profile.settings.textScale > 1.1f;
             _root.EnableInClassList("hud-compact", compact);
-            _root.EnableInClassList("hud-narrow", width < 480);
-            _root.EnableInClassList("hud-touch", (Application.isMobilePlatform || width < 760 || height < 500 || LocalStore.Profile.settings.showTouchControls) && _page != Page.Replay);
+            _root.EnableInClassList("hud-narrow", comfort.width < 480);
+            bool touchRequested = (Application.isMobilePlatform || comfort.width < 760 || height < 500 || LocalStore.Profile.settings.showTouchControls) && _page != Page.Replay;
+            _root.EnableInClassList("hud-touch", touchRequested);
             if (_page == Page.Replay) return;
-            float scale = Mathf.Max(.01f, _document.panelSettings.scale);
-            float safeLeft = 0, safeRight = 0;
-            if (Application.isMobilePlatform)
-            {
-                var safe = Screen.safeArea;
-                safeLeft = safe.xMin / scale;
-                safeRight = (Screen.width - safe.xMax) / scale;
-            }
-            // The parent flight HUD is already inset to Screen.safeArea by OnGeometryChanged.
-            // Use safe dimensions for sizing, then position children within that local rectangle.
-            float safeWidth = Mathf.Max(176, width - safeLeft - safeRight);
-            float touchSize = Mathf.Clamp(safeWidth * .22f, 88, height < 500 ? 112 : 140);
-            float actionHeight = LocalStore.Profile.settings.textScale > 1.1f ? 72 : 56;
-            bool shortWide = height < 520 || safeWidth / Mathf.Max(1, height) > 1.9f;
-            bool compactStickStatus = shortWide || touchSize < 112 || LocalStore.Profile.settings.textScale > 1.1f;
-            foreach (var stick in _root.Query<TouchStick>().ToList())
-                stick.ConfigureLayout(touchSize, actionHeight + 24, _root.ClassListContains("hud-narrow") ? 8 : 16, compactStickStatus);
+
+            float text = Mathf.Clamp(LocalStore.Profile.settings.textScale, 1, 2);
+            float actionHeight = text > 1.1f ? 72 : 56;
+            bool shortWide = height < 520 || width / Mathf.Max(1, height) > 1.9f;
+            var occupied = new List<Rect>();
             var objective = _root.Q<VisualElement>(className: "v1-objective-scroll");
-            if (objective != null) objective.style.maxHeight = Mathf.Max(200, height - 380);
+            Rect objectiveRect = default;
+            if (objective != null && !compact && _config.workspace != "FPV")
+            {
+                float objectiveHeight = Mathf.Min(Mathf.Max(200, height - 380), _config.professional ? 620 : 520);
+                objectiveRect = new Rect(_config.professional ? comfort.xMax - 464 : comfort.xMin + 32, _config.professional ? 108 : 220, 440, objectiveHeight);
+                objective.style.left = objectiveRect.x; objective.style.right = new StyleLength(StyleKeyword.Auto);
+                objective.style.top = objectiveRect.y; objective.style.width = objectiveRect.width; objective.style.maxHeight = objectiveRect.height;
+                occupied.Add(objectiveRect);
+            }
+            else if (objective != null) objective.style.maxHeight = Mathf.Max(200, height - 380);
+
+            var tools = _root.Q<VisualElement>(className: "v1-camera-tools");
+            Rect toolsRect = default;
+            if (tools != null && !compact && _config.workspace != "FPV" && !_config.professional)
+            {
+                toolsRect = new Rect(comfort.xMax - 128, height * .24f, 96, Mathf.Min(426, height * .55f));
+                tools.style.left = toolsRect.x; tools.style.right = new StyleLength(StyleKeyword.Auto); tools.style.top = toolsRect.y;
+                occupied.Add(toolsRect);
+            }
+
+            var guidance = _root.Q<VisualElement>(className: "flight-guidance");
+            Rect guidanceRect = default;
+            if (guidance != null)
+            {
+                bool guidanceVisible = !shortWide && !compact && _config.workspace != "FPV" && LocalStore.Profile.settings.showControls;
+                guidance.style.display = guidanceVisible ? DisplayStyle.Flex : DisplayStyle.None;
+                if (guidanceVisible)
+                {
+                    guidanceRect = new Rect(comfort.x + comfort.width * .30f, 100, comfort.width * .40f, 48 * text);
+                    guidance.style.left = guidanceRect.x; guidance.style.right = width - guidanceRect.xMax; guidance.style.top = guidanceRect.y;
+                    occupied.Add(guidanceRect);
+                }
+            }
+
             var telemetry = _root.Q<VisualElement>(className: "v1-flight-telemetry");
+            Rect telemetryRect;
             if (shortWide)
             {
-                LayoutShortWideTelemetry(telemetry, safeWidth, height, touchSize, actionHeight);
+                float telemetryWidth = Mathf.Min(360, comfort.width - 32);
+                telemetryRect = new Rect(comfort.center.x - telemetryWidth * .5f, 96, telemetryWidth, 64);
+            }
+            else
+            {
+                float available = compact ? comfort.width - 32 : Mathf.Min(1040, comfort.width - 760);
+                available = Mathf.Max(240, available);
+                telemetryRect = new Rect(comfort.center.x - available * .5f, compact ? 96 : height - 120, available, compact ? Mathf.Max(64, 64 * text) : 80);
+            }
+            occupied.Add(telemetryRect);
+            LayoutFlightRadarAndSticks(space, comfort, touchRequested, compact, shortWide, actionHeight, occupied, objectiveRect, toolsRect, guidanceRect, telemetryRect);
+
+            float touchSize = _flightHudLayoutState.leftStickEnvelope.width;
+            if (shortWide)
+            {
+                LayoutShortWideTelemetry(telemetry, comfort, height, touchSize, actionHeight);
                 return;
             }
             RestoreShortWideTelemetry(telemetry, compact);
             if (_designOsdLayer != null) _designOsdLayer.style.display = DisplayStyle.Flex;
             if (telemetry != null)
             {
-                float available = compact ? width - 32 : Mathf.Min(1040, width - 760);
-                telemetry.style.width = Mathf.Max(240, available); telemetry.style.left = compact ? 16 : (width - available) / 2;
+                telemetry.style.width = telemetryRect.width; telemetry.style.left = telemetryRect.x;
             }
             LayoutDesignOsdAnchors(width, height, compact);
         }
 
-        private void LayoutShortWideTelemetry(VisualElement telemetry, float safeWidth, float height, float touchSize, float actionHeight)
+        private void LayoutFlightRadarAndSticks(FlightHudLayoutSpace space, Rect comfort, bool touchRequested, bool compact, bool shortWide,
+            float actionHeight, List<Rect> occupied, Rect objectiveRect, Rect toolsRect, Rect guidanceRect, Rect telemetryRect)
+        {
+            Rect content = space.ContentRect;
+            float edge = comfort.width < 480 ? 8 : 16;
+            float caption = shortWide || LocalStore.Profile.settings.textScale > 1.1f ? 18 : 24;
+            float bottomReserve = actionHeight + 24;
+            float maximumStick = content.height < 500 ? 112 : 140;
+            float stickSize = Mathf.Clamp(comfort.width * .22f, 88, maximumStick);
+            float stickY = content.height - bottomReserve - stickSize - caption;
+            bool sticksFit = touchRequested && stickY >= 96 && comfort.width >= stickSize * 2 + edge * 2 + 16;
+            Rect left = sticksFit ? new Rect(comfort.xMin + edge, stickY, stickSize, stickSize + caption) : default;
+            Rect right = sticksFit ? new Rect(comfort.xMax - edge - stickSize, stickY, stickSize, stickSize + caption) : default;
+            bool compactCaption = shortWide || stickSize < 112 || LocalStore.Profile.settings.textScale > 1.1f;
+            if (_leftTouchStick != null)
+            {
+                if (sticksFit) _leftTouchStick.ConfigureLayout(left, compactCaption);
+                _leftTouchStick.SetLayoutProtected(!sticksFit);
+            }
+            if (_rightTouchStick != null)
+            {
+                if (sticksFit) _rightTouchStick.ConfigureLayout(right, compactCaption);
+                _rightTouchStick.SetLayoutProtected(!sticksFit);
+            }
+
+            if (sticksFit) { occupied.Add(left); occupied.Add(right); }
+
+            bool radarAllowed = _map != null && _config.workspace != "FPV";
+            Rect radar = default;
+            string radarStrategy = radarAllowed ? "no-safe-slot" : "mode-hidden";
+            if (radarAllowed)
+            {
+                float desired = compact ? Mathf.Clamp(content.height * .32f, 144, 220) : Mathf.Clamp(content.height * .32f, 220, 336);
+                desired = Mathf.Min(desired, comfort.width - edge * 2);
+                var sizes = new[] { desired, Mathf.Min(desired, 280), Mathf.Min(desired, 220), Mathf.Min(desired, 160) }
+                    .Where(value => value >= 144).Distinct().OrderByDescending(value => value).ToList();
+                bool FitsRadar(Rect candidate) => candidate.xMin >= comfort.xMin + edge && candidate.yMin >= 96 &&
+                    candidate.xMax <= comfort.xMax - edge && candidate.yMax <= content.height - bottomReserve &&
+                    !occupied.Any(other => candidate.Overlaps(other));
+                foreach (float size in sizes)
+                {
+                    float lowY = content.height - bottomReserve - size;
+                    var candidates = new[]
+                    {
+                        new Rect(comfort.xMin + edge, lowY, size, size),
+                        new Rect(sticksFit ? left.xMax + 8 : comfort.xMin + edge, lowY, size, size),
+                        new Rect(comfort.center.x - size * .5f, lowY, size, size),
+                        new Rect(comfort.xMin + edge, 104, size, size),
+                        new Rect(comfort.xMax - edge - size, 104, size, size),
+                        new Rect(comfort.xMax - edge - size, lowY, size, size)
+                    };
+                    foreach (var candidate in candidates)
+                    {
+                        if (!FitsRadar(candidate)) continue;
+                        radar = candidate;
+                        radarStrategy = candidate == candidates[0] ? "preferred" : size == desired ? "candidate" : "degraded";
+                        break;
+                    }
+                    if (radar.width > 0) break;
+                }
+                _map.style.display = radar.width > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+                if (radar.width > 0)
+                {
+                    _map.style.left = radar.x; _map.style.top = radar.y;
+                    _map.style.right = new StyleLength(StyleKeyword.Auto); _map.style.bottom = new StyleLength(StyleKeyword.Auto);
+                    _map.style.width = radar.width; _map.style.height = radar.height;
+                    _map.style.borderTopLeftRadius = _map.style.borderTopRightRadius = radar.width * .5f;
+                    _map.style.borderBottomLeftRadius = _map.style.borderBottomRightRadius = radar.width * .5f;
+                    _map.tooltip = radarStrategy == "preferred" ? "Radar layout: preferred" : "Radar layout: temporary safe " + radarStrategy;
+                }
+                else _map.tooltip = "Radar hidden: no non-overlapping safe slot.";
+            }
+
+            _flightHudLayoutState = new FlightHudLayoutDiagnostic
+            {
+                revision = _flightHudLayoutState.revision + 1,
+                status = touchRequested && !sticksFit ? "protected-no-stick-space" : radarAllowed && radar.width <= 0 ? "protected-no-radar-space" : radarStrategy == "degraded" ? "degraded" : "ready",
+                radarStrategy = radarStrategy,
+                panelRect = space.PanelRect,
+                safeRect = space.SafeRect,
+                contentRect = content,
+                comfortRect = comfort,
+                leftStickEnvelope = left,
+                rightStickEnvelope = right,
+                radarRect = radar,
+                telemetryRect = telemetryRect,
+                guidanceRect = guidanceRect,
+                toolsRect = toolsRect,
+                objectiveRect = objectiveRect,
+                touchControlsRequested = touchRequested,
+                touchControlsProtected = touchRequested && !sticksFit,
+                radarVisible = radar.width > 0
+            };
+            if (_map != null) _map.userData = _flightHudLayoutState;
+            if (_leftTouchStick != null) _leftTouchStick.userData = _flightHudLayoutState;
+            if (_rightTouchStick != null) _rightTouchStick.userData = _flightHudLayoutState;
+        }
+
+        private void LayoutShortWideTelemetry(VisualElement telemetry, Rect comfort, float height, float touchSize, float actionHeight)
         {
             if (telemetry == null) return;
             var settings = LocalStore.Profile.settings;
@@ -483,8 +624,9 @@ namespace AeroSim
             telemetry.style.display = telemetryHeight >= 48 && (settings.osdAltitude || settings.osdBattery) ? DisplayStyle.Flex : DisplayStyle.None;
             telemetry.style.top = telemetryTop; telemetry.style.bottom = new StyleLength(StyleKeyword.Auto);
             telemetry.style.height = Mathf.Max(48, telemetryHeight); telemetry.style.minHeight = Mathf.Max(48, telemetryHeight);
-            telemetry.style.width = Mathf.Min(360, safeWidth - 32);
-            telemetry.style.left = Mathf.Max(16, (safeWidth - Mathf.Min(360, safeWidth - 32)) * .5f);
+            float telemetryWidth = Mathf.Min(360, comfort.width - 32);
+            telemetry.style.width = telemetryWidth;
+            telemetry.style.left = comfort.center.x - telemetryWidth * .5f;
             telemetry.style.flexWrap = Wrap.NoWrap;
             _designAltitudeMetric.style.display = settings.osdAltitude ? DisplayStyle.Flex : DisplayStyle.None;
             _designBatteryMetric.style.display = settings.osdBattery ? DisplayStyle.Flex : DisplayStyle.None;
@@ -529,52 +671,32 @@ namespace AeroSim
             bool fpv = _config.workspace == "FPV";
             _designFlightClock.style.display = !compact && !fpv && settings.osdTimer && !custom[3] ? DisplayStyle.Flex : DisplayStyle.None;
 
-            float scale = Mathf.Max(.01f, _document.panelSettings.scale);
-            if (Application.isMobilePlatform)
-            {
-                var safe = Screen.safeArea;
-                width -= (Screen.width-safe.width)/scale; height -= (Screen.height-safe.height)/scale;
-            }
+            // width/height already are ContentRect dimensions. Never apply Screen.safeArea twice.
             if (width < 64 || height < 120) return;
+            Rect comfort = _flightHudLayoutState.comfortRect;
             float text = Mathf.Clamp(settings.textScale,1,2);
-            float chipWidth = Mathf.Min(184*text, Mathf.Max(110,width*.3f-32));
+            float chipWidth = Mathf.Min(184*text, Mathf.Max(110,comfort.width*.3f-32));
             float chipHeight = text > 1.1f ? 84 : 60;
             float bottomReserve = text > 1.1f ? 80 : 64;
-            var center = new Rect(width*.3f,height*.31f,width*.4f,height*.38f);
-            var occupied = new List<Rect> { new Rect(0,0,width,88), center, new Rect(0,height-bottomReserve,width,bottomReserve) };
-            if (!compactCustom)
+            var center = new Rect(comfort.x + comfort.width*.3f,height*.31f,comfort.width*.4f,height*.38f);
+            var occupied = new List<Rect> { new Rect(comfort.x,0,comfort.width,88), center, new Rect(comfort.x,height-bottomReserve,comfort.width,bottomReserve) };
+            if (!compactCustom) occupied.Add(_flightHudLayoutState.telemetryRect);
+            foreach (var rectangle in new[] { _flightHudLayoutState.objectiveRect, _flightHudLayoutState.toolsRect,
+                _flightHudLayoutState.guidanceRect, _flightHudLayoutState.radarRect })
+                if (rectangle.width > 0 && rectangle.height > 0) occupied.Add(rectangle);
+            if (_flightHudLayoutState.touchControlsRequested && !_flightHudLayoutState.touchControlsProtected)
             {
-                float available = compact ? width-32 : Mathf.Min(1040,width-760);
-                occupied.Add(new Rect(compact?16:(width-available)/2,compact?96:height-120,Mathf.Max(240,available),compact?Mathf.Max(64,64*text):80));
-            }
-            if (!compact)
-            {
-                if (!fpv)
-                {
-                    bool professional = _config.professional;
-                    occupied.Add(new Rect(professional?width-464:32,professional?108:220,440,Mathf.Max(200,height-380)));
-                    occupied.Add(new Rect(32,height-384,336,336));
-                    if (!professional) occupied.Add(new Rect(width-128,height*.24f,96,426));
-                }
-                if (fpv && settings.osdTimer && !custom[3]) occupied.Add(new Rect(width*.36f,height-200,width*.28f,60));
-                if (!fpv && settings.showControls) occupied.Add(new Rect(width*.3f,100,width*.4f,48*text));
-            }
-            if (_root.ClassListContains("hud-touch"))
-            {
-                float size = Mathf.Clamp(width*.3f-32,44,height<500?80:100);
-                float bottom = (text>1.1f?72:56)+24;
-                float caption = width<480 || text>1.1f ? 0 : 20;
-                occupied.Add(new Rect(16,height-bottom-size,size,size+caption));
-                occupied.Add(new Rect(width-16-size,height-bottom-size,size,size+caption));
+                occupied.Add(_flightHudLayoutState.leftStickEnvelope);
+                occupied.Add(_flightHudLayoutState.rightStickEnvelope);
             }
             bool Fits(Rect rectangle)
             {
-                if (!float.IsFinite(rectangle.x) || !float.IsFinite(rectangle.y) || rectangle.xMin < 16 || rectangle.xMax > width-16 || rectangle.yMin < 96 || rectangle.yMax > height-bottomReserve) return false;
+                if (!float.IsFinite(rectangle.x) || !float.IsFinite(rectangle.y) || rectangle.xMin < comfort.xMin+16 || rectangle.xMax > comfort.xMax-16 || rectangle.yMin < 96 || rectangle.yMax > height-bottomReserve) return false;
                 return !occupied.Any(other => rectangle.Overlaps(other));
             }
             var fallbackSlots = new List<Rect>();
-            var xSlots = new List<float> {16,width-chipWidth-16,width*.3f-chipWidth-8,width*.7f+8};
-            for (float x=16;x+chipWidth<=width-16;x+=chipWidth+8) xSlots.Add(x);
+            var xSlots = new List<float> {comfort.xMin+16,comfort.xMax-chipWidth-16,comfort.x+comfort.width*.3f-chipWidth-8,comfort.x+comfort.width*.7f+8};
+            for (float x=comfort.xMin+16;x+chipWidth<=comfort.xMax-16;x+=chipWidth+8) xSlots.Add(x);
             var ySlots = new List<float> {100,center.yMin-chipHeight-8,center.yMax+8,height-bottomReserve-chipHeight};
             for (float y=100;y+chipHeight<=height-bottomReserve;y+=chipHeight+8) ySlots.Add(y);
             foreach (float y in ySlots.Distinct().OrderBy(value=>value))
@@ -604,7 +726,7 @@ namespace AeroSim
                     continue;
                 }
                 if (metric.parent!=_designOsdLayer) _designOsdLayer.Add(metric);
-                var preferred = new Rect(anchors[i].x*width,anchors[i].y*height,chipWidth,chipHeight);
+                var preferred = new Rect(comfort.x + anchors[i].x*comfort.width,anchors[i].y*height,chipWidth,chipHeight);
                 bool preferredFits = Fits(preferred);
                 var placement = preferred;
                 bool placed = preferredFits;

@@ -399,3 +399,17 @@
 .design-v1.text-expanded .design-range-field .unity-slider__input, .design-v1.text-expanded .design-range-field .design-range-number { height: auto; min-height: 58px; }
 .design-v1.text-expanded .design-range-number .unity-base-text-field__input { height: auto; min-height: 54px; }
 .design-v1.text-expanded .design-range-number .design-range-value, .design-v1.text-expanded .design-range-number .unity-text-element--inner-input-field-component { height: auto; min-height: 46px; }
+
+/* FOV settings reuse product controls while keeping per-view state visually distinct. */
+.fov-settings-panel { min-width: 0; }
+.fov-view-section { margin-top: 12px; margin-bottom: 14px; padding: 16px; background-color: rgb(8, 28, 45); border-width: 1px; border-color: rgb(42, 72, 94); border-radius: 10px; }
+.fov-view-section .panel-title { flex-grow: 1; margin-bottom: 0; }
+.fov-value { color: rgb(66, 211, 244); font-size: 20px; -unity-font-style: bold; margin-left: 12px; }
+.fov-derived { margin-bottom: 8px; }
+.layout-phone .fov-view-section { padding: 10px; }
+.layout-phone .fov-value { width: 100%; margin-left: 0; margin-top: 6px; }
+
+.fov-xr-reason { margin-top: 8px; margin-bottom: 12px; padding: 12px; background-color: rgba(112, 54, 12, 0.45); border-width: 1px; border-color: rgb(242, 152, 69); border-radius: 8px; }
+.fov-undo-toast { flex-direction: row; }
+.fov-undo-toast .toast-label { flex-grow: 1; margin-right: 12px; }
+.fov-undo-toast .action-button { margin: 0; min-height: 36px; }

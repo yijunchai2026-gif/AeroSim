@@ -9,6 +9,25 @@ namespace AeroSim.Domain
 {
     public enum Page { Home, Onboarding, Controller, Academy, FreeFlight, Challenges, Hangar, Tuning, OsdEditor, Dashboard, Catalog, Brief, Preflight, MissionEditor, Instructor, Readiness, Settings, Records, Results, Replay, Report, Flight }
 
+    public static class AeroSimQuality
+    {
+        public const int Low = 0, Medium = 1, High = 2, Ultra = 3;
+        public static readonly string[] Names = { "Low", "Medium", "High", "Ultra" };
+        public static int Normalize(int value) => Mathf.Clamp(value, Low, Ultra);
+        public static string Name(int value) => Names[Normalize(value)];
+        public static int Parse(string value)
+        {
+            int index = Array.IndexOf(Names, value);
+            return index >= 0 ? index : High;
+        }
+    }
+
+    public static class FlightWeather
+    {
+        public static readonly string[] Names = { "Clear", "Overcast", "Rain" };
+        public static bool IsSupported(string value) => Names.Contains(value, StringComparer.OrdinalIgnoreCase);
+    }
+
     [Serializable] public class Calibration
     {
         public string device = "";
@@ -19,6 +38,56 @@ namespace AeroSim.Domain
         public float[] center = new float[4];
         public float[] minimum = { -1, -1, -1, -1 };
         public float[] maximum = { 1, 1, 1, 1 };
+    }
+
+    [Serializable] public sealed class FovViewDefinition
+    {
+        public int schemaVersion;
+        public string viewId;
+        public string displayName;
+        public float minimumDeg;
+        public float maximumDeg;
+        public float defaultDeg;
+        public float[] presetsDeg;
+
+        public FovViewDefinition(int schemaVersion, string viewId, string displayName, float minimumDeg, float maximumDeg, float defaultDeg, params float[] presetsDeg)
+        {
+            this.schemaVersion = schemaVersion;
+            this.viewId = viewId;
+            this.displayName = displayName;
+            this.minimumDeg = minimumDeg;
+            this.maximumDeg = maximumDeg;
+            this.defaultDeg = defaultDeg;
+            this.presetsDeg = presetsDeg;
+        }
+    }
+
+    public static class FovViewDefinitions
+    {
+        public const int CurrentVersion = 1;
+        public static readonly FovViewDefinition[] All =
+        {
+            new(CurrentVersion, "fpv", "FPV / Pilot View", 45, 95, 60, 50, 60, 75),
+            new(CurrentVersion, "near-follow", "Near Follow View", 50, 100, 70, 60, 70, 85),
+            new(CurrentVersion, "cockpit", "Cockpit / Driver View", 35, 85, 55, 45, 55, 70),
+            new(CurrentVersion, "gimbal", "Gimbal Close-up", 30, 65, 45, 35, 45, 55),
+            new(CurrentVersion, "far-follow", "Far Follow View", 45, 95, 65, 55, 65, 80),
+            new(CurrentVersion, "external", "External Observer", 35, 100, 60, 45, 60, 80)
+        };
+
+        public static FovViewDefinition Find(string viewId) => All.FirstOrDefault(value => value.viewId == viewId);
+    }
+
+    [Serializable] public class CameraFovSetting
+    {
+        public int schemaVersion = 1;
+        public int definitionVersion = FovViewDefinitions.CurrentVersion;
+        public string viewId = "";
+        public string axis = "vertical";
+        public float valueDeg;
+        public string source = "default";
+        public float displayAspectAtSave;
+        public string updatedAt = "";
     }
 
     [Serializable] public class UserSettings
@@ -33,6 +102,9 @@ namespace AeroSim.Domain
         public int quality = 2, targetFps = 60;
         public bool highContrast, reducedMotion, showControls = true, captions = true;
         public bool osdSpeed = true, osdAltitude = true, osdTimer = true, osdBattery = true;
+        public List<CameraFovSetting> cameraFov = new();
+        // Read only during migration from the pre-v4 horizontal-FOV profile shape.
+        public float horizontalFov, fovAspect;
         public Vector2 speedPosition = new(.6f, .78f), altitudePosition = new(.23f, .78f), timerPosition = new(.46f, .13f), batteryPosition = new(.78f, .32f);
         public Calibration calibration = new();
     }
@@ -95,7 +167,7 @@ namespace AeroSim.Domain
     [Serializable] public class CourseProgress { public string id; public int bestScore, attempts; }
     [Serializable] public class Profile
     {
-        public int schemaVersion = 3;
+        public int schemaVersion = 4;
         public bool onboarded;
         public string workspace = "Aerial", selectedAircraft = "mini4";
         public string selectedAircraftCatalogVersion = "", selectedAircraftVisualVersion = "", selectedAircraftPhysicsVersion = "";
@@ -111,13 +183,112 @@ namespace AeroSim.Domain
 
     public static class LocalStore
     {
-        private const int CurrentSchemaVersion = 3;
+        private const int CurrentSchemaVersion = 4;
         private const string DefaultAircraftId = "mini4";
+        public const float MinimumVerticalFov = 30f;
+        public const float MaximumVerticalFov = 100f;
         private static string _lastSelectedAircraftId;
         public static string DirectoryPath { get; private set; }
         public static Profile Profile { get; private set; }
         public static bool SelectedAircraftNeedsConfirmation =>
             Profile != null && string.Equals(Profile.selectedAircraftResolution, "fallback", StringComparison.Ordinal);
+
+        public static float DefaultVerticalFov(string viewId) => Definition(viewId).defaultDeg;
+        public static FovViewDefinition Definition(string viewId) => FovViewDefinitions.Find(NormalizeFovViewId(viewId)) ?? FovViewDefinitions.Find("fpv");
+        public static IReadOnlyList<string> FovDiagnostics => _fovDiagnostics;
+        private static readonly List<string> _fovDiagnostics = new();
+
+        public static float GetVerticalFov(string viewId)
+        {
+            var definition = Definition(viewId);
+            if (Profile?.settings == null) return definition.defaultDeg;
+            var setting = Profile.settings.cameraFov?.Find(value => value != null && NormalizeFovViewId(value.viewId) == definition.viewId);
+            return IsValidVerticalFov(definition, setting?.valueDeg ?? float.NaN) ? setting.valueDeg : definition.defaultDeg;
+        }
+
+        public static void SetVerticalFov(string viewId, float valueDeg, string source, float displayAspect)
+        {
+            var definition = Definition(viewId);
+            Profile.settings.cameraFov ??= new List<CameraFovSetting>();
+            var setting = Profile.settings.cameraFov.Find(value => value != null && NormalizeFovViewId(value.viewId) == definition.viewId);
+            if (setting == null)
+            {
+                setting = new CameraFovSetting { viewId = definition.viewId };
+                Profile.settings.cameraFov.Add(setting);
+            }
+            setting.schemaVersion = 1;
+            setting.definitionVersion = definition.schemaVersion;
+            setting.viewId = definition.viewId;
+            setting.axis = "vertical";
+            if (!IsValidVerticalFov(definition, valueDeg))
+            {
+                RecordFovDiagnostic("Invalid vertical FOV for '" + definition.viewId + "'; restored " + definition.defaultDeg + "° default.");
+                valueDeg = definition.defaultDeg;
+                source = "default";
+            }
+            setting.valueDeg = valueDeg;
+            setting.source = string.IsNullOrEmpty(source) ? "custom" : source;
+            setting.displayAspectAtSave = IsFinite(displayAspect) && displayAspect > 0 ? displayAspect : 0;
+            setting.updatedAt = DateTime.UtcNow.ToString("O");
+        }
+
+        public static void ResetVerticalFov(string viewId) => SetVerticalFov(viewId, DefaultVerticalFov(viewId), "default", CurrentAspect());
+        public static void ResetAllVerticalFov()
+        {
+            foreach (var definition in FovViewDefinitions.All) ResetVerticalFov(definition.viewId);
+        }
+
+        public static bool IsValidVerticalFov(string viewId, float value) => IsValidVerticalFov(Definition(viewId), value);
+        public static void RecordFovDiagnostic(string message)
+        {
+            _fovDiagnostics.Add(DateTime.UtcNow.ToString("O") + " " + message);
+            if (_fovDiagnostics.Count > 32) _fovDiagnostics.RemoveAt(0);
+            Debug.LogWarning(message);
+        }
+
+        private static string NormalizeFovViewId(string viewId) => viewId == "chase" ? "near-follow" : viewId;
+        private static float CurrentAspect() => Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f;
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+        private static bool IsValidVerticalFov(FovViewDefinition definition, float value) => IsFinite(value) && value >= definition.minimumDeg && value <= definition.maximumDeg;
+        private static void NormalizeGraphicsSettings() => Profile.settings.quality = AeroSimQuality.Normalize(Profile.settings.quality);
+
+        private static void NormalizeCameraFov()
+        {
+            var settings = Profile.settings;
+            settings.cameraFov ??= new List<CameraFovSetting>();
+            foreach (var legacy in settings.cameraFov.Where(value => value != null && value.viewId == "chase")) legacy.viewId = "near-follow";
+            bool migrateHorizontal = Profile.schemaVersion < 4 && IsFinite(settings.horizontalFov) && settings.horizontalFov > 0 &&
+                IsFinite(settings.fovAspect) && settings.fovAspect > 0;
+            float migrated = migrateHorizontal
+                ? Mathf.Rad2Deg * 2f * Mathf.Atan(Mathf.Tan(settings.horizontalFov * Mathf.Deg2Rad * .5f) / settings.fovAspect)
+                : float.NaN;
+            if (migrateHorizontal) RecordFovDiagnostic("Migrating legacy horizontal FOV using saved aspect " + settings.fovAspect.ToString("F3", CultureInfo.InvariantCulture) + ".");
+            foreach (var definition in FovViewDefinitions.All)
+            {
+                var matches = settings.cameraFov.Where(value => value != null && value.viewId == definition.viewId).ToList();
+                var setting = matches.FirstOrDefault();
+                foreach (var duplicate in matches.Skip(1)) settings.cameraFov.Remove(duplicate);
+                if (setting == null)
+                {
+                    bool validMigration = migrateHorizontal && IsValidVerticalFov(definition, migrated);
+                    SetVerticalFov(definition.viewId, validMigration ? migrated : definition.defaultDeg, validMigration ? "calculated" : "default", validMigration ? settings.fovAspect : CurrentAspect());
+                    continue;
+                }
+                if (!IsValidVerticalFov(definition, setting.valueDeg))
+                {
+                    RecordFovDiagnostic("Stored vertical FOV for '" + definition.viewId + "' is illegal; restoring its default.");
+                    SetVerticalFov(definition.viewId, definition.defaultDeg, "default", CurrentAspect());
+                    continue;
+                }
+                setting.schemaVersion = 1;
+                setting.definitionVersion = definition.schemaVersion;
+                setting.axis = "vertical";
+                if (string.IsNullOrEmpty(setting.source)) setting.source = "custom";
+            }
+            settings.cameraFov.RemoveAll(value => value == null || FovViewDefinitions.Find(value.viewId) == null);
+            settings.horizontalFov = 0;
+            settings.fovAspect = 0;
+        }
 
         private static AircraftProfile FindAvailableAircraft(string value)
         {
@@ -195,13 +366,20 @@ namespace AeroSim.Domain
             try { Profile = File.Exists(path) ? JsonUtility.FromJson<Profile>(File.ReadAllText(path)) : new Profile(); }
             catch (Exception ex) { Debug.LogWarning("Profile recovery: " + ex.Message); Profile = new Profile(); }
             Profile ??= new Profile(); Profile.settings ??= new UserSettings(); Profile.settings.calibration ??= new Calibration();
+            bool persistMigration = Profile.schemaVersion < CurrentSchemaVersion;
+            int storedQuality = Profile.settings.quality;
             Profile.courses ??= new List<CourseProgress>(); Profile.sessions ??= new List<string>(); Profile.missions ??= new List<MissionDefinition>();
             Profile.assignedCourses ??= new List<string>(); Profile.readinessCompleted ??= new List<string>();
+            NormalizeGraphicsSettings();
+            NormalizeCameraFov();
             NormalizeSelectedAircraft();
             if (Profile.missions.Count == 0) Profile.missions.Add(new MissionDefinition());
+            if (persistMigration || storedQuality != Profile.settings.quality) Save();
         }
         public static void Save()
         {
+            NormalizeGraphicsSettings();
+            NormalizeCameraFov();
             NormalizeSelectedAircraft();
             var path = Path.Combine(DirectoryPath, "profile.json");
             File.WriteAllText(path + ".tmp", JsonUtility.ToJson(Profile, true));

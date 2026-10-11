@@ -64,6 +64,7 @@ namespace AeroSim
 
         private void OnDisable()
         {
+            CancelFovEditing();
             CancelTypography();
             ReleaseDesignFlightInputGuard();
             ReleaseDesignEvidenceTextures();
@@ -207,7 +208,7 @@ namespace AeroSim
         private VisualElement BuildHero()
         {
             var hero = Element("hero-card", "card");
-            SetBackground(hero, "Art/DesignV1/CoastHeroV1");
+            SetHeroBackground(hero, "Art/DesignV1/CoastHeroV1");
 
             var shade = new DesignHeroGradient();
             shade.AddToClassList("hero-shade");
@@ -427,14 +428,23 @@ namespace AeroSim
             var width = float.IsNaN(resolvedWidth) || resolvedWidth <= 0 ? Screen.width / scale : resolvedWidth;
             var height = float.IsNaN(resolvedHeight) || resolvedHeight <= 0 ? Screen.height / scale : resolvedHeight;
             bool phone = width < 760 || height < 500;
+            float aspect = width / Mathf.Max(1f, height);
+            bool ultraWide = aspect >= 2f;
+            bool superUltraWide = aspect > 2.8f;
             _root.EnableInClassList("layout-desktop", width >= 1280 && !phone);
             _root.EnableInClassList("layout-tablet", width >= 760 && width < 1280 && !phone);
             _root.EnableInClassList("layout-phone", phone);
+            _root.EnableInClassList("layout-compact", width < 1440 || height < 800);
+            _root.EnableInClassList("layout-standard", width >= 1440 && width < 2200 && !ultraWide);
+            _root.EnableInClassList("layout-large", width >= 2200 && width < 3200 && !ultraWide);
+            _root.EnableInClassList("layout-4k", width >= 3200 && !ultraWide);
+            _root.EnableInClassList("layout-ultrawide", ultraWide && !superUltraWide);
+            _root.EnableInClassList("layout-super-ultrawide", superUltraWide);
             _root.EnableInClassList("text-expanded", LocalStore.Profile.settings.textScale > 1.1f);
             _root.EnableInClassList("layout-narrow", width < 1440 && width >= 760);
             _root.EnableInClassList("layout-wide", width >= 1920);
             _root.EnableInClassList("design-home-reference", _page == Page.Home && _workspace == TrainingWorkspace.Aerial &&
-                width >= 1600 && height >= 900 && LocalStore.Profile.settings.textScale <= 1.1f);
+                width >= 1600 && width < 2200 && aspect < 2f && height >= 900 && LocalStore.Profile.settings.textScale <= 1.1f);
             ApplyTypography();
             LayoutDesignPages(width, height);
             if (_page == Page.Flight || _page == Page.Replay)

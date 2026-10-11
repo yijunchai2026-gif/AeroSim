@@ -23,6 +23,68 @@ namespace AeroSim
         private string _academyFilter = "All";
         private int _onboardStep, _calibrationStep;
         private bool _calibrating;
+
+        private sealed class HeroArtMetadata
+        {
+            public readonly Vector2 Focus;
+            public readonly Rect SafeArea;
+
+            public HeroArtMetadata(Vector2 focus)
+            {
+                Focus = focus;
+                SafeArea = new Rect(.2f, .15f, .6f, .7f);
+            }
+        }
+
+        // Key art is rendered as a focus-aware cover until it reaches one native source pixel
+        // per device pixel. Larger stages keep the art native-sized and extend the atmosphere
+        // with the stage colour instead of softening the bitmap on 4K and ultra-wide displays.
+        private static void SetHeroBackground(VisualElement element, string resourcePath)
+        {
+            var texture = Resources.Load<Texture2D>(resourcePath);
+            if (texture == null) return;
+            var focus = resourcePath.EndsWith("CoastHeroV1", StringComparison.Ordinal) ? new Vector2(.62f, .47f) :
+                resourcePath.EndsWith("FpvIndustrialSunset", StringComparison.Ordinal) ? new Vector2(.52f, .46f) : new Vector2(.5f, .5f);
+            var art = element.Q<Image>("responsive-art-backdrop");
+            if (art == null)
+            {
+                art = new Image { name = "responsive-art-backdrop", scaleMode = ScaleMode.StretchToFill, pickingMode = PickingMode.Ignore };
+                art.AddToClassList("responsive-art-backdrop");
+                element.Insert(0, art);
+                element.RegisterCallback<GeometryChangedEvent>(_ => LayoutHeroBackground(element, art));
+            }
+            art.image = texture;
+            art.userData = new HeroArtMetadata(focus);
+            element.AddToClassList("focus-safe-hero");
+            element.schedule.Execute(() => LayoutHeroBackground(element, art));
+        }
+
+        private static void LayoutHeroBackground(VisualElement element, Image art)
+        {
+            if (!(art.image is Texture texture) || !(art.userData is HeroArtMetadata metadata)) return;
+            var bounds = element.contentRect;
+            if (bounds.width <= 1 || bounds.height <= 1 || float.IsNaN(bounds.width) || float.IsNaN(bounds.height)) return;
+            float panelWidth = element.panel == null ? Screen.width : element.panel.visualTree.resolvedStyle.width;
+            float pixelsPerPoint = float.IsNaN(panelWidth) || panelWidth <= 0 ? 1f : Mathf.Max(1f, Screen.width / panelWidth);
+            float nativeWidth = texture.width / pixelsPerPoint;
+            float nativeHeight = texture.height / pixelsPerPoint;
+            float coverScale = Mathf.Max(bounds.width / nativeWidth, bounds.height / nativeHeight);
+            float scale = Mathf.Min(1f, coverScale);
+            float drawWidth = nativeWidth * scale;
+            float drawHeight = nativeHeight * scale;
+            Vector2 safeCenter = metadata.SafeArea.center;
+            float left = drawWidth >= bounds.width
+                ? Mathf.Clamp(bounds.width * safeCenter.x - drawWidth * metadata.Focus.x, bounds.width - drawWidth, 0)
+                : (bounds.width - drawWidth) * .5f;
+            float top = drawHeight >= bounds.height
+                ? Mathf.Clamp(bounds.height * safeCenter.y - drawHeight * metadata.Focus.y, bounds.height - drawHeight, 0)
+                : (bounds.height - drawHeight) * .5f;
+            art.style.left = left;
+            art.style.top = top;
+            art.style.width = drawWidth;
+            art.style.height = drawHeight;
+            element.EnableInClassList("native-art-limited", coverScale > 1.001f);
+        }
         private Label[] _axisLabels;
         private ProgressBar[] _axisBars;
         private Vector4 _center, _minimum, _maximum;
@@ -39,6 +101,7 @@ namespace AeroSim
 
         public void ShowPage(Page page)
         {
+            if (_fovDraft != null) CancelFovEditing();
             ReleaseDesignReplayView();
             ReleaseHangarPreviews();
             if (_sim != null && (page != Page.Flight && page != Page.Replay)) _sim.Stop();
@@ -302,7 +365,7 @@ namespace AeroSim
             Choice(card, "Aircraft", AircraftCatalog.Names, config.aircraft, v => { config.aircraft = v; LocalStore.Profile.selectedAircraft = AircraftCatalog.Resolve(v).Id; LocalStore.Save(); });
             card.Add(ActionButton("Browse Aircraft in Hangar", () => ShowPage(Page.Hangar)));
             Choice(card, "Flight mode", new[] { "Normal", "Sport", "Manual" }, config.mode, v => config.mode = v);
-            Choice(card, "Weather", new[] { "Clear", "Overcast" }, config.weather, v => config.weather = v);
+            Choice(card, "Weather", FlightWeather.Names, config.weather, v => config.weather = v);
             Range(card, "Wind (mph)", 0, 25, config.windMph, v => config.windMph = v);
             Range(card, "Time of day (24h)", 6, 20, config.timeOfDay, v => config.timeOfDay = v);
             Range(card, "RTH altitude (m)", 10, 80, config.rthAltitude, v => config.rthAltitude = v);
@@ -433,7 +496,7 @@ namespace AeroSim
         {
             var s = LocalStore.Profile.settings;
             Application.targetFrameRate = s.targetFps;
-            QualitySettings.vSyncCount = 0; QualitySettings.SetQualityLevel(Mathf.RoundToInt(Mathf.Clamp(s.quality,0,2) * (QualitySettings.names.Length-1) / 2f));
+            QualitySettings.vSyncCount = 0; QualitySettings.SetQualityLevel(Mathf.RoundToInt(AeroSimQuality.Normalize(s.quality) * (QualitySettings.names.Length-1) / 3f));
             _root.EnableInClassList("high-contrast", s.highContrast);
             _root.RemoveFromClassList("large-text");
             RefreshUiPreferences();
@@ -447,7 +510,7 @@ namespace AeroSim
             Field(p, "Pilot name", settings.pilotName, v => settings.pilotName = v);
             Choice(p, "Units", new[] { "U.S. Customary", "Metric" }, settings.units, v => settings.units = v);
             Choice(p, "Frame-rate limit", new[] { "30", "60", "120" }, settings.targetFps.ToString(), v => settings.targetFps = int.Parse(v));
-            Choice(p, "Quality", new[] { "Low", "Medium", "High" }, new[] { "Low", "Medium", "High" }[Mathf.Clamp(settings.quality, 0, 2)], v => settings.quality = v == "Low" ? 0 : v == "Medium" ? 1 : 2);
+            Choice(p, "Quality", AeroSimQuality.Names, AeroSimQuality.Name(settings.quality), v => settings.quality = AeroSimQuality.Parse(v));
             Range(p, "Motor sound volume", 0, 1, settings.volume, v => settings.volume = v);
             Check(p, "High-contrast interface", settings.highContrast, v => settings.highContrast = v);
             Choice(p, "UI Scale", new[] { "Auto", "80%", "90%", "100%", "110%", "125%", "150%" }, settings.uiScale ?? "Auto", v => { settings.uiScale = v; SaveUiPreferences(); });

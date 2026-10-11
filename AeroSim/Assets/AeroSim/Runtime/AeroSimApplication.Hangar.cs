@@ -24,11 +24,19 @@ namespace AeroSim
 
             var s = Canvas("Aircraft / Hangar", "Choose the right aircraft for your next flight.",
                 "Browse installed runtime aircraft by Aerial, FPV, or Professional use. Search matches names, families, capabilities, and uses.");
+            s.AddToClassList("design-page");
+            s.AddToClassList("design-hangar-page");
             s.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             s.verticalScrollerVisibility = ScrollerVisibility.Auto;
 
             var summary = Panel("Selected · " + selected.Name,
                 AircraftPurpose(selected) + " · Selection is saved on this device and used by Free Flight, Academy, Challenges, and Missions.");
+            summary.AddToClassList("hangar-selected-hero");
+            var selectedPreview = RenderAircraftPreview(selected);
+            _hangarPreviews.Add(selectedPreview);
+            var selectedImage = new Image { image = selectedPreview, scaleMode = ScaleMode.ScaleToFit };
+            selectedImage.AddToClassList("hangar-selected-preview");
+            summary.Insert(0, selectedImage);
             var flySelected = ActionButton("Fly Selected Aircraft", () => ShowPage(Page.FreeFlight), true);
             flySelected.SetEnabled(selected.Status == AircraftCatalogStatus.Runtime && selected.IsSelectable);
             summary.Add(Row(flySelected, ActionButton("Open Tuning", () => ShowPage(Page.Tuning))));
@@ -156,11 +164,16 @@ namespace AeroSim
             grid.RegisterCallback<GeometryChangedEvent>(e =>
             {
                 var width = e.newRect.width;
-                var cardWidth = width < 720 ? 100f : width < 1100 ? 48f : width < 1500 ? 31.5f : 23.5f;
+                float cardWidth;
+                if (width < 640) cardWidth = 100f;
+                else if (width < 1440) cardWidth = 48.5f;
+                else if (width < 2200) cardWidth = 32f;
+                else cardWidth = 24f;
                 foreach (var pair in cards)
                 {
                     pair.Value.style.width = new Length(cardWidth, LengthUnit.Percent);
-                    pair.Value.style.maxWidth = 460;
+                    pair.Value.style.minWidth = width < 640 ? 0 : 280;
+                    pair.Value.style.maxWidth = 480;
                 }
             });
 

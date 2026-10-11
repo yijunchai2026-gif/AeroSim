@@ -30,11 +30,13 @@ namespace AeroSim.Diagnostics
             private readonly List<string> _results = new();
             private int _failures;
             private int _runtimeErrors;
+            private int _particleVelocityWarnings;
             private void OnEnable()=>Application.logMessageReceived+=TrackError;
             private void OnDisable()=>Application.logMessageReceived-=TrackError;
             private void TrackError(string condition,string trace,LogType type)
             {
                 if(type==LogType.Exception||type==LogType.Error||type==LogType.Assert)_runtimeErrors++;
+                if(type==LogType.Warning && condition.Contains("Particle Velocity curves must all be in the same mode")) _particleVelocityWarnings++;
             }
             private string Argument(string key)
             {
@@ -43,6 +45,52 @@ namespace AeroSim.Diagnostics
             private void Check(string name, bool passed)
             {
                 var result = (passed ? "PASS " : "FAIL ") + name; _results.Add(result); Debug.Log(result); if (!passed) _failures++;
+            }
+            private static bool IsVisible(VisualElement element)
+            {
+                if (element == null || element.worldBound.width <= 0 || element.worldBound.height <= 0) return false;
+                for (var node = element; node != null; node = node.parent)
+                    if (node.resolvedStyle.display == DisplayStyle.None || node.resolvedStyle.visibility == Visibility.Hidden) return false;
+                return true;
+            }
+            private static bool Inside(Rect inner, Rect outer, float tolerance = 1) => inner.xMin >= outer.xMin - tolerance &&
+                inner.xMax <= outer.xMax + tolerance && inner.yMin >= outer.yMin - tolerance && inner.yMax <= outer.yMax + tolerance;
+            private static bool Overlaps(Rect a, Rect b) => Mathf.Min(a.xMax,b.xMax)-Mathf.Max(a.xMin,b.xMin)>1 &&
+                Mathf.Min(a.yMax,b.yMax)-Mathf.Max(a.yMin,b.yMin)>1;
+            private void AuditFlightHudGeometry(string label)
+            {
+                var root = _app.GetComponent<UIDocument>().rootVisualElement;
+                var hud = root.Q<VisualElement>(className:"flight-hud");
+                var state = _app.FlightHudLayoutState;
+                if (hud == null || state == null) { Check(label+" HUD geometry state available",false); return; }
+                var comfort = new Rect(hud.worldBound.x + state.comfortRect.x, hud.worldBound.y + state.comfortRect.y,
+                    state.comfortRect.width, state.comfortRect.height);
+                var blocks = new List<VisualElement>();
+                foreach (var className in new[] { "v1-flight-map", "touch-stick", "v1-flight-telemetry", "flight-guidance", "v1-camera-tools", "v1-objective-scroll", "v1-custom-osd-chip" })
+                    blocks.AddRange(root.Query<VisualElement>(className:className).ToList().Where(IsVisible));
+                Debug.Log($"HUD_LAYOUT {label} status={state.status} strategy={state.radarStrategy} content={state.contentRect} comfort={comfort}");
+                foreach (var block in blocks)
+                {
+                    string target = string.IsNullOrEmpty(block.name) ? string.Join(".",block.GetClasses()) : block.name;
+                    Debug.Log($"HUD_RECT {label} {target}={block.worldBound}");
+                    Check(label+" "+target+" inside ComfortRect",Inside(block.worldBound,comfort));
+                }
+                var guidance = root.Q<VisualElement>(className:"flight-guidance");
+                var telemetry = root.Q<VisualElement>(className:"v1-flight-telemetry");
+                bool shortWide = state.contentRect.height < 520 || state.contentRect.width / Mathf.Max(1,state.contentRect.height) > 1.9f;
+                Check(label+" short-wide guidance is hidden or separated",!shortWide || !IsVisible(guidance) || !IsVisible(telemetry) || !Overlaps(guidance.worldBound,telemetry.worldBound));
+                var texts = new HashSet<TextElement>();
+                foreach (var block in blocks) foreach (var text in block.Query<TextElement>().ToList())
+                    if (IsVisible(text) && !string.IsNullOrWhiteSpace(text.text)) texts.Add(text);
+                var textList = texts.ToList();
+                for (int i=0;i<textList.Count;i++) for (int j=i+1;j<textList.Count;j++)
+                    Check(label+" no text overlap: "+textList[i].text+" / "+textList[j].text,!Overlaps(textList[i].worldBound,textList[j].worldBound));
+                for (int i=0;i<blocks.Count;i++) for (int j=i+1;j<blocks.Count;j++)
+                {
+                    string a = string.IsNullOrEmpty(blocks[i].name) ? string.Join(".",blocks[i].GetClasses()) : blocks[i].name;
+                    string b = string.IsNullOrEmpty(blocks[j].name) ? string.Join(".",blocks[j].GetClasses()) : blocks[j].name;
+                    Check(label+" no HUD overlap: "+a+" / "+b,!Overlaps(blocks[i].worldBound,blocks[j].worldBound));
+                }
             }
             private IEnumerator Start()
             {
@@ -127,12 +175,145 @@ namespace AeroSim.Diagnostics
                     !string.IsNullOrEmpty(LocalStore.Profile.selectedAircraftCatalogVersion) &&
                     !string.IsNullOrEmpty(LocalStore.Profile.selectedAircraftVisualVersion) &&
                     !string.IsNullOrEmpty(LocalStore.Profile.selectedAircraftPhysicsVersion));
+
+                var definitions = FovViewDefinitions.All;
+                var expectedFovContracts = new Dictionary<string, Vector3>
+                {
+                    { "fpv", new Vector3(45,95,60) }, { "cockpit", new Vector3(35,85,55) },
+                    { "gimbal", new Vector3(30,65,45) }, { "near-follow", new Vector3(50,100,70) },
+                    { "far-follow", new Vector3(45,95,65) }, { "external", new Vector3(35,100,60) }
+                };
+                var expectedFovPresets = new Dictionary<string, float[]>
+                {
+                    { "fpv", new[] { 50f,60f,75f } }, { "cockpit", new[] { 45f,55f,70f } },
+                    { "gimbal", new[] { 35f,45f,55f } }, { "near-follow", new[] { 60f,70f,85f } },
+                    { "far-follow", new[] { 55f,65f,80f } }, { "external", new[] { 45f,60f,80f } }
+                };
+                Check("FOV has six versioned view definitions with fixed PRD boundaries",
+                    definitions.Length == 6 && definitions.All(value => value.schemaVersion == FovViewDefinitions.CurrentVersion) &&
+                    definitions.Select(value => value.viewId).Distinct().Count() == 6 &&
+                    definitions.All(value => expectedFovContracts.ContainsKey(value.viewId) &&
+                        Mathf.Approximately(value.minimumDeg, expectedFovContracts[value.viewId].x) &&
+                        Mathf.Approximately(value.maximumDeg, expectedFovContracts[value.viewId].y) &&
+                        Mathf.Approximately(value.defaultDeg, expectedFovContracts[value.viewId].z) &&
+                        value.presetsDeg.SequenceEqual(expectedFovPresets[value.viewId])));
+                bool formulaValid = true;
+                foreach (float vertical in new[] { 30f, 35f, 45f, 60f, 80f, 100f })
+                    foreach (float aspect in new[] { 16f / 9f, 21f / 9f, 32f / 9f })
+                    {
+                        float horizontal = FlightSimulator.VerticalToHorizontalFov(vertical, aspect);
+                        float restored = 2f * Mathf.Atan(Mathf.Tan(horizontal * Mathf.Deg2Rad * .5f) / aspect) * Mathf.Rad2Deg;
+                        formulaValid &= Mathf.Abs(restored - vertical) <= .1f;
+                    }
+                Check("FOV vertical-horizontal formula round-trips across supported aspects", formulaValid);
+
+                var originalFov = definitions.ToDictionary(value => value.viewId, value => LocalStore.GetVerticalFov(value.viewId));
+                for (int i = 0; i < definitions.Length; i++)
+                    LocalStore.SetVerticalFov(definitions[i].viewId, definitions[i].presetsDeg[i % 3], "preset", 16f / 9f);
+                LocalStore.Save();
+                var isolatedFov = definitions.ToDictionary(value => value.viewId, value => LocalStore.GetVerticalFov(value.viewId));
+                float untouchedCockpit = isolatedFov["cockpit"];
+                LocalStore.SetVerticalFov("fpv", definitions.First(value => value.viewId == "fpv").minimumDeg, "custom", 16f / 9f);
+                Check("Six FOV views persist independently without cross-talk",
+                    definitions.All(value => Mathf.Approximately(isolatedFov[value.viewId], value.presetsDeg[Array.IndexOf(definitions, value) % 3])) &&
+                    Mathf.Approximately(LocalStore.GetVerticalFov("cockpit"), untouchedCockpit));
+
+                LocalStore.Profile.schemaVersion = 3;
+                LocalStore.Profile.settings.cameraFov.Clear();
+                LocalStore.Profile.settings.horizontalFov = 90;
+                LocalStore.Profile.settings.fovAspect = 16f / 9f;
+                LocalStore.Save();
+                float expectedMigrated = 2f * Mathf.Atan(Mathf.Tan(45f * Mathf.Deg2Rad) / (16f / 9f)) * Mathf.Rad2Deg;
+                Check("Legacy horizontal FOV migrates once into six vertical records",
+                    LocalStore.Profile.schemaVersion == 4 && LocalStore.Profile.settings.cameraFov.Count == 6 &&
+                    definitions.All(value => Mathf.Abs(LocalStore.GetVerticalFov(value.viewId) - expectedMigrated) <= .1f) &&
+                    LocalStore.Profile.settings.horizontalFov == 0 && LocalStore.Profile.settings.fovAspect == 0);
+
+                int diagnosticsBeforeInvalid = LocalStore.FovDiagnostics.Count;
+                LocalStore.Profile.settings.cameraFov.Find(value => value.viewId == "fpv").valueDeg = float.NaN;
+                LocalStore.Profile.settings.cameraFov.Find(value => value.viewId == "near-follow").valueDeg = 1000;
+                LocalStore.Save();
+                Check("Illegal FOV values recover per-view defaults with runtime diagnostics",
+                    Mathf.Approximately(LocalStore.GetVerticalFov("fpv"), LocalStore.DefaultVerticalFov("fpv")) &&
+                    Mathf.Approximately(LocalStore.GetVerticalFov("near-follow"), LocalStore.DefaultVerticalFov("near-follow")) &&
+                    LocalStore.FovDiagnostics.Count >= diagnosticsBeforeInvalid + 2);
+
+                foreach (var definition in definitions) LocalStore.SetVerticalFov(definition.viewId, originalFov[definition.viewId], "custom", 16f / 9f);
+                LocalStore.Save();
+                _app.DiagnosticBeginFovEdit(); _app.DiagnosticSetFovDraft("cockpit", definitions.First(value => value.viewId == "cockpit").presetsDeg[2]); _app.DiagnosticCancelFovEdit();
+                Check("FOV Cancel restores the six-view opening snapshot", definitions.All(value => Mathf.Approximately(LocalStore.GetVerticalFov(value.viewId), originalFov[value.viewId])));
+                _app.DiagnosticBeginFovEdit();
+                foreach (var definition in definitions) _app.DiagnosticSetFovDraft(definition.viewId, definition.presetsDeg[2]);
+                _app.DiagnosticApplyFovEdit();
+                bool appliedAll = definitions.All(value => Mathf.Approximately(LocalStore.GetVerticalFov(value.viewId), value.presetsDeg[2]));
+                bool undoSucceeded = _app.UndoLastFovApply();
+                Check("FOV Apply persists six values and 10-second Undo restores all", appliedAll && undoSucceeded && definitions.All(value => Mathf.Approximately(LocalStore.GetVerticalFov(value.viewId), originalFov[value.viewId])));
+                _app.DiagnosticBeginFovEdit(); _app.DiagnosticSetFovDraft("external", definitions.First(value => value.viewId == "external").presetsDeg[0]); _app.DiagnosticApplyFovEdit(); _app.DiagnosticExpireFovUndo();
+                Check("FOV Undo expires after its 10-second window", !_app.UndoLastFovApply());
+                foreach (var definition in definitions) LocalStore.SetVerticalFov(definition.viewId, originalFov[definition.viewId], "custom", 16f / 9f);
+                LocalStore.Save();
+
+                var xrProbe = AeroSimApplication.FovXrActiveProbe;
+                AeroSimApplication.FovXrActiveProbe = () => true;
+                var xrPanel = _app.DiagnosticBuildFovPanel();
+                Check("Active XR runtime disables FOV controls and displays ownership reason",
+                    xrPanel.Q<Label>(className: "fov-xr-reason") != null &&
+                    xrPanel.Query<VisualElement>(className: "fov-view-section").ToList().All(section => !section.enabledInHierarchy) &&
+                    xrPanel.Q<Button>("action-apply-fov") != null && !xrPanel.Q<Button>("action-apply-fov").enabledInHierarchy);
+                float xrBefore = LocalStore.GetVerticalFov("fpv");
+                _app.DiagnosticBeginFovEdit(); _app.DiagnosticSetFovDraft("fpv", definitions.First(value => value.viewId == "fpv").presetsDeg[2]); _app.DiagnosticApplyFovEdit();
+                Check("Active XR runtime blocks desktop FOV Apply", AeroSimApplication.IsFovXrControlled && Mathf.Approximately(LocalStore.GetVerticalFov("fpv"), xrBefore));
+                _app.DiagnosticCancelFovEdit(); AeroSimApplication.FovXrActiveProbe = xrProbe;
+
                 foreach(var name in new[]{"meadow-grass-v2","coastal-rock-v2","aircraft-shell-v2","evergreen-needles-v2"})
                     Check("Art texture bundled: "+name, Resources.Load<Texture2D>("Art/MaterialsV2/"+name)!=null);
-                foreach(var name in new[]{"TrainingSurface","LandscapeSurface","Atmosphere","OceanSurface","RotorBlur","NeedleFoliage","IndustrialSurfaceV1","RiverSurfaceV1"})
+                foreach(var name in new[]{"TrainingSurface","LandscapeSurface","Atmosphere","OceanSurface","RotorBlur","NeedleFoliage","IndustrialSurfaceV1","RiverSurfaceV1","RainStreak"})
                 {
                     var shader=Resources.Load<Shader>(name);Check("Art shader supported: "+name,shader!=null&&shader.isSupported);
                 }
+
+                _app.ShowPage(Page.FreeFlight); yield return null; yield return null;
+                var weatherChoice = _app.GetComponent<UIDocument>().rootVisualElement.Query<DropdownField>().ToList().FirstOrDefault(field => field.label == "Weather");
+                Check("Free Flight weather UI exposes Clear, Overcast and Rain", weatherChoice != null && FlightWeather.Names.All(weatherChoice.choices.Contains));
+                Check("Weather contract contains exactly three deterministic states", FlightWeather.Names.SequenceEqual(new[] { "Clear", "Overcast", "Rain" }));
+
+                int originalQuality = LocalStore.Profile.settings.quality;
+                bool fourQualityContracts = AeroSimQuality.Names.SequenceEqual(new[] { "Low", "Medium", "High", "Ultra" });
+                for (int quality=0; quality<AeroSimQuality.Names.Length; quality++)
+                {
+                    LocalStore.Profile.settings.quality=quality; LocalStore.Save(); LocalStore.Initialize();
+                    fourQualityContracts &= LocalStore.Profile.settings.quality==quality && AeroSimQuality.Name(quality)==AeroSimQuality.Names[quality];
+                    _app.StartFlight(new FlightConfig { environment="Pacific Coast",weather="Rain",windMph=8,title="QA · Rain · "+AeroSimQuality.Name(quality) });
+                    yield return null; yield return null;
+                    var qualitySim=_app.Simulator;
+                    bool highDetail=qualitySim.EnvironmentKeywordActive("AEROSIM_LANDSCAPE_DETAIL") && qualitySim.EnvironmentKeywordActive("AEROSIM_WATER_HIGH");
+                    bool ultraDetail=qualitySim.EnvironmentKeywordActive("AEROSIM_LANDSCAPE_ULTRA") && qualitySim.EnvironmentKeywordActive("AEROSIM_WATER_ULTRA") && qualitySim.EnvironmentKeywordActive("AEROSIM_SKY_ULTRA");
+                    bool levelContract=qualitySim.EnvironmentQuality==quality && qualitySim.Config.weather=="Rain" && qualitySim.Record.config.weather=="Rain" &&
+                        qualitySim.RainVisualActive==(quality>AeroSimQuality.Low) && highDetail==(quality>=AeroSimQuality.High) && ultraDetail==(quality==AeroSimQuality.Ultra) &&
+                        (quality!=AeroSimQuality.Low || !qualitySim.View.allowMSAA) && (quality!=AeroSimQuality.Ultra || qualitySim.View.farClipPlane>=1750);
+                    Check("Rain rendering contract: "+AeroSimQuality.Name(quality),levelContract);
+                    if (quality>AeroSimQuality.Low)
+                    {
+                        Check("Rain particles play: "+AeroSimQuality.Name(quality),qualitySim.RainParticlesPlaying);
+                        Check("Rain velocity curves share mode and preserve wind/downfall direction: "+AeroSimQuality.Name(quality),
+                            qualitySim.RainVelocityCurvesConsistent && qualitySim.RainVelocityDirectionValid);
+                    }
+                    fourQualityContracts &= levelContract;
+                    if (quality==AeroSimQuality.Ultra)
+                    {
+                        var rainRecord=qualitySim.Record;
+                        rainRecord.frames.Add(new TelemetryFrame { time=0,position=qualitySim.Position,rotation=qualitySim.Body.rotation.eulerAngles,battery=qualitySim.Battery });
+                        _app.BeginReplay(rainRecord); yield return null;
+                        bool replayWeather=_app.Simulator.ReplayMode && _app.Simulator.Config.weather=="Rain" && _app.Simulator.Record.config.weather=="Rain";
+                        Check("Rain config and record survive replay reconstruction",replayWeather); fourQualityContracts &= replayWeather;
+                    }
+                }
+                Check("Particle velocity mode warning is absent", _particleVelocityWarnings==0);
+                LocalStore.Profile.settings.quality=99; LocalStore.Save(); fourQualityContracts &= LocalStore.Profile.settings.quality==AeroSimQuality.Ultra;
+                LocalStore.Profile.settings.quality=-7; LocalStore.Save(); fourQualityContracts &= LocalStore.Profile.settings.quality==AeroSimQuality.Low;
+                Check("Four quality levels persist and drive distinct rendering contracts", fourQualityContracts);
+                LocalStore.Profile.settings.quality=originalQuality; LocalStore.Save(); LocalStore.Initialize(); _app.ShowPage(Page.Home); yield return null;
+
                 _keyboard = InputSystem.AddDevice<Keyboard>("AeroSimTestKeyboard"); _mouse = InputSystem.AddDevice<Mouse>("AeroSimTestMouse");
                 foreach (Page page in Enum.GetValues(typeof(Page)))
                 {
@@ -143,6 +324,7 @@ namespace AeroSim.Diagnostics
                 _app.ShowPage(Page.FreeFlight); yield return null; yield return null;
                 yield return Click("Launch Free Flight"); Check("Pointer click launches real flight", _app.CurrentPage == Page.Flight);
                 if (_app.CurrentPage != Page.Flight) _app.StartFlight(new FlightConfig());
+                yield return null; yield return null; AuditFlightHudGeometry("Smoke Flight");
                 var flightRoot = _app.GetComponent<UIDocument>().rootVisualElement;
                 Check("Flight exposes left and right touch controls",
                     flightRoot.Q<VisualElement>(className: "stick-left") != null &&
@@ -150,6 +332,34 @@ namespace AeroSim.Diagnostics
                     flightRoot.Query<VisualElement>(className: "touch-stick").ToList().Count >= 2);
                 Check("Touch pointer owner contract rejects third and cross-stick pointers", _app.RunTouchPointerContractDiagnostic());
                 var sim = _app.Simulator;
+                var persistedBeforeCameraPreview = definitions.ToDictionary(value => value.viewId, value => LocalStore.GetVerticalFov(value.viewId));
+                var cameraPositions = new List<Vector3>();
+                var cameraRotations = new List<Quaternion>();
+                bool sixViewsSwitchInOneFrame = true;
+                foreach (var definition in definitions)
+                {
+                    float previewFov = definition.presetsDeg[2];
+                    bool switched = sim.PreviewCameraView(definition.viewId, previewFov);
+                    yield return null;
+                    bool distinctPose = true;
+                    for (int i = 0; i < cameraPositions.Count; i++)
+                        distinctPose &= Vector3.Distance(sim.View.transform.position, cameraPositions[i]) > .001f ||
+                            Quaternion.Angle(sim.View.transform.rotation, cameraRotations[i]) > .01f;
+                    sixViewsSwitchInOneFrame &= switched && sim.ActiveFovViewId == definition.viewId &&
+                        Mathf.Approximately(sim.View.fieldOfView, previewFov) && distinctPose;
+                    cameraPositions.Add(sim.View.transform.position); cameraRotations.Add(sim.View.transform.rotation);
+                }
+                bool previewDidNotCrossWrite = definitions.All(value => Mathf.Approximately(LocalStore.GetVerticalFov(value.viewId), persistedBeforeCameraPreview[value.viewId]));
+                Check("All six camera views switch pose/viewId/FOV within one frame without persistence cross-talk", sixViewsSwitchInOneFrame && previewDidNotCrossWrite);
+
+                sim.SetCameraView("near-follow");
+                Vector3 openingCameraPosition = sim.View.transform.position; Quaternion openingCameraRotation = sim.View.transform.rotation;
+                _app.DiagnosticBeginFovEdit(); sim.PreviewCameraView("external", definitions.First(value => value.viewId == "external").presetsDeg[0]);
+                _app.DiagnosticCancelFovEdit(); yield return null;
+                Check("FOV Cancel restores opening camera view and pose snapshot",
+                    sim.ActiveFovViewId == "near-follow" && Vector3.Distance(sim.View.transform.position, openingCameraPosition) < .001f &&
+                    Quaternion.Angle(sim.View.transform.rotation, openingCameraRotation) < .01f &&
+                    Mathf.Approximately(sim.View.fieldOfView, persistedBeforeCameraPreview["near-follow"]));
                 InputSystem.QueueStateEvent(_keyboard, new KeyboardState(Key.R)); yield return new WaitForSeconds(1.5f);
                 InputSystem.QueueStateEvent(_keyboard, new KeyboardState()); yield return null;
                 Check("Keyboard throttle moves aircraft", sim.Position.y > 4);
@@ -299,12 +509,12 @@ namespace AeroSim.Diagnostics
                 _app.ChangeWorkspace("Professional");
                 foreach (var page in new[] { Page.Home, Page.Catalog, Page.MissionEditor, Page.Instructor, Page.Brief, Page.Preflight }) { _app.PreparePreview(page); yield return null; yield return null; yield return Capture(Path.Combine(dir, "professional-" + page + ".png")); }
                 _app.StartFlight(new FlightConfig { title="Pacific Coast Practice", objective="Pass through the six highlighted route gates in order.", task = "gates", environment = "Pacific Coast" });
-                _app.Simulator.Body.position = new Vector3(0, 8, 10); _app.Simulator.Pause(true); yield return new WaitForSeconds(.4f); yield return Capture(Path.Combine(dir, "aerial-Flight.png"));
+                _app.Simulator.Body.position = new Vector3(0, 8, 10); _app.Simulator.Pause(true); yield return new WaitForSeconds(.4f); AuditFlightHudGeometry("Aerial Flight"); yield return Capture(Path.Combine(dir, "aerial-Flight.png"));
                 _app.Simulator.Pause(false); yield return Click("Pause"); yield return Capture(Path.Combine(dir,"aerial-Pause.png"));
                 _app.StartFlight(new FlightConfig { workspace="FPV", task="gates", mode="Manual", environment="Desert Range", aircraft="5-inch Racer" });
-                _app.Simulator.Body.position=new Vector3(0,8,10); _app.Simulator.Pause(true); yield return new WaitForSeconds(.4f); yield return Capture(Path.Combine(dir,"fpv-Flight.png"));
+                _app.Simulator.Body.position=new Vector3(0,8,10); _app.Simulator.Pause(true); yield return new WaitForSeconds(.4f); AuditFlightHudGeometry("FPV Flight"); yield return Capture(Path.Combine(dir,"fpv-Flight.png"));
                 _app.StartFlight(new FlightConfig { workspace="Professional", professional=true, task="inspection", environment="City Park", mission=new MissionDefinition() });
-                _app.Simulator.Body.position=new Vector3(0,12,15); _app.Simulator.Pause(true); yield return new WaitForSeconds(.4f); yield return Capture(Path.Combine(dir,"professional-Flight.png"));
+                _app.Simulator.Body.position=new Vector3(0,12,15); _app.Simulator.Pause(true); yield return new WaitForSeconds(.4f); AuditFlightHudGeometry("Professional Flight"); yield return Capture(Path.Combine(dir,"professional-Flight.png"));
                 var record = LocalStore.Sessions().FirstOrDefault();
                 if (record != null) { _app.BeginReplay(record); _app.Simulator.Seek(record.duration * .5f); yield return new WaitForSeconds(.3f); yield return Capture(Path.Combine(dir, "aerial-Replay.png")); }
                 _app.ShowPage(Page.Home);
@@ -361,6 +571,27 @@ namespace AeroSim.Diagnostics
                         Check("Four integrated prop guards: "+profile.Id,nodes.Count(n=>n.name=="Integrated prop guard")==4);
                     Check("No unsupported aircraft materials: "+profile.Id,model.GetComponentsInChildren<Renderer>().All(r=>r.sharedMaterial!=null&&r.sharedMaterial.shader.isSupported));
                     Check("Aircraft shared material budget is six or fewer: "+profile.Id,model.DistinctSharedMaterialCount<=6);
+                    string visualBudgetReason;
+                    var visualBudgetPass=model.ValidateVisualBudget(out visualBudgetReason);
+                    var quality=model.GetQualityReport();
+                    Check("Aircraft formal visual budget: "+profile.Id+
+                        (visualBudgetPass?"":" · "+visualBudgetReason),visualBudgetPass);
+                    Check("Aircraft has LOD0/1/2/3/Cull: "+profile.Id,
+                        quality.HasRuntimeLodGroup&&quality.Lods!=null&&quality.Lods.Length==AircraftVisualModel.LodLevelCount&&
+                        quality.Lods[4].Renderers==0&&quality.Lods[4].RenderedTriangles==0);
+                    Check("Aircraft LOD complexity and materials decrease within budget: "+profile.Id,
+                        quality.Lods.Take(4).All(l=>l.SharedMaterials<=AircraftVisualModel.SharedMaterialBudget)&&
+                        Enumerable.Range(1,3).All(i=>quality.Lods[i].Renderers<=quality.Lods[i-1].Renderers&&
+                            quality.Lods[i].RenderedTriangles<=quality.Lods[i-1].RenderedTriangles));
+                    Check("Aircraft runtime meshes release CPU ReadWrite data: "+profile.Id,
+                        quality.RuntimeMeshes<=4&&quality.ReadableRuntimeMeshes==0);
+                    Check("Aircraft uses 6-16 non-rendering primitive compound colliders: "+profile.Id,
+                        quality.HasValidCompoundCollision&&quality.Colliders>=AircraftVisualModel.MinimumCompoundColliders&&
+                        quality.Colliders<=AircraftVisualModel.MaximumCompoundColliders&&
+                        quality.PrimitiveColliders==quality.Colliders&&quality.MeshColliders==0&&
+                        quality.CollisionRenderers==0&&quality.CompoundAttachedColliders==quality.Colliders);
+                    Check("Aircraft compound replaces legacy root BoxCollider: "+profile.Id,
+                        sim.Body.GetComponent<BoxCollider>()==null);
                     sim.Body.position=new Vector3(0,8,10);sim.Pause(true);sim.Body.transform.position=sim.Body.position;yield return new WaitForSeconds(.3f);
                     yield return SceneImage(Path.Combine(dir,profile.Id+"-detail.png"),sim.Position+new Vector3(1.70f,.85f,1.95f)*profile.VisualScale,sim.Position,38);
                     yield return Capture(Path.Combine(dir,profile.Id+"-flight.png"));

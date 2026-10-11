@@ -216,7 +216,7 @@ namespace AeroSim
             _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
             var config = _config;
             var s = new ScrollView(); s.AddToClassList("product-scroll"); s.AddToClassList("design-page"); s.AddToClassList("design-freeflight-page");
-            var left = Element("design-column"); var hero = DesignImage(DesignSceneArt(config.environment), "design-environment-hero");
+            var left = Element("design-column"); var hero = Element("design-image", "design-environment-hero"); SetHeroBackground(hero, DesignSceneArt(config.environment));
             var shade = Element("design-hero-shade"); hero.Add(shade); var copy = Element("design-environment-copy"); copy.Add(Text("FREE FLIGHT ENVIRONMENT", "page-eyebrow"));
             var name = Text(config.environment, "hero-title"); copy.Add(name); copy.Add(Text("Choose a training environment and make the sky your practice space.", "hero-description", "wrap")); hero.Add(copy); left.Add(hero);
             var scenes = Element("design-scene-grid"); string[] maps = { "Pacific Coast", "Desert Range", "City Park", "Warehouse" };
@@ -224,14 +224,14 @@ namespace AeroSim
             {
                 var b = new Button(); b.AddToClassList("design-scene-card"); b.Add(DesignImage(DesignSceneArt(map), "design-scene-thumb")); b.Add(Text(map, "design-item-title")); b.Add(Text(map == "Warehouse" ? "Indoor precision flying" : map == "City Park" ? "Parks and urban landmarks" : map == "Desert Range" ? "Open terrain and canyons" : "Coastal cliffs and forests", "muted", "wrap"));
                 if (config.environment == map) b.AddToClassList("design-selected");
-                b.clicked += () => { config.environment = map; SetBackground(hero, DesignSceneArt(map)); name.text = map; foreach (var child in scenes.Children()) child.RemoveFromClassList("design-selected"); b.AddToClassList("design-selected"); }; scenes.Add(b);
+                b.clicked += () => { config.environment = map; SetHeroBackground(hero, DesignSceneArt(map)); name.text = map; foreach (var child in scenes.Children()) child.RemoveFromClassList("design-selected"); b.AddToClassList("design-selected"); }; scenes.Add(b);
             }
             left.Add(scenes);
             var right = DesignPanel("Flight Setup", null, "design-side");
             right.Add(DesignAircraftImage()); Choice(right, "Aircraft", AircraftCatalog.Names, config.aircraft, v => { config.aircraft = v; LocalStore.Profile.selectedAircraft = AircraftCatalog.Resolve(v).Id; LocalStore.Save(); });
             right.Add(ActionButton("Browse Aircraft in Hangar", () => ShowPage(Page.Hangar)));
             Choice(right, "Flight mode", new[] { "Normal", "Sport", "Manual" }, config.mode, v => config.mode = v);
-            Choice(right, "Weather", new[] { "Clear", "Overcast" }, config.weather, v => config.weather = v);
+            Choice(right, "Weather", FlightWeather.Names, config.weather, v => config.weather = v);
             Range(right, "Wind (mph)", 0, 25, config.windMph, v => config.windMph = v); Range(right, "Time of day (24h)", 6, 20, config.timeOfDay, v => config.timeOfDay = v);
             var advanced = new Foldout { text = "Advanced Flight Settings", value = false }; advanced.AddToClassList("design-input-advanced");
             bool metric = LocalStore.Profile.settings.units == "Metric";
@@ -251,7 +251,7 @@ namespace AeroSim
             scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             scroll.verticalScrollerVisibility = ScrollerVisibility.Auto;
             scroll.contentContainer.style.flexGrow = 1;
-            var root = Element("design-fpv-stage"); SetBackground(root, "Art/DesignV1/FpvIndustrialSunset"); var shade = Element("design-fpv-shade"); root.Add(shade);
+            var root = Element("design-fpv-stage"); SetHeroBackground(root, "Art/DesignV1/FpvIndustrialSunset"); var shade = Element("design-fpv-shade"); root.Add(shade);
             var menu = Element("design-fpv-menu");
             void Tile(string title, string description, string icon, Page page)
             { var b = new Button(() => ShowPage(page)); b.AddToClassList("design-fpv-tile"); b.Add(DesignIcon(icon, 36)); b.Add(DesignCopy(title, description)); b.Add(Text("›", "row-chevron")); menu.Add(b); }
@@ -295,7 +295,7 @@ namespace AeroSim
             else if (_designSettingsTab == "Graphics")
             {
                 Choice(general, "Frame-rate limit", new[] { "30", "60", "120" }, settings.targetFps.ToString(), v => { settings.targetFps = int.Parse(v); ApplySettings(); });
-                Choice(general, "Quality", new[] { "Low", "Medium", "High" }, new[] { "Low", "Medium", "High" }[Mathf.Clamp(settings.quality, 0, 2)], v => { settings.quality = v == "Low" ? 0 : v == "Medium" ? 1 : 2; ApplySettings(); });
+                Choice(general, "Quality", AeroSimQuality.Names, AeroSimQuality.Name(settings.quality), v => { settings.quality = AeroSimQuality.Parse(v); ApplySettings(); });
                 Check(general, "Reduce camera smoothing", settings.reducedMotion, v => settings.reducedMotion = v);
             }
             else if (_designSettingsTab == "Audio") Range(general, "Motor sound volume", 0, 1, settings.volume, v => settings.volume = v);
@@ -305,6 +305,7 @@ namespace AeroSim
             { Check(general, "High-contrast interface", settings.highContrast, v => { settings.highContrast = v; ApplySettings(); }); Check(general, "Reduce camera smoothing", settings.reducedMotion, v => settings.reducedMotion = v); Choice(general, "Text Size", new[] { "100%", "125%", "150%", "200%" }, Mathf.RoundToInt(settings.textScale * 100) + "%", v => { settings.textScale = int.Parse(v.TrimEnd('%')) / 100f; SaveUiPreferences(); }); }
             else general.Add(Text("No cloud sync or analytics connection is enabled. Flight records stay on this device.\n\nStorage: " + LocalStore.DirectoryPath + "\n\nExports can contain your pilot name, training events and flight telemetry. Review files before sharing.", "wrap", "muted"));
             main.Add(general);
+            if (_designSettingsTab == "Graphics") main.Add(BuildFovSettingsPanel(false));
             var preview = DesignPanel("Preview", "Sample telemetry only — not a live aircraft status.", "design-side", "design-settings-preview");
             var image = DesignImage("Art/DesignV1/CoastHeroV1", "design-settings-image"); var telemetry = Element("design-preview-telemetry"); var telemetryLabel = Text("", "design-item-title", "wrap"); telemetryLabel.name = "design-units-preview"; telemetry.Add(DesignIcon("flight")); telemetry.Add(telemetryLabel); image.Add(telemetry); preview.Add(image); columns.Add(main); columns.Add(preview); s.Add(columns);
             if (_designSettingsTab == "General")
@@ -387,7 +388,7 @@ namespace AeroSim
         {
             var records = LocalStore.Sessions(); var m = LocalStore.Profile.missions[0];
             var s = DesignPage("Welcome back, " + LocalStore.Profile.settings.pilotName, "Continue your training and build the skills to fly safely and professionally.", DateTime.Now.ToString("dddd, MMM d", System.Globalization.CultureInfo.GetCultureInfo("en-US")));
-            var assignment = DesignPanel(m.title + " Fundamentals", "NEXT TRAINING TASK", "design-column", "design-dashboard-hero"); SetBackground(assignment, "Art/DesignV1/CoastHeroV1");
+            var assignment = DesignPanel(m.title + " Fundamentals", "NEXT TRAINING TASK", "design-column", "design-dashboard-hero"); SetHeroBackground(assignment, "Art/DesignV1/CoastHeroV1");
             var paragraph = Text("Plan the mission, capture each target and review your recorded evidence.", "wrap", "design-assignment-description");
             assignment.Add(paragraph); assignment.Add(DesignButton("Continue Assignment", "play", () => { _mission = m; ShowPage(Page.Brief); }, true));
             var status = DesignPanel("Training Status", "Local simulator readiness — not a professional qualification.", "design-side");

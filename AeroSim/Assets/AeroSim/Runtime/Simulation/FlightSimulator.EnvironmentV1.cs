@@ -17,6 +17,8 @@ namespace AeroSim.Simulation
             material.SetFloat("_Scale", tile);
             material.SetFloat("_Metallic", kind == 1 ? .52f : 0);
             material.SetFloat("_Smoothness", kind == 1 ? .3f : .18f);
+            material.SetFloat("_Wetness", _rainAmount);
+            material.SetFloat("_Detail", _environmentQuality >= AeroSimQuality.Ultra ? 1 : _environmentQuality >= AeroSimQuality.High ? .72f : 0);
             // New tileable albedo may be supplied by the separate material artist. No menu painting is used.
             var albedo = texture == null ? null : Resources.Load<Texture2D>(texture);
             material.SetFloat("_UseTexture", albedo != null ? 1 : 0);
@@ -190,8 +192,13 @@ namespace AeroSim.Simulation
                 var water = new Material(waterShader); _materials.Add(water);
                 water.SetVector("_SunDirection", sunlight);
                 water.SetColor("_Color", evening ? new Color(.055f,.18f,.23f) : new Color(.04f,.23f,.34f));
+                water.SetColor("_SkyColor",Color.Lerp(RenderSettings.fogColor,RenderSettings.ambientSkyColor,.55f));
+                water.SetFloat("_Rain",_rainAmount); water.SetFloat("_Wind",Mathf.Clamp01(Config.windMph/20f));
+                if(_environmentQuality>=AeroSimQuality.High)water.EnableKeyword("AEROSIM_WATER_HIGH");
+                if(_environmentQuality>=AeroSimQuality.Ultra)water.EnableKeyword("AEROSIM_WATER_ULTRA");
+                int waterCells=_environmentQuality==AeroSimQuality.Low?22:_environmentQuality==AeroSimQuality.Medium?34:_environmentQuality==AeroSimQuality.High?45:58;
                 // This is the simulator's shallow lake surface; original ground collision remains at y=0.
-                MeshObject("City training lake · visual water / unchanged ground physics", FlatMesh(45, 340, 154), new Vector3(0,.135f,95), Vector3.one, water);
+                MeshObject("City training lake · visual water / unchanged ground physics", FlatMesh(waterCells, 340, 154), new Vector3(0,.135f,95), Vector3.one, water);
             }
             var promenade = new EnvironmentBatchV1();
             var parkMetal = new EnvironmentBatchV1();
