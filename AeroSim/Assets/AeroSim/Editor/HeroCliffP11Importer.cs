@@ -75,7 +75,11 @@ namespace AeroSim.Editor
             Bind(material, "_BaseColor", "BaseColor"); Bind(material, "_NormalMap", "Normal");
             Bind(material, "_RoughnessMap", "Roughness"); Bind(material, "_AOMap", "AO");
             Bind(material, "_HeightMap", "Height"); Bind(material, "_CurvatureMap", "Curvature");
-            Bind(material, "_WetCavityMask", "WetnessCavityMask"); EditorUtility.SetDirty(material);
+            Bind(material, "_WetCavityMask", "WetnessCavityMask");
+            material.SetFloat("_MicroMetersPerTile", 0.09f);
+            material.SetFloat("_MicroStrength", 0.72f);
+            material.SetFloat("_MicroNormalStrength", 0.58f);
+            EditorUtility.SetDirty(material);
 
             var root = (GameObject)PrefabUtility.InstantiatePrefab(model);
             root.name = "HeroCliff_P11_GENERATED_UNREVIEWED";

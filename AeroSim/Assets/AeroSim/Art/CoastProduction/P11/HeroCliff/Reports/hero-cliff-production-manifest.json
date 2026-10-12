@@ -17,7 +17,7 @@
           2048,
           2048
         ],
-        "seconds": 5.584,
+        "seconds": 5.555,
         "selectedToActive": true,
         "type": "NORMAL",
         "useCage": true
@@ -33,7 +33,7 @@
           2048,
           2048
         ],
-        "seconds": 27.774,
+        "seconds": 16.806,
         "selectedToActive": true,
         "type": "AO",
         "useCage": true
@@ -49,7 +49,7 @@
           2048,
           2048
         ],
-        "seconds": 6.455,
+        "seconds": 6.575,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -65,7 +65,7 @@
           2048,
           2048
         ],
-        "seconds": 7.881,
+        "seconds": 7.381,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -81,7 +81,7 @@
           2048,
           2048
         ],
-        "seconds": 8.091,
+        "seconds": 7.971,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -97,7 +97,7 @@
           2048,
           2048
         ],
-        "seconds": 7.837,
+        "seconds": 7.77,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -113,7 +113,7 @@
           2048,
           2048
         ],
-        "seconds": 9.508,
+        "seconds": 8.8,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -131,15 +131,15 @@
     "type": "compound primitive boxes"
   },
   "files": {
-    "Models/HeroCliff_P11.fbx": "d852e050212dc1360741a90c963af8c441a99aa99ccd73a153632279176dba1e",
-    "Models/HeroCliff_P11_Source.blend": "fa259bf75f000f21b25cf26c5b0c1f5cfef640e97d6ca1770e21aa8006cf3f63",
-    "Textures/T_HeroCliff_P11_AO.png": "940d8e6bbf54a6521022101f92019ff05da783d7325aa94acee459116444b920",
-    "Textures/T_HeroCliff_P11_BaseColor.png": "d967214a9c19d1e36751cc52defa5e1efcf38dc5ff1a9d5c9496ff1df7295bf3",
-    "Textures/T_HeroCliff_P11_Curvature.png": "77e40cc2dac9c47dcc961b5d5abe4321fcae873c02945a17f164df62e7061e44",
+    "Models/HeroCliff_P11.fbx": "2c7ec8bdfb74f191246b8abf8f6a8655bf383e78b86708c4c736b4e106956ca7",
+    "Models/HeroCliff_P11_Source.blend": "42ea0417cdd7ff4e7f76a9c85336f71c0a756815e3e12748960dd803d9a2fe73",
+    "Textures/T_HeroCliff_P11_AO.png": "29bed59e4a51ba6b34f5c0906cfa5c8896327b2be6e5421368bc7534ea9cbfc8",
+    "Textures/T_HeroCliff_P11_BaseColor.png": "1449f580bbd62271ec36dac41568052974cf4f17b6698501f4e4ffd34d4cacc6",
+    "Textures/T_HeroCliff_P11_Curvature.png": "539a3d16005d4a9224c74d49ad7bd557b44b036895b450662416113f5c706abd",
     "Textures/T_HeroCliff_P11_Height.png": "e40140979ee1be9ccf06ea61aec4a53e533820acebcf5c86bbf4ddc8c8eec98d",
-    "Textures/T_HeroCliff_P11_Normal.png": "d4d451df89165f450a9574d13527b9852efbddaef226ecd150f4407e25bc82b9",
-    "Textures/T_HeroCliff_P11_Roughness.png": "fb827f54f53ced08491a041fdbcc077c0c7c8ba47c5e127db89534d001a8947b",
-    "Textures/T_HeroCliff_P11_WetnessCavityMask.png": "a1f051023a0487a09afd791eb73a9efa6cb65d029cd953b1bb987340c1a3758d"
+    "Textures/T_HeroCliff_P11_Normal.png": "84d13b545e3c6ef1d3af2677916e109d7e2211c7f122dfdfe0c4247de6be9d6d",
+    "Textures/T_HeroCliff_P11_Roughness.png": "0813a4c9bdc2c030692adb6101111d63e51eb039888d1c3d5d6deaa390b50a7e",
+    "Textures/T_HeroCliff_P11_WetnessCavityMask.png": "d448e32007410e678f1847641090d0994ad08bf34cea2523a70a5779955edf26"
   },
   "geometry": {
     "features": [

@@ -145,7 +145,7 @@ namespace AeroSim.Diagnostics
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(0.58f, 0.62f, 0.68f);
             RenderSettings.ambientIntensity = 1f;
-            var rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32) { name = "P11 CLI capture", antiAliasing = 1 };
+            var rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32) { name = "P11 CLI capture", antiAliasing = 4 };
             rt.Create(); camera.targetTexture = rt;
             bool valid = true; string failure = null;
             var forcedLodGroup = target.GetComponent<LODGroup>();
@@ -156,7 +156,7 @@ namespace AeroSim.Diagnostics
                 if (forcedLodGroup != null) forcedLodGroup.ForceLOD(distance <= 5 ? 0 : distance <= 15 ? 1 : distance <= 40 ? 2 : 3);
                 camera.transform.position = anchor + viewDirection * (surfaceOffset + distance) + Vector3.up * Mathf.Lerp(0.15f, bounds.extents.y * 0.08f, distance / 80f);
                 camera.transform.rotation = Quaternion.LookRotation((anchor - camera.transform.position).normalized, Vector3.up);
-                camera.fieldOfView = distance <= 5 ? 50 : distance >= 40 ? 60 : 55;
+                camera.fieldOfView = distance <= 5 ? 38 : distance >= 40 ? 60 : 55;
                 yield return new WaitForSecondsRealtime(0.6f);
                 yield return new WaitForEndOfFrame();
                 string finalHash = null;
@@ -221,6 +221,7 @@ namespace AeroSim.Diagnostics
 
         static string Write(RenderTexture source, string path)
         {
+            if (source.antiAliasing > 1) source.ResolveAntiAliasedSurface();
             var old = RenderTexture.active; RenderTexture.active = source;
             var texture = new Texture2D(source.width, source.height, TextureFormat.RGB24, false);
             texture.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0); texture.Apply(false, false);
