@@ -17,7 +17,7 @@
           2048,
           2048
         ],
-        "seconds": 5.451,
+        "seconds": 5.584,
         "selectedToActive": true,
         "type": "NORMAL",
         "useCage": true
@@ -33,7 +33,7 @@
           2048,
           2048
         ],
-        "seconds": 20.627,
+        "seconds": 27.774,
         "selectedToActive": true,
         "type": "AO",
         "useCage": true
@@ -49,7 +49,7 @@
           2048,
           2048
         ],
-        "seconds": 6.46,
+        "seconds": 6.455,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -65,7 +65,7 @@
           2048,
           2048
         ],
-        "seconds": 7.128,
+        "seconds": 7.881,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -81,7 +81,7 @@
           2048,
           2048
         ],
-        "seconds": 7.896,
+        "seconds": 8.091,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -97,7 +97,7 @@
           2048,
           2048
         ],
-        "seconds": 7.732,
+        "seconds": 7.837,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -113,7 +113,7 @@
           2048,
           2048
         ],
-        "seconds": 8.561,
+        "seconds": 9.508,
         "selectedToActive": true,
         "type": "EMIT",
         "useCage": true
@@ -131,15 +131,15 @@
     "type": "compound primitive boxes"
   },
   "files": {
-    "Models/HeroCliff_P11.fbx": "1d5ec1fd1fd33eea0f7921680424abb99b261163a3a6f43f003202519e7a7e66",
-    "Models/HeroCliff_P11_Source.blend": "36dcc73e7aa45cb9e31d7fada273c17837becbe6a3b198de37cfa4f3721eaa56",
-    "Textures/T_HeroCliff_P11_AO.png": "55afdd1367ef9324b1b753f1b62b467f06b969601ac19cf71ef34e1c7bffc198",
-    "Textures/T_HeroCliff_P11_BaseColor.png": "0400bd104b639a5f2180f812bc5428585124b5928bffbe0e339e65b46559b4b7",
-    "Textures/T_HeroCliff_P11_Curvature.png": "906742262d4cf3a5bba4049d0cd3d123b4b032bcb54ce5d06c764d7d8427a00f",
-    "Textures/T_HeroCliff_P11_Height.png": "6c070b15c53c4d39ad22c89b4eda4dc2882ea75dc4eef472be9c67fb95cfc7ca",
-    "Textures/T_HeroCliff_P11_Normal.png": "dd078e7ff24bba92cc7683cff4c2c9e9e17abf1fea566fbfc1caa513778371e4",
-    "Textures/T_HeroCliff_P11_Roughness.png": "b40cdf011896f9cc7c132a8d13f3395052c6750789b9f058604d65ff1feb885b",
-    "Textures/T_HeroCliff_P11_WetnessCavityMask.png": "6ad818b9b0608a18e47a993157022f8a8af3d8c9d294c71828a31a112697a2f8"
+    "Models/HeroCliff_P11.fbx": "d852e050212dc1360741a90c963af8c441a99aa99ccd73a153632279176dba1e",
+    "Models/HeroCliff_P11_Source.blend": "fa259bf75f000f21b25cf26c5b0c1f5cfef640e97d6ca1770e21aa8006cf3f63",
+    "Textures/T_HeroCliff_P11_AO.png": "940d8e6bbf54a6521022101f92019ff05da783d7325aa94acee459116444b920",
+    "Textures/T_HeroCliff_P11_BaseColor.png": "d967214a9c19d1e36751cc52defa5e1efcf38dc5ff1a9d5c9496ff1df7295bf3",
+    "Textures/T_HeroCliff_P11_Curvature.png": "77e40cc2dac9c47dcc961b5d5abe4321fcae873c02945a17f164df62e7061e44",
+    "Textures/T_HeroCliff_P11_Height.png": "e40140979ee1be9ccf06ea61aec4a53e533820acebcf5c86bbf4ddc8c8eec98d",
+    "Textures/T_HeroCliff_P11_Normal.png": "d4d451df89165f450a9574d13527b9852efbddaef226ecd150f4407e25bc82b9",
+    "Textures/T_HeroCliff_P11_Roughness.png": "fb827f54f53ced08491a041fdbcc077c0c7c8ba47c5e127db89534d001a8947b",
+    "Textures/T_HeroCliff_P11_WetnessCavityMask.png": "a1f051023a0487a09afd791eb73a9efa6cb65d029cd953b1bb987340c1a3758d"
   },
   "geometry": {
     "features": [
@@ -167,7 +167,7 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 0.6953125,
+        "occupancy": 1.0,
         "silhouetteIoUToLOD0": 1.0,
         "triangles": 92160,
         "zeroAreaFaces": 0
@@ -180,7 +180,7 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 0.6953125,
+        "occupancy": 1.0,
         "silhouetteIoUToLOD0": 1.0,
         "triangles": 49536,
         "zeroAreaFaces": 0
@@ -193,7 +193,7 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 0.6953125,
+        "occupancy": 1.0,
         "silhouetteIoUToLOD0": 1.0,
         "triangles": 21868,
         "zeroAreaFaces": 0
@@ -206,7 +206,7 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 0.6953125,
+        "occupancy": 1.0,
         "silhouetteIoUToLOD0": 1.0,
         "triangles": 7728,
         "zeroAreaFaces": 0

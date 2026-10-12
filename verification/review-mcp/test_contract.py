@@ -4,6 +4,8 @@
 import importlib.util
 import json
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 
@@ -66,6 +68,27 @@ class ReviewMcpContractTests(unittest.TestCase):
         })
         self.assertTrue(reply["result"]["isError"])
         self.assertIn("Timed out", reply["result"]["content"][0]["text"])
+
+    def test_suffixed_unity_response_is_consumed(self):
+        def respond():
+            inbox = self.project / "Library" / "AeroSimReview" / "inbox"
+            outbox = self.project / "Library" / "AeroSimReview" / "outbox"
+            deadline = time.monotonic() + 1
+            while time.monotonic() < deadline:
+                requests = list(inbox.glob("*.json")) if inbox.exists() else []
+                if requests:
+                    request = json.loads(requests[0].read_text())
+                    requests[0].unlink()
+                    response = {"requestId": request["id"], "success": True, "status": "OK"}
+                    (outbox / f"{request['id']}-run-id.json").write_text(json.dumps(response))
+                    return
+                time.sleep(0.001)
+
+        worker = threading.Thread(target=respond)
+        worker.start()
+        response = MCP.call_unity(self.project, "inspect_scene", {}, timeout=1, poll_interval=0.001)
+        worker.join()
+        self.assertTrue(response["success"])
 
     def test_initialize_and_initialized_notification(self):
         reply = self.server.dispatch({"jsonrpc": "2.0", "id": 7, "method": "initialize", "params": {}})

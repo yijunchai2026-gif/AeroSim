@@ -18,40 +18,58 @@ def n2(a,b): return (math.sin(a*1.73+b*.91+1.7)+.52*math.sin(a*.43-b*2.13+4.1)+.
 
 def cliff_x(y,z,high):
     yn=y/HEIGHT; zn=z/LENGTH
-    fault_line=z-(23.0+y*.42)
-    fault_side=math.tanh(fault_line/1.1)
-    # Main silhouette, crown breakup and diagonal fault throw.
-    x=5.0+4.5*yn+2.0*math.sin(zn*math.pi*2.05)+.72*math.sin(zn*math.pi*5.5)
-    x+=1.15*fault_side
-    # Real bedding ledges; fault side offsets the strata phase and position.
-    phase=y*1.43+math.sin(z*.105)*1.25+fault_side*1.65
-    x-=.72*max(0.0,math.sin(phase))**4
-    x+=.18*math.sin(phase*3.0)
-    # Recessed erosion cavities and undercut shelves.
-    x+=4.8*math.exp(-((y-7.2)/3.0)**2-((z-43.0)/9.2)**2)
-    x+=3.1*math.exp(-((y-18.5)/4.0)**2-((z-82.0)/7.0)**2)
-    x-=2.2*math.exp(-((y-10.0)/1.0)**2-((z-45.0)/12.0)**2)
-    x-=1.55*math.exp(-((y-25.0)/.75)**2-((z-76.0)/15.0)**2)
-    # Integrated angular talus/collapse masses at the foot, continuous with cliff.
-    for cz,amp,span in ((12,2.1,4.2),(28,1.45,3.4),(56,2.5,5.1),(77,1.8,4.0),(99,2.25,4.6)):
-        x-=amp*math.exp(-((y-2.0)/1.75)**2-((z-cz)/span)**2)*(1+.18*math.sin(z*2.1+y*3.4))
-    # Fracture channels cut into actual geometry.
-    crack=math.exp(-((math.sin(z*.245+y*.49+fault_side*.7))/.105)**2)
-    x+=.72*crack*(.2+.8*yn)
-    x+=.31*n2(y*.13,z*.075)
+    # Broad asymmetric coastal headland: vertical elevation is y, lateral span is z.
+    crown=1.9*math.sin(zn*math.pi*1.18+.35)+.7*math.sin(zn*math.pi*2.7-1.1)
+    lower_slump=.95*math.exp(-((yn-.19)/.16)**2)*(0.45+0.55*n2(zn*2.5+7.0,yn*1.2))
+    x=4.1+3.15*yn+crown*(.42+.58*math.sin(math.pi*yn))+lower_slump
+    x+=.42*n2(zn*2.2+9.0,yn*2.0+4.0)
+
+    # Horizontal bedding with slow lateral phase drift and interrupted shelf strength.
+    phase_drift=.48*math.sin(zn*math.pi*2.1)+.24*n2(zn*3.0+31.0,yn*.8)
+    bedding=math.sin(y*.57+phase_drift)*.25+math.sin(y*1.14+phase_drift*1.7)*.08
+    bedding*=.58+.42*n2(zn*2.1+3.0,yn*.9+18.0)
+    x+=bedding
+
+    # Two broad oblique faults offset strata locally instead of forming repeated ribs.
+    fault_a=math.tanh((y-(15.0+z*.105))/1.35)
+    fault_b=math.tanh((y-(32.0-z*.075))/1.65)
+    fault_window=math.exp(-((z-35.0)/18.0)**2)+.72*math.exp(-((z-82.0)/16.0)**2)
+    x+=(fault_a*.50-fault_b*.32)*fault_window
+
+    # Sparse erosion cavities with different sizes and elevations.
+    for cy,cz,sy,sz,depth in ((12.0,22.0,5.0,9.5,1.55),(25.0,64.0,6.5,8.0,1.25),(34.0,94.0,4.2,6.0,.82)):
+        x+=depth*math.exp(-((y-cy)/sy)**2-((z-cz)/sz)**2)
+
+    # Integrated talus masses soften the waterline transition without periodic repetition.
+    for cz,amp,span in ((14,1.15,7.5),(47,.82,6.5),(78,1.28,9.0),(103,.72,5.5)):
+        x-=amp*math.exp(-((y-2.2)/2.25)**2-((z-cz)/span)**2)*(1+.12*n2(z*.28,y*.33))
+
+    # Isotropic residual roughness remains subordinate to the large geological forms.
+    x+=.31*n2(zn*7.0+2.0,yn*6.0+5.0)+.13*n2(zn*15.0+17.0,yn*13.0+11.0)
     if high:
-        # High-only micro fracture and erosion; this is what bakes into LOD0.
-        x+=.18*n2(y*.72,z*.46)+.075*math.sin(y*8.3+z*2.7)
-        x+=.28*math.exp(-((math.sin(z*.83-y*.36+1.2))/.075)**2)*(.15+.85*yn)
+        x+=.24*n2(zn*31.0+41.0,yn*29.0+7.0)
+        # Sparse, terminating fractures replace the former full-face periodic channels.
+        for center_z,base_y,slope,span,depth in ((24.0,9.0,.14,13.0,.38),(61.0,31.0,-.11,17.0,.32),(91.0,17.0,.09,11.0,.28)):
+            fracture_line=abs(y-(base_y+slope*(z-center_z)+.7*math.sin((z-center_z)*.12)))
+            fracture_window=math.exp(-((z-center_z)/span)**4)
+            x+=depth*math.exp(-(fracture_line/.24)**2)*fracture_window
     return x
+
+def cliff_height(z):
+    zn=z/LENGTH
+    return 35.0+5.2*math.sin(zn*math.pi*1.15+.25)+2.4*math.sin(zn*math.pi*3.1-1.0)+1.3*n2(zn*3.0+6.0,2.0)
 
 def make_surface(name,ny,nz,high=False):
     verts=[]; faces=[]; uvs=[]
     for iz in range(nz):
-        z=iz*LENGTH/(nz-1)
+        source_z=iz*LENGTH/(nz-1)
+        local_height=cliff_height(source_z)
         for iy in range(ny):
-            y=iy*HEIGHT/(ny-1)
-            verts.append((cliff_x(y,z,high),y,z-LENGTH*.5))
+            vertical=iy/(ny-1)
+            y=vertical*local_height
+            taper=.13*vertical+.045*math.sin(vertical*math.pi)
+            z=LENGTH*.5+(source_z-LENGTH*.5)*(1.0-taper)
+            verts.append((cliff_x(y,source_z,high),y,z-LENGTH*.5))
     for iz in range(nz-1):
         for iy in range(ny-1):
             a=iz*ny+iy; b=a+1; c=a+ny; d=c+1

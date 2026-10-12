@@ -68,7 +68,7 @@ for rel,digest in m.get("files",{}).items():
 
 shader=text(os.path.join(ROOT,"Shaders","HeroCliffP11.shader"))
 check("float2 uv_BaseColor" in shader and "tex2D(_BaseColor,uv)" in shader and "tex2D(_NormalMap,uv)" in shader,"unique UV baked-map shader sampling missing")
-check("tri(_MacroDetail" in shader and "triNormal(_MicroDetailNormal" in shader,"world-space triplanar macro/micro overlay missing")
+check("RockNoise(macroPosition)" in shader and "RockNoise(microPosition" in shader and "DetailVisibility" in shader,"world-space procedural macro/micro overlay missing")
 check("tri(_BaseColor" not in shader and "tri(_NormalMap" not in shader,"unique bake is incorrectly repeated as triplanar")
 importer=text(os.path.abspath(os.path.join(ROOT,"../../../../Editor/HeroCliffP11Importer.cs")))
 for prop,suffix in (("_BaseColor","BaseColor"),("_NormalMap","Normal"),("_RoughnessMap","Roughness"),("_AOMap","AO"),("_HeightMap","Height"),("_CurvatureMap","Curvature"),("_WetCavityMask","WetnessCavityMask")):
