@@ -1,0 +1,84 @@
+{
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "version": "1.0.0",
+  "coordinate_system": {
+    "handedness": "right",
+    "up_axis": "+Z",
+    "forward_axis": "+X",
+    "right_axis": "+Y",
+    "unit": "centimeter",
+    "baked_transform": {"translation": [0, 0, 0], "rotation_deg": [0, 0, 0], "scale": [1, 1, 1]}
+  },
+  "modular_kit": {
+    "primary_grid_cm": 10,
+    "structural_grid_cm": 50,
+    "fine_grid_cm": 1,
+    "rotation_snap_deg": [5, 15, 45, 90],
+    "socket_tolerance_cm": 0.2,
+    "rules": [
+      "结构模块长宽高采用 10 cm 整数倍，主跨优先采用 50 cm 整数倍",
+      "所有连接端提供命名 socket，socket 轴向遵循 +X 插入、+Z 朝上",
+      "端件、转角件和封口件不依赖负缩放；镜像件单独导出",
+      "可重复细节优先实例化，螺栓、格栅齿和护栏立柱禁止无意义合并"
+    ]
+  },
+  "pivot_standard": {
+    "static_default": "支撑面最低点与模块包围盒中心线交点",
+    "wall_panel": "左下后角，位于安装平面",
+    "linear_module": "起点中心，+X 指向终点",
+    "rotating_part": "真实机械旋转轴中心",
+    "hanging_part": "第一固定点中心",
+    "proxy": "与对应渲染网格 pivot 完全一致"
+  },
+  "pbr_standard": {
+    "workflow": "metallic_roughness",
+    "color_space": {"base_color": "sRGB", "emissive": "sRGB", "normal": "linear", "orm": "linear", "masks": "linear"},
+    "channel_packing": {"ORM_R": "ambient_occlusion", "ORM_G": "roughness", "ORM_B": "metallic"},
+    "normal_format": "OpenGL +Y",
+    "texel_density_px_per_m": {"hero": 1024, "standard": 512, "background": 256},
+    "default_texture_size": 2048,
+    "max_texture_size": 4096,
+    "galvanized_steel": {
+      "base_color_srgb": [0.46, 0.51, 0.52],
+      "metallic": 0.92,
+      "roughness_range": [0.42, 0.68],
+      "normal_strength": 0.35,
+      "flake_macro_scale_cm": 18,
+      "edge_oxidation_color_srgb": [0.24, 0.13, 0.07],
+      "oxidation_roughness": 0.78
+    },
+    "mask_policy": "氧化、积盐、边缘磨损与渗水分别使用可独立调节遮罩；不得直接依赖 base color 明暗充当粗糙度"
+  },
+  "lod_standard": {
+    "metric": "projected_screen_height_ratio",
+    "levels": [
+      {"lod": 0, "enter_ratio": 0.35, "triangle_ratio": 1.0, "max_geometric_error_cm": 0.0},
+      {"lod": 1, "enter_ratio": 0.16, "triangle_ratio": 0.5, "max_geometric_error_cm": 0.5},
+      {"lod": 2, "enter_ratio": 0.07, "triangle_ratio": 0.22, "max_geometric_error_cm": 1.5},
+      {"lod": 3, "enter_ratio": 0.025, "triangle_ratio": 0.08, "max_geometric_error_cm": 4.0}
+    ],
+    "preserve": ["silhouette", "socket_positions", "load_bearing_profile", "emissive_readability"],
+    "remove_first": ["sub_centimeter_fasteners", "hidden_backfaces", "micro_bevels", "small_perforations"]
+  },
+  "collision_standard": {
+    "default_mode": "simple_convex",
+    "naming": "UCX_<RenderMeshName>_##",
+    "max_hulls_per_module": 12,
+    "max_vertices_per_hull": 24,
+    "clearance_cm": 1.0,
+    "walkable_slope_deg": 45,
+    "rules": [
+      "碰撞体不得穿出可见轮廓超过 1 cm",
+      "栏杆和立柱使用胶囊或盒体；格栅行走面使用连续薄盒体",
+      "细电缆和直径小于 3 cm 的紧固件默认无碰撞",
+      "门与铰链的动态碰撞拆分为独立刚体，避免跨旋转轴凸包",
+      "仅碰撞代理不绑定渲染材质且默认在运行时隐藏"
+    ]
+  },
+  "source_reference": {
+    "path": "source/generated_image_035559.png",
+    "sha256": "a2e2c8c43ffecc0579ee1daa432bf3d1f07f5ea26ce2710405ebb0d434944d00",
+    "dimensions_px": [2880, 2880],
+    "interpretation": ["镀锌钢片花纹", "冷灰金属基色", "板缝积尘与轻锈", "螺钉周边氧化晕染"]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-07-RAINDROP-RIPPLE",
+  "displayName": "雨滴涟漪",
+  "category": "rain_ripple",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [2315, 455, 515, 1130], "atlasRectBottomLeft": [0.803819, 0.449653, 0.178819, 0.392361] },
+  "placement": { "mode": "instanced_surface_quad", "diameterMeters": [0.08, 0.75], "spawnPerSqmPerSecond": { "Clear": 0, "Overcast": 0, "Rain": [0.6, 4.5] }, "heightOffsetMeters": 0.015 },
+  "motion": { "flowSpeed": 0, "radialExpansionMetersPerSecond": [0.18, 0.65], "lifetimeSeconds": [0.35, 1.4], "decay": [0.0, 1.0] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.018, "edgeSoftness": 0.10, "intensity": 0.72 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"], "activeWeather": ["Rain"] },
+  "lod": { "nearMeters": 4, "midMeters": 18, "farMeters": 42, "cullMeters": 60 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

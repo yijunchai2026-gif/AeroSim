@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-10-TIDAL-RUNNEL","displayName":"潮沟",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"wet rock margin"},{"file":"../source/tidepool-bed-reference.png","sha256":"d84db9b1323b596e5166ea08ae1d129cb989401c9598b9877918825c7c2b2f80","generatedSourceTag":"GENERATED_SOURCE:generated_image_035650","usage":"channel bed aggregate and algae"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"tidal-runnel","keywords":["P02_FLOW","P02_ALGAE"]},
+  "material":{"tileMeters":[6,2],"macroWavelengthMeters":[14,52],"normalStrength":0.66,"dryRoughness":0.75,"wetRoughness":0.22,"standingDepthMm":[0,95],"channelWidthMeters":[0.6,4.5],"flowSpeedMetersPerSecond":[0.02,0.42],"algaeCoverage":[0.05,0.42]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.66,"tideInfluence":1.0,"wetValueMultiplier":0.87,"wetNormalMultiplier":0.60},
+  "lod":["0-15m bed+flow+algae","15-40m bed+flow mask","40-80m channel macro","80-180m macro drainage",">180m shared far drainage cue"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

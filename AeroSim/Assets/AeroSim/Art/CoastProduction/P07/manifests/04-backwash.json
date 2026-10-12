@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-04-BACKWASH",
+  "displayName": "回流",
+  "category": "backwash",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [605, 718, 516, 307], "atlasRectBottomLeft": [0.210069, 0.644097, 0.179167, 0.106597] },
+  "placement": { "mode": "shore_normal_decal", "widthMeters": [2, 8], "lengthMeters": [6, 24], "slopeDegrees": [0, 16], "heightOffsetMeters": 0.02 },
+  "motion": { "flowSpeed": -0.045, "shoreNormalSpeedMetersPerSecond": [-1.2, -0.35], "lifetimeSeconds": [3, 8], "decay": [0.15, 1.0] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.028, "edgeSoftness": 0.18, "intensity": 0.74 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 8, "midMeters": 34, "farMeters": 90, "cullMeters": 150 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

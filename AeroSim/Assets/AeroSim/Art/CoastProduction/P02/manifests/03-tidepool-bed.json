@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-03-TIDEPOOL-BED","displayName":"潮池底",
+  "sources":[{"file":"../source/tidepool-bed-reference.png","sha256":"d84db9b1323b596e5166ea08ae1d129cb989401c9598b9877918825c7c2b2f80","generatedSourceTag":"GENERATED_SOURCE:generated_image_035650","usage":"submerged gravel, shell and algae vocabulary"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"tidepool-bed","keywords":["P02_THIN_WATER"]},
+  "material":{"tileMeters":[2.8,2.8],"macroWavelengthMeters":[10,32],"normalStrength":0.68,"dryRoughness":0.76,"wetRoughness":0.32,"standingDepthMm":[12,120],"algaeCoverage":[0.08,0.46]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.35,"tideInfluence":1.0,"wetValueMultiplier":0.90,"wetNormalMultiplier":0.58},
+  "lod":["0-15m bed+thin-water masks","15-40m reduced normal","40-80m aggregate macro","80-180m color/roughness",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

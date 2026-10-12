@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "aerosim.vegetation-material-contract/v1",
+  "contractId": "P06-COASTAL-VEGETATION-CUTOUT-V1",
+  "owner": "Coast Art Lead-06",
+  "scope": "isolated_coastal_vegetation_asset_pack",
+  "runtimeIntegration": "NOT_CONNECTED",
+  "sharedSceneModified": false,
+  "coordinateSystem": {"unit": "meter", "up": "+Y", "forward": "+Z", "uvOrigin": "top-left"},
+  "sourcePolicy": {
+    "atlasColor": "sRGB; de-light before production use",
+    "atlasAlpha": "source is RGB8 and has no alpha; derive matte from black background",
+    "dataMaps": "linear; never import masks, normals or wind weights as sRGB"
+  },
+  "alphaCutout": {
+    "surfaceType": "Opaque/Cutout; no alpha blending for production foliage cards",
+    "alphaSource": "derived matte, stored in baseColor A",
+    "extraction": {"blackPoint": 0.012, "softEdgeEnd": 0.055, "despill": "remove black RGB contamination in linear space", "manualCleanupRequired": true},
+    "edgePaddingPixelsAt2K": 12,
+    "mipCoveragePreservation": true,
+    "alphaToCoverage": {"desktopMSAA": true, "mobile": "optional after target-device test"},
+    "cutoff": {"lod0": 0.42, "lod1": 0.46, "lod2": 0.50, "billboard": 0.52, "shadowCasterBias": -0.04},
+    "doubleSided": true,
+    "normalPolicy": "flip backface normal toward view; preserve tangent handedness",
+    "sorting": "opaque queue with alpha test; depth write on",
+    "forbidden": ["sampling source black as valid transparency", "straight-alpha color without dilation", "transparent queue foliage"]
+  },
+  "channels": {
+    "baseColor": "RGB=sRGB de-lit color, A=coverage matte",
+    "normal": "tangent-space OpenGL +Y, linear",
+    "mask": "R=AO, G=perceptual roughness, B=translucency, A=wetness response",
+    "wind": "vertex color R=primary bend, G=edge flutter, B=phase offset, A=anchor stiffness"
+  },
+  "windContract": {
+    "space": "world-space coherent gust plus per-instance phase",
+    "pivot": "root at local Y=0; anchor weight must be >=0.95 within lower 8% of height",
+    "globalInputs": ["windDirectionXZ", "meanSpeedMps", "gust01", "timeSeconds"],
+    "calmBelowMps": 0.35,
+    "stormVisualClampMps": 18.0,
+    "frequencyHz": {"primary": [0.12, 0.55], "flutter": [0.8, 2.8], "gust": [0.04, 0.16]},
+    "phase": "stable hash(instance position, assetId); no frame-random phase",
+    "bounds": "expand renderer bounds by declared maxDisplacementMeters"
+  },
+  "seasonWeather": {
+    "season01": "0=winter, 0.33=spring, 0.66=summer, 1=autumn",
+    "seasonBlend": "continuous palette/flower/dryness blend; no topology pop",
+    "wetness01": "driven by rain accumulation and drying, not instantaneous rain only",
+    "rainAccumulationSeconds": 75,
+    "dryingHalfLifeSeconds": {"sun": 240, "overcast": 720},
+    "wetResponse": {"baseColorValueMultiplier": [0.72, 1.0], "roughnessDelta": [-0.32, 0.0], "normalStrengthMultiplier": [0.78, 1.0], "saturationDelta": [-0.04, 0.02]},
+    "saltSpray": "desaturates exposed tips only; never blue-tint whole plant",
+    "snow": "outside P06 scope"
+  },
+  "lodBillboard": {
+    "crossFade": "dithered 6 m band; synchronize alpha coverage",
+    "defaultBandsMeters": {"LOD0": [0, 18], "LOD1": [15, 38], "LOD2": [34, 70], "Billboard": [64, 150], "Cull": 150},
+    "billboard": {"views": 8, "elevationViews": 2, "lighting": "neutral/albedo + normal atlas", "pivot": "root centered", "wind": "primary bend only, flutter disabled", "castShadowsBeyondMeters": 85},
+    "screenRelativeHeightFloor": 0.012,
+    "note": "Bands are authoring targets; profile before acceptance."
+  },
+  "ecologyContract": {
+    "inputs": ["distanceToMeanHighWaterM", "elevationAboveMeanHighWaterM", "slopeDegrees", "soilMoisture01", "salinity01", "exposure01", "substrate", "disturbance01"],
+    "hardReject": "all declared ranges and allowed substrate must pass",
+    "softSuitability": "multiply moisture, salinity and exposure response; deterministic seed",
+    "exclusion": ["runway and helipad safety envelope", "roads and authored paths", "open water", "building footprints"],
+    "placement": "align to terrain normal up to maxSlope; preserve root at surface; reject floating or buried roots",
+    "clumping": "use declared patch radius and density; do not uniform-random every species",
+    "invasiveMixing": "distant community may reference only P06 members and must obey each member hard reject"
+  },
+  "textureImport": {
+    "mipmaps": true, "readWrite": false, "wrap": "Clamp", "filter": "Trilinear", "anisotropy": 4,
+    "desktop": {"baseColor": "BC7", "normal": "BC5", "maskWind": "BC7/BC4"},
+    "ios": {"baseColor": "ASTC 6x6", "nearBaseColor": "ASTC 4x4", "normal": "ASTC 6x6"}
+  },
+  "acceptance": {"staticValidationMayPass": true, "alphaVisual": "NOT_RUN", "windVisual": "NOT_RUN", "seasonWeatherVisual": "NOT_RUN", "ecologyReview": "NOT_RUN", "runtimePerformance": "NOT_RUN"}
+}

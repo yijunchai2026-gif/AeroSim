@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-02-WET-DRY-TRANSITION","displayName":"干湿过渡",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"paired dry/wet rock value reference"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"wet-dry-transition","keywords":[]},
+  "material":{"tileMeters":[4,4],"macroWavelengthMeters":[8,28],"normalStrength":0.74,"dryRoughness":0.78,"wetRoughness":0.29,"standingDepthMm":[0,1],"blendWidthMeters":[0.25,1.8]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.82,"tideInfluence":0.88,"wetValueMultiplier":0.86,"wetNormalMultiplier":0.76},
+  "lod":["0-15m height wet blend","15-40m macro transition","40-80m simplified wet mask","80-180m macro band",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

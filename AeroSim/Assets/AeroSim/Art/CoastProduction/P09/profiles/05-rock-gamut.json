@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-05-ROCK-GAMUT",
+  "displayName": "岩石色域",
+  "category": "gamut.rock",
+  "enabled": true,
+  "targets": ["P03 ground transition", "P04 strata and wet edge", "P08 distance"],
+  "intent": "分层海蚀岩保持中性冷灰、少量褐色矿物和苔藓；湿边由值与粗糙度变化表达而非蓝染。",
+  "parameters": {
+    "palette": {
+      "dryShadow": {"min": "#242827", "target": "#333A39", "max": "#4B504C"},
+      "dryMid": {"min": "#4A504C", "target": "#626862", "max": "#7D8178"},
+      "dryLight": {"min": "#777A70", "target": "#929388", "max": "#AAA99D"},
+      "wet": {"min": "#181E1E", "target": "#293130", "max": "#404A47"},
+      "lichenMoss": {"min": "#39402A", "target": "#56603B", "max": "#78805A"},
+      "mineralWarm": {"min": "#55493C", "target": "#746351", "max": "#8D7963"}
+    },
+    "response": {"saturationMax": 0.46, "wetValueMultiplier": [0.55, 0.78], "wetRoughnessDelta": [-0.28, -0.12], "distanceChromaReductionAt80m": 0.22}
+  },
+  "evaluation": {"goldenCases": ["A", "C", "D", "F", "H"], "reviewBandsMeters": [1, 5, 15, 40, 80]},
+  "guardrails": ["retain stratum separation", "no one-texture recolor across all rock roles", "no crushed crevice black", "wetness never increases blue channel by more than guardrail bias", "macro variation must survive mip transition"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

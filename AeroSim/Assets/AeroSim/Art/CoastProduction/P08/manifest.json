@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "aerosim.asset-pack/v1",
+  "packId": "P08-WEATHER-VISUAL-PACK-V1",
+  "displayName": "P08 天气视觉资产包",
+  "owner": "Coast Art Lead-08",
+  "createdAt": "2026-10-12T03:57:00+08:00",
+  "status": "SPEC_LOCKED_STATIC_VALIDATED",
+  "isolation": {
+    "root": "assets/p08-weather-visual-pack-v1/",
+    "contract": "weather-visual-contract.json",
+    "adapter": "adapter/environment-state-adapter.json",
+    "referenceImplementation": "adapter/WeatherVisualAdapter.cs",
+    "sharedEnvironmentStateModified": false,
+    "sharedSceneAssemblyModified": false,
+    "runtimeWiring": "CONSUMER_OPT_IN"
+  },
+  "source": {
+    "file": "source/weather-atlas-reference.png",
+    "original": "artifacts/generated_image_035555.png",
+    "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1",
+    "dimensions": [2880, 2880],
+    "colorMode": "RGB8",
+    "role": "雨线、镜头水滴、流痕、涟漪与雾噪声的视觉源/参考",
+    "limitations": ["图集未切片", "不含 alpha", "未证明可平铺", "含烘焙明暗", "不是物理标定降水数据"]
+  },
+  "subAssets": [
+    "manifests/01-drizzle.json",
+    "manifests/02-downpour.json",
+    "manifests/03-lens-drops.json",
+    "manifests/04-surface-streaks.json",
+    "manifests/05-puddle-ripples.json",
+    "manifests/06-low-fog.json",
+    "manifests/07-sea-fog.json",
+    "manifests/08-cloud-shadows.json",
+    "manifests/09-rain-curtain.json",
+    "manifests/10-wind-driven-spray.json"
+  ],
+  "qualityDeclaration": {
+    "manifestCount": 10,
+    "staticValidation": "PASS",
+    "atlasExtraction": "NOT_RUN",
+    "unityImport": "NOT_RUN",
+    "runtimeVisual": "NOT_RUN",
+    "performance": "NOT_RUN"
+  }
+}

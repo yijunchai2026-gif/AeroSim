@@ -1,0 +1,42 @@
+{
+  "schema": "aerosim.coast-production.subasset/v1",
+  "packageId": "COAST-PRODUCTION-P01",
+  "assetId": "P01-DISTANT-01",
+  "slug": "distant-silhouette",
+  "displayName": "远景轮廓",
+  "provenance": {
+    "classification": "PROCEDURAL / GENERATED SOURCE",
+    "scanClaim": "NOT A SCAN",
+    "generator": "CoastP01Generator.cs",
+    "sourceTextureSha256": "5a3f5a1eedd1bd65df28a256d1824eca02c6c2f5ca0f18777db9d788a0aad309"
+  },
+  "integration": {
+    "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/distant-silhouette.prefab",
+    "meshPath": "Assets/AeroSim/Art/CoastProduction/P01/Meshes/distant-silhouette.asset",
+    "materialPath": "Assets/AeroSim/Art/CoastProduction/P01/Materials/CoastRockP01.mat",
+    "coordinateSystem": "Unity:Y-up,+Z-forward,+X-right,meters",
+    "pivot": "bottom-center",
+    "sceneAssemblyOwnedByIntegrator": true
+  },
+  "boundsMeters": {
+    "x": 210,
+    "y": 86,
+    "z": 24
+  },
+  "lod": {
+    "distanceMeters": [
+      250,
+      900,
+      2000
+    ],
+    "lod0TriangleBudget": 12000,
+    "generatedMeshIs": "LOD0"
+  },
+  "collision": {
+    "mode": "external-proxy",
+    "isTrigger": false,
+    "renderersAllowed": 1
+  },
+  "purpose": "distance-only coastline skyline",
+  "status": "GENERATED_READY"
+}

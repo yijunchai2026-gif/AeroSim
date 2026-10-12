@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "aerosim.shader-material-contract/v1",
+  "contractId": "P02-INTERTIDAL-SURFACE-V1",
+  "owner": "Coast Art Lead-02",
+  "runtimeIntegration": "NOT_CONNECTED",
+  "shader": {
+    "name": "AeroSim/Coast/P02IntertidalSurface",
+    "implementation": "NOT_AUTHORED",
+    "renderPipeline": "Built-in compatible target",
+    "surfaceModel": "opaque dielectric PBR with optional thin-water overlay",
+    "queue": "Geometry; transparent water overlay must be a separate pass/material",
+    "oceanDependency": "FORBIDDEN",
+    "oceanMainShaderModified": false
+  },
+  "coordinates": {"unit":"meter","up":"+Y","uvOrigin":"bottom-left","macroMapping":"world XZ triplanar-capable"},
+  "channels": {
+    "baseColor": "sRGB RGB; alpha unused",
+    "normal": "linear tangent-space OpenGL +Y",
+    "surfaceMask": "linear R=AO, G=perceptual roughness, B=height, A=material coverage",
+    "waterMask": "linear R=wetness, G=standing depth, B=foam/residue, A=flow channel",
+    "metallic": "0.0",
+    "emission": "0.0"
+  },
+  "properties": {
+    "_BaseMap":"Texture2D","_NormalMap":"Texture2D","_SurfaceMask":"Texture2D","_WaterMask":"Texture2D",
+    "_TileMeters":"float2","_MacroVariation":"float","_NormalStrength":"float","_DryRoughness":"float","_WetRoughness":"float",
+    "_WeatherWetness":"float 0..1","_TideWetness":"float 0..1","_StandingDepthMm":"float 0..120","_FlowDirectionXZ":"float2",
+    "_AlgaeCoverage":"float 0..1","_SaltCoverage":"float 0..1","_EdgeFoam":"float 0..1"
+  },
+  "variantPolicy": {
+    "keywords": ["P02_THIN_WATER", "P02_ALGAE", "P02_SALT", "P02_FLOW"],
+    "maxKeywordsPerMaterial": 2,
+    "profiles": ["wet-rock","wet-dry-transition","tidepool-bed","shallow-water-edge","algae-layer","salt-crystal","waterline","standing-water","backwash-channel","tidal-runnel"]
+  },
+  "materialRules": {
+    "wetResponse":"darken value by at most 18%, lower roughness, reduce micro-normal; never apply global blue tint",
+    "thinWater":"depth-limited local overlay; no ocean wave/Fresnel code reuse",
+    "salt":"raises value and roughness; suppresses where standing depth exceeds 1 mm",
+    "algae":"coverage mask changes color/roughness/normal without changing geometry collision",
+    "flow":"flow UV is local and deterministic; no shared scene state mutation"
+  },
+  "acceptance": {"staticContract":"PASS","shaderCompile":"NOT_RUN","visualCalibration":"NOT_RUN","runtimePerformance":"NOT_RUN"}
+}

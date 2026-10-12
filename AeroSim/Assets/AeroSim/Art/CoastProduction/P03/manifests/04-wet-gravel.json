@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-04-WET-GRAVEL",
+  "displayName": "湿碎石",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "aggregate reference; wet response must be shader/mask-derived, not blue tint" },
+  "scale": { "coverageMeters": [3.0, 3.0], "aggregateDiameterMm": [4, 64], "detailRepeatMeters": 0.45 },
+  "tile": { "mode": "seamless_repeat", "repeatMeters": 3.0, "rotationVariantsDegrees": [0, 90, 180, 270], "edgeBlendMeters": 0.3 },
+  "macroVariation": { "wavelengthMeters": [10, 34], "baseColorDelta": 0.08, "roughnessDelta": 0.14, "wetPatchesMeters": [2, 9] },
+  "normal": { "strength": 0.76, "nearDetailStrength": 0.22, "fadeStartMeters": 16, "fadeEndMeters": 42 },
+  "roughness": { "target": 0.43, "range": [0.28, 0.58], "puddleMinimum": 0.16 },
+  "lod": ["LOD0:0-15m wet mask+full maps", "LOD1:15-40m normal50%+wet macro", "LOD2:40-80m wet macro only", "LOD3:80-180m 512/256 mip", "Cull:>180m far wet aggregate"],
+  "streaming": { "priority": 1, "maxResident": 2048, "mobileMaxResident": 1024, "preloadRadiusMeters": 28 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

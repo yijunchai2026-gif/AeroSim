@@ -23,6 +23,68 @@ namespace AeroSim
         private string _academyFilter = "All";
         private int _onboardStep, _calibrationStep;
         private bool _calibrating;
+
+        private sealed class HeroArtMetadata
+        {
+            public readonly Vector2 Focus;
+            public readonly Rect SafeArea;
+
+            public HeroArtMetadata(Vector2 focus)
+            {
+                Focus = focus;
+                SafeArea = new Rect(.2f, .15f, .6f, .7f);
+            }
+        }
+
+        // Key art is rendered as a focus-aware cover until it reaches one native source pixel
+        // per device pixel. Larger stages keep the art native-sized and extend the atmosphere
+        // with the stage colour instead of softening the bitmap on 4K and ultra-wide displays.
+        private static void SetHeroBackground(VisualElement element, string resourcePath)
+        {
+            var texture = Resources.Load<Texture2D>(resourcePath);
+            if (texture == null) return;
+            var focus = resourcePath.EndsWith("CoastHeroV1", StringComparison.Ordinal) ? new Vector2(.62f, .47f) :
+                resourcePath.EndsWith("FpvIndustrialSunset", StringComparison.Ordinal) ? new Vector2(.52f, .46f) : new Vector2(.5f, .5f);
+            var art = element.Q<Image>("responsive-art-backdrop");
+            if (art == null)
+            {
+                art = new Image { name = "responsive-art-backdrop", scaleMode = ScaleMode.StretchToFill, pickingMode = PickingMode.Ignore };
+                art.AddToClassList("responsive-art-backdrop");
+                element.Insert(0, art);
+                element.RegisterCallback<GeometryChangedEvent>(_ => LayoutHeroBackground(element, art));
+            }
+            art.image = texture;
+            art.userData = new HeroArtMetadata(focus);
+            element.AddToClassList("focus-safe-hero");
+            element.schedule.Execute(() => LayoutHeroBackground(element, art));
+        }
+
+        private static void LayoutHeroBackground(VisualElement element, Image art)
+        {
+            if (!(art.image is Texture texture) || !(art.userData is HeroArtMetadata metadata)) return;
+            var bounds = element.contentRect;
+            if (bounds.width <= 1 || bounds.height <= 1 || float.IsNaN(bounds.width) || float.IsNaN(bounds.height)) return;
+            float panelWidth = element.panel == null ? Screen.width : element.panel.visualTree.resolvedStyle.width;
+            float pixelsPerPoint = float.IsNaN(panelWidth) || panelWidth <= 0 ? 1f : Mathf.Max(1f, Screen.width / panelWidth);
+            float nativeWidth = texture.width / pixelsPerPoint;
+            float nativeHeight = texture.height / pixelsPerPoint;
+            float coverScale = Mathf.Max(bounds.width / nativeWidth, bounds.height / nativeHeight);
+            float scale = Mathf.Min(1f, coverScale);
+            float drawWidth = nativeWidth * scale;
+            float drawHeight = nativeHeight * scale;
+            Vector2 safeCenter = metadata.SafeArea.center;
+            float left = drawWidth >= bounds.width
+                ? Mathf.Clamp(bounds.width * safeCenter.x - drawWidth * metadata.Focus.x, bounds.width - drawWidth, 0)
+                : (bounds.width - drawWidth) * .5f;
+            float top = drawHeight >= bounds.height
+                ? Mathf.Clamp(bounds.height * safeCenter.y - drawHeight * metadata.Focus.y, bounds.height - drawHeight, 0)
+                : (bounds.height - drawHeight) * .5f;
+            art.style.left = left;
+            art.style.top = top;
+            art.style.width = drawWidth;
+            art.style.height = drawHeight;
+            element.EnableInClassList("native-art-limited", coverScale > 1.001f);
+        }
         private Label[] _axisLabels;
         private ProgressBar[] _axisBars;
         private Vector4 _center, _minimum, _maximum;
@@ -39,6 +101,9 @@ namespace AeroSim
 
         public void ShowPage(Page page)
         {
+            _sim?.ClearControlInput();
+            if (_page == Page.VisualLab && page != Page.VisualLab) ReleaseVisualLab();
+            if (_fovDraft != null) CancelFovEditing();
             ReleaseDesignReplayView();
             ReleaseHangarPreviews();
             if (_sim != null && (page != Page.Flight && page != Page.Replay)) _sim.Stop();
@@ -59,7 +124,7 @@ namespace AeroSim
             Page.Tuning => DesignTuning(), Page.OsdEditor => DesignOsdEditor(), Page.Dashboard => DesignDashboard(),
             Page.Catalog => DesignCatalog(), Page.Brief => DesignBrief(), Page.Preflight => DesignPreflight(),
             Page.MissionEditor => DesignMissionEditor(), Page.Instructor => DesignInstructor(), Page.Readiness => DesignReadiness(),
-            Page.Settings => DesignSettings(), Page.Records => Records(), Page.Results => DesignResults(),
+            Page.Settings => DesignSettings(), Page.VisualLab => BuildVisualLab(), Page.Records => Records(), Page.Results => DesignResults(),
             Page.Report => DesignReport(), _ => DesignFreeFlight()
         };
 
@@ -170,7 +235,7 @@ namespace AeroSim
             var records = LocalStore.Sessions();
             var s = Canvas(fpv ? "FPV / Race ready" : "Professional / Local operations", fpv ? "Find your next line." : "Train with evidence.", fpv ? "From your first hover to manual flight. Tune your response, choose a course, and take off." : "Plan an inspection, validate the preflight checklist, then review recorded flight evidence.");
             var hero = Panel(fpv ? "Desert Range · Open session" : "Bridge Inspection · Mission training", fpv ? "Manual flight · Six route gates · Reset without losing your progress" : "Three capture targets · Ordered evidence · Local instructor review");
-            var image = Element("scene-banner"); SetBackground(image, fpv ? "Art/Sunset" : "Art/Readiness"); hero.Add(image);
+            var image = Element("scene-banner"); SetBackground(image, fpv ? "Art/DesignV1/FpvIndustrialSunset" : "Art/DesignV1/ControllerCutout"); hero.Add(image);
             hero.Add(Row(ActionButton(fpv ? "Quick Flight" : "Mission Brief", () => { if (fpv) ShowPage(Page.FreeFlight); else { _mission = LocalStore.Profile.missions[0]; ShowPage(Page.Brief); } }, true), ActionButton(fpv ? "Tune Aircraft" : "Edit Mission", () => ShowPage(fpv ? Page.Tuning : Page.MissionEditor))));
             s.Add(hero);
             var stats = Panel("Your progress", "Real local records — no sample scores.");
@@ -290,21 +355,21 @@ namespace AeroSim
             card.Add(Text("Input: " + (_inputCapabilities?.PrimaryDeviceLabel ?? "Keyboard / Touch") + "\nPause: Esc / Start / Pause button\nTraining boundary: 394 ft altitude · 755 ft radius", "muted", "wrap"));
             card.Add(Row(ActionButton("Controller Setup", () => ShowPage(Page.Controller)), start)); s.Add(card); return s;
         }
-        private FlightConfig MissionConfig(MissionDefinition m) => new() { title = m.title, aircraft = AircraftCatalog.Selected.Name, workspace = "Professional", environment = m.environment, professional = true, mission = m, windMph = m.windMph, rthAltitude = m.rthAltitude, task = "inspection", objective = "Capture all " + m.targets.Count + " inspection targets in order." };
+        private FlightConfig MissionConfig(MissionDefinition m) => new() { title = m.title, aircraft = AircraftCatalog.Selected.DisplayName, workspace = "Professional", environment = m.environment, professional = true, mission = m, windMph = m.windMph, rthAltitude = m.rthAltitude, task = "inspection", objective = "Capture all " + m.targets.Count + " inspection targets in order." };
 
         private VisualElement FreeFlight()
         {
             _mission = null;
-            _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
+            _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.DisplayName, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
             var config = _config;
             var s = Canvas(WorkspaceName + " / Free Flight", "Make the sky your practice space.", "Configure a local training environment. Settings below affect the next flight.");
             var card = Panel("Flight setup", "Procedural practice maps — not photorealistic scans or DJI hardware models.");
-            var image = Element("scene-banner"); SetBackground(image, "Art/CoastHero"); card.Add(image);
+            var image = Element("scene-banner"); SetBackground(image, "Art/DesignV1/CoastHeroV1"); card.Add(image);
             Choice(card, "Environment", new[] { "Pacific Coast", "Desert Range", "City Park", "Warehouse" }, config.environment, v => config.environment = v);
             Choice(card, "Aircraft", AircraftCatalog.Names, config.aircraft, v => { config.aircraft = v; LocalStore.Profile.selectedAircraft = AircraftCatalog.Resolve(v).Id; LocalStore.Save(); });
-            card.Add(ActionButton("Browse Aircraft in Hangar", () => ShowPage(Page.Hangar)));
+            card.Add(ActionButton("Browse Aircraft Bay", () => ShowPage(Page.Hangar)));
             Choice(card, "Flight mode", new[] { "Normal", "Sport", "Manual" }, config.mode, v => config.mode = v);
-            Choice(card, "Weather", new[] { "Clear", "Overcast" }, config.weather, v => config.weather = v);
+            Choice(card, "Weather", FlightWeather.Names, config.weather, v => config.weather = v);
             Range(card, "Wind (mph)", 0, 25, config.windMph, v => config.windMph = v);
             Range(card, "Time of day (24h)", 6, 20, config.timeOfDay, v => config.timeOfDay = v);
             Range(card, "RTH altitude (m)", 10, 80, config.rthAltitude, v => config.rthAltitude = v);
@@ -322,7 +387,7 @@ namespace AeroSim
                 var best = LocalStore.Sessions().Where(r => r.courseId == "race-" + map && r.passed).OrderBy(r => r.duration).FirstOrDefault();
                 var p = Panel(map + " Circuit", "6 gates · " + (best == null ? "No completed lap yet" : "Personal best " + Duration(best.duration)));
                 p.Add(Text("The current MVP shares a six-gate route across four environments. Try assisted flight before switching to manual.", "wrap", "muted"));
-                p.Add(ActionButton("Start Challenge", () => StartFlight(new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." }), true)); grid.Add(p);
+                p.Add(ActionButton("Start Challenge", () => StartFlight(new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = AircraftCatalog.Selected.DisplayName, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." }), true)); grid.Add(p);
             }
             s.Add(grid); return s;
         }
@@ -346,7 +411,7 @@ namespace AeroSim
             var settings = LocalStore.Profile.settings;
             var s = Canvas("FPV / OSD layout", "The information you need. Where you need it.", "Drag a telemetry item to reposition it. The layout is shared with the in-flight HUD.");
             var p = Panel("Telemetry overlay", "Positions are normalized to the screen, so the layout scales across desktop and tablet.");
-            var preview = Element("osd-preview"); SetBackground(preview, "Art/CoastHero");
+            var preview = Element("osd-preview"); SetBackground(preview, "Art/DesignV1/CoastHeroV1");
             OsdToken(preview, "65 mph", settings.speedPosition, v => settings.speedPosition = v);
             OsdToken(preview, "120 ft", settings.altitudePosition, v => settings.altitudePosition = v);
             OsdToken(preview, "02:18", settings.timerPosition, v => settings.timerPosition = v);
@@ -435,7 +500,7 @@ namespace AeroSim
         {
             var s = LocalStore.Profile.settings;
             Application.targetFrameRate = s.targetFps;
-            QualitySettings.vSyncCount = 0; QualitySettings.SetQualityLevel(Mathf.RoundToInt(Mathf.Clamp(s.quality,0,2) * (QualitySettings.names.Length-1) / 2f));
+            QualitySettings.vSyncCount = 0; QualitySettings.SetQualityLevel(Mathf.RoundToInt(AeroSimQuality.Normalize(s.quality) * (QualitySettings.names.Length-1) / 3f));
             _root.EnableInClassList("high-contrast", s.highContrast);
             _root.RemoveFromClassList("large-text");
             RefreshUiPreferences();
@@ -449,7 +514,7 @@ namespace AeroSim
             Field(p, "Pilot name", settings.pilotName, v => settings.pilotName = v);
             Choice(p, "Units", new[] { "U.S. Customary", "Metric" }, settings.units, v => settings.units = v);
             Choice(p, "Frame-rate limit", new[] { "30", "60", "120" }, settings.targetFps.ToString(), v => settings.targetFps = int.Parse(v));
-            Choice(p, "Quality", new[] { "Low", "Medium", "High" }, new[] { "Low", "Medium", "High" }[Mathf.Clamp(settings.quality, 0, 2)], v => settings.quality = v == "Low" ? 0 : v == "Medium" ? 1 : 2);
+            Choice(p, "Quality", AeroSimQuality.Names, AeroSimQuality.Name(settings.quality), v => settings.quality = AeroSimQuality.Parse(v));
             Range(p, "Motor sound volume", 0, 1, settings.volume, v => settings.volume = v);
             Check(p, "High-contrast interface", settings.highContrast, v => settings.highContrast = v);
             Choice(p, "UI Scale", new[] { "Auto", "80%", "90%", "100%", "110%", "125%", "150%" }, settings.uiScale ?? "Auto", v => { settings.uiScale = v; SaveUiPreferences(); });

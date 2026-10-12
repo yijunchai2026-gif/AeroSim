@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_07_INSPECTION_COVER",
+  "display_name": "检查盖",
+  "category": "access_hardware",
+  "source_dependencies": [],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_GALVANIZED_STEEL",
+  "decal_contract": null,
+  "dimensions_m": [0.80, 0.06, 0.80],
+  "pivot": "top_center",
+  "local_position_m": [-8.5, 0.0, 8.5],
+  "geometry": {"form": "flush_square_access_cover", "frame_width_m": 0.06, "cover_thickness_m": 0.04, "recess_depth_m": 0.06, "anti_slip_rib_pitch_m": 0.05, "lifting_slots": 2},
+  "collision": {"enabled": true, "type": "box", "center_m": [-8.5, -0.03, 8.5], "size_m": [0.80, 0.06, 0.80]},
+  "lod": {"lod0_max_triangles": 2600, "lod1_max_triangles": 480, "cull_distance_m": 100.0},
+  "integration": {"scene_independent": true, "snap_socket": "P04_ACCESS_NW", "shared_scene_write": false},
+  "acceptance": ["cover is flush with platform top", "placement remains outside H marking", "lifting slots are visual only", "box collision matches envelope"]
+}

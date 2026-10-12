@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_02_H_MARKING",
+  "display_name": "H标线",
+  "category": "surface_decal",
+  "source_dependencies": ["../sources/P04_decal_atlas_source.png"],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_WHITE_MARKING",
+  "decal_contract": "../contracts/decal.contract.json#H_MARKING",
+  "dimensions_m": [8.0, 0.0, 10.0],
+  "pivot": "center",
+  "local_position_m": [0.0, 0.006, 0.0],
+  "decal": {"mask": "procedural_H", "stroke_width_m": 1.0, "weather_modulator": "ATLAS_PAINT_WEAR_A", "wear_amount": 0.18, "sort_layer": 100, "projection_depth_m": 0.05},
+  "collision": {"enabled": false, "type": "none"},
+  "integration": {"scene_independent": true, "receiver_layer": "P04_PLATFORM_TOP", "shared_scene_write": false},
+  "acceptance": ["H centered at package origin", "paint remains non-emissive", "weather source modulates but does not define H silhouette", "no collision"]
+}

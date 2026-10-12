@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-04-OCEAN-GAMUT",
+  "displayName": "海面色域",
+  "category": "gamut.ocean",
+  "enabled": true,
+  "targets": ["P05 ocean", "P08 weather and distance"],
+  "intent": "海面维持自然蓝灰/蓝绿范围，远海、浅水、潮池、湿边和泡沫各有独立语义。",
+  "parameters": {
+    "palette": {
+      "deepWater": {"min": "#1B3540", "target": "#294C59", "max": "#476B75"},
+      "midWater": {"min": "#315963", "target": "#527B83", "max": "#759AA0"},
+      "shallowWater": {"min": "#486E6B", "target": "#6F9189", "max": "#97ADA2"},
+      "tidePool": {"min": "#263E3D", "target": "#405B56", "max": "#6C7D70"},
+      "foam": {"min": "#C4D0CF", "target": "#E0E7E4", "max": "#F3F5EF"}
+    },
+    "response": {"saturationMax": 0.62, "foamCoverageTargetMax": 0.22, "horizonValueLiftMax": 0.16, "wetEdgeBlueBiasMax": 0.04}
+  },
+  "evaluation": {"goldenCases": ["A", "C", "D", "F", "H"], "reviewBandsMeters": [1, 5, 15, 40, 80]},
+  "guardrails": ["no electric cyan", "foam only at breaking/shore interactions", "Fresnel must not erase wave body", "wet rock is not ocean-colored", "reflection ordering must remain stable"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

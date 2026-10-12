@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "aerosim.weather-visual-contract/v1",
+  "contractName": "WeatherVisualContract",
+  "contractId": "P08-WEATHER-VISUAL-V1",
+  "owner": "Coast Art Lead-08",
+  "scope": "read-only weather visuals; no simulation authority",
+  "runtimeIntegration": "CONSUMER_OPT_IN",
+  "stateOwnership": {
+    "input": "AeroSim.Domain.EnvironmentState v1 snapshot",
+    "access": "READ_ONLY_COPY",
+    "writesEnvironmentState": false,
+    "assemblesScene": false,
+    "determinism": "same input snapshot + quality + seed produces same frame"
+  },
+  "continuousParameters": {
+    "cloudAmount": { "range": [0, 1], "source": "EnvironmentState.cloudAmount", "default": 0.26 },
+    "precipitation": { "range": [0, 1], "source": "EnvironmentState.precipitation", "default": 0 },
+    "wetness": { "range": [0, 1], "source": "EnvironmentState.wetness", "default": 0 },
+    "puddleAmount": { "range": [0, 1], "source": "EnvironmentState.puddleAmount", "default": 0 },
+    "fogDensity": { "range": [0, 0.02], "source": "EnvironmentState.fogDensity", "default": 0.00115 },
+    "windSpeedMps": { "range": [0, 40], "source": "EnvironmentState.windSpeedMps", "default": 0 },
+    "windDirectionXZ": { "range": [-1, 1], "source": "normalized EnvironmentState.windDirection.xz", "default": [1, -0.35] },
+    "vfxDensity": { "range": [0, 1], "source": "EnvironmentState.vfxDensity", "default": 0 },
+    "cameraExposure01": { "range": [0, 1], "source": "consumer optional", "default": 0.5 },
+    "altitudeMeters": { "range": [0, 500], "source": "consumer optional", "default": 2 }
+  },
+  "weatherContinuum": {
+    "selection": "anchors initialize values only; every effect consumes continuous parameters after initialization",
+    "Clear": { "cloudAmount": 0.26, "precipitation": 0, "wetness": 0, "puddleAmount": 0, "fogDensity": 0.00115, "vfxDensity": 0 },
+    "Overcast": { "cloudAmount": 0.86, "precipitation": 0, "wetness": 0.12, "puddleAmount": 0, "fogDensity": 0.0031, "vfxDensity": 0 },
+    "Rain": { "cloudAmount": 1, "precipitation": 1, "wetness": 1, "puddleAmount": 0.65, "fogDensity": 0.0046, "vfxDensity": 1 },
+    "interpolation": "clamped linear input with per-asset smoothstep activation; no enum-only visual branch",
+    "transitionSeconds": { "clouds": 8, "fog": 5, "rain": 1.5, "wetnessRise": 12, "wetnessDry": 45, "puddles": 20 }
+  },
+  "derivedSignals": {
+    "rain01": "saturate(precipitation * vfxDensity)",
+    "fog01": "saturate((fogDensity - 0.001) / 0.007)",
+    "wind01": "saturate(windSpeedMps / 18)",
+    "drizzle01": "rain01 * (1 - smoothstep(0.35, 0.7, precipitation))",
+    "downpour01": "rain01 * smoothstep(0.45, 0.8, precipitation)",
+    "spray01": "rain01 * wetness * smoothstep(0.3, 0.75, wind01)",
+    "cloudShadow01": "cloudAmount * (1 - smoothstep(0.75, 1, cloudAmount))"
+  },
+  "qualityTiers": {
+    "Low": { "rank": 0, "particles": 0.25, "simulationHz": 15, "halfResolution": true, "lensDrops": false, "surfaceStreaks": false, "puddleRipples": false, "lowFog": true, "seaFog": false, "cloudShadows": false, "rainCurtain": false, "windDrivenSpray": false },
+    "Medium": { "rank": 1, "particles": 0.5, "simulationHz": 30, "halfResolution": true, "lensDrops": true, "surfaceStreaks": false, "puddleRipples": true, "lowFog": true, "seaFog": true, "cloudShadows": true, "rainCurtain": false, "windDrivenSpray": false },
+    "High": { "rank": 2, "particles": 0.8, "simulationHz": 45, "halfResolution": false, "lensDrops": true, "surfaceStreaks": true, "puddleRipples": true, "lowFog": true, "seaFog": true, "cloudShadows": true, "rainCurtain": true, "windDrivenSpray": true },
+    "Ultra": { "rank": 3, "particles": 1, "simulationHz": 60, "halfResolution": false, "lensDrops": true, "surfaceStreaks": true, "puddleRipples": true, "lowFog": true, "seaFog": true, "cloudShadows": true, "rainCurtain": true, "windDrivenSpray": true }
+  },
+  "shutdownPaths": {
+    "globalOff": "return disabled frame; zero all weights; stop emitters; release transient render targets; restore no material globals",
+    "vfxPolicyOff": "disable precipitation, lens, ripple, curtain and spray assets; cloud shadow/fog remain consumer-controlled",
+    "clearWeather": "rain-linked weights converge to zero; wetness and puddles follow input rather than weatherId",
+    "assetOff": "set the named asset weight to zero and release only its owned resources",
+    "qualityFallback": "unsupported quality -> Low; unavailable shader/texture -> asset Off; never increase requested quality",
+    "invalidState": "non-finite values use defaults, ranges clamp, zero wind uses default direction",
+    "dispose": "idempotent Stop/Dispose; no scene object destruction outside adapter-owned handles"
+  },
+  "sourcePolicy": {
+    "color": "sRGB only for visible intensity/color plates",
+    "masks": "derive linear grayscale/alpha; remove black atlas gutters and baked illumination",
+    "wrap": "Clamp until each cell is extracted and proven seamless",
+    "mipmaps": true,
+    "mobileCompression": "ASTC 6x6; lens and ripple masks ASTC 4x4 when validated",
+    "desktopCompression": "BC7 visible plates; BC4 masks where supported"
+  },
+  "acceptance": {
+    "staticValidationMayPass": true,
+    "atlasExtraction": "NOT_RUN",
+    "visualCalibration": "NOT_RUN",
+    "runtimePerformance": "NOT_RUN",
+    "requiredRuntimeChecks": ["Clear/Overcast/Rain sweep", "quality matrix", "global/vfx/asset Off", "camera-cut reset", "device GPU memory", "10-minute leak check"]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-03-BROKEN-SURF",
+  "displayName": "碎浪",
+  "category": "broken_surf",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [65, 260, 850, 177], "atlasRectBottomLeft": [0.022569, 0.848264, 0.295139, 0.061458] },
+  "placement": { "mode": "clustered_decals", "diameterMeters": [4, 17], "densityPer100Sqm": [0.8, 3.5], "rotationDegrees": [0, 360], "heightOffsetMeters": 0.04 },
+  "motion": { "flowSpeed": 0.038, "driftMetersPerSecond": [0.25, 0.9], "lifetimeSeconds": [4, 11], "decay": [0.08, 1.0] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.04, "edgeSoftness": 0.13, "intensity": 0.96 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 10, "midMeters": 45, "farMeters": 135, "cullMeters": 240 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

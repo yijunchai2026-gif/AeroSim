@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-07-SEA-FOG", "displayName": "海雾", "kind": "horizon_fog",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "bottom-right turbulent fog noise", "usage": "derive de-lit linear density noise" },
+  "inputs": ["fogDensity", "cloudAmount", "windDirectionXZ", "windSpeedMps"], "activation": { "formula": "fog01*smoothstep(0.45,0.90,cloudAmount)", "enter": 0.04, "exit": 0.02, "fadeSeconds": 8 },
+  "render": { "space": "world horizon band", "blend": "alpha extinction", "depth": "depth-aware", "rangeMeters": [140, 1100], "tileMeters": 180 },
+  "quality": { "Low": "Off", "Medium": "one half-res band", "High": "two bands", "Ultra": "three bands+temporal" },
+  "offPath": "fade density to zero; clear temporal history; disable bands", "fallback": "distance fog color blend or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

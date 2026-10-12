@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-04-SHALLOW-WATER-EDGE","displayName":"浅水边",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"wet edge and rock response"},{"file":"../source/tidepool-bed-reference.png","sha256":"d84db9b1323b596e5166ea08ae1d129cb989401c9598b9877918825c7c2b2f80","generatedSourceTag":"GENERATED_SOURCE:generated_image_035650","usage":"shallow submerged bed color"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"shallow-water-edge","keywords":["P02_THIN_WATER"]},
+  "material":{"tileMeters":[3.5,3.5],"macroWavelengthMeters":[9,30],"normalStrength":0.56,"dryRoughness":0.73,"wetRoughness":0.18,"standingDepthMm":[1,45],"edgeWidthMeters":[0.18,1.4]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.58,"tideInfluence":1.0,"wetValueMultiplier":0.88,"wetNormalMultiplier":0.54},
+  "lod":["0-15m thin-water edge","15-40m simplified edge","40-80m wet band","80-180m macro band",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

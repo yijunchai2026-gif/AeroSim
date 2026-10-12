@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "aerosim.asset-pack/v1",
+  "packId": "P06-COASTAL-VEGETATION-PACK-V1",
+  "displayName": "P06 海岸植被资产包",
+  "owner": "Coast Art Lead-06",
+  "createdAt": "2026-10-12T03:57:00+08:00",
+  "status": "SPEC_LOCKED_DERIVATION_PENDING",
+  "isolation": {
+    "root": "assets/p06-coastal-vegetation-pack-v1/",
+    "materialContract": "material-contract.json",
+    "sharedSceneModified": false,
+    "sharedEnvironmentAssemblyModified": false,
+    "runtimeWiring": "NONE"
+  },
+  "source": {
+    "file": "source/coastal-vegetation-atlas.png",
+    "original": "artifacts/generated_image_035552.png",
+    "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f",
+    "dimensions": [2880, 2880],
+    "colorMode": "RGB8",
+    "alphaPresent": false,
+    "role": "visual source and extraction atlas",
+    "limitations": ["black background requires matte extraction", "contains baked illumination", "not a calibrated PBR material", "billboards not baked"]
+  },
+  "subAssets": [
+    "manifests/01-salt-grass-a.json",
+    "manifests/02-salt-grass-b.json",
+    "manifests/03-heather-a.json",
+    "manifests/04-heather-b.json",
+    "manifests/05-low-shrub.json",
+    "manifests/06-windswept-scrub.json",
+    "manifests/07-groundcover.json",
+    "manifests/08-sapling.json",
+    "manifests/09-deadwood.json",
+    "manifests/10-distant-community.json"
+  ],
+  "qualityDeclaration": {
+    "manifestCount": 10,
+    "staticValidation": "PASS",
+    "alphaDerivation": "NOT_RUN",
+    "meshAndBillboardAuthoring": "NOT_RUN",
+    "unityImport": "NOT_RUN",
+    "runtimeVisual": "NOT_RUN",
+    "performance": "NOT_RUN"
+  }
+}

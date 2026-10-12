@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using AeroSim.Domain;
 using AeroSim.Input;
 using AeroSim.Navigation;
 using AeroSim.Simulation;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace AeroSim
@@ -20,11 +22,16 @@ namespace AeroSim
         private bool _seeking;
         private MiniMap _map;
         private float _uiTick;
+        private string _flightInputInterrupt;
+        private int _flightScreenWidth, _flightScreenHeight;
+        private Rect _flightSafeArea;
+        private float _flightPanelScale;
+        private TouchStick _leftTouchStick, _rightTouchStick;
 
         public void StartFlight(FlightConfig config)
         {
             ReleaseHangarPreviews();
-            config.aircraft=AircraftCatalog.Resolve(config.aircraft).Name;
+            config.aircraft=AircraftCatalog.Resolve(config.aircraft).DisplayName;
             _config = config; _page = Page.Flight;
             EnsureSimulator(); _sim.Begin(config); BuildFlightUi(false);
         }
@@ -42,6 +49,7 @@ namespace AeroSim
             _sim.Notice += ShowToast;
             _sim.PhotoCaptureRequested += SavePhotoEvidence;
             _sim.PauseRequested += TogglePause;
+            _sim.CameraCycleRequested += CycleCamera;
             _sim.Finished += record => { _record = record; ShowPage(Page.Results); };
         }
         private void BuildLegacyFlightUi(bool replay)
@@ -49,6 +57,10 @@ namespace AeroSim
             _root.Clear(); _root.AddToClassList("flight-root");
             RefreshUiPreferences();
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            _flightInputInterrupt = null;
+            _leftTouchStick = _rightTouchStick = null;
+            _flightScreenWidth = Screen.width; _flightScreenHeight = Screen.height;
+            _flightSafeArea = Screen.safeArea; _flightPanelScale = _document.panelSettings.scale;
             var hud = Element("flight-hud"); hud.pickingMode = PickingMode.Ignore; _root.Add(hud);
             var bar = Element("flight-bar");
             bar.Add(Text(replay ? "AEROSIM  /  REPLAY" : "AEROSIM  /  " + _config.workspace.ToUpperInvariant(), "flight-brand"));
@@ -59,7 +71,7 @@ namespace AeroSim
 
             var objectiveCard = Element("objective-card");
             objectiveCard.Add(Text(replay ? "RECORDED SESSION" : "SESSION OBJECTIVE", "page-eyebrow"));
-            objectiveCard.Add(Text(AircraftCatalog.Resolve(_sim.Config.aircraft).Name, "aircraft-hud-name"));
+            objectiveCard.Add(Text(AircraftCatalog.Resolve(_sim.Config.aircraft).DisplayName, "aircraft-hud-name"));
             _objective = Text(replay ? _record.title + " · " + _record.score + "/100" : _config.objective, "wrap"); objectiveCard.Add(_objective); hud.Add(objectiveCard);
             var settings = LocalStore.Profile.settings;
             _speed = HudMetric(hud, "SPEED", settings.speedPosition, settings.osdSpeed);
@@ -78,12 +90,12 @@ namespace AeroSim
                 _replaySlider = new Slider(0, Mathf.Max(.1f, _record.duration)) { value = 0 }; _replaySlider.AddToClassList("replay-slider");
                 _replaySlider.RegisterValueChangedCallback(e => { if (!_seeking) _sim.Seek(e.newValue); }); bottom.Add(_replaySlider);
                 var rate = 1f; bottom.Add(ActionButton("Speed", () => { rate = rate == 1 ? 2 : rate == 2 ? .5f : 1; _sim.ReplaySpeed = rate; ShowToast("Replay speed: " + rate + "x"); }));
-                bottom.Add(ActionButton("Camera", () => _sim.ChaseView = !_sim.ChaseView));
+                bottom.Add(ActionButton("Analysis Camera", () => _sim.ChaseView = !_sim.ChaseView));
             }
             else
             {
                 bottom.Add(ActionButton("Return Home", _sim.StartRth)); bottom.Add(ActionButton("Land", _sim.Land));
-                bottom.Add(ActionButton("Camera", () => _sim.ChaseView = !_sim.ChaseView));
+                bottom.Add(ActionButton("Cameras", ShowCameraSelector));
                 bottom.Add(ActionButton("Photo", () => _sim.CapturePhoto()));
                 bottom.Add(ActionButton("Finish Session", _sim.Finish, true));
             }
@@ -97,13 +109,16 @@ namespace AeroSim
             if (!replay)
             {
                 if (settings.showControls) hud.Add(Text("WASD move  ·  R/F altitude  ·  Q/E yaw  ·  H RTH  ·  C camera  ·  P photo  ·  Esc pause", "flight-guidance", "wrap"));
-                hud.Add(new TouchStick(true)); hud.Add(new TouchStick(false));
+                bool holdThrottle = string.Equals(_config.mode, "Manual", StringComparison.OrdinalIgnoreCase);
+                _leftTouchStick = new TouchStick(true, holdThrottle); _rightTouchStick = new TouchStick(false);
+                hud.Add(_leftTouchStick); hud.Add(_rightTouchStick);
             }
             _pauseOverlay = Element("modal-overlay", "is-hidden");
             var pause = Panel("Flight paused", "Physics, clock and scoring are frozen. No control input is applied while paused.");
             pause.Add(ActionButton("Resume Flight", TogglePause, true));
             pause.Add(ActionButton("Reset Aircraft", () => { _sim.ResetAircraft(); TogglePause(); }));
             pause.Add(ActionButton("Simulate Signal Loss", () => { TogglePause(); _sim.SignalLoss(); }));
+            pause.Add(ActionButton("Camera & FOV", ShowFlightFovSettings));
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
             pause.Add(ActionButton("Exit Without Saving", () => ShowConfirm("Leave this flight?", "The current session will not be saved. Existing records are unaffected.", () => ShowPage(Page.Home))));
             _pauseOverlay.Add(ModalScroll(pause)); hud.Add(_pauseOverlay);
@@ -122,8 +137,8 @@ namespace AeroSim
             if (_page != Page.Flight || _sim == null) return;
             if (_flightDialogClose != null) { _flightDialogClose(); return; }
             _sim.Pause(!_sim.Paused); _pauseOverlay.EnableInClassList("is-hidden", !_sim.Paused);
-            if (_sim.Paused) DismissToast();
-            FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            if (_sim.Paused) { _flightInputInterrupt = "Paused · touch again after resume"; ReleaseTouchControls("Paused"); DismissToast(); }
+            else _flightInputInterrupt = "Touch a stick or use a flight control to resume input";
             if (_sim.Paused) _pauseOverlay.Query<Button>().ToList().Find(b => b.enabledInHierarchy)?.Focus();
             else (_root.panel?.focusController.focusedElement as VisualElement)?.Blur();
         }
@@ -133,6 +148,7 @@ namespace AeroSim
             var overlay = Element("modal-overlay"); var p = Panel(title, description);
             bool pauseForReading = _page == Page.Flight && !_sim.Paused;
             if (pauseForReading) _sim.Pause(true);
+            if (_page == Page.Flight) { _flightInputInterrupt = "Dialog open · touch again after closing"; ReleaseTouchControls("Paused"); }
             DismissToast();
             void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
             _flightDialogClose = Close;
@@ -148,6 +164,7 @@ namespace AeroSim
             var panel = Panel("Session objective", _objective.text);
             bool pauseForReading = _page == Page.Flight && !_sim.Paused;
             if (pauseForReading) _sim.Pause(true);
+            if (_page == Page.Flight) { _flightInputInterrupt = "Dialog open · touch again after closing"; ReleaseTouchControls("Paused"); }
             DismissToast();
             void Close() { overlay.RemoveFromHierarchy(); _flightDialogClose = null; if (pauseForReading) _sim?.Pause(false); RestoreFlightDialogFocus(); }
             _flightDialogClose = Close;
@@ -170,8 +187,73 @@ namespace AeroSim
             scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             scroll.Add(panel); return scroll;
         }
+        private void ReleaseTouchControls(string reason)
+        {
+            FlightInput.ClearAndRequireNeutral();
+            _sim?.ClearControlInput();
+            _leftTouchStick?.Interrupt(reason);
+            _rightTouchStick?.Interrupt(reason);
+        }
+
+        private void InterruptFlightInput(string reason, bool pause)
+        {
+            if (_page != Page.Flight || _sim == null) return;
+            _flightInputInterrupt = reason;
+            ReleaseTouchControls(reason);
+            if (pause && !_sim.Paused) _sim.Pause(true);
+            if (pause && _pauseOverlay != null) _pauseOverlay.EnableInClassList("is-hidden", false);
+        }
+
+        private void OnApplicationFocus(bool focused)
+        {
+            if (!focused) InterruptFlightInput("Window focus lost · touch again to resume", true);
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused) InterruptFlightInput("Application interrupted · touch again to resume", true);
+        }
+
+        private string DescribeFlightInputSource()
+        {
+            if (_sim?.CameraState.Family == CameraFamily.Observer) return "OBSERVER / CAMERA INPUT";
+            if (FlightInput.WaitingForNeutral) return "INTERRUPTED · CENTRE ALL AXES TO RESUME";
+            bool captured = (_leftTouchStick?.Active ?? false) || (_rightTouchStick?.Active ?? false);
+            bool touch = captured || FlightInput.TouchLeft.sqrMagnitude > .0001f || FlightInput.TouchRight.sqrMagnitude > .0001f;
+            var keyboard = Keyboard.current;
+            bool keys = keyboard != null && (keyboard.wKey.isPressed || keyboard.aKey.isPressed || keyboard.sKey.isPressed || keyboard.dKey.isPressed ||
+                keyboard.qKey.isPressed || keyboard.eKey.isPressed || keyboard.rKey.isPressed || keyboard.fKey.isPressed ||
+                keyboard.upArrowKey.isPressed || keyboard.downArrowKey.isPressed || keyboard.leftArrowKey.isPressed || keyboard.rightArrowKey.isPressed ||
+                keyboard.pageUpKey.isPressed || keyboard.pageDownKey.isPressed);
+            var gamepad = Gamepad.current;
+            var joystickDevice = Joystick.current;
+            bool pad = (gamepad != null && (gamepad.leftStick.ReadValue().sqrMagnitude > .01f || gamepad.rightStick.ReadValue().sqrMagnitude > .01f)) ||
+                (joystickDevice != null && joystickDevice.stick.ReadValue().sqrMagnitude > .01f);
+            bool joystick = joystickDevice != null;
+            int active = (touch ? 1 : 0) + (keys ? 1 : 0) + (pad ? 1 : 0);
+            if (active > 0 && _sim != null && !_sim.Paused) _flightInputInterrupt = null;
+            if (!string.IsNullOrEmpty(_flightInputInterrupt)) return "INTERRUPTED · " + _flightInputInterrupt.ToUpperInvariant();
+            if (active > 1) return ("MIXED INPUT · " + (touch ? "TOUCH + " : "") + (keys ? "KEYBOARD + " : "") + (pad ? "CONTROLLER" : "")).TrimEnd(' ', '+');
+            if (touch) return "TOUCH STICKS · MODE 2";
+            if (keys) return "KEYBOARD · ACTIVE";
+            if (pad) return "EXTERNAL CONTROLLER · ACTIVE";
+            if (gamepad != null || joystick) return "INPUT READY · EXTERNAL + TOUCH + KEYBOARD";
+            return Application.isMobilePlatform ? "INPUT READY · TOUCH STICKS · MODE 2" : "INPUT READY · KEYBOARD" + (LocalStore.Profile.settings.showTouchControls ? " + TOUCH" : "");
+        }
+
         private void Update()
         {
+            bool flightLayoutChanged = _page == Page.Flight && _flightScreenWidth > 0 &&
+                (_flightScreenWidth != Screen.width || _flightScreenHeight != Screen.height ||
+                 _flightSafeArea != Screen.safeArea || Mathf.Abs(_flightPanelScale - _document.panelSettings.scale) > .0001f);
+            if (flightLayoutChanged)
+            {
+                _flightScreenWidth = Screen.width; _flightScreenHeight = Screen.height;
+                _flightSafeArea = Screen.safeArea; _flightPanelScale = _document.panelSettings.scale;
+                ReleaseTouchControls("Layout changed · touch again");
+                _flightInputInterrupt = "Layout changed · touch again";
+                OnGeometryChanged(null);
+            }
             if (_lastWindowWidth != Screen.width || _lastWindowHeight != Screen.height) RefreshUiPreferences();
             if (_page == Page.Controller && _axisLabels != null)
             {
@@ -194,7 +276,10 @@ namespace AeroSim
             _timer.text = Duration(replay ? _sim.ReplayTime : _sim.Elapsed);
             _battery.text = _sim.Battery.ToString("F0") + (replay && _battery.ClassListContains("v1-replay-chart-value") ? "" : "%");
             _battery.EnableInClassList("warning-text", _sim.Battery < 25);
-            var i4 = _sim.CurrentInput; _sticks.text = "INPUT   T " + i4.x.ToString("F2") + "   Y " + i4.y.ToString("F2") + "   P " + i4.z.ToString("F2") + "   R " + i4.w.ToString("F2");
+            var i4 = _sim.CurrentInput;
+            string inputSource = replay ? "RECORDED INPUT" : DescribeFlightInputSource();
+            _sticks.text = inputSource + "   T " + i4.x.ToString("F2") + "   Y " + i4.y.ToString("F2") + "   P " + i4.z.ToString("F2") + "   R " + i4.w.ToString("F2");
+            if (_designInputSource != null) _designInputSource.text = inputSource;
             if (replay)
             {
                 _seeking = true; _replaySlider.SetValueWithoutNotify(_sim.ReplayTime); _seeking = false;
@@ -215,40 +300,205 @@ namespace AeroSim
             var f = _record.frames.FindLast(x => x.time <= _sim.ReplayTime); return f?.speed ?? 0;
         }
 
+        internal bool RunTouchPointerContractDiagnostic()
+        {
+            if (_leftTouchStick == null || _rightTouchStick == null) return false;
+            ReleaseTouchControls("Available");
+            bool leftDown = _leftTouchStick.DiagnosticDown(11, new Vector2(.5f, .8f));
+            bool rightDown = _rightTouchStick.DiagnosticDown(12, new Vector2(-.5f, .7f));
+            bool fourAxes = FlightInput.TouchLeft == new Vector2(.5f, .8f) && FlightInput.TouchRight == new Vector2(-.5f, .7f);
+            bool thirdRejected = !_leftTouchStick.DiagnosticDown(13, Vector2.one);
+            bool crossStickRejected = !_rightTouchStick.DiagnosticDown(11, Vector2.one);
+            _rightTouchStick.DiagnosticCaptureOut(99);
+            bool nonOwnerIgnored = _rightTouchStick.Active && FlightInput.TouchRight == new Vector2(-.5f, .7f);
+            _leftTouchStick.DiagnosticCancel(11);
+            bool leftOnlyCleared = !_leftTouchStick.Active && _rightTouchStick.Active &&
+                FlightInput.TouchLeft == Vector2.zero && FlightInput.TouchRight == new Vector2(-.5f, .7f);
+            _rightTouchStick.DiagnosticUp(12);
+            bool released = !_rightTouchStick.Active && FlightInput.TouchLeft == Vector2.zero && FlightInput.TouchRight == Vector2.zero;
+            return leftDown && rightDown && fourAxes && thirdRejected && crossStickRejected && nonOwnerIgnored && leftOnlyCleared && released;
+        }
+
         private sealed class TouchStick : VisualElement
         {
+            private static readonly Dictionary<int, TouchStick> PointerOwners = new();
             private readonly bool _left;
+            private readonly bool _holdThrottle;
             private readonly VisualElement _knob;
+            private readonly Label _caption;
             private int _pointer = -1;
-            public TouchStick(bool left)
+            private float _heldThrottle;
+            private bool _compactCaption;
+
+            public TouchStick(bool left, bool holdThrottle = false)
             {
-                _left = left; AddToClassList("touch-stick"); AddToClassList(left ? "stick-left" : "stick-right");
-                Add(Text(left ? "THROTTLE / YAW" : "PITCH / ROLL", "stick-caption")); _knob = Element("stick-knob"); Add(_knob);
-                RegisterCallback<PointerDownEvent>(e => { _pointer = e.pointerId; this.CapturePointer(e.pointerId); Move(e.position); e.StopPropagation(); });
-                RegisterCallback<PointerMoveEvent>(e => { if (_pointer == e.pointerId) Move(e.position); });
-                RegisterCallback<PointerUpEvent>(e => { if (_pointer == e.pointerId) { Reset(); this.ReleasePointer(e.pointerId); } });
-                RegisterCallback<PointerCaptureOutEvent>(e => Reset());
+                _left = left;
+                _holdThrottle = left && holdThrottle;
+                name = left ? "touch-stick-left" : "touch-stick-right";
+                AddToClassList("touch-stick"); AddToClassList(left ? "stick-left" : "stick-right");
+                focusable = false;
+                _caption = Text(left ? "MODE 2 · THROTTLE / YAW" : "MODE 2 · PITCH / ROLL", "stick-caption"); Add(_caption);
+                _knob = Element("stick-knob"); Add(_knob);
+                SetStatus("Available");
+                RegisterCallback<PointerDownEvent>(OnPointerDown);
+                RegisterCallback<PointerMoveEvent>(OnPointerMove);
+                RegisterCallback<PointerUpEvent>(OnPointerUp);
+                RegisterCallback<PointerCancelEvent>(OnPointerCancel);
+                RegisterCallback<PointerCaptureOutEvent>(e => HandleCaptureOut(e.pointerId));
+                RegisterCallback<DetachFromPanelEvent>(_ => Interrupt("Unavailable"));
             }
-            public void ConfigureLayout(float size, float bottom, float edge, bool hideCaption)
+
+            public bool Active => _pointer >= 0;
+
+            public void ConfigureLayout(Rect envelope, bool compactCaption)
             {
-                style.width = size; style.height = size; style.bottom = bottom;
-                if (_left) style.left = edge; else style.right = edge;
-                float knobSize = Mathf.Max(16, size * .4f);
+                _compactCaption = compactCaption;
+                float size = Mathf.Min(envelope.width, envelope.height - (compactCaption ? 18 : 24));
+                style.display = DisplayStyle.Flex;
+                style.width = size; style.height = size;
+                style.left = envelope.x; style.top = envelope.y;
+                style.right = new StyleLength(StyleKeyword.Auto); style.bottom = new StyleLength(StyleKeyword.Auto);
+                float knobSize = Mathf.Max(44, size * .4f);
                 _knob.style.width = knobSize; _knob.style.height = knobSize;
-                var caption = this.Q<Label>(className: "stick-caption");
-                caption.style.top = size + 4; caption.style.left = -8; caption.style.right = -8;
-                caption.style.display = hideCaption ? DisplayStyle.None : DisplayStyle.Flex;
-                tooltip = _left ? "Throttle / yaw touch control" : "Pitch / roll touch control";
+                _caption.style.top = size + (compactCaption ? 1 : 4);
+                _caption.style.left = compactCaption ? -2 : -8;
+                _caption.style.right = compactCaption ? -2 : -8;
+                _caption.style.fontSize = compactCaption ? 9 : 11;
+                _caption.style.display = DisplayStyle.Flex;
+                SetStatus(CurrentStatus());
+                tooltip = (_left ? "Left stick. Mode 2 throttle and yaw. " : "Right stick. Mode 2 pitch and roll. ") +
+                    (_holdThrottle ? "Throttle holds on release; interruptions clear it. " : "Axes spring to centre on release. ") + CurrentStatus();
             }
+
+            public void SetLayoutProtected(bool protectedState)
+            {
+                style.display = protectedState ? DisplayStyle.None : DisplayStyle.Flex;
+                if (protectedState && Active) Interrupt("Layout protected");
+            }
+
+            public void Interrupt(string reason)
+            {
+                int pointer = _pointer;
+                _pointer = -1;
+                if (pointer >= 0 && PointerOwners.TryGetValue(pointer, out var owner) && owner == this) PointerOwners.Remove(pointer);
+                _heldThrottle = 0;
+                if (_left) FlightInput.TouchLeft = Vector2.zero; else FlightInput.TouchRight = Vector2.zero;
+                _knob.style.translate = new Translate(0, 0);
+                if (pointer >= 0 && this.HasPointerCapture(pointer)) this.ReleasePointer(pointer);
+                SetStatus(reason);
+            }
+
+            private bool BeginPointer(int pointerId)
+            {
+                if (_pointer >= 0 || !enabledInHierarchy || PointerOwners.ContainsKey(pointerId)) return false;
+                _pointer = pointerId;
+                PointerOwners[pointerId] = this;
+                SetStatus("Captured");
+                return true;
+            }
+
+            private void OnPointerDown(PointerDownEvent e)
+            {
+                if (!BeginPointer(e.pointerId)) { e.StopImmediatePropagation(); return; }
+                this.CapturePointer(e.pointerId);
+                Move(e.position);
+                e.StopImmediatePropagation();
+            }
+
+            private void OnPointerMove(PointerMoveEvent e)
+            {
+                if (_pointer != e.pointerId || !this.HasPointerCapture(e.pointerId)) return;
+                Move(e.position); e.StopPropagation();
+            }
+
+            private void OnPointerUp(PointerUpEvent e)
+            {
+                if (_pointer != e.pointerId) return;
+                Release(false); e.StopImmediatePropagation();
+            }
+
+            private void OnPointerCancel(PointerCancelEvent e)
+            {
+                if (_pointer != e.pointerId) return;
+                Interrupt("Interrupted"); e.StopImmediatePropagation();
+            }
+
+            private void HandleCaptureOut(int pointerId)
+            {
+                if (_pointer == pointerId) Interrupt("Interrupted");
+            }
+
+            internal bool DiagnosticDown(int pointerId, Vector2 value)
+            {
+                if (!BeginPointer(pointerId)) return false;
+                ApplyValue(value);
+                return true;
+            }
+
+            internal void DiagnosticCaptureOut(int pointerId) => HandleCaptureOut(pointerId);
+            internal void DiagnosticCancel(int pointerId) { if (_pointer == pointerId) Interrupt("Interrupted"); }
+            internal void DiagnosticUp(int pointerId) { if (_pointer == pointerId) Release(false); }
+
             private void Move(Vector3 position)
             {
                 var local = this.WorldToLocal(position); float radius = resolvedStyle.width * .5f;
                 float travel = Mathf.Max(1, radius - _knob.resolvedStyle.width * .5f);
-                var v = Vector2.ClampMagnitude(new Vector2(local.x - radius, radius - local.y) / travel, 1);
-                if (_left) FlightInput.TouchLeft = v; else FlightInput.TouchRight = v;
-                _knob.style.translate = new Translate(v.x * travel, -v.y * travel);
+                ApplyValue(Vector2.ClampMagnitude(new Vector2(local.x - radius, radius - local.y) / travel, 1), travel);
             }
-            private void Reset() { _pointer = -1; if (_left) FlightInput.TouchLeft = Vector2.zero; else FlightInput.TouchRight = Vector2.zero; _knob.style.translate = new Translate(0, 0); }
+
+            private void ApplyValue(Vector2 value, float travel = -1)
+            {
+                var normalized = Vector2.ClampMagnitude(value, 1);
+                if (_left) { FlightInput.TouchLeft = normalized; _heldThrottle = normalized.y; } else FlightInput.TouchRight = normalized;
+                if (travel < 0)
+                {
+                    float radius = resolvedStyle.width * .5f;
+                    travel = Mathf.Max(1, radius - _knob.resolvedStyle.width * .5f);
+                }
+                _knob.style.translate = new Translate(normalized.x * travel, -normalized.y * travel);
+                SetStatus(normalized.sqrMagnitude > .98f ? "Captured · Limit" : "Captured");
+            }
+
+            private void Release(bool interrupted)
+            {
+                int pointer = _pointer; _pointer = -1;
+                if (pointer >= 0 && PointerOwners.TryGetValue(pointer, out var owner) && owner == this) PointerOwners.Remove(pointer);
+                if (_left && _holdThrottle && !interrupted)
+                {
+                    FlightInput.TouchLeft = new Vector2(0, _heldThrottle);
+                    float radius = resolvedStyle.width * .5f;
+                    float travel = Mathf.Max(1, radius - _knob.resolvedStyle.width * .5f);
+                    _knob.style.translate = new Translate(0, -_heldThrottle * travel);
+                    SetStatus("Throttle held · Touch to adjust");
+                }
+                else
+                {
+                    if (_left) FlightInput.TouchLeft = Vector2.zero; else FlightInput.TouchRight = Vector2.zero;
+                    _knob.style.translate = new Translate(0, 0); SetStatus("Available");
+                }
+                if (pointer >= 0 && this.HasPointerCapture(pointer)) this.ReleasePointer(pointer);
+            }
+
+            private string CurrentStatus() => _caption.userData as string ?? "Available";
+            private void SetStatus(string status)
+            {
+                _caption.userData = status;
+                bool captured = status.StartsWith("Captured", StringComparison.Ordinal);
+                bool limit = status.Contains("Limit");
+                bool interrupted = !captured && status != "Available" && !status.StartsWith("Throttle held", StringComparison.Ordinal);
+                EnableInClassList("stick-captured", captured);
+                EnableInClassList("stick-at-limit", limit);
+                style.opacity = interrupted ? .55f : 1;
+                var ring = interrupted ? new Color(1f, .58f, .18f, .9f) : captured ? new Color(.15f, .9f, 1f, 1f) : new Color(.7f, .9f, .96f, .75f);
+                style.borderLeftColor = style.borderRightColor = style.borderTopColor = style.borderBottomColor = ring;
+                style.borderLeftWidth = style.borderRightWidth = style.borderTopWidth = style.borderBottomWidth = limit ? 4 : captured ? 3 : 2;
+                _knob.style.backgroundColor = limit ? new Color(1f, .75f, .2f, .9f) : captured ? new Color(.2f, .85f, 1f, .85f) : new Color(.6f, .86f, .94f, .65f);
+                string controls = _left ? (_compactCaption ? "L · T/Y" : "MODE 2 · T/Y") : (_compactCaption ? "R · P/R" : "MODE 2 · P/R");
+                string visibleStatus = _compactCaption && status == "Available" ? "READY" : status.ToUpperInvariant();
+                _caption.text = controls + " · " + visibleStatus;
+                tooltip = (_left ? "Left stick. Mode 2 throttle and yaw. " : "Right stick. Mode 2 pitch and roll. ") +
+                    (_holdThrottle ? "Throttle holds on release; interruptions clear it. " : "Axes spring to centre on release. ") + status;
+            }
         }
         private sealed class MiniMap : VisualElement
         {

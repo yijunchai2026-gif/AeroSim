@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "aerosim.foam-atlas-material-contract/v1",
+  "contractId": "P07-FOAM-ATLAS-V1",
+  "owner": "Coast Art Lead-07",
+  "scope": "isolated_water_fx_asset_pack",
+  "shader": "shaders/FoamAtlas.shader",
+  "shaderName": "AeroSim/P07/FoamAtlas",
+  "runtimeIntegration": "NOT_CONNECTED",
+  "oceanModified": false,
+  "sharedEnvironmentAssemblyModified": false,
+  "rendering": {
+    "surface": "transparent premultiplied foam overlay",
+    "queue": "Transparent",
+    "zWrite": false,
+    "cull": "Off",
+    "depthFade": "optional scene-depth intersection fade",
+    "sourceAlpha": "max(R,G,B), remapped by _AlphaThreshold/_EdgeSoftness"
+  },
+  "requiredProperties": {
+    "_FoamAtlas": "RGB8 source atlas; sRGB; alpha is ignored",
+    "_AtlasRect": "normalized xy offset, zw scale",
+    "_Tint": "linear HDR foam color and opacity",
+    "_Intensity": "coverage multiplier",
+    "_AlphaThreshold": "black-background rejection threshold",
+    "_EdgeSoftness": "luminance edge feather",
+    "_FlowDirection": "normalized XZ flow vector",
+    "_FlowSpeed": "UV units per second",
+    "_Decay": "0 fresh to 1 dissolved",
+    "_DepthFadeMeters": "intersection fade distance"
+  },
+  "keywords": {
+    "weather": ["_WEATHER_CLEAR", "_WEATHER_OVERCAST", "_WEATHER_RAIN"],
+    "quality": ["_QUALITY_LOW", "_QUALITY_HIGH", "_QUALITY_ULTRA"],
+    "rule": "exactly one weather and one quality keyword per material"
+  },
+  "weatherPresets": {
+    "Clear": { "tint": [0.86, 0.94, 0.96, 0.82], "intensity": 0.90, "flowMultiplier": 1.00, "decayMultiplier": 1.00 },
+    "Overcast": { "tint": [0.78, 0.86, 0.89, 0.90], "intensity": 1.02, "flowMultiplier": 0.92, "decayMultiplier": 0.90 },
+    "Rain": { "tint": [0.70, 0.80, 0.84, 0.94], "intensity": 1.14, "flowMultiplier": 1.18, "decayMultiplier": 0.78 }
+  },
+  "qualityPresets": {
+    "Low": { "sampleBudget": 1, "depthFade": false, "distortion": false, "maxAtlasSize": 1024, "particleMultiplier": 0.35 },
+    "High": { "sampleBudget": 2, "depthFade": true, "distortion": false, "maxAtlasSize": 2048, "particleMultiplier": 0.70 },
+    "Ultra": { "sampleBudget": 3, "depthFade": true, "distortion": true, "maxAtlasSize": 2880, "particleMultiplier": 1.00 }
+  },
+  "import": {
+    "wrap": "Clamp",
+    "filter": "Trilinear",
+    "mipmaps": true,
+    "alphaSource": "None",
+    "sRGB": true,
+    "readWrite": false,
+    "desktop": "BC7 preferred",
+    "ios": { "Low": "ASTC 8x8", "High": "ASTC 6x6", "Ultra": "ASTC 4x4" }
+  },
+  "batching": {
+    "atlasRectViaMaterialPropertyBlock": true,
+    "perInstanceProperties": ["_AtlasRect", "_Tint", "_Intensity", "_Decay", "_FlowDirection", "_FlowSpeed"],
+    "materialSplitOnlyFor": ["weather keyword", "quality keyword"]
+  },
+  "acceptance": {
+    "staticValidation": "PASS",
+    "unityShaderCompile": "NOT_RUN",
+    "runtimeVisual": "NOT_RUN",
+    "targetDevicePerformance": "NOT_RUN"
+  }
+}

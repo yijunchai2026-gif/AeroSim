@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-09-CLOUD-SHADOW-COLOR",
+  "displayName": "云影色与强度",
+  "category": "atmosphere.cloudShadow",
+  "enabled": true,
+  "targets": ["P03 ground", "P04 rock", "P05 ocean", "P06 vegetation", "P07 industrial", "P08 moving cloud shadow"],
+  "intent": "大尺度低频云影统一压低直射光并轻微冷却，不作为表面脏污或材质改色。",
+  "parameters": {
+    "palette": {
+      "clear": {"tint": "#AAB9BE", "strength": 0.18},
+      "overcast": {"tint": "#98A8AE", "strength": 0.10},
+      "rain": {"tint": "#84969D", "strength": 0.07}
+    },
+    "response": {
+      "valueMultiplier": {"min": 0.72, "max": 0.93},
+      "saturationMultiplier": {"min": 0.82, "max": 0.96},
+      "colorBlendMax": 0.14,
+      "worldScaleMeters": [45, 180],
+      "driftMetersPerSecond": [0.4, 2.2],
+      "edgeFeatherMeters": [8, 30],
+      "transitionSeconds": 1.2
+    }
+  },
+  "evaluation": {"goldenCases": ["A", "B", "C", "D", "F", "H"], "reviewBandsMeters": [1, 5, 15, 40, 80]},
+  "guardrails": ["low-frequency only", "does not mutate material base color", "no frame-to-frame flicker", "does not make vegetation or wet rock black", "ocean response remains temporally stable"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

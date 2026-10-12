@@ -399,3 +399,108 @@
 .design-v1.text-expanded .design-range-field .unity-slider__input, .design-v1.text-expanded .design-range-field .design-range-number { height: auto; min-height: 58px; }
 .design-v1.text-expanded .design-range-number .unity-base-text-field__input { height: auto; min-height: 54px; }
 .design-v1.text-expanded .design-range-number .design-range-value, .design-v1.text-expanded .design-range-number .unity-text-element--inner-input-field-component { height: auto; min-height: 46px; }
+
+/* FOV settings reuse product controls while keeping per-view state visually distinct. */
+.fov-settings-panel { min-width: 0; }
+.fov-view-section { margin-top: 12px; margin-bottom: 14px; padding: 16px; background-color: rgb(8, 28, 45); border-width: 1px; border-color: rgb(42, 72, 94); border-radius: 10px; }
+.fov-view-section .panel-title { flex-grow: 1; margin-bottom: 0; }
+.fov-profile-key { color: rgb(139, 174, 199); font-size: 10px; margin-right: 10px; }
+.fov-value { color: rgb(66, 211, 244); font-size: 20px; -unity-font-style: bold; margin-left: 12px; }
+.camera-selector-panel { width: 720px; max-width: 94%; }
+.camera-selector-row { flex-direction: row; align-items: center; border-bottom-width: 1px; border-bottom-color: rgb(38,67,88); padding-top: 5px; padding-bottom: 5px; }
+.camera-selector-row .action-button { width: 220px; flex-shrink: 0; }
+.camera-capability, .camera-capability-unavailable { flex-grow: 1; min-width: 0; margin-left: 10px; font-size: 12px; color: rgb(158,205,224); }
+.camera-capability-unavailable { color: rgb(255,166,82); -unity-font-style: bold; }
+.fov-derived { margin-bottom: 8px; }
+.layout-phone .fov-view-section { padding: 10px; }
+.layout-phone .fov-value { width: 100%; margin-left: 0; margin-top: 6px; }
+
+.fov-xr-reason { margin-top: 8px; margin-bottom: 12px; padding: 12px; background-color: rgba(112, 54, 12, 0.45); border-width: 1px; border-color: rgb(242, 152, 69); border-radius: 8px; }
+.fov-undo-toast { flex-direction: row; }
+.fov-undo-toast .toast-label { flex-grow: 1; margin-right: 12px; }
+.fov-undo-toast .action-button { margin: 0; min-height: 36px; }
+
+
+/* RD-05 Aircraft Bay and pre-flight consume RD-02 truth, RD-06 loader state, and RD-04 responsive tokens. */
+.aircraft-bay-page { padding-bottom: 20px; }
+.aircraft-bay-truth { flex-direction: row; flex-wrap: wrap; align-items: center; margin-bottom: 16px; padding: 14px 16px; background-color: rgb(7, 24, 37); border-width: 1px; border-color: rgb(48, 73, 91); border-radius: 10px; }
+.aircraft-bay-pill { min-height: 30px; padding: 7px 10px; margin-right: 8px; margin-bottom: 6px; border-width: 1px; border-radius: 4px; font-size: 11px; -unity-font-style: bold; letter-spacing: 1px; }
+.aircraft-bay-truth-copy { flex-grow: 1; min-width: 280px; color: rgb(195, 214, 226); margin: 3px 8px 6px 8px; }
+.aircraft-bay-layout { align-items: stretch; }
+.design-v1 .aircraft-bay-fleet { width: 232px; padding: 14px; }
+.design-v1 .aircraft-bay-stage { min-width: 0; padding: 18px; }
+.design-v1 .aircraft-bay-quality { width: 280px; padding: 16px; }
+.hangar-filter-row { flex-direction: row; flex-wrap: wrap; margin-bottom: 8px; }
+.hangar-filter-row .action-button { min-height: 38px; padding-left: 9px; padding-right: 9px; margin-right: 4px; font-size: 12px; }
+.hangar-filter-selected { border-color: rgb(73, 215, 255); background-color: rgb(8, 62, 91); }
+.aircraft-bay-fleet-list { margin-top: 8px; }
+.aircraft-bay-fleet-item { min-height: 88px; align-items: flex-start; margin-bottom: 8px; padding: 11px; background-color: rgb(8, 27, 42); border-width: 1px; border-color: rgb(40, 67, 86); border-radius: 8px; }
+.aircraft-bay-fleet-name { font-size: 14px; -unity-font-style: bold; }
+.aircraft-bay-fleet-state { margin-top: 5px; color: rgb(139, 170, 193); font-size: 10px; letter-spacing: 1px; }
+.aircraft-bay-preview { height: 430px; margin-top: 4px; background-color: rgb(46, 46, 46); border-width: 1px; border-color: rgb(76, 88, 96); }
+.aircraft-bay-studio-label { align-self: center; color: rgb(155, 178, 193); }
+.aircraft-bay-disclosure { margin: 8px 0 18px 0; padding: 12px; color: rgb(255, 205, 137); background-color: rgba(112, 54, 12, 0.34); border-left-width: 3px; border-left-color: rgb(255, 184, 74); }
+.aircraft-bay-section-heading { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.aircraft-bay-section-heading .panel-title { flex-grow: 1; }
+.aircraft-bay-angle-grid, .aircraft-bay-inspect-modes { flex-direction: row; flex-wrap: wrap; margin-bottom: 10px; }
+.aircraft-bay-angle-grid .action-button { width: 23%; min-width: 130px; margin-right: 1.5%; min-height: 42px; font-size: 12px; }
+.aircraft-bay-inspect-modes .action-button { min-height: 40px; padding-left: 10px; padding-right: 10px; font-size: 12px; }
+.quality-rail-row, .rd05-preflight-check { flex-direction: row; align-items: center; min-height: 62px; padding-top: 10px; padding-bottom: 10px; border-bottom-width: 1px; border-bottom-color: rgb(41, 65, 83); }
+.quality-rail-title { font-size: 14px; -unity-font-style: bold; }
+.quality-rail-row .muted, .rd05-preflight-check .muted { margin-top: 3px; margin-bottom: 0; font-size: 12px; }
+.quality-rail-state { flex-shrink: 0; max-width: 96px; margin-left: 8px; padding: 6px 8px; border-width: 1px; border-radius: 4px; font-size: 10px; -unity-font-style: bold; white-space: normal; -unity-text-align: middle-center; }
+.quality-pass { color: rgb(105, 227, 154); border-color: rgb(55, 143, 91); background-color: rgba(24, 80, 48, 0.42); }
+.quality-warning { color: rgb(255, 184, 74); border-color: rgb(180, 112, 36); background-color: rgba(102, 55, 16, 0.45); }
+.quality-fail { color: rgb(255, 104, 112); border-color: rgb(182, 61, 68); background-color: rgba(94, 27, 32, 0.5); }
+.aircraft-bay-contract { margin-top: 16px; padding: 12px; background-color: rgb(5, 21, 33); border-radius: 6px; font-size: 11px; }
+.aircraft-bay-recovery, .rd05-recovery-panel { margin-top: 14px; padding: 14px; border-width: 1px; border-color: rgb(178, 93, 49); border-radius: 8px; background-color: rgba(92, 38, 21, 0.38); }
+.aircraft-bay-actions { position: relative; min-height: 68px; padding: 12px 4px 0 4px; }
+.rd05-preflight-preview .aircraft-bay-pill { align-self: flex-start; margin-top: 8px; }
+.rd05-session-summary { margin-top: 16px; padding: 16px; background-color: rgb(6, 23, 36); border-width: 1px; border-color: rgb(43, 70, 91); border-radius: 8px; }
+.rd05-preflight-checks { width: 440px; }
+.rd05-preflight-check .design-copy { flex-grow: 1; min-width: 0; }
+
+.design-v1.layout-tablet .aircraft-bay-layout, .design-v1.layout-phone .aircraft-bay-layout, .design-v1.text-expanded .aircraft-bay-layout { flex-direction: column; }
+.design-v1.layout-tablet .aircraft-bay-fleet, .design-v1.layout-tablet .aircraft-bay-quality, .design-v1.layout-phone .aircraft-bay-fleet, .design-v1.layout-phone .aircraft-bay-quality, .design-v1.text-expanded .aircraft-bay-fleet, .design-v1.text-expanded .aircraft-bay-quality { width: 100%; }
+.design-v1.layout-tablet .aircraft-bay-fleet-list { flex-direction: row; flex-wrap: wrap; }
+.design-v1.layout-tablet .aircraft-bay-fleet-item { width: 31%; margin-right: 2%; }
+.design-v1.layout-phone .aircraft-bay-preview { height: 240px; }
+.design-v1.layout-phone .aircraft-bay-angle-grid .action-button { width: 48%; min-width: 0; }
+.design-v1.layout-phone .aircraft-bay-truth-copy { min-width: 0; width: 100%; }
+.design-v1.layout-phone .rd05-preflight-checks, .design-v1.layout-tablet .rd05-preflight-checks, .design-v1.text-expanded .rd05-preflight-checks { width: 100%; }
+.aircraft-bay-fleet-inspect { align-items: flex-start; padding: 0; background-color: rgba(0,0,0,0); border-width: 0; }
+.aircraft-bay-fleet-item > .action-button { min-height: 32px; margin-top: 6px; margin-bottom: 0; font-size: 11px; }
+
+/* RD-09 Visual Lab is an evidence surface; it does not change core scene art. */
+.visual-lab { flex-grow: 1; min-width: 0; min-height: 0; background-color: rgb(4, 14, 23); }
+.visual-lab-top { min-height: 78px; padding: 12px 18px; border-bottom-width: 1px; border-bottom-color: rgb(43, 73, 94); flex-direction: row; flex-wrap: wrap; align-items: center; }
+.visual-lab-top .page-eyebrow { width: 160px; margin: 0 18px 0 0; }
+.visual-lab-run-line { flex-grow: 1; min-width: 420px; color: rgb(209, 226, 238); font-size: 12px; }
+.visual-lab-dirty { color: rgb(255, 178, 75); font-size: 12px; -unity-font-style: bold; margin-left: 14px; }
+.visual-lab-body { flex-grow: 1; min-height: 0; flex-direction: row; }
+.visual-lab-controls, .visual-lab-performance { width: 296px; min-width: 240px; flex-shrink: 0; padding: 16px; background-color: rgb(9, 28, 43); overflow: hidden; }
+.visual-lab-controls { border-right-width: 1px; border-right-color: rgb(38, 66, 86); }
+.visual-lab-performance { border-left-width: 1px; border-left-color: rgb(38, 66, 86); }
+.visual-lab-controls .panel-title, .visual-lab-performance .panel-title { font-size: 19px; }
+.visual-lab-controls .product-field { flex-direction: column; margin-bottom: 5px; }
+.visual-lab-controls .product-field .unity-base-field__label { min-width: 0; margin-bottom: 3px; }
+.visual-lab-controls .action-button { min-height: 36px; font-size: 12px; margin-top: 3px; margin-bottom: 3px; }
+.visual-lab-viewport { flex-grow: 1; min-width: 0; min-height: 0; padding: 10px; background-color: black; }
+.visual-lab-comparison { flex-grow: 1; min-width: 0; min-height: 0; position: relative; flex-direction: row; flex-wrap: wrap; overflow: hidden; }
+.visual-lab-image { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: black; }
+.visual-lab-half, .visual-lab-quad-cell { position: relative; overflow: hidden; border-width: 1px; border-color: rgb(74, 111, 133); }
+.visual-lab-half { width: 50%; height: 100%; }
+.visual-lab-quad-cell { width: 50%; height: 50%; }
+.visual-lab-overlay { position: absolute; left: 10px; top: 10px; padding: 5px 8px; background-color: rgba(0, 10, 18, .78); color: rgb(109, 226, 247); font-size: 11px; -unity-font-style: bold; }
+.visual-lab-not-captured .visual-lab-image { opacity: .25; }
+.visual-lab-not-captured .visual-lab-overlay { color: rgb(255, 176, 82); }
+.visual-lab-metrics, .visual-lab-state { color: rgb(209, 229, 241); font-size: 12px; padding: 10px; background-color: rgb(5, 19, 30); border-radius: 7px; margin-bottom: 8px; }
+.visual-lab-capture { min-height: 86px; padding: 10px 16px; flex-direction: row; align-items: center; border-top-width: 1px; border-top-color: rgb(43, 73, 94); }
+.visual-lab-capture .action-button, .visual-lab-capture .primary-button { min-height: 40px; font-size: 13px; }
+.visual-lab-export { flex-grow: 1; min-width: 220px; color: rgb(166, 195, 214); font-size: 11px; margin-left: 10px; }
+.layout-phone .visual-lab-body { flex-direction: column; }
+.layout-phone .visual-lab-controls, .layout-phone .visual-lab-performance { width: auto; min-width: 0; }
+.layout-phone .visual-lab-viewport { min-height: 280px; }
+.layout-phone .visual-lab-capture { flex-wrap: wrap; }
+.aircraft-bay-missing-preview { justify-content: center; align-items: center; padding: 24px; border-width: 1px; border-color: rgb(182, 61, 68); background-color: rgb(28, 23, 25); }
+.aircraft-bay-missing-title { color: rgb(255, 104, 112); font-size: 24px; -unity-font-style: bold; letter-spacing: 2px; }

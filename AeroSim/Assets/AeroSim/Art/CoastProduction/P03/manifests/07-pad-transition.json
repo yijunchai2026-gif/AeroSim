@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-07-PAD-TRANSITION",
+  "displayName": "平台过渡",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "aggregate side of landing-pad edge blend; pad material remains external" },
+  "scale": { "coverageMeters": [4.0, 2.0], "transitionWidthMeters": [0.75, 2.5], "detailRepeatMeters": 0.4 },
+  "tile": { "mode": "directional_transition", "repeatMeters": 4.0, "rotationVariantsDegrees": [0, 90, 180, 270], "edgeBlendMeters": 0.35 },
+  "macroVariation": { "wavelengthMeters": [8, 24], "baseColorDelta": 0.06, "roughnessDelta": 0.08, "erosionPatchesMeters": [1.5, 5] },
+  "normal": { "strength": 0.78, "nearDetailStrength": 0.26, "fadeStartMeters": 18, "fadeEndMeters": 44 },
+  "roughness": { "target": 0.76, "range": [0.62, 0.9], "wetResponseMinimum": 0.36 },
+  "lod": ["LOD0:0-15m transition mask+full maps", "LOD1:15-40m normal50%", "LOD2:40-80m edge macro", "LOD3:80-180m pad-surround color", "Cull:>180m merge pad surround"],
+  "streaming": { "priority": 2, "maxResident": 2048, "mobileMaxResident": 1024, "preloadRadiusMeters": 36 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

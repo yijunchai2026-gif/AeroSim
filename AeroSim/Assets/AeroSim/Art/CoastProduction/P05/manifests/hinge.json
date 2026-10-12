@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_HINGE",
+  "display_name_zh": "铰链",
+  "category": "hardware/hinge",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["镀锌表面", "转轴与螺钉周边氧化"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_HINGE_010_FIXED_L00", "SM_P05_HINGE_010_LEAF_L00", "SM_P05_HINGE_020_FIXED_L00", "SM_P05_HINGE_020_LEAF_L00", "SM_P05_HINGE_PIN_SMALL_L00", "SM_P05_HINGE_PIN_LARGE_L00"],
+    "sockets": ["SCK_AXIS", "SCK_FIXED_LEAF", "SCK_MOVING_LEAF", "SCK_FASTENER_00", "SCK_FASTENER_01"],
+    "notes": ["10/20 cm 两档", "固定叶与活动叶拆分", "转角范围 0–120°，默认闭合角 0°"]
+  },
+  "pivot": {"rule": "活动叶 pivot 必须位于铰链销轴中心；固定叶采用同一轴心", "orientation": "+Z 沿销轴，绕 +Z 正向旋转开启，+X 指向活动叶闭合方向"},
+  "snap_grid_cm": {"translation": 1, "rotation_deg": 5, "fine_translation": 0.1},
+  "pbr": {
+    "material_slots": ["MI_P05_GALV_HINGE", "MI_P05_GREASE_DARK"],
+    "metallic": [0.74, 0.96], "roughness": [0.28, 0.78],
+    "texture_set": ["T_P05_HINGE_BC", "T_P05_HINGE_N", "T_P05_HINGE_ORM", "T_P05_HINGE_GREASE_MASK"],
+    "special": {"grease_amount": [0.0, 0.4], "wear_follows_rotation_axis": true}
+  },
+  "lod": {"triangle_budget": [9000, 4200, 1500, 360], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["所有 LOD 保持机械轴心", "LOD2 起烘焙螺钉和小倒角"]},
+  "collision": {"mode": "compound", "budget": {"boxes": 2, "capsules": 1}, "rules": ["固定叶和活动叶各一盒体", "销轴用胶囊", "动态碰撞不得跨越旋转轴合并"]},
+  "deliverables": ["6 个铰链模块及 LOD0-3", "机械旋转 pivot", "固定/活动刚体碰撞"]
+}

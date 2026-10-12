@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "aerosim.material-contract/v1",
+  "contractId": "P03-GROUND-SURFACE-V1",
+  "owner": "Coast Art Lead-03",
+  "scope": "isolated_ground_surface_asset_pack",
+  "runtimeIntegration": "NOT_CONNECTED",
+  "sharedEnvironmentAssemblyModified": false,
+  "coordinateSystem": { "unit": "meter", "up": "+Y", "uvOrigin": "bottom-left" },
+  "sourceColorPolicy": {
+    "baseColor": "sRGB; remove directional light and baked highlights before production use",
+    "dataMaps": "linear; never sample roughness, AO, height, masks or normal as sRGB",
+    "sourceImageRole": "licensed visual source/reference; not asserted tileable or PBR-calibrated"
+  },
+  "channels": {
+    "baseColor": "RGB, alpha unused",
+    "normal": "tangent-space OpenGL +Y; Unity Normal Map importer; flip green only if a target shader requires DirectX -Y",
+    "mask": "R=AO, G=roughness, B=height, A=blend/coverage",
+    "metallic": "0.0 for all ten mineral/shell/sand surfaces",
+    "roughnessToBuiltin": "perceptual smoothness = clamp(1 - perceptual roughness, 0, 1)"
+  },
+  "textureImport": {
+    "wrap": "Repeat for base surfaces; Clamp for transition/decal masks",
+    "mipmaps": true,
+    "readWrite": false,
+    "filter": "Trilinear",
+    "anisotropy": { "desktop": 8, "tablet": 4, "phone": 4 },
+    "desktop": { "baseColor": "BC7 preferred", "normal": "BC5 preferred", "mask": "BC7/BC4 by channel availability" },
+    "ios": { "default": "ASTC 6x6", "nearNormal": "ASTC 4x4 A/B only", "farBaseColor": "ASTC 8x8" }
+  },
+  "lodPolicy": {
+    "LOD0": "0-15 m: full base + normal + roughness/mask + near detail where declared",
+    "LOD1": "15-40 m: base + half-strength normal + roughness; fade near detail",
+    "LOD2": "40-80 m: base + macro variation; no micro normal",
+    "LOD3": "80-180 m: macro color/roughness only, target 512 mip residency",
+    "Cull": ">180 m: use terrain/far-surface aggregate, no unique sub-asset sampling",
+    "crossFadeMeters": 4,
+    "note": "Distance bands are authoring targets, not measured performance acceptance."
+  },
+  "streamingPolicy": {
+    "required": true,
+    "mipStreaming": true,
+    "priority": { "takeoffAndTracks": 2, "nearGround": 1, "farGround": -1 },
+    "desktopBudgetMB": 96,
+    "tabletBudgetMB": 48,
+    "phoneBudgetMB": 32,
+    "maxResidentSize": { "LOD0": 2048, "LOD1": 1024, "LOD2": 512, "LOD3": 256 },
+    "validation": "Confirm actual imported format, residency and GPU memory in target-player profiling; manifest values are budgets only."
+  },
+  "blendContract": {
+    "heightBlendWidth": 0.12,
+    "vertexOrControlMask": "linear 0..1",
+    "wetness": "changes base value slightly, lowers roughness and normal strength; never blue-tints the whole surface",
+    "macroVariation": "world-space low-frequency mask; do not rely only on random UV rotation"
+  },
+  "acceptance": {
+    "requiredRig": ["neutral gray card", "roughness sphere", "flat 1 m scale plane", "30 degree key light", "75 degree grazing light"],
+    "staticValidationMayPass": true,
+    "visualCalibration": "NOT_RUN",
+    "runtimePerformance": "NOT_RUN"
+  }
+}

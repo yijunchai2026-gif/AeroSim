@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-08-FOG-COLOR",
+  "displayName": "雾色与距离层次",
+  "category": "atmosphere.fog",
+  "enabled": true,
+  "targets": ["P01 composition depth", "P05 sea horizon", "P08 atmosphere"],
+  "intent": "雾色随天气在受控蓝灰范围变化，用于尺度与纵深；不覆盖任务区、不把远景洗成纯白。",
+  "parameters": {
+    "palette": {
+      "clear": {"near": "#9FB4BC", "target": "#B8C7CD", "far": "#CBD5D7"},
+      "overcast": {"near": "#909FA5", "target": "#AAB7BC", "far": "#BEC7C9"},
+      "rain": {"near": "#71838B", "target": "#83949B", "far": "#9AA7AB"}
+    },
+    "response": {
+      "fogMode": "ExponentialSquared",
+      "density": {"clear": 0.0018, "overcast": 0.0028, "rain": 0.0058},
+      "maxLuminanceDeltaFromHorizon": 0.12,
+      "minTaskContrastAt80m": 0.18,
+      "transitionSeconds": 2.0
+    }
+  },
+  "evaluation": {"goldenCases": ["B", "C", "D", "E", "F", "H"], "reviewBandsMeters": [1, 5, 15, 40, 80]},
+  "guardrails": ["fog uses EnvironmentState weather", "no pure white distance wash", "near 15 m task geometry remains readable", "sky/ocean seam remains intentional", "transition cannot step"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

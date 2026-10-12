@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-09-WHEEL-TRACK-DISTURBANCE",
+  "displayName": "轮迹扰动",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "underlying aggregate vocabulary; track profile is authored mask, not inferred from source" },
+  "scale": { "coverageMeters": [4.0, 2.0], "trackGaugeMeters": [1.2, 1.8], "rutDepthMeters": [0.015, 0.06] },
+  "tile": { "mode": "directional_decal_strip", "repeatMeters": 4.0, "rotationVariantsDegrees": [0, 180], "edgeBlendMeters": 0.25 },
+  "macroVariation": { "wavelengthMeters": [6, 22], "baseColorDelta": 0.07, "roughnessDelta": 0.09, "segmentLengthMeters": [3, 12] },
+  "normal": { "strength": 0.88, "nearDetailStrength": 0.24, "fadeStartMeters": 20, "fadeEndMeters": 48 },
+  "roughness": { "target": 0.68, "range": [0.5, 0.86], "wetResponseMinimum": 0.3 },
+  "lod": ["LOD0:0-15m decal+rut normal", "LOD1:15-40m normal50%", "LOD2:40-80m dark/compaction mask", "LOD3:80-180m omit unless route-readable", "Cull:>180m none"],
+  "streaming": { "priority": 2, "maxResident": 2048, "mobileMaxResident": 1024, "preloadRadiusMeters": 40 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

@@ -103,7 +103,9 @@ Label, Button { white-space: normal; }
 .toast { min-width: 0; width: 80%; max-width: 540px; left: 10%; margin-left: 0; }
 /* Source-image contract only for 1.0; the 0.4 branch and build stay untouched. */
 .design-v1 .top-bar { height: 88px; min-height: 88px; max-height: 88px; }
-.design-v1 .main-content { max-width: none; }
+.design-v1 .main-content { max-width: 1920px; }
+.design-v1.v1-flight-hud .main-content, .design-v1.v1-replay .main-content,
+.design-v1.design-controller-mode .main-content, .design-v1.design-fpv-home .main-content { max-width: none; }
 .design-v1 .side-nav { width: 248px; min-width: 248px; }
 .design-v1 .home-scroll { padding-left: 16px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; }
 .design-v1 .hero-card, .design-v1 .hero-copy { min-height: 474px; }
@@ -176,3 +178,66 @@ Label, Button { white-space: normal; }
 .design-v1.layout-phone .design-fpv-quick, .design-v1.text-expanded .design-fpv-quick, .design-v1.layout-tablet .design-fpv-quick { position: relative; left: auto; bottom: auto; width: auto; height: auto; min-height: 64px; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
 .design-v1.layout-phone .design-fpv-progress, .design-v1.text-expanded .design-fpv-progress, .design-v1.layout-tablet .design-fpv-progress { position: relative; right: auto; bottom: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; margin-bottom: 24px; }
 .design-v1.layout-phone .design-fpv-disclaimer, .design-v1.text-expanded .design-fpv-disclaimer, .design-v1.layout-tablet .design-fpv-disclaimer { position: relative; left: auto; right: auto; bottom: auto; margin-left: 16px; margin-right: 16px; margin-bottom: 24px; white-space: normal; }
+
+/* v3.0 full-screen visual system. Scenery can bleed; functional UI stays bounded. */
+.design-v1 .content-stage { align-items: center; overflow: hidden; }
+.design-v1 .main-content { width: 100%; max-width: 1760px; align-self: center; }
+.design-v1.layout-ultrawide .main-content, .design-v1.layout-super-ultrawide .main-content { max-width: 2240px; }
+.design-v1.layout-super-ultrawide .content-stage { background-color: rgb(4,18,30); }
+
+.focus-safe-hero { position: relative; overflow: hidden; background-color: rgb(10,34,51); }
+.responsive-art-backdrop { position: absolute; flex-grow: 0; flex-shrink: 0; }
+.native-art-limited { background-color: rgb(9,31,47); }
+.layout-super-ultrawide .focus-safe-hero { border-left-color: rgba(4,18,30,0.35); border-right-color: rgba(4,18,30,0.35); }
+.focus-safe-hero > .hero-shade, .focus-safe-hero > .design-hero-shade, .focus-safe-hero > .design-fpv-shade,
+.focus-safe-hero > .hero-copy, .focus-safe-hero > .design-environment-copy,
+.focus-safe-hero > .design-fpv-menu, .focus-safe-hero > .design-fpv-aircraft,
+.focus-safe-hero > .design-fpv-quick, .focus-safe-hero > .design-fpv-progress,
+.focus-safe-hero > .design-fpv-disclaimer { position: absolute; }
+
+.design-v1.layout-large .hero-card { min-height: 620px; }
+.design-v1.layout-large .hero-copy { min-height: 620px; width: 680px; padding-left: 56px; padding-right: 56px; }
+.design-v1.layout-large .hero-title { font-size: 60px; }
+.design-v1.layout-large .design-environment-hero { height: 680px; }
+.design-v1.layout-large .design-dashboard-hero { min-height: 500px; }
+.design-v1.layout-4k .hero-card { min-height: 820px; }
+.design-v1.layout-4k .hero-copy { min-height: 820px; width: 760px; padding-left: 64px; padding-right: 64px; }
+.design-v1.layout-4k .hero-title { font-size: 68px; }
+.design-v1.layout-4k .design-environment-hero { height: 900px; }
+.design-v1.layout-4k .design-dashboard-hero { min-height: 620px; }
+.design-v1.layout-ultrawide .hero-card, .design-v1.layout-super-ultrawide .hero-card { min-height: 620px; }
+.design-v1.layout-ultrawide .hero-copy, .design-v1.layout-super-ultrawide .hero-copy { min-height: 620px; width: 660px; padding-left: 56px; padding-right: 56px; }
+.design-v1.layout-ultrawide .design-environment-hero, .design-v1.layout-super-ultrawide .design-environment-hero { height: 680px; }
+
+.design-v1.layout-large .design-page, .design-v1.layout-4k .design-page { padding-left: 48px; padding-right: 48px; padding-top: 40px; }
+.design-v1.layout-large .page-title, .design-v1.layout-4k .page-title { font-size: 48px; }
+.design-v1.layout-large .design-side, .design-v1.layout-4k .design-side { width: 440px; }
+.design-v1.layout-large .design-rail, .design-v1.layout-4k .design-rail { width: 300px; }
+.design-v1.layout-4k .design-panel { padding: 28px; }
+
+.design-v1.layout-compact .design-path-grid { flex-wrap: wrap; }
+.design-v1.layout-compact .design-path-card { min-width: 280px; }
+.design-v1.layout-compact .design-challenge-card { width: 100%; margin-right: 0; }
+.design-v1.layout-compact .design-scene-grid { flex-wrap: wrap; }
+.design-v1.layout-compact .design-scene-card { min-width: 280px; margin-bottom: 12px; }
+.design-v1 .aircraft-grid { justify-content: center; margin-left: -8px; margin-right: -8px; }
+.design-v1 .aircraft-grid .aircraft-card { margin-left: 8px; margin-right: 8px; min-width: 280px; max-width: 480px; }
+
+.design-v1 .hangar-selected-hero { min-height: 360px; position: relative; overflow: hidden; padding-left: 46%; justify-content: center; background-color: rgb(8,30,48); }
+.design-v1 .hangar-selected-preview { position: absolute; left: 0; top: 0; bottom: 0; width: 42%; height: 100%; background-color: rgb(6,23,38); }
+.design-v1.layout-large .hangar-selected-hero, .design-v1.layout-4k .hangar-selected-hero { min-height: 480px; }
+.design-v1.layout-large .hangar-selected-hero .panel-title, .design-v1.layout-4k .hangar-selected-hero .panel-title { font-size: 36px; }
+.design-v1.layout-phone .hangar-selected-hero, .design-v1.layout-tablet .hangar-selected-hero, .design-v1.text-expanded .hangar-selected-hero { padding-left: 18px; padding-top: 250px; min-height: 520px; }
+.design-v1.layout-phone .hangar-selected-preview, .design-v1.layout-tablet .hangar-selected-preview, .design-v1.text-expanded .hangar-selected-preview { width: 100%; height: 230px; bottom: auto; }
+
+/* A full-bleed stage is the exception: only its scenery expands beyond ComfortRect. */
+.design-v1.design-fpv-home.layout-ultrawide .main-content,
+.design-v1.design-fpv-home.layout-super-ultrawide .main-content,
+.design-v1.design-fpv-home.layout-4k .main-content { max-width: none; width: 100%; }
+.design-v1.layout-super-ultrawide .design-fpv-stage { background-color: rgb(7,23,34); }
+.design-v1 .design-path-grid, .design-v1 .design-challenge-grid, .design-v1 .design-instructor-grid { justify-content: center; }
+.design-v1 .design-path-card { max-width: 480px; }
+.design-v1 .design-challenge-card, .design-v1 .design-instructor-grid .design-panel { max-width: 480px; }
+.design-v1 .design-scene-card { max-width: 420px; }
+.design-v1 .product-grid { justify-content: center; }
+.design-v1 .product-grid > .product-panel { max-width: 480px; }

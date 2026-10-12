@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_06_TIE_DOWN_POINT",
+  "display_name": "系留点",
+  "category": "hardware",
+  "source_dependencies": [],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_GALVANIZED_STEEL",
+  "decal_contract": null,
+  "dimensions_m": [0.24, 0.035, 0.24],
+  "pivot": "mounting_face_center",
+  "local_position_m": [0.0, 0.0, 0.0],
+  "geometry": {"form": "flush_recessed_ring", "ring_outer_diameter_m": 0.24, "ring_rod_diameter_m": 0.025, "recess_depth_m": 0.035, "instances": 8, "placement": {"pattern": "octagonal", "radius_m": 9.5, "start_angle_deg": 22.5}},
+  "collision": {"enabled": true, "type": "capsule", "count_per_instance": 1, "flush_trip_hazard_max_m": 0.008},
+  "lod": {"lod0_max_triangles_per_instance": 1200, "lod1_max_triangles_per_instance": 240, "cull_distance_m": 90.0},
+  "integration": {"scene_independent": true, "snap_socket_prefix": "P04_TIE_", "shared_scene_write": false},
+  "acceptance": ["8 evenly spaced instances", "ring top protrusion not above 8 mm", "no intersection with exclusion stripe boundary", "primitive collision only"]
+}

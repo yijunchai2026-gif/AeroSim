@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_BEACON",
+  "display_name_zh": "灯标",
+  "category": "equipment/warning_beacon",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["金属安装底座", "紧固件氧化"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_BEACON_BASE_WALL_L00", "SM_P05_BEACON_BASE_POLE_L00", "SM_P05_BEACON_RED_L00", "SM_P05_BEACON_AMBER_L00", "SM_P05_BEACON_GUARD_L00"],
+    "sockets": ["SCK_POWER", "SCK_MOUNT", "SCK_GUARD"],
+    "notes": ["灯罩直径 18 cm、高 22 cm", "壁装和杆装底座共享灯体接口", "防护罩可选装"]
+  },
+  "pivot": {"rule": "安装底座中心，位于接触面", "orientation": "+X 指向灯具正面，+Z 沿灯体轴线向上"},
+  "snap_grid_cm": {"translation": 5, "rotation_deg": 15, "fine_translation": 1},
+  "pbr": {
+    "material_slots": ["MI_P05_BEACON_METAL", "MI_P05_BEACON_LENS", "MI_P05_BEACON_EMISSIVE"],
+    "metallic": [0.0, 0.92], "roughness": [0.18, 0.62],
+    "texture_set": ["T_P05_BEACON_BC", "T_P05_BEACON_N", "T_P05_BEACON_ORM", "T_P05_BEACON_E"],
+    "special": {"emissive_nits": [0, 2500], "lens_transmission": 0.72, "blink_rate_hz": [0.5, 2.0]}
+  },
+  "lod": {"triangle_budget": [16000, 8000, 3200, 900], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["各 LOD 保持发光轮廓", "LOD2 移除防护罩细连接件"]},
+  "collision": {"mode": "compound", "budget": {"capsules": 1, "boxes": 1}, "rules": ["灯体胶囊加底座盒体", "防护罩不单独参与角色碰撞"]},
+  "deliverables": ["5 个灯标模块及 LOD0-3", "红/琥珀发光材质实例", "灯体简单碰撞"]
+}

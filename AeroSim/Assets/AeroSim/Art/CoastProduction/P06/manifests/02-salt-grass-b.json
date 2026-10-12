@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-02-SALT-GRASS-B", "displayName": "盐生草B", "archetype": "seeded_tuft_grass",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.1667, 0.57, 0.1666, 0.21]},
+  "geometry": {"heightMeters": [0.55,1.15], "radiusMeters": [0.22,0.48], "cardsLOD0": 8, "pivot": "root"},
+  "alphaCutout": {"cutoffBias": -0.04, "coverageClass": "fine_blades_seedheads", "twoSided": true},
+  "wind": {"primaryBend": 0.86, "edgeFlutter": 0.61, "stiffness": 0.20, "maxDisplacementMeters": 0.38, "phaseJitter": 0.44},
+  "seasonWeather": {"winterTintRGB": [0.70,0.61,0.40], "summerTintRGB": [0.86,0.98,0.76], "autumnDryness": 0.72, "flowerAmount": [0.0,0.04], "wetnessResponse": 0.76},
+  "lodBillboard": {"lod0Meters": [0,18], "lod1Meters": [15,38], "lod2Meters": [34,68], "billboardMeters": [62,145], "cullMeters": 145, "billboardViews": 8},
+  "ecology": {"distanceToMeanHighWaterM": [5,80], "elevationAboveMeanHighWaterM": [0.8,12], "slopeDegrees": [0,28], "soilMoisture01": [0.12,0.66], "salinity01": [0.2,0.82], "exposure01": [0.42,1.0], "substrate": ["sand","gravel","sandy_loam"], "spacingMeters": [0.45,1.1], "patchRadiusMeters": [2,11], "densityPerSquareMeter": [0.5,3.4]},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

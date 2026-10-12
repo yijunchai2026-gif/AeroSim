@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-08-SAPLING", "displayName": "幼树", "archetype": "coastal_sapling",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.00,0.38,0.1667,0.20]},
+  "geometry": {"heightMeters": [1.8,3.8], "radiusMeters": [0.7,1.5], "cardsLOD0": 15, "pivot": "trunk_root"},
+  "alphaCutout": {"cutoffBias": 0.01, "coverageClass": "broadleaf_open_crown", "twoSided": true},
+  "wind": {"primaryBend": 0.38, "edgeFlutter": 0.58, "stiffness": 0.68, "maxDisplacementMeters": 0.42, "phaseJitter": 0.14, "trunkBendShare": 0.22},
+  "seasonWeather": {"winterTintRGB": [0.70,0.72,0.62], "summerTintRGB": [0.92,1.00,0.88], "autumnDryness": 0.42, "flowerAmount": [0.0,0.08], "wetnessResponse": 0.64},
+  "lodBillboard": {"lod0Meters": [0,28], "lod1Meters": [24,60], "lod2Meters": [55,115], "billboardMeters": [106,260], "cullMeters": 260, "billboardViews": 8},
+  "ecology": {"distanceToMeanHighWaterM": [55,400], "elevationAboveMeanHighWaterM": [6,70], "slopeDegrees": [0,28], "soilMoisture01": [0.3,0.78], "salinity01": [0.0,0.22], "exposure01": [0.05,0.48], "substrate": ["sandy_loam","organic_soil","sheltered_gravel"], "spacingMeters": [3,8], "patchRadiusMeters": [5,24], "densityPerSquareMeter": [0.008,0.08], "exclusionExtra": ["salt-spray crest", "approach corridor vegetation height envelope"]},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

@@ -17,6 +17,7 @@ namespace AeroSim
         private readonly List<ReplayTelemetryGraph> _designGraphs = new();
         private readonly List<ReplayStickDiagram> _designSticks = new();
         private Label _designDistance, _designVerticalSpeed, _designFlightClock;
+        private Label _designInputSource;
         private Label _designReplayTime, _designTargetProgress, _designTargetDistance;
         private Label _designReplayInputs;
         private VisualElement _designReplayMap;
@@ -26,6 +27,11 @@ namespace AeroSim
         private Label _designOsdPauseNotice;
         private VisualElement _designOsdIndicator;
         private VisualElement _designFlightInputGuardRoot;
+        private VisualElement _cameraDock;
+        private Label _cameraDockState, _cameraDockFov, _cameraHudStatus;
+        private Button _cameraDockCycle;
+        private IVisualElementScheduledItem _cameraDockHold;
+        private bool _cameraDockLongPress;
 
         private void BuildFlightUi(bool replay)
         {
@@ -44,6 +50,10 @@ namespace AeroSim
             InstallDesignFlightInputGuard();
             _root.schedule.Execute(InstallDesignFlightInputGuard);
             FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            _flightInputInterrupt = null;
+            _leftTouchStick = _rightTouchStick = null;
+            _flightScreenWidth = Screen.width; _flightScreenHeight = Screen.height;
+            _flightSafeArea = Screen.safeArea; _flightPanelScale = _document.panelSettings.scale;
             if (replay) BuildDesignReplay();
             else BuildDesignFlight();
             InstallToast();
@@ -98,6 +108,13 @@ namespace AeroSim
             var session = Text(_config.title, "v1-flight-title"); bar.Add(session);
             _flightStatus = Text(_sim.Status, "flight-status", "v1-flight-status"); bar.Add(_flightStatus);
             bar.Add(Text("SIMULATION · LOCAL", "v1-simulation-chip"));
+            _designInputSource = Text("INPUT · READY", "v1-simulation-chip");
+            _designInputSource.name = "flight-input-source";
+            _designInputSource.style.display = DisplayStyle.Flex;
+            _designInputSource.style.fontSize = 11;
+            _designInputSource.style.marginRight = 8;
+            _designInputSource.tooltip = "Current flight input source. Mode 2: left throttle/yaw, right pitch/roll.";
+            bar.Add(_designInputSource);
             _designFlightClock = Text(Duration(0), "v1-flight-clock"); bar.Add(_designFlightClock);
             _designOsdIndicator = DesignIcon("chart", 16);
             _designOsdIndicator.name = "osd-availability-indicator";
@@ -105,14 +122,12 @@ namespace AeroSim
             _designOsdIndicator.style.display = DisplayStyle.None;
             _designOsdIndicator.style.marginRight = 8; bar.Add(_designOsdIndicator);
             bar.Add(FlightAction("Objective", "target", ShowObjective, "objective-toggle"));
-            var pauseAction = FlightAction("Pause", "pause", TogglePause);
-            // Keep the visual order, but make intentional Tab start at Pause even when Objective is visible.
-            pauseAction.tabIndex = 1;
-            bar.Add(pauseAction); hud.Add(bar);
+            bar.Add(FlightAction("Pause", "pause", TogglePause)); hud.Add(bar);
+            BuildCameraDock(hud);
 
             var objective = Element("objective-card", "v1-objective-card");
             objective.Add(Text(_config.title, "v1-objective-title"));
-            objective.Add(Text(AircraftCatalog.Resolve(_config.aircraft).Name, "aircraft-hud-name"));
+            objective.Add(Text(AircraftCatalog.Resolve(_config.aircraft).DisplayName, "aircraft-hud-name"));
             _objective = Text(_config.objective, "wrap", "v1-objective-copy");
             objective.Add(_objective);
             if (_config.professional) BuildInspectionPanel(objective);
@@ -158,7 +173,7 @@ namespace AeroSim
 
             var tools = Element("v1-camera-tools");
             tools.Add(FlightAction("Photo", "camera", () => _sim.CapturePhoto()));
-            tools.Add(FlightAction("Camera", "camera", () => _sim.ChaseView = !_sim.ChaseView));
+            tools.Add(FlightAction("Cameras", "camera", ShowCameraSelector));
             tools.Add(FlightAction("Land", "flight", _sim.Land));
             tools.Add(FlightAction("Return Home", "home", _sim.StartRth));
             tools.Add(FlightAction("Finish Session", "save", _sim.Finish)); hud.Add(tools);
@@ -166,10 +181,173 @@ namespace AeroSim
             compact.Add(FlightAction("Photo", "camera", () => _sim.CapturePhoto()));
             compact.Add(FlightAction("RTH", "home", _sim.StartRth));
             compact.Add(FlightAction("Finish Session", "save", _sim.Finish)); hud.Add(compact);
-            if (settings.showControls) hud.Add(Text("WASD move · R/F altitude · Q/E yaw · H RTH · C camera · P photo · Esc pause", "flight-guidance", "wrap"));
+            if (settings.showControls) hud.Add(Text("WASD move · R/F altitude · Q/E yaw · H RTH · C/LB camera · P/RB photo · Esc/Start pause", "flight-guidance", "wrap"));
             hud.Add(Text("SIMULATION — NOT FOR NAVIGATION", "v1-flight-disclaimer"));
-            hud.Add(new TouchStick(true)); hud.Add(new TouchStick(false));
+            bool holdThrottle = string.Equals(_config.mode, "Manual", StringComparison.OrdinalIgnoreCase);
+            _leftTouchStick = new TouchStick(true, holdThrottle); _rightTouchStick = new TouchStick(false);
+            hud.Add(_leftTouchStick); hud.Add(_rightTouchStick);
             BuildDesignPause(hud);
+        }
+
+        private void BuildCameraDock(VisualElement hud)
+        {
+            _cameraDock = Element("v1-camera-dock");
+            _cameraDock.name = "camera-dock";
+            _cameraDockCycle = ActionButton("", () => { });
+            _cameraDockCycle.name = "camera-cycle";
+            _cameraDockCycle.AddToClassList("v1-camera-dock-cycle");
+            _cameraDockCycle.RegisterCallback<PointerDownEvent>(_ =>
+            {
+                _cameraDockLongPress = false;
+                _cameraDockHold?.Pause();
+                _cameraDockHold = _cameraDockCycle.schedule.Execute(() => { _cameraDockLongPress = true; ShowCameraSelector(); });
+                _cameraDockHold.ExecuteLater(450);
+            });
+            _cameraDockCycle.RegisterCallback<PointerUpEvent>(_ =>
+            {
+                _cameraDockHold?.Pause(); _cameraDockHold = null;
+                if (!_cameraDockLongPress) CycleCamera();
+            });
+            _cameraDockCycle.RegisterCallback<PointerCancelEvent>(_ => { _cameraDockHold?.Pause(); _cameraDockHold = null; });
+            _cameraDockState = Text("", "v1-camera-dock-state");
+            _cameraDockFov = Text("", "v1-camera-dock-fov");
+            _cameraDockCycle.Add(_cameraDockState); _cameraDockCycle.Add(_cameraDockFov);
+            _cameraDockCycle.tooltip = "Short press cycles the workspace-safe camera ring. Keyboard: C.";
+            _cameraDock.Add(_cameraDockCycle);
+            var selector = ActionButton("▾", ShowCameraSelector); selector.name = "camera-selector";
+            selector.AddToClassList("v1-camera-selector-trigger"); selector.tooltip = "Open all camera families and capability reasons.";
+            _cameraDock.Add(selector); hud.Add(_cameraDock);
+            _cameraHudStatus = Text("", "v1-camera-hud-status", "wrap");
+            _cameraHudStatus.name = "camera-hud-profile"; hud.Add(_cameraHudStatus);
+            RefreshCameraHudProfile();
+        }
+
+        private static string CameraName(CameraFamily family, CameraPreset preset)
+        {
+            return (family, preset) switch
+            {
+                (CameraFamily.NosePilot, _) => "NOSE · PILOT",
+                (CameraFamily.VideoFpv, _) => "VIDEO FPV",
+                (CameraFamily.Mount, _) => "MOUNT · HIGH",
+                (CameraFamily.Gimbal, CameraPreset.GimbalFollow) => "GIMBAL · FOLLOW",
+                (CameraFamily.Gimbal, CameraPreset.GimbalFpv) => "GIMBAL · FPV",
+                (CameraFamily.Gimbal, CameraPreset.TargetLock) => "GIMBAL · TARGET",
+                (CameraFamily.Follow, CameraPreset.Near) => "FOLLOW · NEAR",
+                (CameraFamily.Follow, CameraPreset.Far) => "FOLLOW · FAR",
+                (CameraFamily.Observer, CameraPreset.Orbit) => "OBSERVER · ORBIT",
+                (CameraFamily.Observer, CameraPreset.Free) => "OBSERVER · FREE",
+                (CameraFamily.Observer, _) => "OBSERVER · FIXED",
+                _ => family + " · " + preset
+            };
+        }
+
+        private List<(CameraFamily family, CameraPreset preset)> WorkspaceCameraRing()
+        {
+            if (_config?.workspace == "FPV") return new List<(CameraFamily, CameraPreset)>
+            {
+                (CameraFamily.NosePilot, CameraPreset.Nose), (CameraFamily.Follow, CameraPreset.Near), (CameraFamily.Follow, CameraPreset.Far)
+            };
+            if (_config?.professional == true) return new List<(CameraFamily, CameraPreset)>
+            {
+                (CameraFamily.NosePilot, CameraPreset.Nose), (CameraFamily.Mount, CameraPreset.HighMount),
+                (CameraFamily.Gimbal, CameraPreset.GimbalFollow), (CameraFamily.Follow, CameraPreset.Near)
+            };
+            return new List<(CameraFamily, CameraPreset)>
+            {
+                (CameraFamily.NosePilot, CameraPreset.Nose), (CameraFamily.Mount, CameraPreset.HighMount),
+                (CameraFamily.Follow, CameraPreset.Near), (CameraFamily.Follow, CameraPreset.Far),
+                (CameraFamily.Observer, CameraPreset.Fixed)
+            };
+        }
+
+        private void CycleCamera()
+        {
+            if (_sim == null || _sim.Paused || _page != Page.Flight) return;
+            var ring = WorkspaceCameraRing();
+            int index = ring.FindIndex(item => item.family == _sim.CameraState.Family && item.preset == _sim.CameraState.Preset);
+            for (int offset = 1; offset <= ring.Count; offset++)
+            {
+                var next = ring[(index + offset + ring.Count) % ring.Count];
+                if (_sim.SetCameraState(next.family, next.preset, CameraContext.LiveFlight)) break;
+            }
+            _flightInputInterrupt = "Camera changed · controls cleared; centre axes to resume";
+            ReleaseTouchControls("Camera changed"); OnGeometryChanged(null); RefreshCameraHudProfile();
+        }
+
+        private void SelectCamera(CameraStateDefinition definition)
+        {
+            if (_sim == null || definition == null) return;
+            if (!_sim.SetCameraState(definition.Family, definition.Preset, CameraContext.LiveFlight))
+            {
+                ShowToast(string.IsNullOrEmpty(definition.UnavailableReason) ? definition.Capability.ToString().ToUpperInvariant() : definition.UnavailableReason);
+                return;
+            }
+            _flightInputInterrupt = "Camera changed · controls cleared; centre axes to resume";
+            ReleaseTouchControls("Camera changed"); OnGeometryChanged(null); RefreshCameraHudProfile();
+            _flightDialogClose?.Invoke();
+        }
+
+        private void ShowCameraSelector()
+        {
+            if (_page != Page.Flight || _sim == null) return;
+            _flightDialogClose?.Invoke();
+            bool resumeAfter = !_sim.Paused;
+            if (resumeAfter) _sim.Pause(true);
+            ReleaseTouchControls("Camera selector open");
+            var overlay = Element("modal-overlay");
+            var panel = Panel("Camera Selector", "Families are distinct camera capabilities. Unavailable entries remain visible and cannot be selected.");
+            panel.AddToClassList("camera-selector-panel");
+            foreach (var definition in CameraStateCatalog.All.Where(value => value.Family != CameraFamily.Map))
+            {
+                var row = Element("camera-selector-row");
+                var button = ActionButton(CameraName(definition.Family, definition.Preset), () => SelectCamera(definition));
+                bool selectable = definition.Capability == CameraCapability.Available || definition.Capability == CameraCapability.Experimental;
+                button.SetEnabled(selectable); row.Add(button);
+                string capability = definition.Capability.ToString().ToUpperInvariant();
+                string detail = definition.Family == CameraFamily.VideoFpv
+                    ? "UNAVAILABLE · SIMULATED VIDEO LINK NOT IMPLEMENTED"
+                    : capability + (string.IsNullOrEmpty(definition.UnavailableReason) ? "" : " · " + definition.UnavailableReason);
+                row.Add(Text(detail, selectable ? "camera-capability" : "camera-capability-unavailable", "wrap")); panel.Add(row);
+            }
+            void Close()
+            {
+                overlay.RemoveFromHierarchy(); _flightDialogClose = null;
+                if (resumeAfter) _sim?.Pause(false);
+                _flightInputInterrupt = "Camera selector closed · centre axes to resume";
+                ReleaseTouchControls("Selector closed"); RestoreFlightDialogFocus();
+            }
+            _flightDialogClose = Close;
+            panel.Add(ActionButton("Back to Flight", Close, true));
+            overlay.Add(ModalScroll(panel)); InstallDesignModalFocus(overlay); _root.Add(overlay); ApplyTypography(overlay);
+            overlay.Query<Button>().First()?.Focus();
+        }
+
+        private void RefreshCameraHudProfile()
+        {
+            if (_sim == null || _cameraDockState == null) return;
+            var state = _sim.CameraState;
+            _cameraDockState.text = CameraName(state.Family, state.Preset);
+            _cameraDockFov.text = _sim.VerticalFieldOfView.ToString("F1") + "° v  ·  " + _sim.HorizontalFieldOfView.ToString("F1") + "° h";
+            foreach (CameraFamily family in Enum.GetValues(typeof(CameraFamily)))
+                _root.EnableInClassList("camera-profile-" + family.ToString().ToLowerInvariant(), state.Family == family);
+            string status = state.Family switch
+            {
+                CameraFamily.NosePilot => "NOSE · AIRCRAFT INPUT · NO SIMULATED LINK",
+                CameraFamily.VideoFpv => "VIDEO FPV · UNAVAILABLE · SIMULATED LINK NOT IMPLEMENTED",
+                CameraFamily.Mount => "MOUNT VIEW · AIRCRAFT INPUT",
+                CameraFamily.Gimbal => "GIMBAL · FOLLOW MODE · AXIS/LIMIT TELEMETRY EXPERIMENTAL",
+                CameraFamily.Follow => _sim.CameraObstructed ? "FOLLOW · COLLISION PULL-IN · " + _sim.CameraVisibleFraction.ToString("P0") + " VISIBLE" : "FOLLOW · AIRCRAFT INPUT",
+                CameraFamily.Observer => "OBSERVER / CAMERA INPUT · CYCLE CAMERA TO RETURN TO AIRCRAFT",
+                _ => state.Family.ToString().ToUpperInvariant()
+            };
+            _cameraHudStatus.text = status;
+            _cameraDock.EnableInClassList("camera-unavailable", state.Family == CameraFamily.VideoFpv);
+            bool observer = state.Family == CameraFamily.Observer;
+            if (_leftTouchStick != null) _leftTouchStick.style.display = observer || !_flightHudLayoutState.touchControlsRequested || _flightHudLayoutState.touchControlsProtected ? DisplayStyle.None : DisplayStyle.Flex;
+            if (_rightTouchStick != null) _rightTouchStick.style.display = observer || !_flightHudLayoutState.touchControlsRequested || _flightHudLayoutState.touchControlsProtected ? DisplayStyle.None : DisplayStyle.Flex;
+            if (_map != null) _map.style.display = state.Family == CameraFamily.Follow && _flightHudLayoutState.radarVisible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_root.Q<VisualElement>(className: "v1-flight-telemetry") is VisualElement telemetry)
+                telemetry.style.display = observer ? DisplayStyle.None : telemetry.style.display;
         }
 
         private static Button FlightAction(string title, string icon, Action action, params string[] classes)
@@ -220,6 +398,7 @@ namespace AeroSim
             pause.Add(ActionButton("Resume Flight", TogglePause, true));
             pause.Add(ActionButton("Session Objective", ShowObjective));
             pause.Add(ActionButton("Flight Telemetry", ShowDesignFlightTelemetry));
+            pause.Add(ActionButton("Camera & FOV", ShowFlightFovSettings));
             pause.Add(ActionButton("Reset Aircraft", () => { _sim.ResetAircraft(); TogglePause(); }));
             pause.Add(ActionButton("Simulate Signal Loss", () => { TogglePause(); _sim.SignalLoss(); }));
             pause.Add(ActionButton("Finish & Save", _sim.Finish));
@@ -238,7 +417,8 @@ namespace AeroSim
             bool pauseForReading = !_sim.Paused;
             if (pauseForReading) _sim.Pause(true);
             DismissToast();
-            FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            _flightInputInterrupt = "Telemetry open · touch again after closing";
+            ReleaseTouchControls("Paused");
             var overlay = Element("modal-overlay");
             var panel = Panel("Flight Telemetry", "Actual simulator values, frozen while this panel is open. All metrics remain available when the HUD has no readable safe slot.");
             panel.Add(Text("Altitude   " + Length(_sim.Position.y), "panel-title", "wrap"));
@@ -372,8 +552,8 @@ namespace AeroSim
         private void ResizeDesignReplayTexture()
         {
             if (_designReplayImage == null || _sim?.View == null || _designReplayImage.layout.width < 16) return;
-            int width = Mathf.Clamp(Mathf.RoundToInt(_designReplayImage.layout.width * _document.panelSettings.scale), 320, 1920);
-            int height = Mathf.Clamp(Mathf.RoundToInt(_designReplayImage.layout.height * _document.panelSettings.scale), 180, 1080);
+            int width = Mathf.Clamp(Mathf.CeilToInt(_designReplayImage.layout.width * _document.panelSettings.scale), 320, 3072);
+            int height = Mathf.Clamp(Mathf.CeilToInt(_designReplayImage.layout.height * _document.panelSettings.scale), 180, 1728);
             if (_designReplayTexture != null && _designReplayTexture.width == width && _designReplayTexture.height == height) return;
             if (_designReplayTexture != null) { _sim.View.targetTexture = null; _designReplayTexture.Release(); Destroy(_designReplayTexture); }
             _designReplayTexture = new RenderTexture(width, height, 24) { name = "AeroSim recorded session viewport" }; _designReplayTexture.Create();
@@ -395,6 +575,7 @@ namespace AeroSim
             if (_designDistance != null) _designDistance.text = Length(new Vector2(_sim.Position.x, _sim.Position.z).magnitude);
             if (_designVerticalSpeed != null) _designVerticalSpeed.text = Velocity(_sim.Body.isKinematic ? 0 : _sim.Body.linearVelocity.y);
             if (_designFlightClock != null) _designFlightClock.text = Duration(_sim.Elapsed);
+            RefreshCameraHudProfile();
             if (_config.workspace == "FPV") _timer.text = TimeSpan.FromSeconds(Mathf.Max(0, _sim.Elapsed)).ToString(@"mm\:ss\.fff");
             if (_designTargetProgress != null)
             {
@@ -412,23 +593,243 @@ namespace AeroSim
 
         private void LayoutDesignFlightHud(float width, float height)
         {
-            bool compact = width < 1560 || height < 700 || LocalStore.Profile.settings.textScale > 1.1f;
+            var space = ResolveFlightHudLayoutSpace(width, height);
+            var content = space.ContentRect;
+            width = content.width; height = content.height;
+            var comfort = new Rect(Mathf.Max(0, (width - Mathf.Min(width, 2240)) * .5f), 0, Mathf.Min(width, 2240), height);
+            bool compact = comfort.width < 1560 || height < 700 || LocalStore.Profile.settings.textScale > 1.1f;
             _root.EnableInClassList("hud-compact", compact);
-            _root.EnableInClassList("hud-narrow", width < 480);
-            _root.EnableInClassList("hud-touch", (Application.isMobilePlatform || width < 760 || height < 500 || LocalStore.Profile.settings.showTouchControls) && _page != Page.Replay);
+            _root.EnableInClassList("hud-narrow", comfort.width < 480);
+            bool touchRequested = (Application.isMobilePlatform || comfort.width < 760 || height < 500 || LocalStore.Profile.settings.showTouchControls) && _page != Page.Replay;
+            _root.EnableInClassList("hud-touch", touchRequested);
             if (_page == Page.Replay) return;
-            float touchSize = Mathf.Clamp(width * .3f - 32, 44, height < 500 ? 80 : 100);
-            float actionHeight = LocalStore.Profile.settings.textScale > 1.1f ? 72 : 56;
-            foreach (var stick in _root.Query<TouchStick>().ToList()) stick.ConfigureLayout(touchSize, actionHeight + 24, 16, touchSize < 100 || LocalStore.Profile.settings.textScale > 1.1f);
+
+            float text = Mathf.Clamp(LocalStore.Profile.settings.textScale, 1, 2);
+            float actionHeight = text > 1.1f ? 72 : 56;
+            bool shortWide = height < 520 || width / Mathf.Max(1, height) > 1.9f;
+            var occupied = new List<Rect>();
+            Rect cameraDockRect = new Rect(comfort.xMin + 16, 96, 152, 56);
+            if (_cameraDock != null)
+            {
+                _cameraDock.style.left = cameraDockRect.x; _cameraDock.style.top = cameraDockRect.y;
+                bool showProfileStatus = comfort.width >= 720 && !shortWide;
+                _cameraHudStatus.style.display = showProfileStatus ? DisplayStyle.Flex : DisplayStyle.None;
+                _cameraHudStatus.style.left = cameraDockRect.xMax + 16; _cameraHudStatus.style.top = cameraDockRect.y + 8;
+                occupied.Add(showProfileStatus ? new Rect(cameraDockRect.x, cameraDockRect.y, Mathf.Min(528, comfort.xMax - cameraDockRect.x), cameraDockRect.height) : cameraDockRect);
+            }
             var objective = _root.Q<VisualElement>(className: "v1-objective-scroll");
-            if (objective != null) objective.style.maxHeight = Mathf.Max(200, height - 380);
+            Rect objectiveRect = default;
+            if (objective != null && !compact && _config.workspace != "FPV")
+            {
+                float objectiveHeight = Mathf.Min(Mathf.Max(200, height - 380), _config.professional ? 620 : 520);
+                objectiveRect = new Rect(_config.professional ? comfort.xMax - 464 : comfort.xMin + 32, _config.professional ? 108 : 220, 440, objectiveHeight);
+                objective.style.left = objectiveRect.x; objective.style.right = new StyleLength(StyleKeyword.Auto);
+                objective.style.top = objectiveRect.y; objective.style.width = objectiveRect.width; objective.style.maxHeight = objectiveRect.height;
+                occupied.Add(objectiveRect);
+            }
+            else if (objective != null) objective.style.maxHeight = Mathf.Max(200, height - 380);
+
+            var tools = _root.Q<VisualElement>(className: "v1-camera-tools");
+            Rect toolsRect = default;
+            if (tools != null && !compact && _config.workspace != "FPV" && !_config.professional)
+            {
+                toolsRect = new Rect(comfort.xMax - 128, height * .24f, 96, Mathf.Min(426, height * .55f));
+                tools.style.left = toolsRect.x; tools.style.right = new StyleLength(StyleKeyword.Auto); tools.style.top = toolsRect.y;
+                occupied.Add(toolsRect);
+            }
+
+            var guidance = _root.Q<VisualElement>(className: "flight-guidance");
+            Rect guidanceRect = default;
+            if (guidance != null)
+            {
+                bool guidanceVisible = !shortWide && !compact && _config.workspace != "FPV" && LocalStore.Profile.settings.showControls;
+                guidance.style.display = guidanceVisible ? DisplayStyle.Flex : DisplayStyle.None;
+                if (guidanceVisible)
+                {
+                    guidanceRect = new Rect(comfort.x + comfort.width * .30f, 100, comfort.width * .40f, 48 * text);
+                    guidance.style.left = guidanceRect.x; guidance.style.right = width - guidanceRect.xMax; guidance.style.top = guidanceRect.y;
+                    occupied.Add(guidanceRect);
+                }
+            }
+
             var telemetry = _root.Q<VisualElement>(className: "v1-flight-telemetry");
+            Rect telemetryRect;
+            if (shortWide)
+            {
+                float telemetryWidth = Mathf.Min(360, comfort.width - 32);
+                telemetryRect = new Rect(comfort.xMax - telemetryWidth - 16, 96, telemetryWidth, 64);
+            }
+            else
+            {
+                float available = compact ? comfort.width - 32 : Mathf.Min(1040, comfort.width - 760);
+                available = Mathf.Max(240, available);
+                float telemetryTop = compact ? cameraDockRect.yMax + 16 : height - 120;
+                telemetryRect = new Rect(comfort.center.x - available * .5f, telemetryTop, available, compact ? Mathf.Max(64, 64 * text) : 80);
+            }
+            occupied.Add(telemetryRect);
+            LayoutFlightRadarAndSticks(space, comfort, touchRequested, compact, shortWide, actionHeight, occupied, objectiveRect, toolsRect, guidanceRect, telemetryRect, cameraDockRect);
+
+            float touchSize = _flightHudLayoutState.leftStickEnvelope.width;
+            if (shortWide)
+            {
+                LayoutShortWideTelemetry(telemetry, comfort, height, touchSize, actionHeight);
+                return;
+            }
+            RestoreShortWideTelemetry(telemetry, compact);
+            if (_designOsdLayer != null) _designOsdLayer.style.display = DisplayStyle.Flex;
             if (telemetry != null)
             {
-                float available = compact ? width - 32 : Mathf.Min(1040, width - 760);
-                telemetry.style.width = Mathf.Max(240, available); telemetry.style.left = compact ? 16 : (width - available) / 2;
+                telemetry.style.width = telemetryRect.width; telemetry.style.left = telemetryRect.x;
+                telemetry.style.top = telemetryRect.y; telemetry.style.bottom = new StyleLength(StyleKeyword.Auto);
             }
             LayoutDesignOsdAnchors(width, height, compact);
+        }
+
+        private void LayoutFlightRadarAndSticks(FlightHudLayoutSpace space, Rect comfort, bool touchRequested, bool compact, bool shortWide,
+            float actionHeight, List<Rect> occupied, Rect objectiveRect, Rect toolsRect, Rect guidanceRect, Rect telemetryRect, Rect cameraDockRect)
+        {
+            Rect content = space.ContentRect;
+            float edge = comfort.width < 480 ? 8 : 16;
+            float caption = shortWide || LocalStore.Profile.settings.textScale > 1.1f ? 18 : 24;
+            float bottomReserve = actionHeight + 24;
+            float maximumStick = content.height < 500 ? 112 : 140;
+            float stickSize = Mathf.Clamp(comfort.width * .22f, 88, maximumStick);
+            float stickY = content.height - bottomReserve - stickSize - caption;
+            bool sticksFit = touchRequested && stickY >= 96 && comfort.width >= stickSize * 2 + edge * 2 + 16;
+            Rect left = sticksFit ? new Rect(comfort.xMin + edge, stickY, stickSize, stickSize + caption) : default;
+            Rect right = sticksFit ? new Rect(comfort.xMax - edge - stickSize, stickY, stickSize, stickSize + caption) : default;
+            bool compactCaption = shortWide || stickSize < 112 || LocalStore.Profile.settings.textScale > 1.1f;
+            if (_leftTouchStick != null)
+            {
+                if (sticksFit) _leftTouchStick.ConfigureLayout(left, compactCaption);
+                _leftTouchStick.SetLayoutProtected(!sticksFit);
+            }
+            if (_rightTouchStick != null)
+            {
+                if (sticksFit) _rightTouchStick.ConfigureLayout(right, compactCaption);
+                _rightTouchStick.SetLayoutProtected(!sticksFit);
+            }
+
+            if (sticksFit) { occupied.Add(left); occupied.Add(right); }
+
+            bool radarAllowed = _map != null && _config.workspace != "FPV";
+            Rect radar = default;
+            string radarStrategy = radarAllowed ? "no-safe-slot" : "mode-hidden";
+            if (radarAllowed)
+            {
+                float desired = compact ? Mathf.Clamp(content.height * .32f, 144, 220) : Mathf.Clamp(content.height * .32f, 220, 336);
+                desired = Mathf.Min(desired, comfort.width - edge * 2);
+                var sizes = new[] { desired, Mathf.Min(desired, 280), Mathf.Min(desired, 220), Mathf.Min(desired, 160) }
+                    .Where(value => value >= 144).Distinct().OrderByDescending(value => value).ToList();
+                bool FitsRadar(Rect candidate) => candidate.xMin >= comfort.xMin + edge && candidate.yMin >= 96 &&
+                    candidate.xMax <= comfort.xMax - edge && candidate.yMax <= content.height - bottomReserve &&
+                    !occupied.Any(other => candidate.Overlaps(other));
+                foreach (float size in sizes)
+                {
+                    float lowY = content.height - bottomReserve - size;
+                    var candidates = new[]
+                    {
+                        new Rect(comfort.xMin + edge, lowY, size, size),
+                        new Rect(sticksFit ? left.xMax + 8 : comfort.xMin + edge, lowY, size, size),
+                        new Rect(comfort.center.x - size * .5f, lowY, size, size),
+                        new Rect(comfort.xMin + edge, 104, size, size),
+                        new Rect(comfort.xMax - edge - size, 104, size, size),
+                        new Rect(comfort.xMax - edge - size, lowY, size, size)
+                    };
+                    foreach (var candidate in candidates)
+                    {
+                        if (!FitsRadar(candidate)) continue;
+                        radar = candidate;
+                        radarStrategy = candidate == candidates[0] ? "preferred" : size == desired ? "candidate" : "degraded";
+                        break;
+                    }
+                    if (radar.width > 0) break;
+                }
+                _map.style.display = radar.width > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+                if (radar.width > 0)
+                {
+                    _map.style.left = radar.x; _map.style.top = radar.y;
+                    _map.style.right = new StyleLength(StyleKeyword.Auto); _map.style.bottom = new StyleLength(StyleKeyword.Auto);
+                    _map.style.width = radar.width; _map.style.height = radar.height;
+                    _map.style.borderTopLeftRadius = _map.style.borderTopRightRadius = radar.width * .5f;
+                    _map.style.borderBottomLeftRadius = _map.style.borderBottomRightRadius = radar.width * .5f;
+                    _map.tooltip = radarStrategy == "preferred" ? "Radar layout: preferred" : "Radar layout: temporary safe " + radarStrategy;
+                }
+                else _map.tooltip = "Radar hidden: no non-overlapping safe slot.";
+            }
+
+            _flightHudLayoutState = new FlightHudLayoutDiagnostic
+            {
+                revision = _flightHudLayoutState.revision + 1,
+                status = touchRequested && !sticksFit ? "protected-no-stick-space" : radarAllowed && radar.width <= 0 ? "protected-no-radar-space" : radarStrategy == "degraded" ? "degraded" : "ready",
+                radarStrategy = radarStrategy,
+                panelRect = space.PanelRect,
+                safeRect = space.SafeRect,
+                contentRect = content,
+                comfortRect = comfort,
+                leftStickEnvelope = left,
+                rightStickEnvelope = right,
+                radarRect = radar,
+                telemetryRect = telemetryRect,
+                guidanceRect = guidanceRect,
+                toolsRect = toolsRect,
+                objectiveRect = objectiveRect,
+                cameraDockRect = cameraDockRect,
+                touchControlsRequested = touchRequested,
+                touchControlsProtected = touchRequested && !sticksFit,
+                radarVisible = radar.width > 0
+            };
+            if (_map != null) _map.userData = _flightHudLayoutState;
+            if (_leftTouchStick != null) _leftTouchStick.userData = _flightHudLayoutState;
+            if (_rightTouchStick != null) _rightTouchStick.userData = _flightHudLayoutState;
+        }
+
+        private void LayoutShortWideTelemetry(VisualElement telemetry, Rect comfort, float height, float touchSize, float actionHeight)
+        {
+            if (telemetry == null) return;
+            var settings = LocalStore.Profile.settings;
+            float telemetryTop = 96;
+            float stickTop = height - (actionHeight + 24) - touchSize;
+            float telemetryHeight = Mathf.Min(64, stickTop - telemetryTop - 8);
+            foreach (var metric in new[] { _designAltitudeMetric, _designBatteryMetric })
+            {
+                if (metric == null) continue;
+                if (metric.parent != telemetry) telemetry.Add(metric);
+                metric.RemoveFromClassList("v1-custom-osd-chip");
+                metric.RemoveFromClassList("v1-custom-osd-timer");
+                metric.style.left = new StyleLength(StyleKeyword.Null); metric.style.top = new StyleLength(StyleKeyword.Null);
+                metric.style.right = new StyleLength(StyleKeyword.Null); metric.style.bottom = new StyleLength(StyleKeyword.Null);
+                metric.style.width = new StyleLength(StyleKeyword.Null); metric.style.height = new StyleLength(StyleKeyword.Null);
+            }
+            telemetry.style.display = telemetryHeight >= 48 && (settings.osdAltitude || settings.osdBattery) ? DisplayStyle.Flex : DisplayStyle.None;
+            telemetry.style.top = telemetryTop; telemetry.style.bottom = new StyleLength(StyleKeyword.Auto);
+            telemetry.style.height = Mathf.Max(48, telemetryHeight); telemetry.style.minHeight = Mathf.Max(48, telemetryHeight);
+            float telemetryWidth = Mathf.Min(360, comfort.width - 32);
+            telemetry.style.width = telemetryWidth;
+            telemetry.style.left = comfort.xMax - telemetryWidth - 16;
+            telemetry.style.flexWrap = Wrap.NoWrap;
+            _designAltitudeMetric.style.display = settings.osdAltitude ? DisplayStyle.Flex : DisplayStyle.None;
+            _designBatteryMetric.style.display = settings.osdBattery ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_designDistance?.parent != null) _designDistance.parent.style.display = DisplayStyle.None;
+            if (_designSpeedMetric != null) _designSpeedMetric.style.display = DisplayStyle.None;
+            if (_designVerticalSpeed?.parent != null) _designVerticalSpeed.parent.style.display = DisplayStyle.None;
+            if (_timer != null) _timer.style.display = DisplayStyle.None;
+            if (_designFlightClock != null) _designFlightClock.style.display = DisplayStyle.None;
+            if (_designOsdLayer != null) _designOsdLayer.style.display = DisplayStyle.None;
+        }
+
+        private void RestoreShortWideTelemetry(VisualElement telemetry, bool compact)
+        {
+            if (telemetry == null) return;
+            var settings = LocalStore.Profile.settings;
+            telemetry.style.top = new StyleLength(StyleKeyword.Null); telemetry.style.bottom = new StyleLength(StyleKeyword.Null);
+            telemetry.style.height = new StyleLength(StyleKeyword.Null); telemetry.style.minHeight = new StyleLength(StyleKeyword.Null);
+            telemetry.style.flexWrap = compact ? Wrap.Wrap : Wrap.NoWrap;
+            _designAltitudeMetric.style.display = settings.osdAltitude ? DisplayStyle.Flex : DisplayStyle.None;
+            _designBatteryMetric.style.display = settings.osdBattery ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_designDistance?.parent != null) _designDistance.parent.style.display = DisplayStyle.Flex;
+            if (_designSpeedMetric != null) _designSpeedMetric.style.display = settings.osdSpeed ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_designVerticalSpeed?.parent != null) _designVerticalSpeed.parent.style.display = DisplayStyle.Flex;
         }
 
         private void LayoutDesignOsdAnchors(float width, float height, bool compact)
@@ -450,52 +851,32 @@ namespace AeroSim
             bool fpv = _config.workspace == "FPV";
             _designFlightClock.style.display = !compact && !fpv && settings.osdTimer && !custom[3] ? DisplayStyle.Flex : DisplayStyle.None;
 
-            float scale = Mathf.Max(.01f, _document.panelSettings.scale);
-            if (Application.isMobilePlatform)
-            {
-                var safe = Screen.safeArea;
-                width -= (Screen.width-safe.width)/scale; height -= (Screen.height-safe.height)/scale;
-            }
+            // width/height already are ContentRect dimensions. Never apply Screen.safeArea twice.
             if (width < 64 || height < 120) return;
+            Rect comfort = _flightHudLayoutState.comfortRect;
             float text = Mathf.Clamp(settings.textScale,1,2);
-            float chipWidth = Mathf.Min(184*text, Mathf.Max(110,width*.3f-32));
+            float chipWidth = Mathf.Min(184*text, Mathf.Max(110,comfort.width*.3f-32));
             float chipHeight = text > 1.1f ? 84 : 60;
             float bottomReserve = text > 1.1f ? 80 : 64;
-            var center = new Rect(width*.3f,height*.31f,width*.4f,height*.38f);
-            var occupied = new List<Rect> { new Rect(0,0,width,88), center, new Rect(0,height-bottomReserve,width,bottomReserve) };
-            if (!compactCustom)
+            var center = new Rect(comfort.x + comfort.width*.3f,height*.31f,comfort.width*.4f,height*.38f);
+            var occupied = new List<Rect> { new Rect(comfort.x,0,comfort.width,88), center, new Rect(comfort.x,height-bottomReserve,comfort.width,bottomReserve) };
+            if (!compactCustom) occupied.Add(_flightHudLayoutState.telemetryRect);
+            foreach (var rectangle in new[] { _flightHudLayoutState.objectiveRect, _flightHudLayoutState.toolsRect,
+                _flightHudLayoutState.guidanceRect, _flightHudLayoutState.radarRect })
+                if (rectangle.width > 0 && rectangle.height > 0) occupied.Add(rectangle);
+            if (_flightHudLayoutState.touchControlsRequested && !_flightHudLayoutState.touchControlsProtected)
             {
-                float available = compact ? width-32 : Mathf.Min(1040,width-760);
-                occupied.Add(new Rect(compact?16:(width-available)/2,compact?96:height-120,Mathf.Max(240,available),compact?Mathf.Max(64,64*text):80));
-            }
-            if (!compact)
-            {
-                if (!fpv)
-                {
-                    bool professional = _config.professional;
-                    occupied.Add(new Rect(professional?width-464:32,professional?108:220,440,Mathf.Max(200,height-380)));
-                    occupied.Add(new Rect(32,height-384,336,336));
-                    if (!professional) occupied.Add(new Rect(width-128,height*.24f,96,426));
-                }
-                if (fpv && settings.osdTimer && !custom[3]) occupied.Add(new Rect(width*.36f,height-200,width*.28f,60));
-                if (!fpv && settings.showControls) occupied.Add(new Rect(width*.3f,100,width*.4f,48*text));
-            }
-            if (_root.ClassListContains("hud-touch"))
-            {
-                float size = Mathf.Clamp(width*.3f-32,44,height<500?80:100);
-                float bottom = (text>1.1f?72:56)+24;
-                float caption = width<480 || text>1.1f ? 0 : 20;
-                occupied.Add(new Rect(16,height-bottom-size,size,size+caption));
-                occupied.Add(new Rect(width-16-size,height-bottom-size,size,size+caption));
+                occupied.Add(_flightHudLayoutState.leftStickEnvelope);
+                occupied.Add(_flightHudLayoutState.rightStickEnvelope);
             }
             bool Fits(Rect rectangle)
             {
-                if (!float.IsFinite(rectangle.x) || !float.IsFinite(rectangle.y) || rectangle.xMin < 16 || rectangle.xMax > width-16 || rectangle.yMin < 96 || rectangle.yMax > height-bottomReserve) return false;
+                if (!float.IsFinite(rectangle.x) || !float.IsFinite(rectangle.y) || rectangle.xMin < comfort.xMin+16 || rectangle.xMax > comfort.xMax-16 || rectangle.yMin < 96 || rectangle.yMax > height-bottomReserve) return false;
                 return !occupied.Any(other => rectangle.Overlaps(other));
             }
             var fallbackSlots = new List<Rect>();
-            var xSlots = new List<float> {16,width-chipWidth-16,width*.3f-chipWidth-8,width*.7f+8};
-            for (float x=16;x+chipWidth<=width-16;x+=chipWidth+8) xSlots.Add(x);
+            var xSlots = new List<float> {comfort.xMin+16,comfort.xMax-chipWidth-16,comfort.x+comfort.width*.3f-chipWidth-8,comfort.x+comfort.width*.7f+8};
+            for (float x=comfort.xMin+16;x+chipWidth<=comfort.xMax-16;x+=chipWidth+8) xSlots.Add(x);
             var ySlots = new List<float> {100,center.yMin-chipHeight-8,center.yMax+8,height-bottomReserve-chipHeight};
             for (float y=100;y+chipHeight<=height-bottomReserve;y+=chipHeight+8) ySlots.Add(y);
             foreach (float y in ySlots.Distinct().OrderBy(value=>value))
@@ -525,7 +906,7 @@ namespace AeroSim
                     continue;
                 }
                 if (metric.parent!=_designOsdLayer) _designOsdLayer.Add(metric);
-                var preferred = new Rect(anchors[i].x*width,anchors[i].y*height,chipWidth,chipHeight);
+                var preferred = new Rect(comfort.x + anchors[i].x*comfort.width,anchors[i].y*height,chipWidth,chipHeight);
                 bool preferredFits = Fits(preferred);
                 var placement = preferred;
                 bool placed = preferredFits;
@@ -645,7 +1026,10 @@ namespace AeroSim
             if (_sim?.View != null && _sim.View.targetTexture == _designReplayTexture) _sim.View.targetTexture = null;
             if (_designReplayTexture != null) { _designReplayTexture.Release(); Destroy(_designReplayTexture); _designReplayTexture = null; }
             _designReplayImage = null; _designReplayMap = null; _designGraphs.Clear(); _designSticks.Clear(); _designTargetStates.Clear();
+            _cameraDockHold?.Pause(); _cameraDockHold = null; _cameraDockLongPress = false;
+            _cameraDock = null; _cameraDockCycle = null; _cameraDockState = _cameraDockFov = _cameraHudStatus = null;
             _designDistance = _designVerticalSpeed = _designFlightClock = _designReplayTime = _designTargetProgress = _designTargetDistance = _designReplayInputs = null;
+            _designInputSource = null;
             _designOsdLayer = _designSpeedMetric = _designAltitudeMetric = _designBatteryMetric = null;
             _designOsdSafetyNotice=null;
             if (_root == null) return;

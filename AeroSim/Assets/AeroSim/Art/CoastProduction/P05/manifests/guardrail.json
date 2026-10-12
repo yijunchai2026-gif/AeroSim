@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_GUARDRAIL",
+  "display_name_zh": "护栏",
+  "category": "safety/guardrail",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["镀锌钢基色", "焊点周边轻氧化"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_RAIL_STRAIGHT_100_L00", "SM_P05_RAIL_STRAIGHT_200_L00", "SM_P05_RAIL_CORNER_090_L00", "SM_P05_RAIL_END_L_L00", "SM_P05_RAIL_END_R_L00", "SM_P05_RAIL_GATE_100_L00"],
+    "sockets": ["SCK_RAIL_START", "SCK_RAIL_END", "SCK_FLOOR_MOUNT", "SCK_GATE_HINGE"],
+    "notes": ["总高 110 cm，扶手直径 5 cm", "立柱中心距最大 100 cm", "踢脚板高 15 cm"]
+  },
+  "pivot": {"rule": "起点立柱底板中心", "orientation": "+X 沿护栏延伸，+Y 指向受保护侧，+Z 向上"},
+  "snap_grid_cm": {"translation": 10, "rotation_deg": 45, "fine_translation": 1},
+  "pbr": {
+    "material_slots": ["MI_P05_GALV_STEEL_RAIL", "MI_P05_SAFETY_YELLOW_OPTION"],
+    "metallic": [0.78, 0.95], "roughness": [0.38, 0.68],
+    "texture_set": ["T_P05_RAIL_BC", "T_P05_RAIL_N", "T_P05_RAIL_ORM", "T_P05_RAIL_WEAR_MASK"],
+    "special": {"safety_yellow_srgb": [0.92, 0.58, 0.03], "paint_chip_amount": [0.0, 0.35]}
+  },
+  "lod": {"triangle_budget": [18000, 9000, 3800, 1200], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["扶手圆截面 LOD0/1/2/3 为 16/12/8/6 边", "LOD2 移除底板螺栓几何"]},
+  "collision": {"mode": "compound", "budget": {"capsules": 6, "boxes": 3}, "rules": ["扶手和立柱用胶囊", "踢脚板和底座用盒体", "门扇为独立动态碰撞"]},
+  "deliverables": ["6 个护栏模块及 LOD0-3", "标准与黄色涂层材质实例", "复合简单碰撞"]
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "aerosim.weather-wetness/v1",
+  "parameterSetId": "P02-WEATHER-WETNESS-V1",
+  "owner": "Coast Art Lead-02",
+  "connection": "NOT_CONNECTED",
+  "inputs": {
+    "weatherWetness": {"range":[0,1],"default":0.18},
+    "tideWetness": {"range":[0,1],"default":0.55},
+    "rainRateMmPerHour": {"range":[0,80],"default":0},
+    "dryingRatePerMinute": {"range":[0.002,0.08],"default":0.018},
+    "evaporationMultiplier": {"range":[0.25,2.0],"default":1.0}
+  },
+  "presets": {
+    "Clear": {"weatherWetness":0.08,"rainRateMmPerHour":0,"dryingRatePerMinute":0.030,"roughnessMultiplier":1.0,"standingWaterGain":0.0},
+    "Overcast": {"weatherWetness":0.42,"rainRateMmPerHour":0,"dryingRatePerMinute":0.012,"roughnessMultiplier":0.82,"standingWaterGain":0.08},
+    "Rain": {"weatherWetness":0.92,"rainRateMmPerHour":18,"dryingRatePerMinute":0.003,"roughnessMultiplier":0.58,"standingWaterGain":0.65}
+  },
+  "combination": {
+    "effectiveWetness":"saturate(max(tideWetness * asset.tideInfluence, weatherWetness * asset.weatherInfluence) + standingDepthMm / 120)",
+    "roughness":"lerp(asset.dryRoughness, asset.wetRoughness, effectiveWetness) * preset.roughnessMultiplier",
+    "normalStrength":"asset.normalStrength * lerp(1.0, asset.wetNormalMultiplier, effectiveWetness)",
+    "baseValue":"asset base value * lerp(1.0, asset.wetValueMultiplier, effectiveWetness)"
+  },
+  "safety": {"clampAllInputs":true,"deterministic":true,"mutatesSharedWeatherState":false,"oceanShaderDependency":false},
+  "validation": {"static":"PASS","weatherRuntimeBinding":"NOT_RUN","rainAccumulationSimulation":"NOT_RUN"}
+}

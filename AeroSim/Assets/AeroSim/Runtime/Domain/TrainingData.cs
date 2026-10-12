@@ -7,7 +7,26 @@ using UnityEngine;
 
 namespace AeroSim.Domain
 {
-    public enum Page { Home, Onboarding, Controller, Academy, FreeFlight, Challenges, Hangar, Tuning, OsdEditor, Dashboard, Catalog, Brief, Preflight, MissionEditor, Instructor, Readiness, Settings, Records, Results, Replay, Report, Flight }
+    public enum Page { Home, Onboarding, Controller, Academy, FreeFlight, Challenges, Hangar, Tuning, OsdEditor, Dashboard, Catalog, Brief, Preflight, MissionEditor, Instructor, Readiness, Settings, VisualLab, Records, Results, Replay, Report, Flight }
+
+    public static class AeroSimQuality
+    {
+        public const int Low = 0, Medium = 1, High = 2, Ultra = 3;
+        public static readonly string[] Names = { "Low", "Medium", "High", "Ultra" };
+        public static int Normalize(int value) => Mathf.Clamp(value, Low, Ultra);
+        public static string Name(int value) => Names[Normalize(value)];
+        public static int Parse(string value)
+        {
+            int index = Array.IndexOf(Names, value);
+            return index >= 0 ? index : High;
+        }
+    }
+
+    public static class FlightWeather
+    {
+        public static readonly string[] Names = { "Clear", "Overcast", "Rain" };
+        public static bool IsSupported(string value) => Names.Contains(value, StringComparer.OrdinalIgnoreCase);
+    }
 
     [Serializable] public class Calibration
     {
@@ -19,6 +38,56 @@ namespace AeroSim.Domain
         public float[] center = new float[4];
         public float[] minimum = { -1, -1, -1, -1 };
         public float[] maximum = { 1, 1, 1, 1 };
+    }
+
+    [Serializable] public sealed class FovViewDefinition
+    {
+        public int schemaVersion;
+        public string viewId;
+        public string displayName;
+        public float minimumDeg;
+        public float maximumDeg;
+        public float defaultDeg;
+        public float[] presetsDeg;
+
+        public FovViewDefinition(int schemaVersion, string viewId, string displayName, float minimumDeg, float maximumDeg, float defaultDeg, params float[] presetsDeg)
+        {
+            this.schemaVersion = schemaVersion;
+            this.viewId = viewId;
+            this.displayName = displayName;
+            this.minimumDeg = minimumDeg;
+            this.maximumDeg = maximumDeg;
+            this.defaultDeg = defaultDeg;
+            this.presetsDeg = presetsDeg;
+        }
+    }
+
+    public static class FovViewDefinitions
+    {
+        public const int CurrentVersion = 1;
+        public static readonly FovViewDefinition[] All =
+        {
+            new(CurrentVersion, "fpv", "FPV / Pilot View", 45, 95, 60, 50, 60, 75),
+            new(CurrentVersion, "near-follow", "Near Follow View", 50, 100, 70, 60, 70, 85),
+            new(CurrentVersion, "cockpit", "Cockpit / Driver View", 35, 85, 55, 45, 55, 70),
+            new(CurrentVersion, "gimbal", "Gimbal Close-up", 30, 65, 45, 35, 45, 55),
+            new(CurrentVersion, "far-follow", "Far Follow View", 45, 95, 65, 55, 65, 80),
+            new(CurrentVersion, "external", "External Observer", 35, 100, 60, 45, 60, 80)
+        };
+
+        public static FovViewDefinition Find(string viewId) => All.FirstOrDefault(value => value.viewId == viewId);
+    }
+
+    [Serializable] public class CameraFovSetting
+    {
+        public int schemaVersion = 1;
+        public int definitionVersion = FovViewDefinitions.CurrentVersion;
+        public string viewId = "";
+        public string axis = "vertical";
+        public float valueDeg;
+        public string source = "default";
+        public float displayAspectAtSave;
+        public string updatedAt = "";
     }
 
     [Serializable] public class UserSettings
@@ -33,6 +102,9 @@ namespace AeroSim.Domain
         public int quality = 2, targetFps = 60;
         public bool highContrast, reducedMotion, showControls = true, captions = true;
         public bool osdSpeed = true, osdAltitude = true, osdTimer = true, osdBattery = true;
+        public List<CameraFovSetting> cameraFov = new();
+        // Read only during migration from the pre-v4 horizontal-FOV profile shape.
+        public float horizontalFov, fovAspect;
         public Vector2 speedPosition = new(.6f, .78f), altitudePosition = new(.23f, .78f), timerPosition = new(.46f, .13f), batteryPosition = new(.78f, .32f);
         public Calibration calibration = new();
     }
@@ -50,6 +122,8 @@ namespace AeroSim.Domain
     {
         public string title = "Free Flight", courseId = "", workspace = "Aerial", environment = "Pacific Coast", aircraft = "Camera Drone", mode = "Normal", weather = "Clear";
         public float windMph = 6, timeOfDay = 16.5f, rthAltitude = 25;
+        // Zero means derive a stable seed from environment/weather/time/wind; persisted records store the resolved seed.
+        public int environmentSeed;
         public bool race, professional, demo;
         public string objective = "Explore the training environment. Return home and land when you are ready.";
         public string task = "explore";
@@ -62,6 +136,8 @@ namespace AeroSim.Domain
         public float time, battery, speed;
         public Vector3 position, rotation;
         public Vector4 input;
+        // Null on legacy records: this means the replay only has an Analysis Camera, not a reconstructed pilot view.
+        public CameraSnapshot cameraSnapshot;
     }
     [Serializable] public class FlightEvent { public float time; public string message; public string kind; public string photoEvidenceId; }
     [Serializable] public class PhotoEvidence
@@ -72,10 +148,21 @@ namespace AeroSim.Domain
         public float time, targetDistance, targetFacingAngle;
         public bool hasTarget;
         public Vector3 aircraftPosition, aircraftRotation, cameraPosition, cameraRotation, targetPosition;
+        // Immutable camera semantics captured with the image; null means pre-RD-03 legacy evidence.
+        public CameraSnapshot cameraSnapshot;
+    }
+    [Serializable] public class AircraftSessionSnapshot
+    {
+        public string catalogId, displayName, catalogVersion, visualVersion, physicsVersion;
+        public string assetManifestVersion, assetId, assetIdentityState, assetQualityState;
+        public bool availableAtCapture;
+        public List<string> capabilities = new();
     }
     [Serializable] public class SessionRecord
     {
         public FlightConfig config;
+        public EnvironmentState environmentState;
+        public AircraftSessionSnapshot aircraftSnapshot;
         public string id, startedUtc, title, workspace, environment, aircraft, mode, courseId, physicsVersion = "AeroSim-0.2";
         public int score, collisions, photos, gates;
         public float duration, distance, maxAltitude;
@@ -88,9 +175,12 @@ namespace AeroSim.Domain
     [Serializable] public class CourseProgress { public string id; public int bestScore, attempts; }
     [Serializable] public class Profile
     {
-        public int schemaVersion = 2;
+        public int schemaVersion = 4;
         public bool onboarded;
         public string workspace = "Aerial", selectedAircraft = "mini4";
+        public string selectedAircraftCatalogVersion = "", selectedAircraftVisualVersion = "", selectedAircraftPhysicsVersion = "";
+        public string selectedAircraftSource = "default", selectedAircraftUpdatedUtc = "";
+        public string selectedAircraftFallbackFrom = "", selectedAircraftResolution = "current";
         public UserSettings settings = new();
         public List<CourseProgress> courses = new();
         public List<string> sessions = new();
@@ -101,8 +191,184 @@ namespace AeroSim.Domain
 
     public static class LocalStore
     {
+        private const int CurrentSchemaVersion = 4;
+        private const string DefaultAircraftId = "mini4";
+        public const float MinimumVerticalFov = 30f;
+        public const float MaximumVerticalFov = 100f;
+        private static string _lastSelectedAircraftId;
         public static string DirectoryPath { get; private set; }
         public static Profile Profile { get; private set; }
+        public static bool SelectedAircraftNeedsConfirmation =>
+            Profile != null && string.Equals(Profile.selectedAircraftResolution, "fallback", StringComparison.Ordinal);
+
+        public static float DefaultVerticalFov(string viewId) => Definition(viewId).defaultDeg;
+        public static FovViewDefinition Definition(string viewId) => FovViewDefinitions.Find(NormalizeFovViewId(viewId)) ?? FovViewDefinitions.Find("fpv");
+        public static IReadOnlyList<string> FovDiagnostics => _fovDiagnostics;
+        private static readonly List<string> _fovDiagnostics = new();
+
+        public static float GetVerticalFov(string viewId)
+        {
+            var definition = Definition(viewId);
+            if (Profile?.settings == null) return definition.defaultDeg;
+            var setting = Profile.settings.cameraFov?.Find(value => value != null && NormalizeFovViewId(value.viewId) == definition.viewId);
+            return IsValidVerticalFov(definition, setting?.valueDeg ?? float.NaN) ? setting.valueDeg : definition.defaultDeg;
+        }
+
+        public static void SetVerticalFov(string viewId, float valueDeg, string source, float displayAspect)
+        {
+            var definition = Definition(viewId);
+            Profile.settings.cameraFov ??= new List<CameraFovSetting>();
+            var setting = Profile.settings.cameraFov.Find(value => value != null && NormalizeFovViewId(value.viewId) == definition.viewId);
+            if (setting == null)
+            {
+                setting = new CameraFovSetting { viewId = definition.viewId };
+                Profile.settings.cameraFov.Add(setting);
+            }
+            setting.schemaVersion = 1;
+            setting.definitionVersion = definition.schemaVersion;
+            setting.viewId = definition.viewId;
+            setting.axis = "vertical";
+            if (!IsValidVerticalFov(definition, valueDeg))
+            {
+                RecordFovDiagnostic("Invalid vertical FOV for '" + definition.viewId + "'; restored " + definition.defaultDeg + "° default.");
+                valueDeg = definition.defaultDeg;
+                source = "default";
+            }
+            setting.valueDeg = valueDeg;
+            setting.source = string.IsNullOrEmpty(source) ? "custom" : source;
+            setting.displayAspectAtSave = IsFinite(displayAspect) && displayAspect > 0 ? displayAspect : 0;
+            setting.updatedAt = DateTime.UtcNow.ToString("O");
+        }
+
+        public static void ResetVerticalFov(string viewId) => SetVerticalFov(viewId, DefaultVerticalFov(viewId), "default", CurrentAspect());
+        public static void ResetAllVerticalFov()
+        {
+            foreach (var definition in FovViewDefinitions.All) ResetVerticalFov(definition.viewId);
+        }
+
+        public static bool IsValidVerticalFov(string viewId, float value) => IsValidVerticalFov(Definition(viewId), value);
+        public static void RecordFovDiagnostic(string message)
+        {
+            _fovDiagnostics.Add(DateTime.UtcNow.ToString("O") + " " + message);
+            if (_fovDiagnostics.Count > 32) _fovDiagnostics.RemoveAt(0);
+            Debug.LogWarning(message);
+        }
+
+        private static string NormalizeFovViewId(string viewId) => viewId == "chase" ? "near-follow" : viewId;
+        private static float CurrentAspect() => Screen.height > 0 ? Screen.width / (float)Screen.height : 16f / 9f;
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+        private static bool IsValidVerticalFov(FovViewDefinition definition, float value) => IsFinite(value) && value >= definition.minimumDeg && value <= definition.maximumDeg;
+        private static void NormalizeGraphicsSettings() => Profile.settings.quality = AeroSimQuality.Normalize(Profile.settings.quality);
+
+        private static void NormalizeCameraFov()
+        {
+            var settings = Profile.settings;
+            settings.cameraFov ??= new List<CameraFovSetting>();
+            foreach (var legacy in settings.cameraFov.Where(value => value != null && value.viewId == "chase")) legacy.viewId = "near-follow";
+            bool migrateHorizontal = Profile.schemaVersion < 4 && IsFinite(settings.horizontalFov) && settings.horizontalFov > 0 &&
+                IsFinite(settings.fovAspect) && settings.fovAspect > 0;
+            float migrated = migrateHorizontal
+                ? Mathf.Rad2Deg * 2f * Mathf.Atan(Mathf.Tan(settings.horizontalFov * Mathf.Deg2Rad * .5f) / settings.fovAspect)
+                : float.NaN;
+            if (migrateHorizontal) RecordFovDiagnostic("Migrating legacy horizontal FOV using saved aspect " + settings.fovAspect.ToString("F3", CultureInfo.InvariantCulture) + ".");
+            foreach (var definition in FovViewDefinitions.All)
+            {
+                var matches = settings.cameraFov.Where(value => value != null && value.viewId == definition.viewId).ToList();
+                var setting = matches.FirstOrDefault();
+                foreach (var duplicate in matches.Skip(1)) settings.cameraFov.Remove(duplicate);
+                if (setting == null)
+                {
+                    bool validMigration = migrateHorizontal && IsValidVerticalFov(definition, migrated);
+                    SetVerticalFov(definition.viewId, validMigration ? migrated : definition.defaultDeg, validMigration ? "calculated" : "default", validMigration ? settings.fovAspect : CurrentAspect());
+                    continue;
+                }
+                if (!IsValidVerticalFov(definition, setting.valueDeg))
+                {
+                    RecordFovDiagnostic("Stored vertical FOV for '" + definition.viewId + "' is illegal; restoring its default.");
+                    SetVerticalFov(definition.viewId, definition.defaultDeg, "default", CurrentAspect());
+                    continue;
+                }
+                setting.schemaVersion = 1;
+                setting.definitionVersion = definition.schemaVersion;
+                setting.axis = "vertical";
+                if (string.IsNullOrEmpty(setting.source)) setting.source = "custom";
+            }
+            settings.cameraFov.RemoveAll(value => value == null || FovViewDefinitions.Find(value.viewId) == null);
+            settings.horizontalFov = 0;
+            settings.fovAspect = 0;
+        }
+
+        private static AircraftProfile FindAvailableAircraft(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            return AircraftCatalog.All.FirstOrDefault(profile => profile.IsSelectable &&
+                (string.Equals(profile.Id, value, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(profile.CatalogId, value, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(profile.Name, value, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(profile.DisplayName, value, StringComparison.OrdinalIgnoreCase) ||
+                 (profile.LegacyIds ?? Array.Empty<string>()).Any(alias =>
+                     string.Equals(alias, value, StringComparison.OrdinalIgnoreCase))));
+        }
+
+        private static void NormalizeSelectedAircraft()
+        {
+            string stored = Profile.selectedAircraft;
+            bool migrating = Profile.schemaVersion < CurrentSchemaVersion;
+            bool persistedFallback = string.Equals(Profile.selectedAircraftResolution, "fallback", StringComparison.Ordinal) &&
+                !string.IsNullOrEmpty(Profile.selectedAircraftFallbackFrom);
+            bool selectionChanged = !migrating && _lastSelectedAircraftId != null &&
+                !string.Equals(stored, _lastSelectedAircraftId, StringComparison.OrdinalIgnoreCase);
+            var selected = FindAvailableAircraft(stored);
+            if (selected == null && string.Equals(stored, "Camera Drone", StringComparison.OrdinalIgnoreCase))
+                selected = FindAvailableAircraft(DefaultAircraftId);
+            if (selected == null)
+            {
+                Profile.selectedAircraftFallbackFrom = stored ?? "";
+                Profile.selectedAircraftResolution = "fallback";
+                selected = FindAvailableAircraft(DefaultAircraftId) ?? AircraftCatalog.All.First();
+                Debug.LogWarning("Selected aircraft '" + (stored ?? "<null>") + "' is unavailable; using " + selected.Id + " until the pilot confirms another aircraft.");
+            }
+            else if (!persistedFallback || selectionChanged || !string.Equals(selected.Id, DefaultAircraftId, StringComparison.OrdinalIgnoreCase))
+            {
+                Profile.selectedAircraftFallbackFrom = "";
+                Profile.selectedAircraftResolution = "current";
+            }
+            Profile.selectedAircraft = selected.CatalogId;
+            Profile.selectedAircraftCatalogVersion = AircraftCatalog.CatalogVersion;
+            Profile.selectedAircraftVisualVersion = selected.VisualVersion ?? selected.Texture ?? "";
+            Profile.selectedAircraftPhysicsVersion = selected.PhysicsVersion ?? "AeroSim-0.2";
+            if (migrating) Profile.selectedAircraftSource = "migration";
+            else if (selectionChanged && (string.IsNullOrEmpty(Profile.selectedAircraftSource) ||
+                     Profile.selectedAircraftSource == "default" || Profile.selectedAircraftSource == "migration"))
+                Profile.selectedAircraftSource = "user";
+            if (migrating || selectionChanged || string.IsNullOrEmpty(Profile.selectedAircraftUpdatedUtc))
+                Profile.selectedAircraftUpdatedUtc = DateTime.UtcNow.ToString("O");
+            Profile.schemaVersion = CurrentSchemaVersion;
+            _lastSelectedAircraftId = Profile.selectedAircraft;
+        }
+
+        private static void EnsureAircraftSnapshot(SessionRecord record, bool capturedNow)
+        {
+            if (record.aircraftSnapshot != null) return;
+            string identity = record.config?.aircraft ?? record.aircraft;
+            var profile = FindAvailableAircraft(identity);
+            record.aircraftSnapshot = new AircraftSessionSnapshot
+            {
+                catalogId = profile?.CatalogId ?? identity ?? "",
+                displayName = profile?.DisplayName ?? record.aircraft ?? identity ?? "",
+                catalogVersion = capturedNow ? AircraftCatalog.CatalogVersion : "legacy-unversioned",
+                visualVersion = capturedNow ? profile?.VisualVersion ?? profile?.Texture ?? "unavailable" : "legacy-unversioned",
+                physicsVersion = capturedNow ? profile?.PhysicsVersion ?? (string.IsNullOrEmpty(record.physicsVersion) ? "AeroSim-0.2" : record.physicsVersion) : record.physicsVersion ?? "legacy-unversioned",
+                assetManifestVersion = capturedNow && profile?.AssetContract != null ? AircraftAssetContracts.Manifest.manifestVersion : "legacy-unversioned",
+                assetId = capturedNow ? profile?.AssetContract?.assetId ?? "unavailable" : "legacy-unversioned",
+                assetIdentityState = capturedNow ? profile?.AssetContract?.identityState ?? "unavailable" : "legacy-unversioned",
+                assetQualityState = capturedNow ? profile?.AssetContract?.qualityState ?? "unavailable" : "legacy-unversioned",
+                availableAtCapture = capturedNow && profile != null,
+                capabilities = capturedNow && profile != null
+                    ? new List<string>(profile.Capabilities ?? Array.Empty<string>())
+                    : new List<string>()
+            };
+        }
         public static void Initialize()
         {
             DirectoryPath = Path.Combine(Application.persistentDataPath, "AeroSim");
@@ -113,12 +379,21 @@ namespace AeroSim.Domain
             try { Profile = File.Exists(path) ? JsonUtility.FromJson<Profile>(File.ReadAllText(path)) : new Profile(); }
             catch (Exception ex) { Debug.LogWarning("Profile recovery: " + ex.Message); Profile = new Profile(); }
             Profile ??= new Profile(); Profile.settings ??= new UserSettings(); Profile.settings.calibration ??= new Calibration();
+            bool persistMigration = Profile.schemaVersion < CurrentSchemaVersion;
+            int storedQuality = Profile.settings.quality;
             Profile.courses ??= new List<CourseProgress>(); Profile.sessions ??= new List<string>(); Profile.missions ??= new List<MissionDefinition>();
             Profile.assignedCourses ??= new List<string>(); Profile.readinessCompleted ??= new List<string>();
+            NormalizeGraphicsSettings();
+            NormalizeCameraFov();
+            NormalizeSelectedAircraft();
             if (Profile.missions.Count == 0) Profile.missions.Add(new MissionDefinition());
+            if (persistMigration || storedQuality != Profile.settings.quality) Save();
         }
         public static void Save()
         {
+            NormalizeGraphicsSettings();
+            NormalizeCameraFov();
+            NormalizeSelectedAircraft();
             var path = Path.Combine(DirectoryPath, "profile.json");
             File.WriteAllText(path + ".tmp", JsonUtility.ToJson(Profile, true));
             if (File.Exists(path)) File.Replace(path + ".tmp", path, path + ".backup");
@@ -128,6 +403,7 @@ namespace AeroSim.Domain
         {
             if (record == null) throw new ArgumentException("A session record is required.");
             EvidencePaths.ValidateSessionId(record.id);
+            EnsureAircraftSnapshot(record, true);
             File.WriteAllText(EvidencePaths.ResolveOutput(record.id + ".json"), JsonUtility.ToJson(record));
             if (!Profile.sessions.Contains(record.id)) Profile.sessions.Insert(0, record.id);
             if (!string.IsNullOrEmpty(record.courseId))
@@ -159,6 +435,7 @@ namespace AeroSim.Domain
                     if (record == null || record.id != id) { Debug.LogWarning("Session identity does not match its file."); continue; }
                     record.frames ??= new List<TelemetryFrame>(); record.events ??= new List<FlightEvent>();
                     record.photoEvidence ??= new List<PhotoEvidence>(); // Old records have no evidence metadata; do not fabricate it.
+                    EnsureAircraftSnapshot(record, false); // Preserve identity without inventing versions for a legacy record.
                     result.Add(record);
                 }
                 catch (Exception ex) { Debug.LogWarning("Session load: " + ex.Message); }
@@ -200,7 +477,7 @@ namespace AeroSim.Domain
         public int Minutes;
         public Course(string id, string title, string category, string workspace, string task, string objective, int minutes = 4)
         { Id=id;Title=title;Category=category;Workspace=workspace;Task=task;Objective=objective;Minutes=minutes; }
-        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=AircraftCatalog.Selected.Name, environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
+        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=AircraftCatalog.Selected.DisplayName, environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
     }
 
     public static class CourseCatalog

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-09-WET-EDGE-MASK",
+  "displayName": "湿边 mask",
+  "category": "wet_edge_mask",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [1416, 1565, 731, 190], "atlasRectBottomLeft": [0.491667, 0.390625, 0.253819, 0.065972] },
+  "placement": { "mode": "shoreline_control_mask", "widthMeters": [0.35, 3.5], "projection": "terrain_or_rock_uv1", "heightOffsetMeters": 0 },
+  "motion": { "flowSpeed": 0.004, "riseSeconds": [0.4, 1.8], "holdSeconds": [1.5, 7], "drySeconds": [7, 28], "decay": [0.0, 1.0] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.02, "edgeSoftness": 0.24, "intensity": 0.88, "outputUsage": "linear wetness mask; not direct foam color" },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 8, "midMeters": 45, "farMeters": 130, "cullMeters": 210 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-05-ROCK-WRAP",
+  "displayName": "岩石包边",
+  "category": "obstacle_wrap",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [2438, 50, 365, 396], "atlasRectBottomLeft": [0.846528, 0.845139, 0.126736, 0.1375] },
+  "placement": { "mode": "closed_spline_ring", "radiusMeters": [1.2, 8], "bandWidthMeters": [0.35, 1.8], "conformToWaterline": true, "heightOffsetMeters": 0.045 },
+  "motion": { "flowSpeed": 0.018, "pulseHz": [0.08, 0.22], "lifetimeSeconds": [12, 28], "decay": [0.05, 0.68] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.035, "edgeSoftness": 0.12, "intensity": 1.02 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 7, "midMeters": 35, "farMeters": 110, "cullMeters": 190 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

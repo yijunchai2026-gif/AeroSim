@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using AeroSim.Input;
 using AeroSim.Navigation;
 using AeroSim.Domain;
@@ -63,10 +64,13 @@ namespace AeroSim
 
         private void OnDisable()
         {
+            _sim?.ClearControlInput();
+            CancelFovEditing();
             CancelTypography();
             ReleaseDesignFlightInputGuard();
             ReleaseDesignEvidenceTextures();
             ReleaseDesignReplayView();
+            ReleaseVisualLab();
             ReleaseHangarPreviews();
             if (_root != null)
             {
@@ -153,11 +157,17 @@ namespace AeroSim
             navigation.Add(NavButton("A", _workspace == TrainingWorkspace.Professional ? "Training Catalog" : "Academy", AppDestination.Academy));
             navigation.Add(NavButton("F", "Free Flight", AppDestination.FreeFlight));
             navigation.Add(NavButton("C", "Challenges", AppDestination.Challenges));
-            navigation.Add(NavButton("D", "Hangar", AppDestination.Hangar));
-            if (_page == Page.Settings)
+            navigation.Add(NavButton("D", "Aircraft Bay", AppDestination.Hangar));
+            if (_page == Page.Settings || _page == Page.VisualLab)
             {
                 navigation.Add(NavButton("R", "Flight Records", AppDestination.FlightRecords));
                 AddDesignSettingsNavigation(navigation);
+                var visualLab = new Button(EnterVisualLab);
+                visualLab.AddToClassList("nav-button");
+                if (_page == Page.VisualLab) visualLab.AddToClassList("nav-button-selected");
+                var visualLabIcon = DesignIcon("settings"); visualLabIcon.AddToClassList("nav-icon"); visualLab.Add(visualLabIcon);
+                visualLab.Add(Text("Visual Lab", "nav-label"));
+                navigation.Add(visualLab);
             }
             if (_workspace == TrainingWorkspace.Fpv) { navigation.Add(RouteButton("T", "Tuning", Page.Tuning)); navigation.Add(RouteButton("O", "OSD Editor", Page.OsdEditor)); }
             if (_workspace == TrainingWorkspace.Professional) { navigation.Add(RouteButton("M", "Mission Editor", Page.MissionEditor)); navigation.Add(RouteButton("I", "Instructor", Page.Instructor)); }
@@ -187,13 +197,13 @@ namespace AeroSim
 
             var promoRow = Element("promo-row");
             promoRow.Add(BuildPromoCard(
-                "Art/Cinematic",
+                "Art/DesignV1/CoastHeroV1",
                 "PRACTICE YOUR SKILLS",
                 "Cinematic Challenge",
                 "Apply what you’ve learned with a guided flight route and capture a cinematic coastal shot.",
                 "promo-cinematic"));
             promoRow.Add(BuildPromoCard(
-                "Art/Emergency",
+                "Art/DesignV1/FpvIndustrialSunset",
                 "BE PREPARED",
                 "Emergency Practice",
                 "Build confidence with real-world scenarios like low battery, signal loss, and obstacle avoidance.",
@@ -206,7 +216,7 @@ namespace AeroSim
         private VisualElement BuildHero()
         {
             var hero = Element("hero-card", "card");
-            SetBackground(hero, "Art/DesignV1/CoastHeroV1");
+            SetHeroBackground(hero, "Art/DesignV1/CoastHeroV1");
 
             var shade = new DesignHeroGradient();
             shade.AddToClassList("hero-shade");
@@ -273,10 +283,10 @@ namespace AeroSim
             card.Add(track);
 
             var lessons = Element("lesson-grid");
-            lessons.Add(BuildLesson("Art/Takeoff", "1", "1.  Takeoff", LessonStatus("a02"), "complete"));
-            lessons.Add(BuildLesson("Art/Orientation", "2", "2.  Orientation", LessonStatus("a04"), "complete"));
-            lessons.Add(BuildLesson("Art/ReturnHome", "3", "3.  Return-to-Home", LessonStatus("a10"), "active"));
-            lessons.Add(BuildLesson("Art/Sunset", "4", "4.  Cinematic Moves", LessonStatus("c01"), "active"));
+            lessons.Add(BuildLesson("Art/DesignV1/CoastHeroV1", "1", "1.  Takeoff", LessonStatus("a02"), "complete"));
+            lessons.Add(BuildLesson("Art/DesignV1/ControllerCutout", "2", "2.  Orientation", LessonStatus("a04"), "complete"));
+            lessons.Add(BuildLesson("Art/DesignV1/CoastHeroV1", "3", "3.  Return-to-Home", LessonStatus("a10"), "active"));
+            lessons.Add(BuildLesson("Art/DesignV1/FpvIndustrialSunset", "4", "4.  Cinematic Moves", LessonStatus("c01"), "active"));
             card.Add(lessons);
             return card;
         }
@@ -303,7 +313,7 @@ namespace AeroSim
             card.Add(Text("U.S. Flight Readiness", "card-title"));
 
             var image = Element("readiness-image");
-            SetBackground(image, "Art/Readiness");
+            SetBackground(image, "Art/DesignV1/ControllerCutout");
             card.Add(image);
 
             card.Add(Text("Review FAA resources", "readiness-title"));
@@ -420,30 +430,66 @@ namespace AeroSim
 
         private void OnGeometryChanged(GeometryChangedEvent evt)
         {
-            var scale = _document.panelSettings.scale;
-            var width = Screen.width / scale; var height = Screen.height / scale;
+            var scale = Mathf.Max(.01f, _document.panelSettings.scale);
+            var resolvedWidth = _root.resolvedStyle.width;
+            var resolvedHeight = _root.resolvedStyle.height;
+            var width = float.IsNaN(resolvedWidth) || resolvedWidth <= 0 ? Screen.width / scale : resolvedWidth;
+            var height = float.IsNaN(resolvedHeight) || resolvedHeight <= 0 ? Screen.height / scale : resolvedHeight;
             bool phone = width < 760 || height < 500;
+            float aspect = width / Mathf.Max(1f, height);
+            bool ultraWide = aspect >= 2f;
+            bool superUltraWide = aspect > 2.8f;
             _root.EnableInClassList("layout-desktop", width >= 1280 && !phone);
             _root.EnableInClassList("layout-tablet", width >= 760 && width < 1280 && !phone);
             _root.EnableInClassList("layout-phone", phone);
+            _root.EnableInClassList("layout-compact", width < 1440 || height < 800);
+            _root.EnableInClassList("layout-standard", width >= 1440 && width < 2200 && !ultraWide);
+            _root.EnableInClassList("layout-large", width >= 2200 && width < 3200 && !ultraWide);
+            _root.EnableInClassList("layout-4k", width >= 3200 && !ultraWide);
+            _root.EnableInClassList("layout-ultrawide", ultraWide && !superUltraWide);
+            _root.EnableInClassList("layout-super-ultrawide", superUltraWide);
             _root.EnableInClassList("text-expanded", LocalStore.Profile.settings.textScale > 1.1f);
             _root.EnableInClassList("layout-narrow", width < 1440 && width >= 760);
             _root.EnableInClassList("layout-wide", width >= 1920);
             _root.EnableInClassList("design-home-reference", _page == Page.Home && _workspace == TrainingWorkspace.Aerial &&
-                width >= 1600 && height >= 900 && LocalStore.Profile.settings.textScale <= 1.1f);
+                width >= 1600 && width < 2200 && aspect < 2f && height >= 900 && LocalStore.Profile.settings.textScale <= 1.1f);
             ApplyTypography();
             LayoutDesignPages(width, height);
             if (_page == Page.Flight || _page == Page.Replay)
             {
                 LayoutFlightHud(width, height);
             }
-            if(Application.isMobilePlatform)
+            var safe = Screen.safeArea;
+            float safeLeft = Mathf.Max(0, safe.xMin / scale);
+            float safeRight = Mathf.Max(0, (Screen.width - safe.xMax) / scale);
+            float safeTop = Mathf.Max(0, (Screen.height - safe.yMax) / scale);
+            float safeBottom = Mathf.Max(0, safe.yMin / scale);
+            _root.style.paddingLeft = safeLeft; _root.style.paddingRight = safeRight;
+            _root.style.paddingTop = safeTop; _root.style.paddingBottom = safeBottom;
+            var hud = _root.Q<VisualElement>(className: "flight-hud");
+            if (hud != null)
             {
-                var safe=Screen.safeArea;
-                _root.style.paddingLeft=safe.xMin/scale; _root.style.paddingRight=(Screen.width-safe.xMax)/scale;
-                _root.style.paddingTop=(Screen.height-safe.yMax)/scale; _root.style.paddingBottom=safe.yMin/scale;
-                var hud=_root.Q<VisualElement>(className:"flight-hud");
-                if(hud!=null) { hud.style.left=safe.xMin/scale; hud.style.right=(Screen.width-safe.xMax)/scale; hud.style.top=(Screen.height-safe.yMax)/scale; hud.style.bottom=safe.yMin/scale; }
+                hud.style.left = 0; hud.style.right = 0;
+                hud.style.top = 0; hud.style.bottom = 0;
+            }
+            _root.schedule.Execute(ClampScrollOffsets);
+        }
+
+        private void ClampScrollOffsets()
+        {
+            if (_root?.panel == null) return;
+            foreach (var scroll in _root.Query<ScrollView>().ToList())
+            {
+                float viewportWidth = scroll.contentViewport.resolvedStyle.width;
+                float viewportHeight = scroll.contentViewport.resolvedStyle.height;
+                float contentWidth = scroll.contentContainer.resolvedStyle.width;
+                float contentHeight = scroll.contentContainer.resolvedStyle.height;
+                if (float.IsNaN(viewportWidth) || float.IsNaN(viewportHeight) ||
+                    float.IsNaN(contentWidth) || float.IsNaN(contentHeight)) continue;
+                var offset = scroll.scrollOffset;
+                scroll.scrollOffset = new Vector2(
+                    Mathf.Clamp(offset.x, 0, Mathf.Max(0, contentWidth - viewportWidth)),
+                    Mathf.Clamp(offset.y, 0, Mathf.Max(0, contentHeight - viewportHeight)));
             }
         }
 

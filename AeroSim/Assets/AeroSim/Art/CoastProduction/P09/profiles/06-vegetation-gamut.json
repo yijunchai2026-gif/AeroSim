@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-06-VEGETATION-GAMUT",
+  "displayName": "植被色域",
+  "category": "gamut.vegetation",
+  "enabled": true,
+  "targets": ["P06 coastal ecology", "P08 weather and distance"],
+  "intent": "针叶、灌丛、盐生草和苔藓使用受控深绿/橄榄色域，在阴天和雨天仍与岩石分离且不压成黑块。",
+  "parameters": {
+    "palette": {
+      "coniferShadow": {"min": "#17231D", "target": "#26372C", "max": "#3B4C3B"},
+      "coniferLight": {"min": "#344733", "target": "#4B6245", "max": "#687A55"},
+      "shrub": {"min": "#3B442C", "target": "#57603B", "max": "#747953"},
+      "saltGrass": {"min": "#5A5935", "target": "#747044", "max": "#91865A"},
+      "dryTip": {"min": "#746443", "target": "#92805B", "max": "#AB9873"},
+      "wetLeaf": {"min": "#1E2E25", "target": "#34463A", "max": "#526152"}
+    },
+    "response": {"saturationMax": 0.58, "shadowValueFloor": 0.055, "wetValueMultiplier": [0.72, 0.88], "distanceChromaReductionAt80m": 0.28, "cloudShadowValueMultiplierMin": 0.72}
+  },
+  "evaluation": {"goldenCases": ["A", "B", "C", "D", "H"], "reviewBandsMeters": [1, 5, 15, 40, 80]},
+  "guardrails": ["species groups remain distinguishable", "no emerald global tint", "alpha cards may not form black rectangles", "wetness lowers value before saturation", "LOD color delta must remain subtle"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

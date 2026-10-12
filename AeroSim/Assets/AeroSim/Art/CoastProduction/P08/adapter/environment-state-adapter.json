@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "aerosim.weather-state-adapter/v1",
+  "adapterId": "P08-ENVIRONMENT-STATE-READ-ADAPTER-V1",
+  "contract": "../weather-visual-contract.json",
+  "inputType": "AeroSim.Domain.EnvironmentState",
+  "inputSemantics": "immutable snapshot supplied by consumer",
+  "outputType": "WeatherVisualFrame",
+  "reads": ["schemaVersion", "seed", "weatherId", "cloudAmount", "fogDensity", "windDirection", "windSpeedMps", "precipitation", "wetness", "puddleAmount", "vfxDensity"],
+  "writes": [],
+  "normalization": {
+    "scalar01": "non-finite -> contract default; then clamp 0..1",
+    "fogDensity": "non-finite or negative -> 0.00115; clamp 0..0.02",
+    "windSpeedMps": "non-finite or negative -> 0; clamp 0..40",
+    "windDirection": "normalize XZ; squared magnitude < 0.0001 -> normalize(1,-0.35)",
+    "quality": "0=Low, 1=Medium, 2=High, 3=Ultra; other -> Low"
+  },
+  "mapping": {
+    "drizzle": "rain01 * (1-smoothstep(0.35,0.70,precipitation))",
+    "downpour": "rain01 * smoothstep(0.45,0.80,precipitation)",
+    "lensDrops": "rain01 * smoothstep(0.08,0.55,precipitation)",
+    "surfaceStreaks": "wetness * smoothstep(0.35,0.85,precipitation)",
+    "puddleRipples": "puddleAmount * rain01",
+    "lowFog": "fog01 * (1-smoothstep(30,120,altitudeMeters))",
+    "seaFog": "fog01 * smoothstep(0.45,0.90,cloudAmount)",
+    "cloudShadows": "cloudAmount * (1-smoothstep(0.75,1,cloudAmount))",
+    "rainCurtain": "downpour * smoothstep(0.35,0.75,fog01)",
+    "windDrivenSpray": "rain01 * wetness * smoothstep(0.30,0.75,wind01)"
+  },
+  "consumerProtocol": ["Capture EnvironmentState.Copy()", "Call Evaluate(snapshot, quality, options)", "Apply only returned enabled weights", "Call EvaluateOff/Dispose on shutdown"],
+  "environmentStateModification": "FORBIDDEN",
+  "sceneAssemblyModification": "FORBIDDEN"
+}

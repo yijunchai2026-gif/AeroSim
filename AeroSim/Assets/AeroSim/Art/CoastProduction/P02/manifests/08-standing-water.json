@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-08-STANDING-WATER","displayName":"积水",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"wet substrate"},{"file":"../source/tidepool-bed-reference.png","sha256":"d84db9b1323b596e5166ea08ae1d129cb989401c9598b9877918825c7c2b2f80","generatedSourceTag":"GENERATED_SOURCE:generated_image_035650","usage":"submerged aggregate"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"standing-water","keywords":["P02_THIN_WATER"]},
+  "material":{"tileMeters":[3,3],"macroWavelengthMeters":[6,24],"normalStrength":0.44,"dryRoughness":0.74,"wetRoughness":0.10,"standingDepthMm":[3,80],"rippleAmplitudeMm":[0,4]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":1.0,"tideInfluence":0.84,"wetValueMultiplier":0.89,"wetNormalMultiplier":0.48},
+  "lod":["0-15m depth+ripple masks","15-40m depth mask","40-80m wet reflection cue","80-180m roughness patch",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

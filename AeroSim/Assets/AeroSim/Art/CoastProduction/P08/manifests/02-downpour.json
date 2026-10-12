@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-02-DOWNPOUR", "displayName": "暴雨", "kind": "world_precipitation",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "top-right heavy rain field", "usage": "derive multi-scale streak masks" },
+  "inputs": ["precipitation", "vfxDensity", "windDirectionXZ", "windSpeedMps"], "activation": { "formula": "downpour01", "enter": 0.08, "exit": 0.04, "fadeSeconds": 0.6 },
+  "render": { "space": "camera-relative world", "blend": "alpha", "depth": "soft-particle", "rangeMeters": [1, 42], "windResponse": 1 },
+  "quality": { "Low": "25% particles; one layer", "Medium": "50%; two layers", "High": "80%; three layers", "Ultra": "100%; three layers+near splashes" },
+  "offPath": "stop all layers; drain <=0.9s; clear counters", "fallback": "drizzle layer at capped density or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

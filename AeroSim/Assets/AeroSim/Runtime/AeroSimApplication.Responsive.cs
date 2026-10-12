@@ -19,6 +19,65 @@ namespace AeroSim
         private bool _typographyScheduled;
         private int _lastWindowWidth, _lastWindowHeight;
         private readonly Dictionary<VisualElement, StyleLength> _designColumnWidths = new();
+        private FlightHudLayoutDiagnostic _flightHudLayoutState = new FlightHudLayoutDiagnostic();
+
+        /// <summary>Stable, allocation-free-to-read HUD geometry exposed to QA and support diagnostics.</summary>
+        public FlightHudLayoutDiagnostic FlightHudLayoutState => _flightHudLayoutState;
+
+        [Serializable]
+        public sealed class FlightHudLayoutDiagnostic
+        {
+            public int revision;
+            public string status = "unavailable";
+            public string radarStrategy = "not-laid-out";
+            public Rect panelRect;
+            public Rect safeRect;
+            public Rect contentRect;
+            public Rect comfortRect;
+            public Rect leftStickEnvelope;
+            public Rect rightStickEnvelope;
+            public Rect radarRect;
+            public Rect telemetryRect;
+            public Rect guidanceRect;
+            public Rect toolsRect;
+            public Rect objectiveRect;
+            public Rect cameraDockRect;
+            public bool touchControlsRequested;
+            public bool touchControlsProtected;
+            public bool radarVisible;
+        }
+
+        private readonly struct FlightHudLayoutSpace
+        {
+            public readonly Rect PanelRect;
+            public readonly Rect SafeRect;
+            public readonly Rect ContentRect;
+            public FlightHudLayoutSpace(Rect panelRect, Rect safeRect)
+            {
+                PanelRect = panelRect;
+                SafeRect = safeRect;
+                // flight-hud is inset by root padding, so all child coordinates share this local origin.
+                ContentRect = new Rect(0, 0, safeRect.width, safeRect.height);
+            }
+        }
+
+        private FlightHudLayoutSpace ResolveFlightHudLayoutSpace(float width, float height)
+        {
+            var panel = new Rect(0, 0, Mathf.Max(0, width), Mathf.Max(0, height));
+            var safe = Screen.safeArea;
+            if (Screen.width <= 0 || Screen.height <= 0 || safe.width <= 0 || safe.height <= 0)
+                safe = new Rect(0, 0, Mathf.Max(1, Screen.width), Mathf.Max(1, Screen.height));
+            float xPerPixel = panel.width / Mathf.Max(1, Screen.width);
+            float yPerPixel = panel.height / Mathf.Max(1, Screen.height);
+            var safePanel = new Rect(
+                Mathf.Clamp(safe.xMin * xPerPixel, 0, panel.width),
+                Mathf.Clamp((Screen.height - safe.yMax) * yPerPixel, 0, panel.height),
+                Mathf.Clamp(safe.width * xPerPixel, 0, panel.width),
+                Mathf.Clamp(safe.height * yPerPixel, 0, panel.height));
+            safePanel.width = Mathf.Min(safePanel.width, panel.width - safePanel.x);
+            safePanel.height = Mathf.Min(safePanel.height, panel.height - safePanel.y);
+            return new FlightHudLayoutSpace(panel, safePanel);
+        }
 
         private void SaveUiPreferences() { LocalStore.Save(); RefreshUiPreferences(); }
 
@@ -40,7 +99,7 @@ namespace AeroSim
         {
             float device = Application.isMobilePlatform && Screen.dpi > 0 ? Mathf.Clamp(Screen.dpi / 163f, 1, 4) : 1;
             if (string.IsNullOrEmpty(preference) || preference == "Auto")
-                return device * (Application.isMobilePlatform ? 1 : Screen.width >= 3200 ? 1.5f : Screen.width >= 2400 ? 1.25f : 1);
+                return device;
             if (float.TryParse(preference.TrimEnd('%'), NumberStyles.Float, CultureInfo.InvariantCulture, out float percent))
                 return device * Mathf.Clamp(percent / 100f, .8f, 3);
             return device;
@@ -179,6 +238,36 @@ namespace AeroSim
                     child.style.flexBasis = stack ? new StyleLength(StyleKeyword.Auto) : new StyleLength(StyleKeyword.Null);
                     child.style.flexGrow = stack ? new StyleFloat(0f) : new StyleFloat(StyleKeyword.Null);
                     child.style.minWidth = 0;
+                }
+            }
+
+            // Full-bleed FPV scenery may use every physical pixel, while every actionable
+            // control remains inside the centered 2240 logical-pixel ComfortRect.
+            var fpvStage = _root.Q<VisualElement>(className: "design-fpv-stage");
+            if (fpvStage != null && !stack)
+            {
+                float stageWidth = fpvStage.resolvedStyle.width;
+                if (float.IsNaN(stageWidth) || stageWidth <= 0) stageWidth = width;
+                float comfortWidth = Mathf.Min(stageWidth, 2240f);
+                float inset = Mathf.Max(0, (stageWidth - comfortWidth) * .5f);
+                var menu = fpvStage.Q<VisualElement>(className: "design-fpv-menu");
+                var aircraft = fpvStage.Q<VisualElement>(className: "design-fpv-aircraft");
+                var quick = fpvStage.Q<VisualElement>(className: "design-fpv-quick");
+                var progress = fpvStage.Q<VisualElement>(className: "design-fpv-progress");
+                var disclaimer = fpvStage.Q<Label>(className: "design-fpv-disclaimer");
+                if (menu != null) menu.style.right = inset + 36;
+                if (aircraft != null) aircraft.style.left = inset + 32;
+                if (progress != null) progress.style.right = inset + 36;
+                if (quick != null)
+                {
+                    float quickWidth = Mathf.Min(580, comfortWidth * .26f);
+                    quick.style.width = quickWidth;
+                    quick.style.left = inset + (comfortWidth - quickWidth) * .5f;
+                }
+                if (disclaimer != null)
+                {
+                    disclaimer.style.left = inset + comfortWidth * .30f;
+                    disclaimer.style.right = inset + comfortWidth * .30f;
                 }
             }
         }

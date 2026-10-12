@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_09_SALT_CORROSION",
+  "display_name": "盐蚀",
+  "category": "weathering_decal",
+  "source_dependencies": ["../sources/P04_decal_atlas_source.png"],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_WEATHERING_DECAL",
+  "decal_contract": "../contracts/decal.contract.json#ATLAS_RUNOFF_A",
+  "dimensions_m": [12.0, 0.0, 6.0],
+  "pivot": "decal_group_center",
+  "local_position_m": [8.0, 0.009, 0.0],
+  "decal": {"distribution": "drain_side_clusters", "preferred_side": "+X", "cluster_count": [6, 12], "atlas_regions": ["ATLAS_PAINT_WEAR_A", "ATLAS_RUNOFF_A"], "opacity_range": [0.18, 0.58], "roughness_delta": 0.12, "normal_strength": 0.18, "sort_layer": 300},
+  "collision": {"enabled": false, "type": "none"},
+  "integration": {"scene_independent": true, "receiver_layers": ["P04_PLATFORM_TOP", "P04_CONCRETE_BASE_VISIBLE"], "shared_scene_write": false},
+  "acceptance": ["concentrated near drainage side and metal interfaces", "salt remains light desaturated", "does not alter metallic channel base material", "no collision"]
+}

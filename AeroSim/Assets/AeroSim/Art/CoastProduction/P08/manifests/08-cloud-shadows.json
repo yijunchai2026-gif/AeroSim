@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-08-CLOUD-SHADOWS", "displayName": "云影", "kind": "lighting_modulation",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "bottom fog/cloud noise plates", "usage": "derive seamless low-frequency linear mask" },
+  "inputs": ["cloudAmount", "windDirectionXZ", "windSpeedMps"], "activation": { "formula": "cloudShadow01", "enter": 0.04, "exit": 0.02, "fadeSeconds": 8 },
+  "render": { "space": "world XZ projection", "blend": "multiply lighting", "depth": "terrain/surface", "tileMeters": 420, "minimumTransmittance": 0.62 },
+  "quality": { "Low": "Off", "Medium": "one 512 mask", "High": "two octaves 1024", "Ultra": "three octaves 1024" },
+  "offPath": "restore multiplier to 1; release owned projection target", "fallback": "constant cloud attenuation or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

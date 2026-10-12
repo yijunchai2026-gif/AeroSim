@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-06-LOW-FOG", "displayName": "低雾", "kind": "local_fog",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "bottom-left soft fog noise", "usage": "derive de-lit linear density noise" },
+  "inputs": ["fogDensity", "altitudeMeters", "windDirectionXZ", "windSpeedMps"], "activation": { "formula": "fog01*(1-smoothstep(30,120,altitudeMeters))", "enter": 0.03, "exit": 0.015, "fadeSeconds": 5 },
+  "render": { "space": "world volume", "blend": "alpha extinction", "depth": "soft intersection", "heightMeters": [0, 18], "tileMeters": 64 },
+  "quality": { "Low": "one half-res layer", "Medium": "two half-res layers", "High": "two full-res layers", "Ultra": "three layers+temporal" },
+  "offPath": "fade extinction to zero; clear temporal history; disable owned volume", "fallback": "RenderSettings fog contribution or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

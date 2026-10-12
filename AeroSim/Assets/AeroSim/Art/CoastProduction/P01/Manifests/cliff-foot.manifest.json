@@ -1,0 +1,42 @@
+{
+  "schema": "aerosim.coast-production.subasset/v1",
+  "packageId": "COAST-PRODUCTION-P01",
+  "assetId": "P01-FOOT-01",
+  "slug": "cliff-foot",
+  "displayName": "坡脚",
+  "provenance": {
+    "classification": "PROCEDURAL / GENERATED SOURCE",
+    "scanClaim": "NOT A SCAN",
+    "generator": "CoastP01Generator.cs",
+    "sourceTextureSha256": "5a3f5a1eedd1bd65df28a256d1824eca02c6c2f5ca0f18777db9d788a0aad309"
+  },
+  "integration": {
+    "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/cliff-foot.prefab",
+    "meshPath": "Assets/AeroSim/Art/CoastProduction/P01/Meshes/cliff-foot.asset",
+    "materialPath": "Assets/AeroSim/Art/CoastProduction/P01/Materials/CoastRockP01.mat",
+    "coordinateSystem": "Unity:Y-up,+Z-forward,+X-right,meters",
+    "pivot": "bottom-center",
+    "sceneAssemblyOwnedByIntegrator": true
+  },
+  "boundsMeters": {
+    "x": 72,
+    "y": 12,
+    "z": 34
+  },
+  "lod": {
+    "distanceMeters": [
+      0,
+      50,
+      160
+    ],
+    "lod0TriangleBudget": 22000,
+    "generatedMeshIs": "LOD0"
+  },
+  "collision": {
+    "mode": "external-proxy",
+    "isTrigger": false,
+    "renderersAllowed": 1
+  },
+  "purpose": "cliff-to-water grounding mass",
+  "status": "GENERATED_READY"
+}

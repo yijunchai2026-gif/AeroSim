@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5180af86f0d24f92ad5ec6c36baa604a, type: 3}
+  m_Name: CoastProductionRuntimeCatalog
+  m_EditorClassIdentifier: AeroSim.Runtime::AeroSim.Simulation.CoastProductionRuntimeCatalog
+  provenance: CAPTURED_UNREVIEWED / NOT SCANNED
+  packageIds:
+  - P01
+  - P02
+  - P03
+  - P04
+  - P05
+  - P06
+  - P07
+  - P08
+  - P09
+  - P10
+  - P11
+  p01RockPrefabs:
+  - {fileID: 201004225980496191, guid: c8322b38514b34dc09972dcba9709f7a, type: 3}
+  - {fileID: 8568308644538871946, guid: a78dd6c2feeff47efa7b980cb9a33de2, type: 3}
+  - {fileID: 420213932855390373, guid: 53cf7f8614a8b4a96b1ed633b1d1fea9, type: 3}
+  p11HeroCliffPrefab: {fileID: 1074632069716661672, guid: c38cfe2690b6b44c6852551ee2555928, type: 3}
+  p11DiagnosticShader: {fileID: 4800000, guid: a11c11ff00000000000000000000000a, type: 3}
+  p01RockMaterial: {fileID: 2100000, guid: 1b93961c880164cb9b3615409d30b935, type: 2}
+  intertidalWetRock: {fileID: 2800000, guid: ea45edb265b0492d93b728ac053b27fe, type: 3}
+  intertidalBed: {fileID: 2800000, guid: 92a95457a2a145e3a2d464337625c19b, type: 3}
+  gravelSurface: {fileID: 2800000, guid: cc567989d3284d038b23b04566193c76, type: 3}
+  concreteSurface: {fileID: 2800000, guid: 6759c852cb54439c91fedcc27b069eb2, type: 3}
+  concreteDecals: {fileID: 2800000, guid: eb730c7f25e541c8a58f4e3408433d3d, type: 3}
+  industrialMetal: {fileID: 2800000, guid: 392b94aeb41349128eea796328f8427b, type: 3}
+  vegetationAtlas: {fileID: 2800000, guid: 8006b096eb6443faa24eac12ea4428fb, type: 3}
+  foamAtlas: {fileID: 2800000, guid: b4efa4afd3114846b7be37afc02d42b1, type: 3}
+  weatherAtlas: {fileID: 2800000, guid: 258b8e71f09043f192fba6b4d339dcd8, type: 3}
+  lookDevProfiles:
+  - {fileID: 4900000, guid: a18f2f2d3d0c49e3a7a1e729b5a29d1d, type: 3}
+  - {fileID: 4900000, guid: 3bd96d47f649483f8d4649246533677a, type: 3}
+  - {fileID: 4900000, guid: 1f2ae65491484757858581cc995f25d1, type: 3}
+  budgetContract: {fileID: 4900000, guid: 1c6d1fec38630445e8f4ec5921b282b6, type: 3}

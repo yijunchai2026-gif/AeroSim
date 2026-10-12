@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-04-HEATHER-B", "displayName": "石南B", "archetype": "compact_flowering_heath",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.1667,0.19,0.1666,0.20]},
+  "geometry": {"heightMeters": [0.28,0.6], "radiusMeters": [0.38,0.82], "cardsLOD0": 11, "pivot": "root"},
+  "alphaCutout": {"cutoffBias": 0.02, "coverageClass": "dense_flowers", "twoSided": true},
+  "wind": {"primaryBend": 0.35, "edgeFlutter": 0.29, "stiffness": 0.69, "maxDisplacementMeters": 0.11, "phaseJitter": 0.22},
+  "seasonWeather": {"winterTintRGB": [0.72,0.68,0.60], "summerTintRGB": [0.94,1.00,0.88], "autumnDryness": 0.38, "flowerAmount": [0.05,0.88], "wetnessResponse": 0.61},
+  "lodBillboard": {"lod0Meters": [0,17], "lod1Meters": [14,37], "lod2Meters": [33,68], "billboardMeters": [62,145], "cullMeters": 145, "billboardViews": 8},
+  "ecology": {"distanceToMeanHighWaterM": [32,260], "elevationAboveMeanHighWaterM": [4,55], "slopeDegrees": [0,36], "soilMoisture01": [0.12,0.55], "salinity01": [0.0,0.28], "exposure01": [0.3,0.9], "substrate": ["sandy_loam","acidic_soil","rock_fissure"], "spacingMeters": [0.6,1.4], "patchRadiusMeters": [1.5,7], "densityPerSquareMeter": [0.18,1.7]},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

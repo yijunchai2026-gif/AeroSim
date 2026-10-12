@@ -1,0 +1,253 @@
+{
+  "bakes": {
+    "cageExtrusion": 1.25,
+    "cageObject": "HC_BakeCage",
+    "device": "CPU",
+    "engine": "CYCLES",
+    "heightBitDepth": 16,
+    "maps": [
+      {
+        "api": "bpy.ops.object.bake",
+        "bitDepth": 8,
+        "cageExtrusion": 1.25,
+        "cageObject": "HC_BakeCage",
+        "map": "Normal",
+        "margin": 16,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "seconds": 5.451,
+        "selectedToActive": true,
+        "type": "NORMAL",
+        "useCage": true
+      },
+      {
+        "api": "bpy.ops.object.bake",
+        "bitDepth": 8,
+        "cageExtrusion": 1.25,
+        "cageObject": "HC_BakeCage",
+        "map": "AO",
+        "margin": 16,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "seconds": 20.627,
+        "selectedToActive": true,
+        "type": "AO",
+        "useCage": true
+      },
+      {
+        "api": "bpy.ops.object.bake",
+        "bitDepth": 16,
+        "cageExtrusion": 1.25,
+        "cageObject": "HC_BakeCage",
+        "map": "Height",
+        "margin": 16,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "seconds": 6.46,
+        "selectedToActive": true,
+        "type": "EMIT",
+        "useCage": true
+      },
+      {
+        "api": "bpy.ops.object.bake",
+        "bitDepth": 8,
+        "cageExtrusion": 1.25,
+        "cageObject": "HC_BakeCage",
+        "map": "Curvature",
+        "margin": 16,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "seconds": 7.128,
+        "selectedToActive": true,
+        "type": "EMIT",
+        "useCage": true
+      },
+      {
+        "api": "bpy.ops.object.bake",
+        "bitDepth": 8,
+        "cageExtrusion": 1.25,
+        "cageObject": "HC_BakeCage",
+        "map": "BaseColor",
+        "margin": 16,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "seconds": 7.896,
+        "selectedToActive": true,
+        "type": "EMIT",
+        "useCage": true
+      },
+      {
+        "api": "bpy.ops.object.bake",
+        "bitDepth": 8,
+        "cageExtrusion": 1.25,
+        "cageObject": "HC_BakeCage",
+        "map": "Roughness",
+        "margin": 16,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "seconds": 7.732,
+        "selectedToActive": true,
+        "type": "EMIT",
+        "useCage": true
+      },
+      {
+        "api": "bpy.ops.object.bake",
+        "bitDepth": 8,
+        "cageExtrusion": 1.25,
+        "cageObject": "HC_BakeCage",
+        "map": "WetnessCavityMask",
+        "margin": 16,
+        "resolution": [
+          2048,
+          2048
+        ],
+        "seconds": 8.561,
+        "selectedToActive": true,
+        "type": "EMIT",
+        "useCage": true
+      }
+    ],
+    "marginPixels": 16,
+    "rayDistance": 1.25,
+    "samples": 8,
+    "selectedToActive": true
+  },
+  "blender": "3.4.1",
+  "collision": {
+    "count": 15,
+    "meshCollider": false,
+    "type": "compound primitive boxes"
+  },
+  "files": {
+    "Models/HeroCliff_P11.fbx": "1d5ec1fd1fd33eea0f7921680424abb99b261163a3a6f43f003202519e7a7e66",
+    "Models/HeroCliff_P11_Source.blend": "36dcc73e7aa45cb9e31d7fada273c17837becbe6a3b198de37cfa4f3721eaa56",
+    "Textures/T_HeroCliff_P11_AO.png": "55afdd1367ef9324b1b753f1b62b467f06b969601ac19cf71ef34e1c7bffc198",
+    "Textures/T_HeroCliff_P11_BaseColor.png": "0400bd104b639a5f2180f812bc5428585124b5928bffbe0e339e65b46559b4b7",
+    "Textures/T_HeroCliff_P11_Curvature.png": "906742262d4cf3a5bba4049d0cd3d123b4b032bcb54ce5d06c764d7d8427a00f",
+    "Textures/T_HeroCliff_P11_Height.png": "6c070b15c53c4d39ad22c89b4eda4dc2882ea75dc4eef472be9c67fb95cfc7ca",
+    "Textures/T_HeroCliff_P11_Normal.png": "dd078e7ff24bba92cc7683cff4c2c9e9e17abf1fea566fbfc1caa513778371e4",
+    "Textures/T_HeroCliff_P11_Roughness.png": "b40cdf011896f9cc7c132a8d13f3395052c6750789b9f058604d65ff1feb885b",
+    "Textures/T_HeroCliff_P11_WetnessCavityMask.png": "6ad818b9b0608a18e47a993157022f8a8af3d8c9d294c71828a31a112697a2f8"
+  },
+  "geometry": {
+    "features": [
+      "continuous silhouette",
+      "physical bedding ledges",
+      "diagonal fault throw",
+      "geometry fracture channels",
+      "erosion cavities",
+      "undercut rock ledges",
+      "integrated talus/collapse"
+    ],
+    "highToLod0Reduction": 0.808,
+    "lodGeneration": "independent lower-resolution continuous manifold height fields; no decimate collapse",
+    "lodRatios": {
+      "LOD1": 0.5375,
+      "LOD2": 0.23728298611111112,
+      "LOD3": 0.08385416666666666
+    },
+    "lodValidation": {
+      "HC_LOD0": {
+        "boundaryComponents": 1,
+        "boundaryDegreeErrors": 0,
+        "boundaryEdges": 872,
+        "componentCount": 1,
+        "frontFacingRatio": 1.0,
+        "mainComponentRatio": 1.0,
+        "nonManifoldEdges": 0,
+        "occupancy": 0.6953125,
+        "silhouetteIoUToLOD0": 1.0,
+        "triangles": 92160,
+        "zeroAreaFaces": 0
+      },
+      "HC_LOD1": {
+        "boundaryComponents": 1,
+        "boundaryDegreeErrors": 0,
+        "boundaryEdges": 642,
+        "componentCount": 1,
+        "frontFacingRatio": 1.0,
+        "mainComponentRatio": 1.0,
+        "nonManifoldEdges": 0,
+        "occupancy": 0.6953125,
+        "silhouetteIoUToLOD0": 1.0,
+        "triangles": 49536,
+        "zeroAreaFaces": 0
+      },
+      "HC_LOD2": {
+        "boundaryComponents": 1,
+        "boundaryDegreeErrors": 0,
+        "boundaryEdges": 438,
+        "componentCount": 1,
+        "frontFacingRatio": 1.0,
+        "mainComponentRatio": 1.0,
+        "nonManifoldEdges": 0,
+        "occupancy": 0.6953125,
+        "silhouetteIoUToLOD0": 1.0,
+        "triangles": 21868,
+        "zeroAreaFaces": 0
+      },
+      "HC_LOD3": {
+        "boundaryComponents": 1,
+        "boundaryDegreeErrors": 0,
+        "boundaryEdges": 268,
+        "componentCount": 1,
+        "frontFacingRatio": 1.0,
+        "mainComponentRatio": 1.0,
+        "nonManifoldEdges": 0,
+        "occupancy": 0.6953125,
+        "silhouetteIoUToLOD0": 1.0,
+        "triangles": 7728,
+        "zeroAreaFaces": 0
+      }
+    },
+    "triangles": {
+      "HC_High": 480000,
+      "HC_LOD0": 92160,
+      "HC_LOD1": 49536,
+      "HC_LOD2": 21868,
+      "HC_LOD3": 7728
+    }
+  },
+  "material": {
+    "connectedMaps": [
+      "BaseColor",
+      "Normal",
+      "Roughness",
+      "AO",
+      "Height"
+    ],
+    "geometryLinkedAuxiliary": [
+      "Curvature",
+      "WetnessCavityMask"
+    ],
+    "name": "M_HeroCliff_P11_Baked",
+    "uniqueUvSampling": "EXTEND",
+    "wetnessChannels": "R=low-height wetness,G=high-poly pointiness/cavity,B=geometry noise breakup"
+  },
+  "productionReady": false,
+  "schema": "aerosim.hero-cliff-p11/v2",
+  "seed": 110412,
+  "status": "GENERATED_NOT_REVIEWED",
+  "uv": {
+    "layout": "unique non-overlapping grid atlas",
+    "paddingPixels": 16,
+    "stats": {
+      "summedUvArea": 0.968994140625,
+      "triangles": 92160,
+      "zeroAreaFaces": 0,
+      "zeroAreaRatio": 0.0
+    }
+  }
+}

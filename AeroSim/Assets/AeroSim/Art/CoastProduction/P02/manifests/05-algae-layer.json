@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-05-ALGAE-LAYER","displayName":"藻层",
+  "sources":[{"file":"../source/tidepool-bed-reference.png","sha256":"d84db9b1323b596e5166ea08ae1d129cb989401c9598b9877918825c7c2b2f80","generatedSourceTag":"GENERATED_SOURCE:generated_image_035650","usage":"green/brown/red algae palette and coverage reference"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"algae-layer","keywords":["P02_ALGAE"]},
+  "material":{"tileMeters":[2.2,2.2],"macroWavelengthMeters":[5,18],"normalStrength":0.48,"dryRoughness":0.66,"wetRoughness":0.21,"standingDepthMm":[0,35],"algaeCoverage":[0.12,0.72]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.68,"tideInfluence":0.96,"wetValueMultiplier":0.91,"wetNormalMultiplier":0.62},
+  "lod":["0-15m coverage+strand normal","15-40m coverage only","40-80m macro algae color","80-180m sparse macro tint",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

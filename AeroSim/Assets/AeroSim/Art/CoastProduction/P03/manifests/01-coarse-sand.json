@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-01-COARSE-SAND",
+  "displayName": "粗砂",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "color/aggregate reference; derive de-lit seamless maps" },
+  "scale": { "coverageMeters": [2.0, 2.0], "grainDiameterMm": [0.5, 2.0], "detailRepeatMeters": 0.35 },
+  "tile": { "mode": "seamless_repeat", "repeatMeters": 2.0, "rotationVariantsDegrees": [0, 90, 180, 270], "edgeBlendMeters": 0.18 },
+  "macroVariation": { "wavelengthMeters": [12, 36], "baseColorDelta": 0.06, "roughnessDelta": 0.05, "densityPatchesMeters": [3, 8] },
+  "normal": { "strength": 0.62, "nearDetailStrength": 0.28, "fadeStartMeters": 14, "fadeEndMeters": 38 },
+  "roughness": { "target": 0.84, "range": [0.76, 0.93], "wetResponseMinimum": 0.48 },
+  "lod": ["LOD0:0-15m full maps+detail", "LOD1:15-40m normal50%", "LOD2:40-80m macro only", "LOD3:80-180m 512/256 mip", "Cull:>180m far aggregate"],
+  "streaming": { "priority": 1, "maxResident": 2048, "mobileMaxResident": 1024, "preloadRadiusMeters": 24 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

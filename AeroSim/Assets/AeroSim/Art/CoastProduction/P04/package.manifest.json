@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P04_TAKEOFF_FACILITY",
+  "display_name": "P04 起降设施资产包",
+  "revision": "2026.10.12-r1",
+  "coordinate_system": {"handedness": "right", "up_axis": "Y", "forward_axis": "Z", "unit": "meter"},
+  "scene_policy": {"scene_independent": true, "shared_scene_changes": false, "scene_references": []},
+  "sources": [
+    {"id": "SRC_P04_CONCRETE", "path": "sources/P04_concrete_source.png", "role": "tileable_concrete_basecolor_source", "width": 2880, "height": 2880, "color_space": "sRGB", "alpha": false, "sha256": "8c77fcf613b1c66a564cf9c35ed982f3a90f623b85b5addfcbe8b0e7000c2cf1"},
+    {"id": "SRC_P04_DECAL_ATLAS", "path": "sources/P04_decal_atlas_source.png", "role": "weathering_and_wear_decal_atlas_source", "width": 2880, "height": 2880, "color_space": "sRGB", "alpha": false, "sha256": "7aea566b552668fb7b82c1adffdd9e6f9f11eb48054496d65d1bb17e2e78b7ec"}
+  ],
+  "contracts": ["contracts/material.contract.json", "contracts/decal.contract.json", "contracts/collision_dimensions.contract.json"],
+  "assets": [
+    {"id": "P04_ASSET_01_ANTI_SLIP_PLATFORM", "manifest": "manifests/01_anti_slip_platform.manifest.json"},
+    {"id": "P04_ASSET_02_H_MARKING", "manifest": "manifests/02_h_marking.manifest.json"},
+    {"id": "P04_ASSET_03_EXCLUSION_HATCH", "manifest": "manifests/03_exclusion_hatch.manifest.json"},
+    {"id": "P04_ASSET_04_CONCRETE_BASE", "manifest": "manifests/04_concrete_base.manifest.json"},
+    {"id": "P04_ASSET_05_DRAINAGE_CHANNEL", "manifest": "manifests/05_drainage_channel.manifest.json"},
+    {"id": "P04_ASSET_06_TIE_DOWN_POINT", "manifest": "manifests/06_tie_down_point.manifest.json"},
+    {"id": "P04_ASSET_07_INSPECTION_COVER", "manifest": "manifests/07_inspection_cover.manifest.json"},
+    {"id": "P04_ASSET_08_WORN_EDGE", "manifest": "manifests/08_worn_edge.manifest.json"},
+    {"id": "P04_ASSET_09_SALT_CORROSION", "manifest": "manifests/09_salt_corrosion.manifest.json"},
+    {"id": "P04_ASSET_10_PUDDLE_STAIN", "manifest": "manifests/10_puddle_stain.manifest.json"}
+  ],
+  "validation": {"mode": "static", "validator": "validation/validate.py", "report": "validation/static_validation_report.md"}
+}

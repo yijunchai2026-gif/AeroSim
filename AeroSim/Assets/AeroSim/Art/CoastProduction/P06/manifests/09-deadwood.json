@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-09-DEADWOOD", "displayName": "枯枝", "archetype": "standing_deadwood",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.50,0.78,0.1667,0.18]},
+  "geometry": {"heightMeters": [0.45,1.6], "radiusMeters": [0.35,1.1], "cardsLOD0": 5, "pivot": "root"},
+  "alphaCutout": {"cutoffBias": -0.05, "coverageClass": "thin_bare_branches", "twoSided": true},
+  "wind": {"primaryBend": 0.08, "edgeFlutter": 0.04, "stiffness": 0.96, "maxDisplacementMeters": 0.025, "phaseJitter": 0.08},
+  "seasonWeather": {"winterTintRGB": [0.82,0.80,0.74], "summerTintRGB": [0.94,0.92,0.86], "autumnDryness": 1.0, "flowerAmount": [0.0,0.0], "wetnessResponse": 0.88},
+  "lodBillboard": {"lod0Meters": [0,20], "lod1Meters": [17,44], "lod2Meters": [40,78], "billboardMeters": [72,165], "cullMeters": 165, "billboardViews": 8},
+  "ecology": {"distanceToMeanHighWaterM": [8,190], "elevationAboveMeanHighWaterM": [1,35], "slopeDegrees": [0,38], "soilMoisture01": [0.05,0.72], "salinity01": [0.05,0.75], "exposure01": [0.25,1.0], "substrate": ["sand","gravel","sandy_loam","rock_fissure"], "spacingMeters": [2.5,7], "patchRadiusMeters": [2,12], "densityPerSquareMeter": [0.005,0.07], "maxShareOfLocalVegetation": 0.08},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

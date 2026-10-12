@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aerosim.static-validation/v1",
+  "packId": "P07-WATER-FX-PACK-V1",
+  "validatedAt": "2026-10-12T03:57:00+08:00",
+  "result": "PASS",
+  "method": "python3 assets/p07-water-fx-pack-v1/validate.py",
+  "checks": {
+    "jsonParse": "PASS",
+    "subAssetCount": "10/10",
+    "sourceDimensions": "2880x2880",
+    "sourceSha256": "PASS",
+    "atlasRectsWithinBounds": "PASS",
+    "atlasRectCoordinateConversion": "PASS",
+    "weatherVariants": "Clear/Overcast/Rain",
+    "qualityVariants": "Low/High/Ultra",
+    "shaderProperties": "PASS",
+    "shaderKeywords": "PASS",
+    "oceanModifiedByPack": false,
+    "sharedEnvironmentAssemblyModifiedByPack": false
+  },
+  "notRun": ["Unity import", "Unity shader compilation", "runtime visual validation", "target-device performance"]
+}
