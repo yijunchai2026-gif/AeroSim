@@ -175,7 +175,7 @@ check('CATALOG_REMAINS_PENDING', aircraft.every(x => x.appearanceStatus === 'pen
   {count: aircraft.length, approved: aircraft.filter(x => x.appearanceStatus !== 'pending_user').map(x => x.id)});
 check('CATALOG_PRODUCTION_GATE', catalog.approvalPolicy?.onlyHumanUserMayApprove === true && catalog.approvalPolicy?.unapprovedMayAppearInProductionFlight === false && aircraft.every(x => x.productionAssetAllowed !== true),
   catalog.approvalPolicy);
-const manifestPaths = ['legacy', 'current', 'inspire', 'mavic'].map(x => 'assets/v125-art/' + x + '/review-drafts.json');
+const manifestPaths = ['legacy', 'current', 'inspire', 'mavic', 'phantom4', 'air2s'].map(x => 'assets/v125-art/' + x + '/review-drafts.json');
 const drafts = manifestPaths.filter(x => fs.existsSync(path.join(root, x))).flatMap(file => {
   const raw = JSON.parse(read(file)); return (Array.isArray(raw) ? raw : raw.drafts).map(d => ({...d, manifest: file}));
 });
@@ -185,6 +185,12 @@ for (const draft of drafts) {
   check('DRAFT_HASH:' + draft.aircraftId, safe && fs.existsSync(path.join(root, draft.image)) && sha(draft.image) === draft.sha256,
     {image: draft.image, sha256: draft.sha256, revision: draft.revision});
   check('DRAFT_PENDING:' + draft.aircraftId, draft.appearanceStatus === 'pending_user' && draft.kind === 'generated_review_bitmap' && !!draft.revision, draft.appearanceStatus);
+  if (/\/v125-art\/(phantom4|air2s)\//.test(draft.manifest)) {
+    check('NEW_ART_EMBEDDED_IN_PRD:' + draft.aircraftId, prdLinks.some(x => x.image && x.target === draft.image), draft.image);
+    check('NEW_ART_EXACT_NAMESPACE_ID:' + draft.aircraftId,
+      (draft.manifest.includes('/phantom4/') && draft.aircraftId === 'dji-phantom-4' && draft.image.startsWith('assets/v125-art/phantom4/')) ||
+      (draft.manifest.includes('/air2s/') && draft.aircraftId === 'dji-air-2s' && draft.image.startsWith('assets/v125-art/air2s/')), draft.manifest);
+  }
 }
 const oldMavic = drafts.find(x => x.aircraftId === 'dji-mavic-pro');
 const newMavic = drafts.find(x => x.aircraftId === 'dji-mavic-4-pro');

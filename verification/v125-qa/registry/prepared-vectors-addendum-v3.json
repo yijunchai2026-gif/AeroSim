@@ -1,0 +1,1170 @@
+{
+  "schemaVersion": 1,
+  "status": "PREPARED_BEFORE_REGISTRY_IMPLEMENTATION_REVIEW_NOT_RUN",
+  "preparedUtc": "2026-10-11T19:51:21.919Z",
+  "mainVectors": "verification/v125-qa/registry/prepared-vectors.json",
+  "mainVectorsSha256": "3fba38278ddaee8b6c8e21b75fb8ffa81586530bc48216b1c1e157e47513b4c1",
+  "contract": "verification/v125-qa/registry-contract-addendum-v3.json",
+  "contractSha256": "144f93e27a8dd6039fa5e539e70f971cd5dc5331933fb96042f873bd915a1696",
+  "usesDescriptorTemplatesFromMain": true,
+  "registryImplementationRead": false,
+  "authorRegistryTestsRead": false,
+  "referencePolicy": "Fixed manual tables. Structurally valid but unpublishable Active is eligible for canonical nonempty SerialKey collision count; only actual inactive/omission permits peer collision exit. An exhausted slot never publishes any new or wrapped SourceId.",
+  "cases": [
+    {
+      "id": "v3_existing_ambiguous_peer_stays_ambiguous_when_A_exhausts",
+      "runId": "0123456789abcdef0123456789abcdef",
+      "coverage": [
+        "generation_overflow",
+        "exhausted_active_collision",
+        "existing_peer_epoch_unchanged",
+        "inactive_exit"
+      ],
+      "steps": [
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "1",
+            "sources": [
+              {
+                "slot": "A",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000007:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "701",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000007:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              },
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000007:0000000001",
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "arrangeBoundary",
+          "counter": "LastGeneration",
+          "slot": "A",
+          "value": "2147483647",
+          "purpose": "Reflection-only synthetic counter seed; never create/wrap/reuse an exhausted SourceId"
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "2",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000007:0000000001"
+            ],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000007:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "2",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "2",
+              "usageRevision": "0",
+              "state": "Disabled",
+              "descriptor": null
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "3",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "ReportedSerial",
+                "confidenceCode": "reported_serial",
+                "deviceIdentity": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "3",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "ReportedSerial",
+                "confidenceCode": "reported_serial",
+                "deviceIdentity": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "2",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "4",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "3",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        }
+      ]
+    },
+    {
+      "id": "v3_first_active_exhausted_A_and_first_peer_B",
+      "runId": "0123456789abcdef0123456789abcdef",
+      "coverage": [
+        "first_active_exhausted_collision",
+        "initial_ambiguous_epoch_one",
+        "omission_exit"
+      ],
+      "steps": [
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Disabled",
+              "descriptor": null
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "0",
+            "sources": [],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "arrangeBoundary",
+          "counter": "LastGeneration",
+          "slot": "A",
+          "value": "2147483647",
+          "purpose": "Reflection-only synthetic counter seed; never create/wrap/reuse an exhausted SourceId"
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "1",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "1",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "ReportedSerial",
+                "confidenceCode": "reported_serial",
+                "deviceIdentity": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Removed",
+              "descriptor": null
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "ReportedSerial",
+                "confidenceCode": "reported_serial",
+                "deviceIdentity": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        }
+      ]
+    },
+    {
+      "id": "v3_strong_peer_becomes_ambiguous_with_unpublishable_active",
+      "runId": "0123456789abcdef0123456789abcdef",
+      "coverage": [
+        "exhausted_active_collision",
+        "existing_strong_peer_epoch",
+        "remote_excluded_exit"
+      ],
+      "steps": [
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Disconnected",
+              "descriptor": null
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "1",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "ReportedSerial",
+                "confidenceCode": "reported_serial",
+                "deviceIdentity": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "arrangeBoundary",
+          "counter": "LastGeneration",
+          "slot": "A",
+          "value": "2147483647",
+          "purpose": "Reflection-only synthetic counter seed; never create/wrap/reuse an exhausted SourceId"
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "RemoteExcluded",
+              "descriptor": null
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "3",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "3",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "ReportedSerial",
+                "confidenceCode": "reported_serial",
+                "deviceIdentity": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "strongA"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "3",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "3",
+                "descriptor": "strongA",
+                "kind": "Joystick",
+                "confidence": "ReportedSerial",
+                "confidenceCode": "reported_serial",
+                "deviceIdentity": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "modelKey": "model:89ce3642f4c8ca8f8664b0ed80c31a9e036cc881dc4f2822ddd24f591fbeed5f",
+                "serialKey": "serial:14cadee8e2b28ca1271bc628538fb77e1e8c4acc7d7568d3d7efc0d2c93eba28",
+                "hasModelEvidence": true,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        }
+      ]
+    },
+    {
+      "id": "v3_sparse_serial_peer_ambiguous_even_when_other_slot_exhausted",
+      "runId": "0123456789abcdef0123456789abcdef",
+      "coverage": [
+        "exhausted_active_collision",
+        "sparse_model_evidence",
+        "session_only_peer_epoch"
+      ],
+      "steps": [
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Disabled",
+              "descriptor": null
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "0",
+            "sources": [],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "arrangeBoundary",
+          "counter": "LastGeneration",
+          "slot": "A",
+          "value": "2147483647",
+          "purpose": "Reflection-only synthetic counter seed; never create/wrap/reuse an exhausted SourceId"
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "sparseSerial"
+            },
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "sparseSerial"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "1",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "sparseSerial",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:1ded01d6024a1d3ebddce3d3362813d918c9d422e6fdf6b72096a8f450084e99",
+                "serialKey": "serial:b57e74e99a55a72610665b9509f05bd7b65733eed30c998c99bfd9e155084288",
+                "hasModelEvidence": false,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "sparseSerial"
+            },
+            {
+              "slot": "A",
+              "runtimeDeviceId": 7,
+              "instanceToken": "701",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "sparseSerial"
+            }
+          ],
+          "expected": {
+            "status": "AppliedWithErrors",
+            "catalogRevision": "1",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "1",
+                "descriptor": "sparseSerial",
+                "kind": "Joystick",
+                "confidence": "Ambiguous",
+                "confidenceCode": "ambiguous",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:1ded01d6024a1d3ebddce3d3362813d918c9d422e6fdf6b72096a8f450084e99",
+                "serialKey": "serial:b57e74e99a55a72610665b9509f05bd7b65733eed30c998c99bfd9e155084288",
+                "hasModelEvidence": false,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "nonempty_fixed_codes",
+            "requiredErrorSemantic": "GenerationExhausted"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "sparseSerial"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "sparseSerial",
+                "kind": "Joystick",
+                "confidence": "SessionOnly",
+                "confidenceCode": "session_only",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:1ded01d6024a1d3ebddce3d3362813d918c9d422e6fdf6b72096a8f450084e99",
+                "serialKey": "serial:b57e74e99a55a72610665b9509f05bd7b65733eed30c998c99bfd9e155084288",
+                "hasModelEvidence": false,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [
+              "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001"
+            ],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        },
+        {
+          "operation": "apply",
+          "observations": [
+            {
+              "slot": "B",
+              "runtimeDeviceId": 11,
+              "instanceToken": "1101",
+              "kind": "Joystick",
+              "invalidationRevision": "1",
+              "usageRevision": "0",
+              "state": "Active",
+              "descriptor": "sparseSerial"
+            }
+          ],
+          "expected": {
+            "status": "Applied",
+            "catalogRevision": "2",
+            "sources": [
+              {
+                "slot": "B",
+                "sourceId": "joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "sourceGeneration": 1,
+                "instanceToken": "1101",
+                "invalidationRevision": "1",
+                "usageRevision": "0",
+                "identityEpoch": "2",
+                "descriptor": "sparseSerial",
+                "kind": "Joystick",
+                "confidence": "SessionOnly",
+                "confidenceCode": "session_only",
+                "deviceIdentity": "session:joystick:0123456789abcdef0123456789abcdef:0000000011:0000000001",
+                "modelKey": "model:1ded01d6024a1d3ebddce3d3362813d918c9d422e6fdf6b72096a8f450084e99",
+                "serialKey": "serial:b57e74e99a55a72610665b9509f05bd7b65733eed30c998c99bfd9e155084288",
+                "hasModelEvidence": false,
+                "isValid": true,
+                "identityError": "None"
+              }
+            ],
+            "revokedSourceIds": [],
+            "invalidatedBindingSourceIds": [],
+            "mappingRevalidationRequiredSourceIds": [],
+            "errorPolicy": "none"
+          }
+        }
+      ]
+    }
+  ],
+  "limits": {
+    "compilation": "NOT_RUN",
+    "tests": "NOT_RUN",
+    "mutation": "NOT_RUN",
+    "nativeDevices": "NOT_RUN",
+    "gateA": "NOT_CLOSED"
+  }
+}

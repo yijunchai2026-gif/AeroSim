@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent desktop08 supplemental and original regression review; not whole-product acceptance",
+  "reviewStatus": "PASS_AUTOMATED_ONLY",
+  "applicationVersion": "1.0.0 development candidate",
+  "build": {
+    "application": "/private/tmp/aerosim-v1-build.z7j0iF/AeroSim.app",
+    "sourceFreeze": "verification/v125-qa/desktop08/candidate08-source-freeze.json",
+    "sourceFreezeSha256": "9019e93263722ceb61bc306eba77ff1956c0328f7313cac53b860f6840cfd497",
+    "independentlyMatchedSourceFiles": 10,
+    "runtimeDllSha256": "0aec831cff961caafa77a38f90bdf0335ff4026b817ccde9fd71b8ed21e99f9f",
+    "buildLog": "/private/tmp/aerosim-v1-candidate08-build.log",
+    "buildLogSha256": "9a099c6d976f1411fefce0166898c655942e87f8d3fd2e6800ce33d4118ecfc1",
+    "actualSuccessLine": 3724,
+    "qaLaunchedUnityOrNative": false,
+    "stableApplication": "AeroSim/Builds/macOS-V1-Candidate-20261010-08/AeroSim.app",
+    "stableCopyIndependentReview": {
+      "sameRelativePathsSizesAndFileSha256AsTestedOriginal": true,
+      "fileCount": 147,
+      "symlinkCount": 0,
+      "sortedRelativeFileDescriptorJsonSha256": "e8ce83288a4ff8be00be4f964073853667becd6217a0682bb30a7f169afd9e4e",
+      "executableSha256": "15c6787c334c7eaeb7835c92e38185cfecc3fc0e609fdf30ef09194a1ac7ce20",
+      "infoPlistSha256": "f10cf241f9e05a8420bd4196f3dd04f7e7beee355c8053d10f62c3ec550b8dfb",
+      "version": "1.0.0",
+      "stableCopyLaunchedByQa": false,
+      "buildsIgnoredNotUploaded": true
+    }
+  },
+  "supplement": {
+    "freeze": "verification/v125-qa/desktop08/desktop08-freeze-v1.json",
+    "freezeSha256": "02f4249fe8f2b442922734f893ba46eb79cd41a909f24cefd89d608fd878cc1e",
+    "probeAndRegressionFingerprintsMatched": 15,
+    "uiScale": "100%",
+    "hudScale": "100%",
+    "textMultipliers": [1, 2],
+    "baseline07c": [
+      { "viewport": "1440x900", "checks": 215, "passed": 195, "failures": 20, "runtimeErrors": 0, "fatal": "", "panelScale": 1, "pngCount": 8, "report": "verification/v1-qa/results/candidate-07c/desktop08-v1-1440x900/desktop08-report.json", "sha256": "a3d56ed927af8d644629da1575ab02da87109e399f9f26a89e467a014ea57028", "failureKinds": { "firstTabRoute": 6, "heroLinebox": 2, "replaySplitUnit": 12 } },
+      { "viewport": "1920x1080", "checks": 220, "passed": 205, "failures": 15, "runtimeErrors": 0, "fatal": "", "panelScale": 1, "pngCount": 8, "report": "verification/v1-qa/results/candidate-07c/desktop08-v1-1920x1080/desktop08-report.json", "sha256": "0a40e0014b2f94bfd8f59698d1ecd48310673d1faf479ba5be22cc60d20dddb0", "failureKinds": { "firstTabRoute": 3, "heroLinebox": 0, "replaySplitUnit": 12 } }
+    ],
+    "candidate08": [
+      { "viewport": "1440x900", "checks": 215, "passed": 215, "failures": 0, "runtimeErrors": 0, "fatal": "", "panelScale": 1, "pngCount": 8, "status": "PASS_AUTOMATED_ONLY", "report": "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/desktop08-report.json", "sha256": "b5e9aaf3ea5e9193cd5c39e6a9726721f81cb0c3fbf2a8e967e2722d3584356a" },
+      { "viewport": "1920x1080", "checks": 220, "passed": 220, "failures": 0, "runtimeErrors": 0, "fatal": "", "panelScale": 1, "pngCount": 8, "status": "PASS_AUTOMATED_ONLY", "report": "verification/v1-qa/results/candidate-08/desktop08-v1-1920x1080/desktop08-report.json", "sha256": "38816355aa5d604b77836bd1c42c20c1874d17f16eb646817fdee9f90c3a9333" }
+    ],
+    "sameOrderedRuleStageSequencesBetween07cAnd08": true,
+    "all35OldSupplementFailuresNowPassWithoutProbeChanges": true,
+    "candidate08Checks": 435,
+    "candidate08RuleCountsAcrossTwoViewports": { "firstIntentionalTab": 4, "modalTabContained": 80, "emptySpaceNoAction": 24, "heroFinalLinebox": 12, "heroFixedToken": 8, "heroNonintersection": 24, "replayNumericValue": 24, "replaySingleCorrectUnit": 24 },
+    "hero08ContentMeasurements": [
+      { "viewport": "1440x900", "text": 100, "titleContent": "356x88", "titleRequired": "356x88", "titleFont": 36, "descriptionContent": "356x44", "descriptionRequired": "356x39", "descriptionFont": 16 },
+      { "viewport": "1440x900", "text": 200, "titleContent": "1055x175", "titleRequired": "1055x175", "titleFont": 72, "descriptionContent": "1055x78", "descriptionRequired": "1055x78", "descriptionFont": 32 },
+      { "viewport": "1920x1080", "text": 100, "titleContent": "611x88", "titleRequired": "611x88", "titleFont": 36, "descriptionContent": "611x44", "descriptionRequired": "611x20", "descriptionFont": 16 },
+      { "viewport": "1920x1080", "text": 200, "titleContent": "1519x88", "titleRequired": "1519x88", "titleFont": 72, "descriptionContent": "1519x44", "descriptionRequired": "1519x39", "descriptionFont": 32 }
+    ],
+    "replayExpectedNumericAndUnit": { "Imperial": ["39|ft", "8.9|mph", "92|%"], "Metric": ["12|m", "14.4|km/h", "92|%"] }
+  },
+  "originalRegressionReview": {
+    "status": "ALL_SCOPED_AUTOMATED_REGRESSIONS_REVIEWED",
+    "spaceV3": [
+      { "viewport": "1440x900", "checks": 1911, "failures": 0, "runtimeErrors": 0, "status": "PASS_AUTOMATED_ONLY", "unrendered": 24, "unrenderedIsNotPass": true, "report": "verification/v1-qa/results/candidate-08/space-v3-1440x900/space-submit-v3-report.json", "sha256": "05342a6efec94159d0fae886f2cfbd07b95ac09654f548d3336c50417e9b1b7a" },
+      { "viewport": "1920x1080", "checks": 1911, "failures": 0, "runtimeErrors": 0, "status": "PASS_AUTOMATED_ONLY", "unrendered": 24, "unrenderedIsNotPass": true, "report": "verification/v1-qa/results/candidate-08/space-v3-1920x1080/space-submit-v3-report.json", "sha256": "03d39249c61060410629e25f646d0ea0304548e3e17d9d9fd449f29afa29ecd9" },
+      { "viewport": "1280x720", "checks": 1911, "failures": 0, "runtimeErrors": 0, "status": "PASS_AUTOMATED_ONLY", "unrendered": 24, "unrenderedIsNotPass": true, "pngCount": 58, "report": "verification/v1-qa/results/candidate-08/space-v3-1280x720/space-submit-v3-report.json", "sha256": "069ccc39e46c6d25ecb0e39c0bc7d3cb99863b81ac795207d1c18087e303ec53" }
+    ],
+    "pauseTelemetry": { "viewport": "844x390", "checks": 74, "failures": 0, "runtimeErrors": 0, "status": "PASS_AUTOMATED_ONLY", "pngCount": 10, "report": "verification/v1-qa/results/candidate-08/pause-844x390/pause-telemetry-report.json", "sha256": "bcae0660ba8c6249b27eacd5cd4c5d80ac2684cfb3f9a5bbd9652320169cc5c9", "actualValueChecks": 12, "scrolledValueChecks": 12 },
+    "dynamicModalV3": { "initialViewport": "844x390", "finalViewport": "844x390", "checks": 2209, "failures": 0, "runtimeErrors": 0, "fatal": "", "status": "PASS_AUTOMATED_ONLY", "pngCount": 24, "report": "verification/v1-qa/results/candidate-08/dynamic-v3-844x390/dynamic-modal-typography-report.json", "sha256": "d6eaef794ce2a7afc5538f6bd1f52af5f8c055d8d88bde4ec987b3486e963325", "fontChecks": 512, "scrolledLineboxChecks": 272, "actualResizeChecks": 24, "recordUnchangedChecks": 105, "profileUnchangedChecks": 105, "allStagesCompletionCheck": true },
+    "replayTypographyV2": { "viewport": "1920x1080", "checks": 1454, "failures": 0, "runtimeErrors": 0, "fatal": "", "status": "PASS_AUTOMATED_ONLY", "pngCount": 8, "report": "verification/v1-qa/results/candidate-08/replay-v2-1920x1080/replay-typography-v2-report.json", "sha256": "ceb8412cdaaf098bbd67654f07a3ec1d608252e3ee231c3d1936758ff5bdb5f1", "fixedUssFontChecks": 528, "lineboxChecks": 376, "coroutinePredecessorChecks": 16, "actualPointerTargetChecks": 20, "allStagesCompletionCheck": true },
+    "nativeSmoke": {
+      "status": "PASS_AUTOMATED_ONLY",
+      "checks": 66,
+      "passed": 66,
+      "failures": 0,
+      "runtimeErrors": 0,
+      "report": "verification/v125-qa/desktop08/candidate08-native-smoke.txt",
+      "sha256": "e20adee356fedd5bf50b8afd20ae39774545c600964579db324c19822ce3cefa",
+      "nativeLog": "/private/tmp/aerosim-candidate08-native-smoke.log",
+      "nativeLogSha256": "6574507b3b0dd4af7c5e81381878542d1f2621c7e6168774de0d2a0f0efce65e",
+      "nativeLogBytes": 6057,
+      "reportBytes": 2669,
+      "reportArtifactMtimeUtc": "2026-10-10T17:21:10.340Z",
+      "nativeLogArtifactMtimeUtc": "2026-10-10T17:21:10.668Z",
+      "sameOrdered66PassLinesInNativeLogAndReport": true,
+      "logMonoAndSubsystemPathsPointToTestedOriginal08": true,
+      "runtimeDllSha256": "0aec831cff961caafa77a38f90bdf0335ff4026b817ccde9fd71b8ed21e99f9f",
+      "isolatedProfile": "/private/tmp/aerosim-desktop08-smoke-profile.eKVE9e",
+      "profileJsonSha256": "b12865a369be568ab728ad9b514793acfc755adcfbb31775a2fb4ce1e0aef0d3",
+      "sixLogReferencedPhotoFilesExistUnderIsolatedProfile": true,
+      "sixPhotoPngHeadersVerified": "1280x720",
+      "rapidCaptureUniqueFileIdentityDoesNotRequireDifferentPixels": true,
+      "correlatedSessionCsvAndReportExist": true,
+      "readDiagnosticWriterSourceSha256": "a385c3c315930580b5f154850ba1ed52ebcec9bdd3ea753beb08a5ea40d7499e",
+      "processExitCode": "NOT_RECORDED",
+      "warningsRetained": ["macOS Secure coding is not enabled for restorable state", "Unity shutdown threads may have been prematurely finalized"],
+      "inputBoundary": "Synthetic InputSystem keyboard/mouse and AddDevice gamepad; direct touch channels, not physical controller/touchscreen/iOS validation",
+      "qaRepeatedNativeSmoke": false
+    },
+    "stillPendingActualReports": []
+  },
+  "retainedHistoricalFailures": [
+    { "report": "verification/v1-qa/results/candidate-07c/space-submit-v3-1440x900/space-submit-v3-report.json", "sha256": "c83b00d49dcd3e80b9a642377b3bf79e5c6a70e05423d0f5b6eeb0fede2b3a56", "checks": 1911, "failures": 3, "unrendered": 24 },
+    { "report": "verification/v1-qa/results/candidate-07b/replay-typography-v2-1920x1080/replay-typography-v2-report.json", "sha256": "cd48af06f18c73e3b89e0a8ed29ca1ea9e82fc3c86d285e947c903d274a1f74d", "checks": 1454, "failures": 38 }
+  ],
+  "independentlyViewedRawPngSha256": {
+    "verification/v1-qa/results/candidate-07c/desktop08-v1-1440x900/Professional-Home-Text100.png": "272cb1cd10ab791a77549a126f150f31a75b0702db52e1d9d02f6da39ea08b2f",
+    "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/Professional-Home-Text100.png": "990ce08b81c6ce8d9bcc34e3258f844f4ce1ad3ab27cafe52c60f84b5594f9f8",
+    "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/Professional-Home-Text200.png": "2e679648cdadee495aaa32548338a8c65b064ad292b47b8fa377f53138ab009e",
+    "verification/v1-qa/results/candidate-08/desktop08-v1-1920x1080/Professional-Home-Text200.png": "1e91f01a7203e26edd4d6c415ff4babf1d3c38693826f3e389910eb20e4c4189",
+    "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/Aerial-Text100-first-Tab-Space.png": "1889f49601508592fcc248b5126a7d395c1b9bff5b4e2da9f21cd928f25f371a",
+    "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/Replay-Imperial-Text100.png": "aec082223f34353584720a616486c999ea5bbdecc6d79765aa1bb08838750597",
+    "verification/v1-qa/results/candidate-08/dynamic-v3-844x390/confirm-Text200-initial.png": "58dcd26c09a3d8813c8c4f6bc6b39e31fc37d40279134f9d140e2d9dfce41b6f",
+    "verification/v1-qa/results/candidate-08/dynamic-v3-844x390/telemetry-Text200-initial.png": "3c1c4a4633b4a698fdc7321f7550c809f2faf447a60a58145c0336d5e14cadd6",
+    "verification/v1-qa/results/candidate-08/replay-v2-1920x1080/Text150-SpaceCoroutine-Replay.png": "93827427f8cd705e0cec5e7ec25d5b25cf662384f9ee6386ec641753a25313bf"
+  },
+  "selectedPngCopies": [
+    { "selected": "assets/ui-v125/candidate-20261010-08/home-1440-text100-before07c.png", "raw": "verification/v1-qa/results/candidate-07c/desktop08-v1-1440x900/Professional-Home-Text100.png", "sha256": "272cb1cd10ab791a77549a126f150f31a75b0702db52e1d9d02f6da39ea08b2f", "byteMatch": true, "candidate": "07c historical before" },
+    { "selected": "assets/ui-v125/candidate-20261010-08/home-1440-text100-after08.png", "raw": "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/Professional-Home-Text100.png", "sha256": "990ce08b81c6ce8d9bcc34e3258f844f4ce1ad3ab27cafe52c60f84b5594f9f8", "byteMatch": true, "candidate": "08" },
+    { "selected": "assets/ui-v125/candidate-20261010-08/home-1920-text100-after08.png", "raw": "verification/v1-qa/results/candidate-08/desktop08-v1-1920x1080/Professional-Home-Text100.png", "sha256": "bee4373190d4aa77aebce7a5d71fb6db436a998e902d1e19955b3585a62b9fd6", "byteMatch": true, "candidate": "08" },
+    { "selected": "assets/ui-v125/candidate-20261010-08/pause-1440-first-tab-space.png", "raw": "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/Aerial-Text100-first-Tab-Space.png", "sha256": "1889f49601508592fcc248b5126a7d395c1b9bff5b4e2da9f21cd928f25f371a", "byteMatch": true, "candidate": "08" },
+    { "selected": "assets/ui-v125/candidate-20261010-08/replay-1920-text100.png", "raw": "verification/v1-qa/results/candidate-08/desktop08-v1-1920x1080/Replay-Imperial-Text100.png", "sha256": "c5c1cc8761f15922e6c712649504bdc5a5eff4ee111003e2498c6c69b04d962a", "byteMatch": true, "candidate": "08" },
+    { "selected": "assets/ui-v125/candidate-20261010-08/replay-1440-text200.png", "raw": "verification/v1-qa/results/candidate-08/desktop08-v1-1440x900/Replay-Imperial-Text200.png", "sha256": "9a504c9918e95e20abb721be1e8ba063ca5a4edf339abf554add4fa956c8fa3d", "byteMatch": true, "candidate": "08" }
+  ],
+  "independentClosure": {
+    "reviewedUtc": "2026-10-10T22:34:13.058Z",
+    "readOnlyRecheckNoUnityNativeLaunchOrGitWrite": true,
+    "productionSourceFingerprintsMatched": 10,
+    "probeAndContractFingerprintsMatched": 15,
+    "completeRawJsonFingerprintsMatched": 12,
+    "selectedPngCopiesMatchedToRaw": 6,
+    "previouslyViewedRawPngFingerprintsMatched": 9,
+    "same07c08OrderedRuleStageSequencesReconfirmed": true,
+    "all35OldSupplementFailuresReconfirmedClosedWithoutProbeChanges": true,
+    "fiveBusinessDiffsRead": true,
+    "laterInputIdentityExcludedFromNativeClaims": true,
+    "noWholeProductVisualOrDeviceOr125CompletionClaim": true
+  },
+  "visualAndDeviceLimits": {
+    "localPixelReview": "Home100 narrow glyph overflow removed; actual Pause overlay and Imperial split units visible. Geometry and linebox jointly necessary: baseline worldBound nonintersection alone missed overflowing glyphs.",
+    "text200FirstScreen": "1440Home description extends below first-screen contentViewport; CTA below. 1920Home expanded hero is fullwidth with status below. Replay1440Text200 telemetry is below first-screen; Replay1920Text200 shows part of Altitude while other values remain below. Supplemental checks do not exercise scrolling/clicking those offscreen Home/Replay controls; no same-screen readability assertion. Dynamicv3 separately tests per-element scrolling inside its own three dialogs, not full Home/Replay scroll interaction.",
+    "full23ConceptParity": "NOT_PROVEN",
+    "fullUiHudTextMatrix": "NOT_RUN",
+    "physicalController": "NOT_RUN",
+    "iphoneIpadDevices": "NOT_RUN",
+    "finalUserAcceptance": "PENDING",
+    "gitPush": "Root responsibility; not established by native tests",
+    "laterInputIdentitySource": "Not included in frozen08binary or these native claims; pure algorithm verification must not be called integrated input/device proof"
+  }
+}

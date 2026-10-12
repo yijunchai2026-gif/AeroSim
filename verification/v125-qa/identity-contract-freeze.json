@@ -1,0 +1,10 @@
+{
+  "scope": "Gate A identity resolver pure subset only",
+  "parentContract": "docs/V125_GATE_A_CONTRACT.md",
+  "parentSha256": "f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697",
+  "hasModelEvidence": "NonEmpty(interfaceName) AND NonEmpty(layout) AND (NonEmpty(product) OR (vendorId.HasValue AND productId.HasValue AND vendorId != 0 AND productId != 0))",
+  "canonicalNumbers": "Nullable signed integer descriptor fields: absent is empty, present is invariant decimal. This resolver does not validate actual USB/HID ranges or hardware availability; that is a later adapter gate.",
+  "serialKey": "SHA256 of complete canonical model fields plus the final NFC/Trim raw serial UTF8 length-prefixed field, not a hash-of-hash substitute. The normalized serial is transient and not retained in returned or persistent descriptors.",
+  "ownership": "identity engineer owns only InputDeviceIdentity.cs/meta, developer tests/runner and implementation doc; root freezes and independent QA writes separate tests after handoff.",
+  "limits": "No live registry/collision resolution, calibration installation, sidecar migration, Unity polling, formal FlightInput integration, UI capture or physical/mobile device acceptance."
+}

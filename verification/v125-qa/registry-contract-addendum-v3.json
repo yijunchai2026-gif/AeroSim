@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "baseFreeze": "verification/v125-qa/registry-contract-freeze.json",
+  "previousClarification": "verification/v125-qa/registry-contract-addendum-v2.json",
+  "status": "ROOT_EXHAUSTED_ACTIVE_COLLISION_CLARIFICATION_BEFORE_SOURCE_FREEZE",
+  "collisionPolicy": [
+    "All structurally valid Active observations with nonempty canonical SerialKey participate in the current snapshot's collision counts, including observations that cannot publish a SourceId because their slot generation is exhausted.",
+    "GenerationExhausted remains a per-slot AppliedWithErrors diagnostic. It does not create, wrap or reuse an exhausted SourceId. A publishable peer reporting the same SerialKey must remain Ambiguous and use session identity; failure to publish one slot is not proof of unique physical identity.",
+    "Only actual omission or an explicitly inactive state removes an observation from collision eligibility. A later snapshot with no other eligible matching observation permits collision exit under the existing identity-epoch policy.",
+    "This clarification changes no raw-input, OS-adapter, mapping, calibration or persistence contract. Synthetic reflection fixtures may exercise the generation boundary without a production test hook."
+  ],
+  "reason": "Root source review found that counting serials only after successful generation allocation could make a live duplicate appear unique at the generation-exhaustion boundary."
+}

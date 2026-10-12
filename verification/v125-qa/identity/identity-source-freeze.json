@@ -1,0 +1,18 @@
+{
+  "scope": "Gate A single-descriptor pure identity subset; not candidate08 binary or three-device integration",
+  "frozenBy": "root after engineer stop-writing and complete source/doc/test review",
+  "baseCommit": "2c2597411e94dcaa1fd568b8bf42729dbd2a6aa5",
+  "files": [
+    {"path":"docs/V125_GATE_A_CONTRACT.md","sha256":"f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697"},
+    {"path":"verification/v125-qa/identity-contract-freeze.json","sha256":"3db85a4f2dd502fa8755673019f9ea736894dda27df58b0baccf5e95e813d3ed"},
+    {"path":"AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs","sha256":"aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d"},
+    {"path":"AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs","sha256":"88a215d7431824c3c3062d377c4d2e35a7bdd3af81348bf1add4aca2adca084f"},
+    {"path":"AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs.meta","sha256":"5068d83ae1380509460d35606b10f3037379e668d5bcd2dd96ad59837b971e7d"},
+    {"path":"verification/v125-qa/identity/InputDeviceIdentityDeveloperTests.cs","sha256":"3cb4d9264419a2999bc488c8f77a98def6e5a22bef4f26e3984e329b1dbecb50"},
+    {"path":"verification/v125-qa/identity/build-identity-developer-tests.sh","sha256":"7c4d8fd76dead55869e0556977f764ad81589aa3cca7cbaa4b0a1f8a49518007"},
+    {"path":"docs/V125_IDENTITY_IMPLEMENTATION.md","sha256":"79d41f55e01c34e1104bed5d3de8b707166e0d9b164bb6c83ae04ae9efd899e3"}
+  ],
+  "rootDeveloperRerun": {"strictCompile":true,"checks":10630,"failures":0,"exitCode":0,"temporaryOutput":"/private/tmp/aerosim-identity-developer.2C0fHL"},
+  "independentQaAtFreeze": "NOT_RUN; separate tests and strictly compiling isolated mutations required",
+  "limits": "No Unity polling, live serial collision registry, mapping, calibration binding, persistence, UI adapters, physical controller or mobile verification. ReportedSerial is not unique-device authorization."
+}

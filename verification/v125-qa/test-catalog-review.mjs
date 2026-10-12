@@ -26,15 +26,15 @@ function catalog(rows = [aircraft()]) {
 function draft(id = 'qa-aircraft') {
   return {aircraftId: id, kind: 'generated_review_bitmap', image: 'assets/v125-art/legacy/qa-aircraft.png', sha256: digest(image), revision: 'qa-r01', appearanceStatus: 'pending_user', sourceUrls: [official], notes: ['Synthetic fixture only']};
 }
-function generateFixture({data = catalog(), drafts = [draft()], bitmap = image} = {}) {
+function generateFixture({data = catalog(), drafts = [draft()], bitmap = image, namespace = 'legacy'} = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'aerosim-catalog-qa-'));
   try {
-    for (const rel of ['verification/v125-qa', 'assets/catalog-v125', 'assets/v125-art/legacy']) fs.mkdirSync(path.join(dir, rel), {recursive: true});
+    for (const rel of ['verification/v125-qa', 'assets/catalog-v125', 'assets/v125-art/' + namespace]) fs.mkdirSync(path.join(dir, rel), {recursive: true});
     fs.copyFileSync(builderPath, path.join(dir, 'verification/v125-qa/build-catalog-review.mjs'));
     fs.copyFileSync(templatePath, path.join(dir, 'assets/catalog-v125/review-template.html'));
     fs.writeFileSync(path.join(dir, 'assets/catalog-v125/dji-aircraft.json'), JSON.stringify(data));
-    fs.writeFileSync(path.join(dir, 'assets/v125-art/legacy/review-drafts.json'), JSON.stringify(drafts));
-    fs.writeFileSync(path.join(dir, 'assets/v125-art/legacy/qa-aircraft.png'), bitmap);
+    fs.writeFileSync(path.join(dir, 'assets/v125-art/' + namespace + '/review-drafts.json'), JSON.stringify(drafts));
+    fs.writeFileSync(path.join(dir, 'assets/v125-art/' + namespace + '/qa-aircraft.png'), bitmap);
     const result = spawnSync(process.execPath, [path.join(dir, 'verification/v125-qa/build-catalog-review.mjs')], {encoding: 'utf8', timeout: 10000});
     const file = path.join(dir, 'AeroSim-1.25-机型逐一审核.html');
     return {...result, html: fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''};
@@ -223,10 +223,12 @@ const expectedArtIds = {
   legacy: ['dji-phantom-1'],
   current: ['dji-mini-4-pro'],
   inspire: ['dji-inspire-1'],
-  mavic: ['dji-mavic-pro', 'dji-mavic-4-pro']
+  mavic: ['dji-mavic-pro', 'dji-mavic-4-pro'],
+  phantom4: ['dji-phantom-4'],
+  air2s: ['dji-air-2s']
 };
 const expectedCurrentIds = Object.values(expectedArtIds).flat();
-test('four real art namespaces bind exact aircraft IDs, current PNG bytes and pending revisions', () => {
+test('six real art namespaces bind exact aircraft IDs, current PNG bytes and pending revisions', () => {
   const source = JSON.parse(fs.readFileSync(path.join(root, 'assets/catalog-v125/dji-aircraft.json'), 'utf8'));
   const realIds = new Set(source.aircraft.flatMap(a => [a.id, ...(a.variants || []).map(v => v.id)]));
   const sources = runtime({data: source, drafts: []});
@@ -245,14 +247,14 @@ test('four real art namespaces bind exact aircraft IDs, current PNG bytes and pe
       assert.ok(d.revision && d.sourceUrls.length); assert.ok(d.sourceUrls.every(sources.qa.safeSource), id);
     }
   }
-  assert.equal(seen.size, 5);
+  assert.equal(seen.size, 7);
 });
-test('isolated real gallery contains 132 main plus 9 variants and exactly five pending art IDs', () => {
+test('isolated real gallery contains 132 main plus 9 variants and exactly seven pending art IDs', () => {
   const r = generateWorkspaceFixture(); assert.equal(r.status, 0, r.stderr);
   const inline = id => JSON.parse(r.html.match(new RegExp('<script id="' + id + '" type="application/json">([\\s\\S]*?)<\\/script>'))[1]);
   const data = inline('catalog-data'), drafts = inline('draft-data');
   assert.equal(data.reviewBaseCount, 132); assert.equal(data.reviewVariantCount, 9); assert.equal(data.aircraft.length, 141);
-  assert.equal(drafts.length, 5);
+  assert.equal(drafts.length, 7);
   assert.deepEqual(drafts.map(d => d.aircraftId).sort(), [...expectedCurrentIds].sort());
   assert.deepEqual([...new Set(drafts.map(d => d.image.split('/')[2]))].sort(), Object.keys(expectedArtIds).sort());
   const review = runtime({data, drafts});
@@ -262,7 +264,7 @@ test('isolated real gallery contains 132 main plus 9 variants and exactly five p
     review.qa.select(id); assert.equal(review.registry.get('approve-model').disabled, false, id);
   }
   const withoutDraft = data.aircraft.filter(a => !expectedCurrentIds.includes(a.id));
-  assert.equal(withoutDraft.length, 136);
+  assert.equal(withoutDraft.length, 134);
   for (const a of withoutDraft) {
     review.qa.select(a.id); assert.equal(review.registry.get('approve-model').disabled, true, a.id);
   }
@@ -302,3 +304,27 @@ test('two additional official CDN hosts are exact HTTPS allowlist entries, not w
     const a = aircraft(); a.sourceUrls = [url]; const result = generateFixture({data: catalog([a])}); assert.equal(result.status, 0, result.stderr);
   }
 });
+
+// Additive registry/art wave. Original rule coverage remains; new current counts
+// reflect the two additional pending drafts, never an automatic approval.
+for (const [namespace, id] of [['phantom4', 'dji-phantom-4'], ['air2s', 'dji-air-2s']]) {
+  test(namespace + ' accepts only its exact aircraft and matching local image namespace', () => {
+    const d = {...draft(id), image: 'assets/v125-art/' + namespace + '/qa-aircraft.png'};
+    const data = catalog([aircraft(id)]);
+    const valid = generateFixture({namespace, data, drafts:[d]});
+    assert.equal(valid.status, 0, valid.stderr);
+    assert.notEqual(generateFixture({namespace, data:catalog([aircraft('qa-other')]), drafts:[{...d, aircraftId:'qa-other'}]}).status, 0);
+    assert.notEqual(generateFixture({namespace, data, drafts:[{...d, image:'assets/v125-art/legacy/qa-aircraft.png'}]}).status, 0);
+  });
+  test(namespace + ' preserves hash and pending-user gates', () => {
+    const d = {...draft(id), image:'assets/v125-art/' + namespace + '/qa-aircraft.png'};
+    const data = catalog([aircraft(id)]);
+    assert.notEqual(generateFixture({namespace, data, drafts:[d], bitmap:Buffer.from('changed bytes')}).status, 0);
+    assert.notEqual(generateFixture({namespace, data, drafts:[{...d, appearanceStatus:'approved'}]}).status, 0);
+    const held = {...aircraft(id), cutoffStatus:'hold_release_evidence'};
+    const r = runtime({data:catalog([held]), drafts:[d]});
+    r.registry.get('approve-model').click();
+    assert.equal(r.qa.state(held), 'pending_user');
+    assert.equal(Object.keys(r.qa.getSaved()).length, 0);
+  });
+}

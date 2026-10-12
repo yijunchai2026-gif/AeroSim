@@ -1,0 +1,20 @@
+{
+  "candidate": "08",
+  "baseLocalCommit": "2c2597411e94dcaa1fd568b8bf42729dbd2a6aa5",
+  "applicationVersion": "1.0.0 development candidate, not a completed 1.25 release",
+  "buildPath": "/private/tmp/aerosim-v1-build.z7j0iF/AeroSim.app",
+  "buildMethod": "AeroSim.Editor.ProjectSetup.BuildDesignV1Candidate",
+  "files": {
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Flight.cs": "8c3482128bad17361bfe10cc1540d24c153ffd21c350bda2af2199c43d78458a",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Pages.cs": "d9896393cf1cbc3fe59bb66e84fab0db83142a932059f6167575c517a9fdf456",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.FlightDesignV1.cs": "987e6fd81586443e7e20107c3a448527ab3975c94e1223eb3fa729257ddb02f5",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.DesignV1.cs": "197bd9fc9f4945d41a3779cb88ace2304fcb6efda23d4603311e5f48d6936f96",
+    "AeroSim/Assets/AeroSim/Runtime/AeroSimApplication.Responsive.cs": "ae7b80aeecc5d8c49f81907236022861d7fd59ea4d8073353a54b38bfdbc9a25",
+    "AeroSim/Assets/AeroSim/Runtime/Input/TouchInputState.cs": "2319cdc4e7dd9aa4510565caba6b1d0be5a712fadd8e032328f0ec236b470fb6",
+    "AeroSim/Assets/AeroSim/Resources/UI/AeroSim.uss": "5a15cd41c61ba44169de08727cee8ee17133ce9d4d109a7b61e9032829541072",
+    "AeroSim/Assets/AeroSim/Resources/UI/Product.uss": "0b0f3f76696d24d8f6f16ddca6c3e36281b08df60b1f021e8b51cd7637504d8e",
+    "AeroSim/Assets/AeroSim/Resources/UI/Responsive.uss": "2cd2ce8fa9abb26248e99188c623e11ae11ba175142b27acffb643b07d793afd",
+    "AeroSim/Assets/AeroSim/Editor/ProjectSetup.cs": "304024530378e3ea356deda4da6c17a32d61f5177005cfb5433ac7547d2c759d"
+  },
+  "limits": "Source freeze only. Independent native QA, visual review and actual device acceptance are separate gates. Original concepts and historical evidence remain unchanged."
+}

@@ -167,8 +167,11 @@ Label, Button { white-space: normal; }
 .design-v1.layout-phone .design-controller-art { height: 260px; }
 .design-v1.layout-phone .design-brief-image { height: 300px; }
 .design-v1.layout-phone .design-results-panel { width: 100%; padding: 20px; }
-.design-v1.layout-phone .design-dashboard-hero .panel-title, .design-v1.layout-phone .design-dashboard-hero > .wrap, .design-v1.layout-phone .design-dashboard-hero .primary-button,
-.design-v1.text-expanded .design-dashboard-hero .panel-title, .design-v1.text-expanded .design-dashboard-hero > .wrap, .design-v1.text-expanded .design-dashboard-hero .primary-button { max-width: 100%; }
+.design-v1.layout-phone .design-dashboard-hero .panel-title, .design-v1.layout-phone .design-dashboard-hero > .wrap,
+.design-v1.layout-tablet .design-dashboard-hero .panel-title, .design-v1.layout-tablet .design-dashboard-hero > .wrap,
+.design-v1.text-expanded .design-dashboard-hero .panel-title, .design-v1.text-expanded .design-dashboard-hero > .wrap { width: 100%; max-width: 100%; }
+.design-v1.layout-phone .design-dashboard-hero .primary-button,
+.design-v1.text-expanded .design-dashboard-hero .primary-button { max-width: 100%; }
 .design-v1.layout-phone .design-fpv-stage, .design-v1.text-expanded .design-fpv-stage, .design-v1.layout-tablet .design-fpv-stage { min-height: 1150px; }
 .design-v1.layout-phone .design-fpv-menu, .design-v1.text-expanded .design-fpv-menu, .design-v1.layout-tablet .design-fpv-menu { position: relative; top: auto; right: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; }
 .design-v1.layout-phone .design-fpv-aircraft, .design-v1.text-expanded .design-fpv-aircraft, .design-v1.layout-tablet .design-fpv-aircraft { position: relative; left: auto; bottom: auto; width: auto; margin-left: 16px; margin-right: 16px; margin-top: 24px; }

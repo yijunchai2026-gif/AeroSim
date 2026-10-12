@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "frozenAtUtc": "2026-10-11T20:14:21.140Z",
+  "scope": "Registry/art/document integration inputs frozen before final independent QA. Not a native build or human approval.",
+  "status": "INPUTS_FROZEN_BEFORE_FINAL_DOCUMENT_QA",
+  "files": {
+    "飞行模拟器产品设计文档.md": "07290c076ac360de1b1a751d3462801a889f56ea462231d72aed1104b04787b7",
+    "AeroSim-1.25-机型逐一审核.html": "7dbb08d2aa3ed7cb9f840e64d22c5c94d7e9154acab7f31c9a4b00e279d8fc6f",
+    "verification/v125-qa/build-catalog-review.mjs": "ecdcf2f33c2a0ee071db6dd608dc39207b96b851232c11581f83c245b6aca485",
+    "verification/v125-qa/test-catalog-review.mjs": "350807420b2802bd7481d583b19c9709ecd49b63b6873d5ca4153c89dc18de96",
+    "verification/v125-qa/prd-review/prd-document-check.mjs": "b3b34d0999920cdc98e0423bb501d1dfbc05b82dd225c7230af410e8f7d4036b",
+    "verification/v125-qa/prd-review/prd-document-check-test.mjs": "e1933cfd233c413b11c40945a26b7bd143ff26ecb07a7f0e8ce902e5a966c412",
+    "verification/v125-qa/registry-art/independent-gallery-tests.mjs": "85bd3081049a1d921b43689f9c1ef40dc7fbabc53e61fc3781206120d0910820",
+    "assets/v125-art/phantom4/phantom-4-draft-01.png": "f5d855115819f4fbe1c1b4ec738cb0fbfc087338bd78d127f71f5d30df85d518",
+    "assets/v125-art/phantom4/prompt.txt": "ba184571e306deb958b591797fbf784d75ecfb1ce0281cd3444d9d09aa2a7f21",
+    "assets/v125-art/phantom4/review-drafts.json": "e0ce4eeb84a86fe57b2e1427b38a8a4fd193b18526dec147001aea69b85acc4c",
+    "docs/V125_ART_PHANTOM4.md": "8478cded16ac912ccb0f7a6a4deb2aa86b2cb4011210ecdb955632ab0f65b259",
+    "assets/v125-art/air2s/air-2s-draft-01.png": "05f07935cd8a1f60890d082a297ae1e13145f0633afb8e9e8060d56b0f580d2f",
+    "assets/v125-art/air2s/air-2s-draft-01.prompt.txt": "6d554e8a94b8e48a150daa4367196d6add1f9c5dfb440c9c04bcdb51ec633588",
+    "assets/v125-art/air2s/review-drafts.json": "d587211b4d95c13127dc679e5771636279d6851f6d9bd1fc2e9fafa895c7513e",
+    "docs/V125_ART_AIR2S.md": "566f17713c14605576f44332b75ed87ce28d700a0e979ff4d25f76503a11fb74",
+    "docs/V125_REGISTRY_CONTRACT_PROPOSAL.md": "629b4c2c68ced3bc3ea07c781ade52aa32e5a85adac53e9c23e9cd2ed6acfd2c",
+    "docs/V125_REGISTRY_IMPLEMENTATION.md": "b14038c3633861c637a4cb3946769bdef759f712c2b1961c24d10c2ffb8c2039",
+    "docs/V125_REGISTRY_QA.md": "988a5b98f601fbd4eacae82f003226618e1722e0bfccfe93ff7f874dd77e8fe0",
+    "verification/v125-qa/registry/registry-independent-results.json": "b5bcc9290cced7db77329a48be82c0f35ebc5cef804b131a4a94d73c00f55be6",
+    "verification/v125-qa/registry/InputIdentityRegistryIndependentTests.cs": "c924cbdbb3d161a54e8105b5bbcef5773ed09d6620f7c56cd0d20dc6978ef775",
+    "verification/v125-qa/registry/build-registry-independent-tests.sh": "40e0fca7a69e0fe76dade2dfb014c119c54b0c1b8d1061d7488253f2c9332886",
+    "verification/v125-qa/registry-source-freeze.json": "873c61e578789b15370eb6dada1abc6a882182f1b26c2b7d9b6d36bc8d33fc5c",
+    "verification/v125-qa/registry-wave-readonly-guard.json": "1f558a6954c11b74b78a863017e31d57b90d42186fcf08b8654017672f77cf8f"
+  },
+  "png": [
+    {
+      "path": "assets/v125-art/phantom4/phantom-4-draft-01.png",
+      "sha256": "f5d855115819f4fbe1c1b4ec738cb0fbfc087338bd78d127f71f5d30df85d518",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1712605
+    },
+    {
+      "path": "assets/v125-art/air2s/air-2s-draft-01.png",
+      "sha256": "05f07935cd8a1f60890d082a297ae1e13145f0633afb8e9e8060d56b0f580d2f",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1834870
+    }
+  ],
+  "rootReplay": {
+    "catalogueTests": 34,
+    "documentRuleTests": 13,
+    "independentGalleryTests": 21,
+    "total": 68,
+    "failures": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "expectedGallery": {
+    "reviewEntries": 141,
+    "currentDrafts": 7,
+    "approved": 0,
+    "withoutCurrentDraft": 134
+  },
+  "protectedByteGuards": {
+    "matches": 39,
+    "total": 39,
+    "sourceFreezeMatches": 14,
+    "originalConcepts": 23
+  },
+  "exclusions": [
+    "docs/V125_PROGRESS.md is a separately checked append-only integration/delivery record; not part of this freeze",
+    "Independent final output JSON/report are produced after this freeze and re-staged after QA",
+    "No Unity build or native/hardware/browser interactive QA",
+    "No model approval; candidate08 remains unchanged"
+  ]
+}

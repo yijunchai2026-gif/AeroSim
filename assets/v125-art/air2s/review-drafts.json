@@ -1,0 +1,29 @@
+[
+  {
+    "aircraftId": "dji-air-2s",
+    "revision": "draft-01",
+    "image": "assets/v125-art/air2s/air-2s-draft-01.png",
+    "sha256": "05f07935cd8a1f60890d082a297ae1e13145f0633afb8e9e8060d56b0f580d2f",
+    "kind": "generated_review_bitmap",
+    "sourceUrls": [
+      "https://www.dji.com/air-2s",
+      "https://www.dji.com/sg/support/product/air-2s",
+      "https://www.dji.com/air-2s/downloads",
+      "https://dl.djicdn.com/downloads/DJI_Air_2S/20240528UM/DJI_Air_2S_User_Manual_v1.2_ENV.pdf",
+      "https://store.dji.com/product/dji-air-2s-refurbished-unit?vid=115491",
+      "https://se-cdn.djiits.com/tpc/uploads/in_the_box/cover/fb22e7aa522c3f9e0f4296f5be6844e0%40retina_small.png"
+    ],
+    "appearanceStatus": "pending_user",
+    "notes": [
+      "Generated with built-in image_gen in one call; 1536 x 1024 PNG review bitmap, not a measured CAD drawing, runnable mesh, certified product photograph, or final PBR material.",
+      "Before generation, the official Air 2S support-page unfolded front product photograph, official store folded underside photograph, and official manual v1.2 PDF pages 8 and 9 (printed pages 7 and 8) were visually inspected. PDF page 7 (printed page 6) was also read for the single one-inch camera description.",
+      "The official photographs were visually consulted, not passed as image inputs. The generation request used the exact saved text prompt only; no paid CLI or external API fallback was used.",
+      "Observed major features: unfolded four-arm quadcopter, four motors, two-leaf dark propellers with orange tips, light-gray shell, one imaging camera on a nose gimbal, and four separate front/upward vision windows in the front and three-quarter views. No Air 3 dual-camera stack or Mavic 4 Pro camera sphere is present.",
+      "Observed risk: generated camera housing and gimbal side supports appear heavier and more exposed than the official front photograph; lens/glass and support proportions require closer per-view matching.",
+      "Observed risk: front/upward vision-window projections and rear sensor positions are not metrically validated; the top panel hides lower forward windows while other views show them. Sensor sizes and shell recesses may drift across views.",
+      "Observed risk: side and top panels have slight perspective and no calibration or dimensions. Arm hinge geometry, leg lengths, propeller pitch and motor proportions are not suitable as a measured modeling blueprint.",
+      "Observed risk: underside sensing, infrared system, auxiliary light, connector details and rear appearance are not fully exposed in this four-view sheet. No physical aircraft inspection or cross-view 3D mesh consistency test was performed.",
+      "No user confirmation has been recorded for dji-air-2s, draft-01, or this image SHA-256. Not eligible for production Unity aircraft selection, formal flight integration or final 3D assets until the individual user confirmation gate is satisfied."
+    ]
+  }
+]

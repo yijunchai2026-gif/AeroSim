@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "baseFreeze": "verification/v125-qa/registry-contract-freeze.json",
+  "status": "ROOT_CLARIFICATION_BEFORE_SOURCE_FREEZE",
+  "mappingDelta": "MappingRevalidationRequiredSourceIds contains only a still-current SAME SourceId whose UsageRevision increased. If the same Apply creates a new generation/SourceId, the old ID is revoked and the new ID is initially unmapped by future adapter policy; the new ID is not included in this usage-only delta even if usage also increased.",
+  "scope": "Identity-only registry; this clarification does not implement mapping or authorize calibration/flight."
+}

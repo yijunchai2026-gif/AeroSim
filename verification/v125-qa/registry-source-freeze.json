@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "frozenAtUtc": "2026-10-11T19:52:51Z",
+  "scope": "Root-reviewed v3 pure identity snapshot registry; no Unity/native/raw/calibration/app wiring",
+  "status": "SOURCE_FROZEN_BEFORE_INDEPENDENT_EXECUTION",
+  "files": {
+    "docs/V125_REGISTRY_CONTRACT_PROPOSAL.md": "629b4c2c68ced3bc3ea07c781ade52aa32e5a85adac53e9c23e9cd2ed6acfd2c",
+    "verification/v125-qa/registry-contract-freeze.json": "b2db0dc5a707fb7d47425d066fffd3d5cfadaeb1e90469931c686d27ab31772f",
+    "verification/v125-qa/registry-contract-addendum-v1.json": "ea105a124be6eb63039a24efd0cb2dff8ef2a2f4afbc775759cb387cc8fd4542",
+    "verification/v125-qa/registry-contract-addendum-v2.json": "3ba7e0569811104abb91d40b9b18ce9ab79db39a56b4d7a20c2837042665c881",
+    "verification/v125-qa/registry-contract-addendum-v3.json": "144f93e27a8dd6039fa5e539e70f971cd5dc5331933fb96042f873bd915a1696",
+    "AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs": "aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs": "88a215d7431824c3c3062d377c4d2e35a7bdd3af81348bf1add4aca2adca084f",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputIdentityRegistry.cs": "2536d814d4430b436ad322b602943b8a88de7ff294203034c91cbc960a730ba2",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputIdentityRegistry.cs.meta": "23cb422fb45e6f8e35ed8b473f9a27b14ef11dfd6436fe3334bdfa7b019c70b3",
+    "verification/v125-qa/registry/InputIdentityRegistryDeveloperTests.cs": "325ddb5b6a41db19840d64841d54fcaece0827418116c0ca1a78d8122a8f98b7",
+    "verification/v125-qa/registry/build-registry-developer-tests.sh": "94a9ffedb85e43b7c2169f4add1b2414fdb38d67325a452b2344e8340e3d7595",
+    "docs/V125_REGISTRY_IMPLEMENTATION.md": "b14038c3633861c637a4cb3946769bdef759f712c2b1961c24d10c2ffb8c2039",
+    "verification/v125-qa/registry/prepared-vectors.json": "3fba38278ddaee8b6c8e21b75fb8ffa81586530bc48216b1c1e157e47513b4c1",
+    "verification/v125-qa/registry/prepared-vectors-addendum-v3.json": "9eaa91f9ff71eb57aa2320f57fd08b785349b3bd4791677aedf13d916c3858de"
+  },
+  "rootDeveloperReplay": {
+    "checks": 33883,
+    "failures": 0,
+    "exitCode": 0,
+    "outputDirectory": "/private/tmp/aerosim-registry-developer.Vv4W6K",
+    "exeSha256": "e1090ff5e996350e452225e6cb30a2bf0d7f4723ed33dfe533a82d2082a90428",
+    "compilerFlags": "-warn:4 -warnaserror+",
+    "independentQa": "NOT_RUN_AT_FREEZE"
+  },
+  "originalByteGuardChecks": 39,
+  "limits": ["No native build", "No hardware or mobile validation", "Not Gate A closure", "No human model approval", "Candidate08 unchanged"]
+}

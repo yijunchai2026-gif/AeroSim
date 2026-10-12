@@ -139,6 +139,46 @@
 
 后继推送需使用标准CLI凭据助手，而不是把公开仓库当成无需认证。本机官方CLI 2.102.0暂存在 `/private/tmp/aerosim-github-cli.IeTEyI/gh_2.102.0_macOS_arm64/bin/gh`，发行zip SHA256已与官方digest `da922c20d1792e5b2cbf375593d7a658acf034c12c84e007e71c76ef959c337e` 一致。运行时 `GH_CONFIG_DIR=/private/tmp/aerosim-github-cli.IeTEyI/auth`，配置不在仓库内，凭据在keyring；通过该CLI的 `auth git-credential` 作为本次Git命令的helper，未改系统全局Git helper。临时目录若失效应按官方流程恢复工具/登录，不读令牌、不把认证文件纳入提交、不绕过Keychain或登录保护。
 
+## 2026-10-10 15:28后续作：08回归收尾与纯身份独立QA
+
+实际由22:28 UTC heartbeat恢复；前次21:27 UTC仅只读恢复，未启动构建或写业务源码。开始HEAD为 `388fa4a20a3c4630fb2c3933ffa5ba2197b0d4d5`，GitHub登录已恢复；旧8笔及上传回执不再属于未上传项。本轮不重做已完成构建、矩阵、图稿或调研。
+
+- 根完整读5个既存业务diff、身份实现/开发测试与冻结，08生产10/10、身份8/8指纹实际一致；保留3个旧meta/候选04/Wave B等无关工作。候选08独立QA接力只写其QA文档/紧凑结果；纯身份另一QA独立执行原准备测试；两名美术分波次重看原图/精选并交具体代码入口，互不覆盖生产文件。原实现者源码仍冻结，不以角色数量代替验证。
+- 08补充两视口435/0/0runtime；原Space三视口各1911/0/0、各24UNRENDERED不计PASS；Pause74/0/0、dynamic2209/0/0、Replay1454/0/0均已有实际报告、独立重核。此前未签收的smoke来源定位到本机 `/private/tmp/aerosim-candidate08-native-smoke.log`，SHA `6574507b3b0dd4af7c5e81381878542d1f2621c7e6168774de0d2a0f0efce65e`；66 PASS与结果逐行一致、Failures0，日志指向08未注入app及独立数据目录。没有取得历史进程退出码，不补写exit0、不另跑同一smoke。见[收尾QA](V125_DESKTOP08_QA.md)。
+- 根原样保存08稳定副本 `AeroSim/Builds/macOS-V1-Candidate-20261010-08/AeroSim.app`，与temp被测包 `diff -rq` 全树一致，Plist1.0.0、Runtime SHA `0aec831cff961caafa77a38f90bdf0335ff4026b817ccde9fd71b8ed21e99f9f`；本轮未新构建或把身份源码塞进旧二进制。Builds受忽略保护不上传，0.4/03/06/07b/07c原位保留。
+- 纯身份独立结果 **310,390/0/exit0**，3种mutation均严格编译成功再被原测试exit1拒绝；原输入3,050/0和Touch514,425/0原样回归。根另核独立紧凑结果27个文件指纹、3个唯一机械替换及89个meta GUID有效/唯一。源SHA88a215d7未改；单描述符resolver不关闭实时registry、serial碰撞、raw mapping、校准/旁路事务或三端接线。见[独立身份QA](V125_IDENTITY_QA.md)。
+- PRD更新v1.7只是局部验证记录；第25.12–25.13同步以上边界，第25.10截图/旧失败保留。两美术首次/追加复核均只签局部看图，23图指纹完整不等于23图目视通过；最终[视觉交接](V125_CANDIDATE08_RELEASE_VISUAL_REVIEW.md) SHA `7efeac13a5f97184920d6cc84b99a9d59265d367056f0bd2bb20dffda9c12609`，VISUAL_DIFFERENT继续。没有新资产/机型批准、地图接入、移动真机或1.25发布。
+
+统一文件冻结、文档/发布依赖核对后，仅选本波已验证业务/纯身份源码、测试工具和紧凑证据提交，再正常push并独立核远端SHA；不纳入原始全量QA/应用包、旧meta和未选历史方案。此段不预称本轮已上传；实际提交与push结果在交付时由根核验。后继可从本节与最新Git继续，不把旧“08尚未收尾”状态重复当作未跑测试。
+
+下一波继续共享输入Gate A的纯registry/映射与配置事务，并按美术交接修专业首页/回放/场景样板；三端产品线接线与设备验证分别关闭。用户逐机型确认是新最终资产门禁，其他不依赖批准的工作可继续；不自行批准或用版本号升级掩盖尚未完成项。
+
+## 2026-10-11 12:30续作：live身份registry与两份新机型审核稿
+
+恢复HEAD为 `bf97d1ae75e7b66e3e4d1848613a97eff9b09b2b`；本次新 `ls-remote` 开发分支SHA与之精确一致，因此上批30文件已交付，不重复08构建/矩阵或身份原测试。保留旧3个meta、候选04和Wave B未选工作。本波仍在 `codex/v125-product-lines`，不合并main或force-push。
+
+- 技术负责人先交132行[提案](V125_REGISTRY_CONTRACT_PROPOSAL.md)，根全文复核后冻结 identity-only 子集及 usage/overflow 两项澄清。作者实现 `InputIdentityRegistry.cs/.meta` 与严格纯C#自测；它仅管理完整身份快照、代际和重复serial冲突，不接Unity采样、mapping、校准保存或旧FlightInput，不能从08继承native通过。
+- 根源码复核发现首次计数会漏掉 generation 耗尽但仍Active的观察，可能使同serial幸存设备假判唯一。追加 immutable [v3](../verification/v125-qa/registry-contract-addendum-v3.json)后作者修复为先统计全部合格Active观察；新增26边界断言。修后作者及根严格复跑均 **33,883检查/0失败/exit0**，1,200 ticks/seed1251011/6槽；旧33,857不是修后结果。作者已停写，根[source freeze](../verification/v125-qa/registry-source-freeze.json)固定14文件，源SHA `2536d814d4430b436ad322b602943b8a88de7ff294203034c91cbc960a730ba2`。这是作者套件回归，不替独立QA；纯模块不在08二进制中。
+- 独立QA在读新实现前先锁主49组＋v3补4组字面轨迹，两个JSON实际由driver消费，未用实现输出倒写预期。冻结后独立及根严格复跑均 **15,889检查/0失败/exit0**，实际消费53轨迹/220次Apply（其中v3为4/21）、7个反射边界和9个无效构造；四个mutation均成功严格编译后被未改套件exit1检出，失败数195/19/118/56。既有resolver另跑310,390/0/exit0，不混入新registry计数。见[独立QA](V125_REGISTRY_QA.md)及[紧凑结果](../verification/v125-qa/registry/registry-independent-results.json)。整合前583检查/1失败（当时画廊5、manifest6）原样保留为历史预检，不能提前写最终文档PASS。
+- 两名3D美术各交一份原版Phantom 4与Air 2S四视图审核位图，均1536×1024、各一次内置文字生成、`pending_user`；原版Phantom 4不是Pro/Advanced/RTK。Phantom官方参考浏览器挂起后中断并只读恢复，未取得所尝试的manual或其他角度图；不能扩大已查证参考范围。根实际看Phantom生成源并核项目副本同SHA，实际看Air 2S项目PNG；两份稿件的云台跨视图、比例和缺少校准/网格风险保留于[Phantom说明](V125_ART_PHANTOM4.md)及[Air 2S说明](V125_ART_AIR2S.md)。PNG SHA分别为 `f5d855115819f4fbe1c1b4ec738cb0fbfc087338bd78d127f71f5d30df85d518` 和 `05f07935cd8a1f60890d082a297ae1e13145f0633afb8e9e8060d56b0f580d2f`。23原图与原5个current稿保持原字节；不是最终网格/PBR或用户批准。
+- 本波根拥有生成器/目录测试/文档检查器对精确两namespace的增量支持，以及PRD、画廊和本文整合；不泛放任意资产路径/来源域。新增[只读守卫](../verification/v125-qa/registry-wave-readonly-guard.json)固定16个原文件及23原图，属于保持字节的基线，不是新运行或视觉通过。
+
+根已将两份图嵌入PRD v1.8的25.15并刷新审核页：132主机型+9变体=141条、7份current稿、0批准、134条尚无current稿，目录无遗漏证明仍未关闭；localStorage导出不是可信签名或正式批准。生成器只加精确phantom4/air2s namespace及机型ID，未扩大来源域/生产门禁。根完整工具回归34目录+13文档规则+21独立新测试=**68/0/exit0、0skip**，随后冻结root/art/doc输入并交独立文档终验。自动文档/文件检查不等于浏览器缩放与触点实测、图像精准或用户验收。
+
+本波没有新Unity构建/native启动；实际应用仍1.0.0开发候选08，不能把纯registry源或新审核位图算进08已测二进制。独立文档终验与实际Git交付回执将在本节追加；此处不预称已上传。最终只提交已核对范围并正常推送、核新远端SHA；raw采样/映射/校准事务、三端正式接线、完整23图视觉、地图和移动真机门禁继续保留。
+
+### 2026-10-12 16:13额度恢复续接：独立文档终验
+
+上一日独立画廊QA额度中断，35个已检查文件仅暂存、未提交；本次先恢复同HEAD与新远端开发分支SHA `bf97d1ae75e7b66e3e4d1848613a97eff9b09b2b`，再核[整合输入冻结](../verification/v125-qa/registry-art-source-freeze.json)23/23、registry源14/14、只读守卫39/39，全部仍一致。没有购买额度、使用reset或重复生成两份图。三套68项独立运行及实际看两图已在中断前完成，成员恢复其真实输出和指纹，不把丢失的精确运行时刻补写成现在。
+
+独立成员本次新执行PRD＋本文＋两美术说明＋registry三文档的 `--require-tracked` 审计：**1,052检查/0失败/exit0，318次本地链接、0未暂存依赖**。结论仅 `PASS_FROZEN_GALLERY_DOCUMENT_INPUTS`；另一registry QA的旧583/1失败原样保留，由最终画廊与manifest同为7稿关闭陈旧HTML差异。见[独立文档QA](V125_REGISTRY_ART_QA.md)与[紧凑结果](../verification/v125-qa/registry-art/gallery-document-results.json)，自身报告及本段加入后的扩大依赖复核在这两份文件中另记，不倒写1052范围。
+
+根再次检查35暂存文件范围、空白与疑似凭据，无意外路径；旧3个meta/候选04/Wave B无关改动不纳入。08 Runtime DLL SHA仍 `0aec831cff961caafa77a38f90bdf0335ff4026b817ccde9fd71b8ed21e99f9f`，只是静态字节核对，没有新应用运行。根统一在独立交接停止后提交并正常push，成功与否以实际命令和新 `ls-remote` 为准，本段提交前记录不构成上传证明。1.25未发布、0用户机型批准、完整三端/23图/真实地图与真机门禁继续保留。
+
+独立成员已停写，扩大到PRD＋7份专项/进度文档的终验实际 **1,095检查/0失败/exit0、332链接、0未发布依赖**；根在最终两QA文件重新暂存后复跑同值，并核8个文档散列、4份本机证据、三套TAP的34/13/21零失败与零跳过。QA文档 SHA `11e24d86661cedc4cd85c7e8d761be42399dca0ba02b9ce855753f1e3c99c16c`，紧凑结果 SHA `7099569c34285b8fb54653ab636b408bcce8f53e6be009ae6db3efaa26098bea`；这些是本上传回执加入前的精确输入，不把后加纯文档回执冒称为独立成员再测。
+
+本波37文件已提交并实际上传：[代码/图稿/文档提交5430dc1](https://github.com/yijunchai2026-gif/AeroSim/commit/5430dc11581a577f9d3ce32e990393d70e068070)。正常push exit0；2026-10-12 23:22 UTC随后新的 `ls-remote` exit0，开发分支SHA精确为 `5430dc11581a577f9d3ce32e990393d70e068070`，不是origin缓存。[GitHub仓库](https://github.com/yijunchai2026-gif/AeroSim)与[开发分支](https://github.com/yijunchai2026-gif/AeroSim/tree/codex/v125-product-lines)可查。远端main仍为本次恢复时的 `9dac0c168dcce406a1e0155738e9e4c769f1aa8d`，本波未合并或force-push；原无关工作区内容完整保留。上方“暂存未提交”是额度中断时的历史断点，现已交付，后继不要重新生成/跑完毕套件或重复当作未上传。当前本段只追加真实交付事实，经根文档验证后另作正常回执提交推送；整体1.25仍未完成。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
@@ -167,6 +207,10 @@
 | 本轮UI美术/移动布局审查 | 原图与历史候选对照、iPad/iPhone布局与触点建议 | V125_UI_MOBILE_AUDIT.md，不改图稿或移动代码 |
 | 本轮场景3D美术审查 | 材质类别、米尺度、shader/几何/水面与性能调研 | V125_SCENE_REALISM_AUDIT.md，不生成/接入新资产 |
 | 本轮根整合/独立QA | 建议整合、冻结与只读守卫、独立检查器回归和交付 | V125_UX_UI_OPTIMIZATION_RESEARCH.md、V125_UX_UI_RESEARCH_QA.md、ux-ui-research-*.json、本文 |
+| snapshot registry技术负责人/程序员 | 先提案、按根addenda实现纯身份快照及作者测试，停写后交QA | InputIdentityRegistry.cs/.meta、DeveloperTests/runner、V125_REGISTRY_CONTRACT_PROPOSAL.md、V125_REGISTRY_IMPLEMENTATION.md |
+| snapshot registry独立QA | 先冻结字面预期，再运行独立driver与隔离mutation | registry/prepared-vectors*.json、IndependentTests/runner/results、V125_REGISTRY_QA.md；不写作者文件 |
+| 本波两名3D美术 | 原版Phantom 4及Air 2S官方参考、审核位图、提示记录和差异 | 各自phantom4/air2s目录及V125_ART_PHANTOM4/AIR2S.md；不改旧5稿 |
+| 本波根页面工具/独立文档QA | 精确namespace支持、文档嵌图与画廊整合，另派独立门禁/文档复核 | 根独占生成器/现有测试/checker/PRD；QA独占registry-art测试/结果及V125_REGISTRY_ART_QA.md |
 
 并发上限四个运行成员，角色按波次接力，不并行争用 Unity 构建。后续设备程序员/QA 按技术审查分配，跨线支援由根负责人记录交接。
 
@@ -174,7 +218,7 @@
 
 1. 对账目录历史/地区/硬件缺口，继续按官方材料补齐；132+9 是当前待确认清单，不标成完整闭合。
 2. 等用户逐机型看初稿、提交确认或修改意见；其他美术继续按机型制作。程序与美术不得批量代确认或默认接受。
-3. 当前最新已构建08，先完成本批剩余原生保护与独立QA/提交；之后按输入Gate A–D推进，纯身份新源不可冒用08通过。局部1440焦点/行框已修，完整缩放矩阵与23原图视觉未关闭。历史失败与原图保留，三端正式接线仍未完成。
+3. 当前最新已构建08，冻结局部原生保护与独立QA已收尾，详见本轮续作与PRD25.12；按输入Gate A–D继续，纯身份新源不可冒用08通过。局部1440焦点/行框已修，完整缩放矩阵与23原图视觉未关闭。历史失败与原图保留，三端正式接线仍未完成。
 4. 已修正历史“iOS模块缺失”的错误位置检查：实际模块文件存在，但Editor target可用性未验；完整active Xcode当前不可用。后继先确认工具链，再新export/真机；历史导出不可替代本版本验证，不自动安装/改developer目录或签名账号。
 5. 审核稿逐机型获得用户确认后才可制作/接入最终资产；共享核心与设备端其他工作不因此暂停。
 6. 达到三端可交付候选后提供链接，停改等待用户验收。
