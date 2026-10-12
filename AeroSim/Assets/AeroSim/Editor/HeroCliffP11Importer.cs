@@ -76,9 +76,15 @@ namespace AeroSim.Editor
             Bind(material, "_RoughnessMap", "Roughness"); Bind(material, "_AOMap", "AO");
             Bind(material, "_HeightMap", "Height"); Bind(material, "_CurvatureMap", "Curvature");
             Bind(material, "_WetCavityMask", "WetnessCavityMask");
+            BindDetail(material, "_DetailBaseColor", "DetailBaseColor");
+            BindDetail(material, "_DetailNormal", "DetailNormal");
+            BindDetail(material, "_DetailRoughness", "DetailRoughness");
+            BindDetail(material, "_DetailHeight", "DetailHeight");
+            material.SetFloat("_DetailMetersPerTile", 1.8f);
+            material.SetFloat("_DetailStrength", 0.72f);
             material.SetFloat("_MicroMetersPerTile", 0.09f);
-            material.SetFloat("_MicroStrength", 0.72f);
-            material.SetFloat("_MicroNormalStrength", 0.58f);
+            material.SetFloat("_MicroStrength", 0.18f);
+            material.SetFloat("_MicroNormalStrength", 0.15f);
             EditorUtility.SetDirty(material);
 
             var root = (GameObject)PrefabUtility.InstantiatePrefab(model);
@@ -110,6 +116,8 @@ namespace AeroSim.Editor
 
         static void Bind(Material material, string property, string suffix) => material.SetTexture(property,
             AssetDatabase.LoadAssetAtPath<Texture2D>(HeroCliffP11Importer.Root + "/Textures/T_HeroCliff_P11_" + suffix + ".png"));
+        static void BindDetail(Material material, string property, string suffix) => material.SetTexture(property,
+            AssetDatabase.LoadAssetAtPath<Texture2D>(HeroCliffP11Importer.Root + "/Textures/Detail/T_HeroCliff_P11_" + suffix + ".jpg"));
         static Transform Find(Transform root, string name) => root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == name);
     }
 }

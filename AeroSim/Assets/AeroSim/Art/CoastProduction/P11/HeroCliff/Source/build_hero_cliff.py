@@ -31,11 +31,14 @@ def cliff_x(y,z,high):
     bedding*=.34+.66*max(0.0,n2(zn*3.7+3.0,yn*1.8+18.0))
     x+=bedding
 
-    # Localized shelves and resistant outcrops create readable secondary forms.
-    for shelf_y,shelf_z,height_span,lateral_span,amplitude in ((8.5,31.0,1.15,15.0,.82),(20.0,58.0,1.55,19.0,1.08),(30.5,88.0,1.30,14.0,.76)):
-        shelf_profile=math.exp(-((y-shelf_y)/height_span)**4)
-        shelf_window=math.exp(-((z-shelf_z)/lateral_span)**4)
-        x-=amplitude*shelf_profile*shelf_window*(.82+.18*n2(zn*9.0,yn*7.0))
+    # Localized resistant shelves use sharp band edges to read as fractured rock planes.
+    for shelf_y,shelf_z,height_span,lateral_span,amplitude in ((8.5,31.0,1.15,15.0,1.35),(20.0,58.0,1.55,19.0,1.65),(30.5,88.0,1.30,14.0,1.18)):
+        lower=math.tanh((y-(shelf_y-height_span))/.18)
+        upper=math.tanh((y-(shelf_y+height_span))/.18)
+        shelf_profile=.5*(lower-upper)
+        shelf_window=math.exp(-((z-shelf_z)/lateral_span)**6)
+        face_steps=.86+.14*math.floor(max(0.0,min(3.999,(z-shelf_z+lateral_span)/(lateral_span*.5))))/3.0
+        x-=amplitude*shelf_profile*shelf_window*face_steps
     for outcrop_y,outcrop_z,span_y,span_z,amplitude in ((14.5,43.0,4.2,7.5,.88),(27.5,79.0,5.0,8.5,.72),(35.0,18.0,3.4,6.0,.58)):
         x-=amplitude*math.exp(-((y-outcrop_y)/span_y)**2-((z-outcrop_z)/span_z)**2)
 

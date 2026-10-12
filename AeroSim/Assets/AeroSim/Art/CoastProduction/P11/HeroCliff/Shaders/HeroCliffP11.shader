@@ -7,11 +7,17 @@ Shader "AeroSim/Coast/HeroCliffP11"
   _RoughnessMap("Unique UV Roughness",2D)="white"{} _AOMap("Unique UV AO",2D)="white"{}
   _HeightMap("Unique UV Height",2D)="gray"{} _CurvatureMap("Unique UV Curvature",2D)="gray"{}
   _WetCavityMask("Unique UV Wet/Cavity/Breakup",2D)="black"{}
+  _DetailBaseColor("Scanned Cliff Detail Base Color",2D)="gray"{}
+  _DetailNormal("Scanned Cliff Detail Normal",2D)="bump"{}
+  _DetailRoughness("Scanned Cliff Detail Roughness",2D)="white"{}
+  _DetailHeight("Scanned Cliff Detail Height",2D)="gray"{}
+  _DetailMetersPerTile("Scanned Detail Scale (m)",Range(.5,6))=1.8
+  _DetailStrength("Scanned Detail Strength",Range(0,1))=.72
   _Tint("Tint",Color)=(1,1,1,1) _MacroTint("Macro Recess Tint",Color)=(0.72,0.78,0.75,1)
   _MacroMetersPerTile("Macro Feature Scale (m)",Range(4,40))=14
   _MicroMetersPerTile("Micro Feature Scale (m)",Range(.04,2))=.09
-  _MacroStrength("Macro Strength",Range(0,.5))=.22 _MicroStrength("Micro Strength",Range(0,1))=.72
-  _MicroNormalStrength("Micro Normal Strength",Range(0,1.5))=.58
+  _MacroStrength("Macro Strength",Range(0,.5))=.22 _MicroStrength("Micro Strength",Range(0,1))=.18
+  _MicroNormalStrength("Micro Normal Strength",Range(0,1.5))=.15
   _NormalStrength("Baked Normal Strength",Range(0,2))=1 _HeightStrength("Height Influence",Range(0,0.15))=.06
   _Wetness("Environment Wetness",Range(0,1))=0
   _WaterLevel("Environment Water Level",Range(-10,10))=1 _Precipitation("Environment Precipitation",Range(0,1))=0
@@ -25,9 +31,11 @@ Shader "AeroSim/Coast/HeroCliffP11"
   #pragma target 3.5
   #pragma multi_compile_local __ HERO_CLIFF_MICRO
   sampler2D _BaseColor, _NormalMap, _RoughnessMap, _AOMap, _HeightMap, _CurvatureMap, _WetCavityMask;
+  sampler2D _DetailBaseColor, _DetailNormal, _DetailRoughness, _DetailHeight;
   float4 _BaseColor_TexelSize;
   fixed4 _Tint, _MacroTint;
   float _MacroMetersPerTile, _MicroMetersPerTile, _MacroStrength, _MicroStrength, _MicroNormalStrength, _NormalStrength, _HeightStrength;
+  float _DetailMetersPerTile, _DetailStrength;
   float _Wetness, _WaterLevel, _Precipitation, _WaterlineWidth, _CavityWetness;
 
   struct Input
@@ -71,6 +79,22 @@ Shader "AeroSim/Coast/HeroCliffP11"
    float height = tex2D(_HeightMap, uv).r;
    float curvature = tex2D(_CurvatureMap, uv).r;
    float3 bakedNormal = UnpackNormal(tex2D(_NormalMap,uv));
+   float2 detailUvA = float2(IN.worldPos.z, IN.worldPos.y) / max(_DetailMetersPerTile, 0.01);
+   float2 detailUvB = detailUvA * 0.577 + float2(0.37, 0.61);
+   float2 detailUvTop = float2(IN.worldPos.x, IN.worldPos.z) / max(_DetailMetersPerTile, 0.01);
+   float2 detailUvSide = float2(IN.worldPos.x, IN.worldPos.y) / max(_DetailMetersPerTile, 0.01);
+   float3 projectionNormal = normalize(cross(ddy(IN.worldPos), ddx(IN.worldPos)));
+   float3 projectionWeights = pow(abs(projectionNormal), 4.0);
+   projectionWeights /= max(dot(projectionWeights, 1.0), 0.001);
+   float detailBlend = RockNoise(IN.worldPos / 5.7 + 9.13);
+   float3 detailFrontColor = lerp(tex2D(_DetailBaseColor, detailUvA).rgb, tex2D(_DetailBaseColor, detailUvB).rgb, detailBlend);
+   float3 detailColor = detailFrontColor * projectionWeights.x + tex2D(_DetailBaseColor, detailUvTop).rgb * projectionWeights.y + tex2D(_DetailBaseColor, detailUvSide).rgb * projectionWeights.z;
+   float3 detailFrontNormal = normalize(lerp(UnpackNormal(tex2D(_DetailNormal, detailUvA)), UnpackNormal(tex2D(_DetailNormal, detailUvB)), detailBlend));
+   float3 detailNormal = normalize(detailFrontNormal * projectionWeights.x + UnpackNormal(tex2D(_DetailNormal, detailUvTop)) * projectionWeights.y + UnpackNormal(tex2D(_DetailNormal, detailUvSide)) * projectionWeights.z);
+   float detailFrontRoughness = lerp(tex2D(_DetailRoughness, detailUvA).r, tex2D(_DetailRoughness, detailUvB).r, detailBlend);
+   float detailRoughness = detailFrontRoughness * projectionWeights.x + tex2D(_DetailRoughness, detailUvTop).r * projectionWeights.y + tex2D(_DetailRoughness, detailUvSide).r * projectionWeights.z;
+   float detailFrontHeight = lerp(tex2D(_DetailHeight, detailUvA).r, tex2D(_DetailHeight, detailUvB).r, detailBlend);
+   float detailHeight = detailFrontHeight * projectionWeights.x + tex2D(_DetailHeight, detailUvTop).r * projectionWeights.y + tex2D(_DetailHeight, detailUvSide).r * projectionWeights.z;
 
    // Supplemental world-space 3D frequencies add scale cues without replacing or
    // periodically re-projecting any unique bake. Micro is derivative-faded at range.
@@ -95,6 +119,9 @@ Shader "AeroSim/Coast/HeroCliffP11"
    float3 albedo = baseSample.rgb * _Tint.rgb;
    albedo *= lerp(float3(1.0, 1.0, 1.0), _MacroTint.rgb, recessTint);
    albedo *= macroValue * microValue * heightValue * curvatureValue;
+   float detailCavity = saturate((detailHeight - 0.35) * 1.55);
+   float3 scannedRock = detailColor * lerp(0.78, 1.14, detailCavity);
+   albedo = lerp(albedo, albedo * scannedRock * 2.05, _DetailStrength);
 
    float waterline = saturate(1.0 - abs(IN.worldPos.y - _WaterLevel) / max(_WaterlineWidth, 0.01));
    float wet = saturate(_Wetness * (0.35 + 0.65 * mask.r) + _Precipitation * 0.25 + waterline * 0.72 + mask.g * _CavityWetness);
@@ -103,12 +130,14 @@ Shader "AeroSim/Coast/HeroCliffP11"
    // Normal is kept in tangent space. The former world/triplanar normal was being
    // written into this tangent-space output and produced dark projection seams.
    bakedNormal.xy *= _NormalStrength;
+   bakedNormal.xy += detailNormal.xy * (_DetailStrength * 0.72);
    bakedNormal.xy += microNormal * (_MicroNormalStrength * microVisibility);
    float normalLength = max(1.0, length(bakedNormal.xy));
    bakedNormal.xy /= normalLength;
    bakedNormal.z = sqrt(saturate(1.0 - dot(bakedNormal.xy, bakedNormal.xy)));
    o.Normal = normalize(bakedNormal);
-   rough = saturate(rough - macroSigned * _MacroStrength * 0.12 - microSigned * _MicroStrength * microVisibility * 0.30);
+   rough = lerp(rough, detailRoughness, _DetailStrength * 0.72);
+   rough = saturate(rough - macroSigned * _MacroStrength * 0.08 - microSigned * _MicroStrength * microVisibility * 0.05);
    o.Metallic = 0.0;
    o.Smoothness = saturate(1.0 - rough + wet * 0.48 + waterline * 0.12);
    o.Occlusion = saturate(lerp(1.0, ao, 0.86) * lerp(0.94, 1.02, curvature));

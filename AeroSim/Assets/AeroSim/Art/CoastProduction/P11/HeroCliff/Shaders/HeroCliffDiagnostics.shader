@@ -7,6 +7,10 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
   _RoughnessMap("Roughness",2D)="white"{}
   _AOMap("AO",2D)="white"{}
   _WetCavityMask("Wet/Cavity/Fracture",2D)="black"{}
+  _DetailNormal("Scanned Detail Normal",2D)="bump"{}
+  _DetailRoughness("Scanned Detail Roughness",2D)="white"{}
+  [HideInInspector] _DetailMetersPerTile("Scanned Detail Scale",Float)=1.8
+  [HideInInspector] _DetailStrength("Scanned Detail Strength",Float)=.72
   [HideInInspector] _MacroMetersPerTile("Macro Scale",Float)=14
   [HideInInspector] _MicroMetersPerTile("Micro Scale",Float)=.09
   [HideInInspector] _MacroStrength("Macro Strength",Float)=.22
@@ -26,10 +30,11 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
    #pragma fragment frag
    #pragma target 3.0
    #include "UnityCG.cginc"
-   sampler2D _NormalMap, _RoughnessMap, _AOMap, _WetCavityMask;
+   sampler2D _NormalMap, _RoughnessMap, _AOMap, _WetCavityMask, _DetailNormal, _DetailRoughness;
    float4 _BaseColor_TexelSize;
    float _HeroCliffDiagnosticMode;
    float _MacroMetersPerTile, _MicroMetersPerTile, _MacroStrength, _MicroStrength, _MicroNormalStrength, _NormalStrength;
+   float _DetailMetersPerTile, _DetailStrength;
    float4 _LodColor, _MaterialId;
    struct appdata { float4 vertex:POSITION; float3 normal:NORMAL; float4 tangent:TANGENT; float2 uv:TEXCOORD0; };
    struct v2f { float4 pos:SV_POSITION; float2 uv:TEXCOORD0; float3 worldNormal:TEXCOORD1; float eyeDepth:TEXCOORD2; float3 worldPos:TEXCOORD3; float3 worldTangent:TEXCOORD4; float3 worldBinormal:TEXCOORD5; };
@@ -72,7 +77,18 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
     microNormal.x=(RockNoise(microPosition+float3(3.17,11.73,5.29))-.5)*2.0;
     microNormal.y=(RockNoise(microPosition+float3(13.41,2.61,19.07))-.5)*2.0;
     float3 tangentNormal=UnpackNormal(tex2D(_NormalMap,uv));
-    tangentNormal.xy=tangentNormal.xy*_NormalStrength+microNormal*(_MicroNormalStrength*microVisibility);
+    float2 detailUvA=float2(input.worldPos.z,input.worldPos.y)/max(_DetailMetersPerTile,.01);
+    float2 detailUvB=detailUvA*.577+float2(.37,.61);
+    float2 detailUvTop=float2(input.worldPos.x,input.worldPos.z)/max(_DetailMetersPerTile,.01);
+    float2 detailUvSide=float2(input.worldPos.x,input.worldPos.y)/max(_DetailMetersPerTile,.01);
+    float3 projectionWeights=pow(abs(normalize(input.worldNormal)),4.0);
+    projectionWeights/=max(dot(projectionWeights,1.0),.001);
+    float detailBlend=RockNoise(input.worldPos/5.7+9.13);
+    float3 detailFrontNormal=normalize(lerp(UnpackNormal(tex2D(_DetailNormal,detailUvA)),UnpackNormal(tex2D(_DetailNormal,detailUvB)),detailBlend));
+    float3 detailNormal=normalize(detailFrontNormal*projectionWeights.x+UnpackNormal(tex2D(_DetailNormal,detailUvTop))*projectionWeights.y+UnpackNormal(tex2D(_DetailNormal,detailUvSide))*projectionWeights.z);
+    float detailFrontRoughness=lerp(tex2D(_DetailRoughness,detailUvA).r,tex2D(_DetailRoughness,detailUvB).r,detailBlend);
+    float detailRoughness=detailFrontRoughness*projectionWeights.x+tex2D(_DetailRoughness,detailUvTop).r*projectionWeights.y+tex2D(_DetailRoughness,detailUvSide).r*projectionWeights.z;
+    tangentNormal.xy=tangentNormal.xy*_NormalStrength+detailNormal.xy*(_DetailStrength*.72)+microNormal*(_MicroNormalStrength*microVisibility);
     tangentNormal.xy/=max(1.0,length(tangentNormal.xy));
     tangentNormal.z=sqrt(saturate(1.0-dot(tangentNormal.xy,tangentNormal.xy)));
     float3 normal=normalize(input.worldTangent*tangentNormal.x+input.worldBinormal*tangentNormal.y+input.worldNormal*tangentNormal.z);
@@ -83,10 +99,16 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
     {
      float macroSigned=(RockNoise(input.worldPos/max(_MacroMetersPerTile,.01))-.5)*2.0;
      float roughness=tex2D(_RoughnessMap,uv).r;
-     roughness=saturate(roughness-macroSigned*_MacroStrength*.12-microSigned*_MicroStrength*microVisibility*.30);
+     roughness=lerp(roughness,detailRoughness,_DetailStrength*.72);
+     roughness=saturate(roughness-macroSigned*_MacroStrength*.08-microSigned*_MicroStrength*microVisibility*.05);
      return float4(roughness,roughness,roughness,1);
     }
-    if(mode<4.5) { float ao=tex2D(_AOMap,uv).r; return float4(ao,ao,ao,1); }
+    if(mode<4.5)
+    {
+     float ao=saturate(tex2D(_AOMap,uv).r);
+     ao=0.58+0.42*smoothstep(0.05,0.95,ao);
+     return float4(ao,ao,ao,1);
+    }
     if(mode<5.5) { float wetness=tex2D(_WetCavityMask,uv).r; return float4(wetness,wetness,wetness,1); }
     if(mode<6.5) return float4(_MaterialId.rgb,1);
     return float4(_LodColor.rgb,1);

@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: a11c11ff000000000000000000000001, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: [HERO_CLIFF_MICRO]
+  m_ValidKeywords:
+  - HERO_CLIFF_MICRO
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -23,22 +24,61 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _AOMap: {m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000005, type: 3}, m_Scale: {x: 1, y: 1}, m_Offset: {x: 0, y: 0}}
-    - _BaseColor: {m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000002, type: 3}, m_Scale: {x: 1, y: 1}, m_Offset: {x: 0, y: 0}}
-    - _CurvatureMap: {m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000007, type: 3}, m_Scale: {x: 1, y: 1}, m_Offset: {x: 0, y: 0}}
-    - _HeightMap: {m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000006, type: 3}, m_Scale: {x: 1, y: 1}, m_Offset: {x: 0, y: 0}}
-    - _NormalMap: {m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000003, type: 3}, m_Scale: {x: 1, y: 1}, m_Offset: {x: 0, y: 0}}
-    - _RoughnessMap: {m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000004, type: 3}, m_Scale: {x: 1, y: 1}, m_Offset: {x: 0, y: 0}}
-    - _WetCavityMask: {m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000008, type: 3}, m_Scale: {x: 1, y: 1}, m_Offset: {x: 0, y: 0}}
+    - _AOMap:
+        m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000005, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseColor:
+        m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000002, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CurvatureMap:
+        m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000007, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailBaseColor:
+        m_Texture: {fileID: 2800000, guid: 9931b391a60f542f689f4fe3a0ce3b0b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailHeight:
+        m_Texture: {fileID: 2800000, guid: e8d532c1e0737434ba2e82211a7521ae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormal:
+        m_Texture: {fileID: 2800000, guid: c907eed32f3324441a66ffffbd579133, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailRoughness:
+        m_Texture: {fileID: 2800000, guid: 6858aba92eba04eeb90ceea6f4412d8f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000006, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000003, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000004, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WetCavityMask:
+        m_Texture: {fileID: 2800000, guid: a11c11ff000000000000000000000008, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _CavityWetness: 0.55
+    - _DetailMetersPerTile: 1.8
+    - _DetailStrength: 0.72
     - _HeightStrength: 0.06
     - _MacroMetersPerTile: 14
     - _MacroStrength: 0.22
     - _MicroMetersPerTile: 0.09
-    - _MicroNormalStrength: 0.58
-    - _MicroStrength: 0.72
+    - _MicroNormalStrength: 0.15
+    - _MicroStrength: 0.18
     - _NormalStrength: 1
     - _Precipitation: 0
     - _WaterLevel: 1
