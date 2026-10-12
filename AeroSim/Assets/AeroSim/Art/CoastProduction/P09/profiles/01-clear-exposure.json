@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-01-CLEAR-EXPOSURE",
+  "displayName": "晴天曝光基准",
+  "category": "exposure.clear",
+  "enabled": true,
+  "targets": ["P01 composition", "P03 ground", "P04 rock", "P05 ocean", "P06 vegetation", "P07 industrial", "P08 weather"],
+  "intent": "晴天正午/下午基准；保住云层和浪花高光，同时让前景岩层、针叶林和设施暗部可辨。",
+  "parameters": {
+    "lighting": {
+      "sunColor": "#FFF1D6",
+      "sunIntensity": 1.05,
+      "sunShadowStrength": 0.82,
+      "ambientSkyColor": "#9FB4C1",
+      "ambientEquatorColor": "#7F9194",
+      "ambientGroundColor": "#3E4340",
+      "ambientIntensity": 0.82,
+      "reflectionIntensity": 0.72,
+      "fogColor": "#B8C7CD",
+      "fogDensity": 0.0018
+    },
+    "colorGrading": {
+      "exposureEv": 0.0,
+      "contrast": 0.06,
+      "saturation": 0.92,
+      "temperature": -0.03,
+      "tint": 0.0,
+      "colorFilter": "#FFFDFC",
+      "lift": [0.0, 0.002, 0.004],
+      "gamma": [1.0, 1.0, 0.995],
+      "gain": [1.0, 0.995, 0.985]
+    }
+  },
+  "evaluation": {"goldenCases": ["A", "E", "F", "G", "H"], "gray18DisplayRange": [0.16, 0.22], "whiteClipMaxPercent": 0.5, "blackClipMaxPercent": 1.0},
+  "guardrails": ["autoExposure OFF", "do not raise material albedo to solve exposure", "cloud and foam texture must remain below clipping except subpixel sparkle"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

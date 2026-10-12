@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace AeroSim.Domain
 {
-    public enum Page { Home, Onboarding, Controller, Academy, FreeFlight, Challenges, Hangar, Tuning, OsdEditor, Dashboard, Catalog, Brief, Preflight, MissionEditor, Instructor, Readiness, Settings, Records, Results, Replay, Report, Flight }
+    public enum Page { Home, Onboarding, Controller, Academy, FreeFlight, Challenges, Hangar, Tuning, OsdEditor, Dashboard, Catalog, Brief, Preflight, MissionEditor, Instructor, Readiness, Settings, VisualLab, Records, Results, Replay, Report, Flight }
 
     public static class AeroSimQuality
     {
@@ -122,6 +122,8 @@ namespace AeroSim.Domain
     {
         public string title = "Free Flight", courseId = "", workspace = "Aerial", environment = "Pacific Coast", aircraft = "Camera Drone", mode = "Normal", weather = "Clear";
         public float windMph = 6, timeOfDay = 16.5f, rthAltitude = 25;
+        // Zero means derive a stable seed from environment/weather/time/wind; persisted records store the resolved seed.
+        public int environmentSeed;
         public bool race, professional, demo;
         public string objective = "Explore the training environment. Return home and land when you are ready.";
         public string task = "explore";
@@ -134,6 +136,8 @@ namespace AeroSim.Domain
         public float time, battery, speed;
         public Vector3 position, rotation;
         public Vector4 input;
+        // Null on legacy records: this means the replay only has an Analysis Camera, not a reconstructed pilot view.
+        public CameraSnapshot cameraSnapshot;
     }
     [Serializable] public class FlightEvent { public float time; public string message; public string kind; public string photoEvidenceId; }
     [Serializable] public class PhotoEvidence
@@ -144,16 +148,20 @@ namespace AeroSim.Domain
         public float time, targetDistance, targetFacingAngle;
         public bool hasTarget;
         public Vector3 aircraftPosition, aircraftRotation, cameraPosition, cameraRotation, targetPosition;
+        // Immutable camera semantics captured with the image; null means pre-RD-03 legacy evidence.
+        public CameraSnapshot cameraSnapshot;
     }
     [Serializable] public class AircraftSessionSnapshot
     {
         public string catalogId, displayName, catalogVersion, visualVersion, physicsVersion;
+        public string assetManifestVersion, assetId, assetIdentityState, assetQualityState;
         public bool availableAtCapture;
         public List<string> capabilities = new();
     }
     [Serializable] public class SessionRecord
     {
         public FlightConfig config;
+        public EnvironmentState environmentState;
         public AircraftSessionSnapshot aircraftSnapshot;
         public string id, startedUtc, title, workspace, environment, aircraft, mode, courseId, physicsVersion = "AeroSim-0.2";
         public int score, collisions, photos, gates;
@@ -297,6 +305,7 @@ namespace AeroSim.Domain
                 (string.Equals(profile.Id, value, StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(profile.CatalogId, value, StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(profile.Name, value, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(profile.DisplayName, value, StringComparison.OrdinalIgnoreCase) ||
                  (profile.LegacyIds ?? Array.Empty<string>()).Any(alias =>
                      string.Equals(alias, value, StringComparison.OrdinalIgnoreCase))));
         }
@@ -346,10 +355,14 @@ namespace AeroSim.Domain
             record.aircraftSnapshot = new AircraftSessionSnapshot
             {
                 catalogId = profile?.CatalogId ?? identity ?? "",
-                displayName = profile?.Name ?? record.aircraft ?? identity ?? "",
+                displayName = profile?.DisplayName ?? record.aircraft ?? identity ?? "",
                 catalogVersion = capturedNow ? AircraftCatalog.CatalogVersion : "legacy-unversioned",
                 visualVersion = capturedNow ? profile?.VisualVersion ?? profile?.Texture ?? "unavailable" : "legacy-unversioned",
                 physicsVersion = capturedNow ? profile?.PhysicsVersion ?? (string.IsNullOrEmpty(record.physicsVersion) ? "AeroSim-0.2" : record.physicsVersion) : record.physicsVersion ?? "legacy-unversioned",
+                assetManifestVersion = capturedNow && profile?.AssetContract != null ? AircraftAssetContracts.Manifest.manifestVersion : "legacy-unversioned",
+                assetId = capturedNow ? profile?.AssetContract?.assetId ?? "unavailable" : "legacy-unversioned",
+                assetIdentityState = capturedNow ? profile?.AssetContract?.identityState ?? "unavailable" : "legacy-unversioned",
+                assetQualityState = capturedNow ? profile?.AssetContract?.qualityState ?? "unavailable" : "legacy-unversioned",
                 availableAtCapture = capturedNow && profile != null,
                 capabilities = capturedNow && profile != null
                     ? new List<string>(profile.Capabilities ?? Array.Empty<string>())
@@ -464,7 +477,7 @@ namespace AeroSim.Domain
         public int Minutes;
         public Course(string id, string title, string category, string workspace, string task, string objective, int minutes = 4)
         { Id=id;Title=title;Category=category;Workspace=workspace;Task=task;Objective=objective;Minutes=minutes; }
-        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=AircraftCatalog.Selected.Name, environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
+        public FlightConfig Config() => new() { title=Title, courseId=Id, workspace=Workspace, objective=Objective, task=Task, mode=Workspace=="FPV"?"Manual":"Normal", aircraft=AircraftCatalog.Selected.DisplayName, environment=Workspace=="FPV"?"Desert Range":"Pacific Coast", race=Task=="gates" };
     }
 
     public static class CourseCatalog

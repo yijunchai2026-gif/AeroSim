@@ -1,0 +1,17 @@
+{
+  "schema": "aerosim.production-intake-placeholder/v1",
+  "runtimeId": "mini4",
+  "referenceModel": "DJI Mini 4 Pro",
+  "status": "CONTENT_NOT_DELIVERED",
+  "sourceModel": {
+    "path": "",
+    "format": "",
+    "sha256": ""
+  },
+  "textureSets": [],
+  "productionPrefabPath": "",
+  "productionResourcePath": "",
+  "productionAddress": "",
+  "approvalEvidence": [],
+  "note": "Contract placeholder only. No formal model, textures, prefab, or approval evidence has been delivered."
+}

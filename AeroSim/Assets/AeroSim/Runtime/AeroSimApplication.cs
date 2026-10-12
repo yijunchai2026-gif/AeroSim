@@ -64,11 +64,13 @@ namespace AeroSim
 
         private void OnDisable()
         {
+            _sim?.ClearControlInput();
             CancelFovEditing();
             CancelTypography();
             ReleaseDesignFlightInputGuard();
             ReleaseDesignEvidenceTextures();
             ReleaseDesignReplayView();
+            ReleaseVisualLab();
             ReleaseHangarPreviews();
             if (_root != null)
             {
@@ -155,11 +157,17 @@ namespace AeroSim
             navigation.Add(NavButton("A", _workspace == TrainingWorkspace.Professional ? "Training Catalog" : "Academy", AppDestination.Academy));
             navigation.Add(NavButton("F", "Free Flight", AppDestination.FreeFlight));
             navigation.Add(NavButton("C", "Challenges", AppDestination.Challenges));
-            navigation.Add(NavButton("D", "Hangar", AppDestination.Hangar));
-            if (_page == Page.Settings)
+            navigation.Add(NavButton("D", "Aircraft Bay", AppDestination.Hangar));
+            if (_page == Page.Settings || _page == Page.VisualLab)
             {
                 navigation.Add(NavButton("R", "Flight Records", AppDestination.FlightRecords));
                 AddDesignSettingsNavigation(navigation);
+                var visualLab = new Button(EnterVisualLab);
+                visualLab.AddToClassList("nav-button");
+                if (_page == Page.VisualLab) visualLab.AddToClassList("nav-button-selected");
+                var visualLabIcon = DesignIcon("settings"); visualLabIcon.AddToClassList("nav-icon"); visualLab.Add(visualLabIcon);
+                visualLab.Add(Text("Visual Lab", "nav-label"));
+                navigation.Add(visualLab);
             }
             if (_workspace == TrainingWorkspace.Fpv) { navigation.Add(RouteButton("T", "Tuning", Page.Tuning)); navigation.Add(RouteButton("O", "OSD Editor", Page.OsdEditor)); }
             if (_workspace == TrainingWorkspace.Professional) { navigation.Add(RouteButton("M", "Mission Editor", Page.MissionEditor)); navigation.Add(RouteButton("I", "Instructor", Page.Instructor)); }

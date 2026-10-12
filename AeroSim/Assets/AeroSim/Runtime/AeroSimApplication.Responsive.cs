@@ -41,6 +41,7 @@ namespace AeroSim
             public Rect guidanceRect;
             public Rect toolsRect;
             public Rect objectiveRect;
+            public Rect cameraDockRect;
             public bool touchControlsRequested;
             public bool touchControlsProtected;
             public bool radarVisible;

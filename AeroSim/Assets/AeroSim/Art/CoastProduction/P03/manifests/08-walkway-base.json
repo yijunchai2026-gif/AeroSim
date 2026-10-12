@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-08-WALKWAY-BASE",
+  "displayName": "步道基层",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "compacted mineral palette; reduce shells and oversized stones" },
+  "scale": { "coverageMeters": [2.0, 2.0], "aggregateDiameterMm": [0.5, 20], "detailRepeatMeters": 0.3 },
+  "tile": { "mode": "directional_repeat", "repeatMeters": 2.0, "rotationVariantsDegrees": [0, 180], "edgeBlendMeters": 0.18 },
+  "macroVariation": { "wavelengthMeters": [10, 30], "baseColorDelta": 0.045, "roughnessDelta": 0.045, "compactionPatchesMeters": [2, 7] },
+  "normal": { "strength": 0.54, "nearDetailStrength": 0.2, "fadeStartMeters": 14, "fadeEndMeters": 36 },
+  "roughness": { "target": 0.82, "range": [0.72, 0.92], "wetResponseMinimum": 0.4 },
+  "lod": ["LOD0:0-15m full maps+detail", "LOD1:15-40m normal45%", "LOD2:40-80m path macro", "LOD3:80-180m path color", "Cull:>180m merge terrain"],
+  "streaming": { "priority": 1, "maxResident": 2048, "mobileMaxResident": 1024, "preloadRadiusMeters": 24 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

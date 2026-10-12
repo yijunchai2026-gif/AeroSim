@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-03-RAIN-EXPOSURE",
+  "displayName": "雨天曝光基准",
+  "category": "exposure.rain",
+  "enabled": true,
+  "targets": ["P03 wet ground", "P04 wet rock", "P05 rain ocean", "P06 wet vegetation", "P07 wet industrial", "P08 unified rain state"],
+  "intent": "暴雨低空仍可读任务路线；湿面变暗和高光收窄，不以整体压黑或蓝染表达雨。",
+  "parameters": {
+    "lighting": {
+      "sunColor": "#CAD5DA",
+      "sunIntensity": 0.24,
+      "sunShadowStrength": 0.32,
+      "ambientSkyColor": "#7E8F98",
+      "ambientEquatorColor": "#65757A",
+      "ambientGroundColor": "#353D3D",
+      "ambientIntensity": 0.78,
+      "reflectionIntensity": 0.52,
+      "fogColor": "#83949B",
+      "fogDensity": 0.0058
+    },
+    "colorGrading": {
+      "exposureEv": -0.12,
+      "contrast": 0.07,
+      "saturation": 0.72,
+      "temperature": -0.13,
+      "tint": -0.015,
+      "colorFilter": "#EEF5F7",
+      "lift": [0.001, 0.004, 0.006],
+      "gamma": [0.99, 1.0, 1.005],
+      "gain": [0.96, 0.985, 1.0]
+    }
+  },
+  "evaluation": {"goldenCases": ["D", "E", "F", "G", "H"], "gray18DisplayRange": [0.14, 0.20], "whiteClipMaxPercent": 0.3, "blackClipMaxPercent": 1.0},
+  "guardrails": ["autoExposure OFF", "rain, fog, wetness, ocean and audio must share EnvironmentState", "navigation contrast must survive", "no global cyan wash", "specular rain sparkle may not become full-frame shimmer"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

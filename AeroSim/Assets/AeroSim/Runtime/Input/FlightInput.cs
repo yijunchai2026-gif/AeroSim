@@ -10,6 +10,15 @@ namespace AeroSim.Input
     public static class FlightInput
     {
         public static Vector2 TouchLeft, TouchRight;
+        private static bool _requireNeutral;
+        public static bool WaitingForNeutral => _requireNeutral;
+
+        public static void ClearAndRequireNeutral()
+        {
+            TouchLeft = TouchRight = Vector2.zero;
+            _requireNeutral = true;
+        }
+
         public static List<AxisControl> JoystickAxes() => Joystick.current == null ? new List<AxisControl>() : Joystick.current.allControls.OfType<AxisControl>().Where(c => c is not ButtonControl).ToList();
         public static Vector4 Raw()
         {
@@ -37,7 +46,14 @@ namespace AeroSim.Input
         }
         public static Vector4 Read()
         {
-            var raw=Raw(); var s=LocalStore.Profile.settings; var c=s.calibration;
+            var raw=Raw();
+            if (_requireNeutral)
+            {
+                if (raw.sqrMagnitude > .01f) return Vector4.zero;
+                _requireNeutral = false;
+                return Vector4.zero;
+            }
+            var s=LocalStore.Profile.settings; var c=s.calibration;
             bool[] reverse={c.reverseThrottle,c.reverseYaw,c.reversePitch,c.reverseRoll};
             for(int i=0;i<4;i++)
             {

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-09-RAIN-CURTAIN", "displayName": "雨幕", "kind": "distance_precipitation",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "top heavy-rain fields", "usage": "derive depth-faded rain density sheets" },
+  "inputs": ["precipitation", "vfxDensity", "fogDensity", "windDirectionXZ"], "activation": { "formula": "downpour01*smoothstep(0.35,0.75,fog01)", "enter": 0.08, "exit": 0.04, "fadeSeconds": 2.5 },
+  "render": { "space": "camera-relative distance shells", "blend": "alpha extinction", "depth": "depth-aware", "rangeMeters": [45, 260], "shells": 3 },
+  "quality": { "Low": "Off", "Medium": "Off", "High": "two half-res shells", "Ultra": "three full-res shells" },
+  "offPath": "zero shell opacity; detach camera history; release owned targets", "fallback": "distance fog increase capped by contract or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

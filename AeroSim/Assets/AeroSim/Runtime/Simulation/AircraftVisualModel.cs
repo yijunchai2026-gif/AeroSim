@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AeroSim.Domain;
 using UnityEngine;
@@ -30,15 +31,16 @@ namespace AeroSim.Simulation
         public const int MaximumCompoundColliders = 16;
         public const int LodLevelCount = 5;
         public const string RuntimeVisualVersion = "aerosim-procedural-aircraft/3.0.0";
-        public const string FoldingGoldenRuntimeId = "mavic3p";
-        public const string DuctedGoldenRuntimeId = "avata2";
-        public const string OpenFrameGoldenRuntimeId = "racer";
+        public const string FoldingGoldenRuntimeId = "";
+        public const string DuctedGoldenRuntimeId = "";
+        public const string OpenFrameGoldenRuntimeId = "";
         public AircraftProfile Profile { get; private set; }
         public string RuntimeArchetype { get; private set; }
         public string GoldenSampleId { get; private set; }
         public Transform CollisionRoot { get; private set; }
         public bool IsGoldenSample { get { return Profile != null && Profile.Id == GoldenSampleId; } }
         public readonly List<Transform> Rotors = new();
+        public readonly Dictionary<string, Transform> CameraSockets = new(StringComparer.OrdinalIgnoreCase);
         public readonly List<GameObject> MotionDiscs = new();
         private readonly List<Material> _materials = new();
         private readonly List<Mesh> _meshes = new();
@@ -285,6 +287,7 @@ namespace AeroSim.Simulation
                 BuildRacer();
             else
                 BuildCameraDrone();
+            BuildContractSockets(profile.AssetContract);
             BuildCompoundCollision();
             ConfigureRuntimeLods();
             UploadRuntimeMeshes();
@@ -307,6 +310,21 @@ namespace AeroSim.Simulation
             {
                 RuntimeArchetype = "folding-camera";
                 GoldenSampleId = FoldingGoldenRuntimeId;
+            }
+        }
+
+        private void BuildContractSockets(AircraftAssetRecord contract)
+        {
+            CameraSockets.Clear();
+            if (contract?.cameraSockets == null) return;
+            var root = Pivot("Sockets", Vector3.zero);
+            foreach (var socket in contract.cameraSockets)
+            {
+                var node = Pivot(socket.name, socket.position);
+                node.SetParent(root, false);
+                node.localPosition = socket.position;
+                node.localRotation = Quaternion.Euler(socket.rotationEuler);
+                CameraSockets[socket.id] = node;
             }
         }
 

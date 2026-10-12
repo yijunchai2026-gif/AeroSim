@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-07-GROUNDCOVER", "displayName": "地被", "archetype": "creeping_groundcover",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.3333,0.58,0.1667,0.18]},
+  "geometry": {"heightMeters": [0.08,0.3], "radiusMeters": [0.35,1.1], "cardsLOD0": 6, "pivot": "root_cluster"},
+  "alphaCutout": {"cutoffBias": 0.04, "coverageClass": "dense_creeping_leaves", "twoSided": true},
+  "wind": {"primaryBend": 0.18, "edgeFlutter": 0.48, "stiffness": 0.82, "maxDisplacementMeters": 0.06, "phaseJitter": 0.37},
+  "seasonWeather": {"winterTintRGB": [0.78,0.78,0.64], "summerTintRGB": [0.92,1.00,0.86], "autumnDryness": 0.36, "flowerAmount": [0.0,0.55], "wetnessResponse": 0.82},
+  "lodBillboard": {"lod0Meters": [0,12], "lod1Meters": [10,26], "lod2Meters": [23,46], "billboardMeters": [42,95], "cullMeters": 95, "billboardViews": 8},
+  "ecology": {"distanceToMeanHighWaterM": [4,95], "elevationAboveMeanHighWaterM": [0.6,14], "slopeDegrees": [0,30], "soilMoisture01": [0.3,0.86], "salinity01": [0.18,0.72], "exposure01": [0.08,0.68], "substrate": ["sand","sandy_loam","shell"], "spacingMeters": [0.3,0.8], "patchRadiusMeters": [1,10], "densityPerSquareMeter": [0.8,5.0]},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

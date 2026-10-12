@@ -1,0 +1,14 @@
+{
+  "name": "AeroSim.CoastP01.Editor",
+  "rootNamespace": "AeroSim.Editor",
+  "references": ["AeroSim.CoastP01.Runtime"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

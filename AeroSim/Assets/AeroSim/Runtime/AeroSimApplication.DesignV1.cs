@@ -35,7 +35,7 @@ namespace AeroSim
             if (title.Contains("Academy") || title.Contains("Catalog")) return "book";
             if (title.Contains("Flight") && !title.Contains("Records")) return "flight";
             if (title.Contains("Challenge")) return "trophy";
-            if (title.Contains("Hangar")) return "drone";
+            if (title.Contains("Aircraft Bay") || title.Contains("Hangar")) return "drone";
             if (title.Contains("Tuning")) return "settings";
             if (title.Contains("Instructor")) return "users";
             if (title.Contains("Mission")) return "edit";
@@ -213,7 +213,7 @@ namespace AeroSim
         private VisualElement DesignFreeFlight()
         {
             _mission = null;
-            _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
+            _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.DisplayName, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
             var config = _config;
             var s = new ScrollView(); s.AddToClassList("product-scroll"); s.AddToClassList("design-page"); s.AddToClassList("design-freeflight-page");
             var left = Element("design-column"); var hero = Element("design-image", "design-environment-hero"); SetHeroBackground(hero, DesignSceneArt(config.environment));
@@ -229,7 +229,7 @@ namespace AeroSim
             left.Add(scenes);
             var right = DesignPanel("Flight Setup", null, "design-side");
             right.Add(DesignAircraftImage()); Choice(right, "Aircraft", AircraftCatalog.Names, config.aircraft, v => { config.aircraft = v; LocalStore.Profile.selectedAircraft = AircraftCatalog.Resolve(v).Id; LocalStore.Save(); });
-            right.Add(ActionButton("Browse Aircraft in Hangar", () => ShowPage(Page.Hangar)));
+            right.Add(ActionButton("Browse Aircraft Bay", () => ShowPage(Page.Hangar)));
             Choice(right, "Flight mode", new[] { "Normal", "Sport", "Manual" }, config.mode, v => config.mode = v);
             Choice(right, "Weather", FlightWeather.Names, config.weather, v => config.weather = v);
             Range(right, "Wind (mph)", 0, 25, config.windMph, v => config.windMph = v); Range(right, "Time of day (24h)", 6, 20, config.timeOfDay, v => config.timeOfDay = v);
@@ -257,7 +257,7 @@ namespace AeroSim
             { var b = new Button(() => ShowPage(page)); b.AddToClassList("design-fpv-tile"); b.Add(DesignIcon(icon, 36)); b.Add(DesignCopy(title, description)); b.Add(Text("›", "row-chevron")); menu.Add(b); }
             Tile("FPV Academy", "Learn. Practice. Progress.", "book", Page.Academy); Tile("Challenges", "Test your skills", "trophy", Page.Challenges);
             Tile("Hangar & Tuning", "Quads, rates and settings", "settings", Page.Tuning); Tile("Replays", "Review and improve", "play", Page.Records); root.Add(menu);
-            var aircraft = Element("design-fpv-aircraft"); aircraft.Add(DesignAircraftImage()); aircraft.Add(DesignCopy(AircraftCatalog.Selected.Name, "Manual · Camera " + LocalStore.Profile.settings.cameraAngle.ToString("F0") + "°")); root.Add(aircraft);
+            var aircraft = Element("design-fpv-aircraft"); aircraft.Add(DesignAircraftImage()); aircraft.Add(DesignCopy(AircraftCatalog.Selected.DisplayName, "Manual · Camera " + LocalStore.Profile.settings.cameraAngle.ToString("F0") + "°")); root.Add(aircraft);
             var quick = DesignButton("Quick Flight", "play", () => ShowPage(Page.FreeFlight), true); quick.AddToClassList("design-fpv-quick"); root.Add(quick);
             var progress = Element("design-fpv-progress"); int completed = CourseCatalog.All.Count(c => c.Workspace == "FPV" && LocalStore.Profile.courses.Any(p => p.id == c.Id && p.bestScore >= 70));
             progress.Add(DesignCopy("Manual Foundations", completed + " of " + CourseCatalog.All.Count(c => c.Workspace == "FPV") + " lessons completed")); progress.Add(new ProgressBar { value = completed * 100f / CourseCatalog.All.Count(c => c.Workspace == "FPV") }); root.Add(progress);
@@ -328,7 +328,7 @@ namespace AeroSim
             var s = DesignPage(_workspace == TrainingWorkspace.Fpv ? "FPV Challenges" : "Challenges", "Test your skills across training locations and objectives. Personal records stay on this device.");
             string[] maps = { "Pacific Coast", "Desert Range", "Warehouse", "City Park" };
             var grid = Element("design-challenge-grid", "design-column");
-            FlightConfig Config(string map) => new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." };
+            FlightConfig Config(string map) => new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = AircraftCatalog.Selected.DisplayName, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." };
             foreach (string map in maps)
             {
                 var best = LocalStore.Sessions().Where(r => r.courseId == "race-" + map && r.passed).OrderBy(r => r.duration).FirstOrDefault();
@@ -349,9 +349,9 @@ namespace AeroSim
         {
             var settings = LocalStore.Profile.settings;
             var s = DesignPage("Aircraft Tuning", "Shape your response. These values affect the simplified simulator, not a real flight controller.");
-            var rail = DesignPanel("My Aircraft", "Selection stays on this device.", "design-rail"); rail.Add(DesignAircraftImage()); rail.Add(Text(AircraftCatalog.Selected.Name, "design-item-title", "wrap")); rail.Add(DesignButton("Browse Hangar", "drone", () => ShowPage(Page.Hangar)));
+            var rail = DesignPanel("My Aircraft", "Selection stays on this device.", "design-rail"); rail.Add(DesignAircraftImage()); rail.Add(Text(AircraftCatalog.Selected.DisplayName, "design-item-title", "wrap")); rail.Add(DesignButton("Browse Aircraft Bay", "drone", () => ShowPage(Page.Hangar)));
             rail.Add(Text("One local configuration. Versioned build profiles and A/B comparison are not implemented.", "muted", "wrap"));
-            var center = DesignPanel(AircraftCatalog.Selected.Name, "Live response preview", "design-column"); center.Add(DesignAircraftImage("design-tuning-aircraft")); center.Add(Text("Rate Response Curve", "panel-title")); center.Add(new ResponseCurve()); center.Add(Text("Stick deflection → angular response\nChanges preview the simplified expo and sensitivity curve.", "muted", "wrap"));
+            var center = DesignPanel(AircraftCatalog.Selected.DisplayName, "Live response preview", "design-column"); center.Add(DesignAircraftImage("design-tuning-aircraft")); center.Add(Text("Rate Response Curve", "panel-title")); center.Add(new ResponseCurve()); center.Add(Text("Stick deflection → angular response\nChanges preview the simplified expo and sensitivity curve.", "muted", "wrap"));
             var right = DesignPanel("Rates", "Values are shared across roll, pitch and yaw.", "design-side");
             Range(right, "Maximum angular rate (deg/s)", 90, 900, settings.rate, v => settings.rate = v); Range(right, "Stick expo", 0, .85f, settings.expo, v => settings.expo = v);
             Range(right, "Input sensitivity", .3f, 1.5f, settings.sensitivity, v => settings.sensitivity = v); Range(right, "Thrust-to-weight ratio", 1.2f, 5, settings.thrust, v => settings.thrust = v);
@@ -428,16 +428,106 @@ namespace AeroSim
         {
             bool professional = _mission != null;
             var config = professional ? MissionConfig(_mission) : _config ?? new FlightConfig();
-            var s = DesignPage("Pre-Flight Check · " + config.title, "Verify your session settings and training readiness. Resolve all required acknowledgements to start.", professional ? "Professional Training" : "Before You Fly");
+            var profile = AircraftCatalog.Resolve(config.aircraft);
+            config.aircraft = profile.DisplayName;
+            bool formalAsset = IsFormalAircraftReady(profile);
+            bool formalMissionBlocked = professional && !formalAsset;
+            bool viewportSupported = Screen.width >= 600 && Screen.height >= 480;
+            bool inputAvailable = _inputCapabilities != null || Keyboard.current != null || Gamepad.current != null || Joystick.current != null;
+            bool inputCentered = FlightInput.Raw().sqrMagnitude <= .04f;
+            bool aircraftAvailable = profile.IsSelectable;
+            bool machineReady = viewportSupported && inputAvailable && inputCentered && aircraftAvailable && !formalMissionBlocked;
+
+            var s = DesignPage("Pre-Flight Check · " + config.title,
+                formalMissionBlocked
+                    ? "Formal mission blocked: the selected aircraft has no delivered, production-approved asset. Resolve the asset gate or return to a prototype sandbox without losing this mission."
+                    : "Verify identity, controls, camera, environment, graphics, and access settings before the simulator starts.",
+                professional ? "Professional Training" : formalAsset ? "Production Asset" : "Prototype Sandbox");
             s.AddToClassList("design-preflight-page");
-            var preview = DesignPanel("Mission Preview", config.environment, "design-column"); if (professional) preview.Add(new DesignMissionMap(_mission)); else preview.Add(DesignImage(DesignSceneArt(config.environment), "design-brief-image")); preview.Add(Text("SIMULATION — NOT FOR NAVIGATION", "page-eyebrow"));
-            var checklist = DesignPanel("Pre-Flight Checklist", "Input is detected automatically. Other items are your acknowledgements.", "design-side");
-            checklist.Add(DesignStatus("Controller Input", _inputCapabilities?.PrimaryDeviceLabel ?? "Keyboard / Touch", "controller")); checklist.Add(DesignStatus("Aircraft Configuration", AircraftCatalog.Selected.Name + " · " + config.mode, "drone"));
-            bool[] values = new bool[4]; var start = DesignButton("Start Session", "play", () => StartFlight(config), true); start.SetEnabled(false);
-            string[] checks = { "I understand the session objective", "I know how to pause and reset", "I reviewed the map and simulated weather", "I understand this is training, not a flight authorization" };
-            for (int i = 0; i < checks.Length; i++) { int index = i; var row = Element("design-checklist-item"); row.Add(Text((i + 1).ToString(), "design-number")); Check(row, checks[i], false, v => { values[index] = v; start.SetEnabled(values.All(x => x)); }); checklist.Add(row); }
-            checklist.Add(DesignStatus("Return-to-Home Altitude", Length(config.rthAltitude) + " relative to takeoff", "home")); checklist.Add(DesignStatus("Weather & Wind", config.weather + " · " + config.windMph.ToString("F0") + " mph (simulated)", "flight")); s.Add(DesignColumns(preview, checklist));
-            var footer = Element("design-footer"); footer.Add(Text("Pause: Esc / Start · Training boundary: 394 ft altitude / 755 ft radius", "muted", "wrap")); footer.Add(ActionButton("Controller Setup", () => ShowPage(Page.Controller))); footer.Add(DesignButton("Back to Briefing", "back", () => ShowPage(Page.Brief))); footer.Add(start); s.Add(footer); return s;
+            s.AddToClassList("rd05-preflight-page");
+
+            var preview = DesignPanel("Session Snapshot", config.environment, "design-column", "rd05-preflight-preview");
+            if (professional) preview.Add(new DesignMissionMap(_mission));
+            else preview.Add(DesignImage(DesignSceneArt(config.environment), "design-brief-image"));
+            preview.Add(StatusPill(AircraftIdentityLabel(profile), formalAsset ? "quality-pass" : "quality-warning"));
+            preview.Add(StatusPill(formalAsset ? "FORMAL ASSET ELIGIBLE" : "PROTOTYPE ASSET · CONTENT NOT DELIVERED", formalAsset ? "quality-pass" : "quality-fail"));
+            preview.Add(Text("Aircraft · " + profile.DisplayName + "\nMode · " + config.mode + "\nEnvironment · " + config.environment +
+                " / " + config.weather + " / " + config.windMph.ToString("F0") + " mph\nRTH · " + Length(config.rthAltitude) +
+                "\nCamera · Nose / " + LocalStore.GetVerticalFov("fpv").ToString("F0") + "° vFOV\nGraphics · " + AeroSimQuality.Name(LocalStore.Profile.settings.quality),
+                "wrap", "rd05-session-summary"));
+            preview.Add(Text("SIMULATION — NOT FOR NAVIGATION OR REAL-FLIGHT AUTHORIZATION", "page-eyebrow"));
+
+            var checklist = DesignPanel("Readiness", "Machine checks are distinct from your acknowledgements.", "design-side", "rd05-preflight-checks");
+            checklist.Add(PreflightCheck("Aircraft identity", formalAsset ? "Production Approved / Production Ready" : AircraftIdentityShortLabel(profile),
+                formalAsset ? "PASS" : professional ? "BLOCKED" : "PROTOTYPE"));
+            checklist.Add(PreflightCheck("Controller centered", inputCentered ? (_inputCapabilities?.PrimaryDeviceLabel ?? "Keyboard / Touch") : "Release all four axes, then recheck",
+                inputCentered ? "PASS" : "BLOCKED"));
+            checklist.Add(PreflightCheck("Camera & FOV", "Nose · " + LocalStore.GetVerticalFov("fpv").ToString("F0") + "° vertical", "PASS"));
+            checklist.Add(PreflightCheck("Environment", config.environment + " · " + config.weather + " · " + config.windMph.ToString("F0") + " mph", "PASS"));
+            checklist.Add(PreflightCheck("Graphics", AeroSimQuality.Name(LocalStore.Profile.settings.quality) + " · local quality profile", "PASS"));
+            checklist.Add(PreflightCheck("Accessibility", "Text " + Mathf.RoundToInt(LocalStore.Profile.settings.textScale * 100) + "% · UI " + (LocalStore.Profile.settings.uiScale ?? "Auto"), "PASS"));
+            checklist.Add(PreflightCheck("Viewport", Screen.width + "×" + Screen.height + (viewportSupported ? " · supported" : " · minimum 600×480"), viewportSupported ? "PASS" : "BLOCKED"));
+
+            bool[] acknowledgements = new bool[4];
+            var start = DesignButton(formalAsset ? "Start Flight" : "Start Prototype Test", "play", () => StartFlight(config), true);
+            start.name = "preflight-start-session";
+            void RefreshStart() => start.SetEnabled(machineReady && acknowledgements.All(value => value));
+            string[] checks =
+            {
+                "I understand the session objective",
+                "I know how to pause and use recovery controls",
+                "I reviewed the map and simulated weather",
+                "I understand this is simulator training, not real-flight authorization"
+            };
+            for (int i = 0; i < checks.Length; i++)
+            {
+                int index = i;
+                var row = Element("design-checklist-item");
+                row.Add(Text((i + 1).ToString(), "design-number"));
+                Check(row, checks[i], false, value => { acknowledgements[index] = value; RefreshStart(); });
+                checklist.Add(row);
+            }
+            RefreshStart();
+            s.Add(DesignColumns(preview, checklist));
+
+            if (!machineReady)
+            {
+                var recovery = DesignPanel("Resolve before flight", "Your aircraft, environment, mission, and applied settings are preserved.", "rd05-recovery-panel");
+                if (!inputCentered || !inputAvailable) recovery.Add(DesignButton("Open Controller Setup", "controller", () => ShowPage(Page.Controller)));
+                if (!aircraftAvailable || formalMissionBlocked) recovery.Add(DesignButton("Return to Aircraft Bay", "drone", () => ShowPage(Page.Hangar)));
+                if (!viewportSupported) recovery.Add(Text("Use a viewport at least 600×480. This page remains available; flight will not start with overlapping controls.", "muted", "wrap"));
+                if (formalMissionBlocked)
+                {
+                    recovery.Add(Text("CONTENT NOT DELIVERED · No runtime aircraft currently satisfies ProductionApproved + ProductionReady. The mission remains selected.", "hangar-status-warning", "wrap"));
+                    recovery.Add(DesignButton("Open Prototype Sandbox", "play", () =>
+                    {
+                        _mission = null;
+                        _config = BuildAircraftBayTestConfig(profile);
+                        ShowPage(Page.Preflight);
+                    }));
+                }
+                recovery.Add(DesignButton("Re-run Checks", "shield", () => ShowPage(Page.Preflight), true));
+                s.Add(recovery);
+            }
+
+            var footer = Element("design-footer");
+            footer.Add(Text(formalAsset ? "Formal asset gate eligible · runtime validation still applies" : "PROTOTYPE ASSET remains visible through test flight setup", "muted", "wrap"));
+            footer.Add(ActionButton("Aircraft Bay", () => ShowPage(Page.Hangar)));
+            footer.Add(ActionButton("Camera & Comfort", () => { _designSettingsTab = "Graphics"; ShowPage(Page.Settings); }));
+            footer.Add(DesignButton("Back", "back", () => ShowPage(professional ? Page.Brief : Page.FreeFlight)));
+            footer.Add(start);
+            s.Add(footer);
+            return s;
+        }
+
+        private static VisualElement PreflightCheck(string title, string detail, string state)
+        {
+            var row = Element("rd05-preflight-check");
+            row.Add(DesignCopy(title, detail));
+            var label = Text(state, "quality-rail-state");
+            label.AddToClassList(state == "PASS" ? "quality-pass" : state == "PROTOTYPE" ? "quality-warning" : "quality-fail");
+            row.Add(label);
+            return row;
         }
 
         private VisualElement DesignCatalog()

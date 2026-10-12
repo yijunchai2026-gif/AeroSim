@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "aerosim.evidence/v1",
+  "manifestId": "aerosim-v4-rd01-m0-001",
+  "prdVersion": "4.0",
+  "workPackage": "RD-01",
+  "milestone": "M0",
+  "frozenAtUtc": "2026-10-11T09:01:00Z",
+  "sourceBaseline": {
+    "branch": "main",
+    "headCommit": "e7f66599c33332a58aaa3c8ac8b68990d99a0b6a",
+    "worktreeDirtyAtFreeze": true,
+    "note": "PRD v4.0 was an uncommitted owner change when RD-01 froze the starting HEAD. This is a source baseline, not a built candidate."
+  },
+  "build": {
+    "buildId": "NOT_BUILT",
+    "status": "NOT_RUN",
+    "sourceCommit": "UNCOMMITTED_WORKTREE",
+    "unityVersion": "6000.3.25f1",
+    "productVersion": "0.4.0"
+  },
+  "qualityDeclaration": {
+    "levelId": "L1",
+    "levelName": "Playable prototype",
+    "weightedScore": 29.5,
+    "rcDecision": "NO-GO",
+    "gateStatus": "NOT_RUN",
+    "statement": "RD-01 establishes evidence infrastructure only. It does not establish 3A, L3, RC, visual, comfort, blind-review, or performance acceptance."
+  },
+  "targetHardware": {
+    "profileId": "HW-DESKTOP-1440P-HIGH-001",
+    "status": "CANDIDATE_NOT_BENCHMARKED",
+    "os": "Windows 11 64-bit",
+    "cpu": "AMD Ryzen 7 7700",
+    "gpu": "NVIDIA GeForce RTX 4070 12 GB",
+    "memory": "32 GB DDR5",
+    "storage": "NVMe SSD",
+    "resolution": "2560x1440 native",
+    "quality": "High",
+    "targetFps": 60,
+    "driverPolicy": "Record exact OS build and WHQL driver in every candidate evidence manifest; do not silently change them within a candidate.",
+    "performanceEvidence": "NOT_RUN"
+  },
+  "renderPipelineAdr": {
+    "adrId": "ADR-RND-001",
+    "status": "INTERIM_ACCEPTED",
+    "mainlinePipeline": "Built-in",
+    "decision": "Keep the mainline on Built-in. Evaluate Built-in, URP, and HDRP only in isolated spikes; no migration may enter mainline without a superseding accepted ADR and same-build evidence.",
+    "migrationApproval": "NOT_APPROVED",
+    "spikes": [
+      { "pipeline": "Built-in", "status": "NOT_RUN", "evidence": "No v4 isolated spike package is attached." },
+      { "pipeline": "URP", "status": "NOT_RUN", "evidence": "Package is not installed; no isolated spike package is attached." },
+      { "pipeline": "HDRP", "status": "NOT_RUN", "evidence": "Package is not installed; no isolated spike package is attached." }
+    ],
+    "consequences": [
+      "RD-07 may depend on Built-in contracts but must keep pipeline-facing interfaces isolated.",
+      "RND-001 remains NOT_RUN until all three reproducible spike packages and reviewers are recorded.",
+      "An automated diagnostic cannot change the ADR or QA gate to PASS."
+    ]
+  },
+  "fixedReplay": {
+    "caseId": "RPL-MAIN-001",
+    "status": "NOT_RUN",
+    "scene": "Pacific Coast",
+    "weather": "Clear",
+    "timeOfDay": "16:30 local scene time",
+    "seed": 41001,
+    "durationSeconds": 75,
+    "route": "Home pad to coastal gate corridor to waterline to bridge approach to return corridor"
+  },
+  "goldenShotCases": [
+    { "caseId": "G3-GOLDEN-A", "status": "NOT_RUN", "label": "Clear noon takeoff zone" },
+    { "caseId": "G3-GOLDEN-B", "status": "NOT_RUN", "label": "Sunset backlit forest" },
+    { "caseId": "G3-GOLDEN-C", "status": "NOT_RUN", "label": "Overcast high-altitude vista" },
+    { "caseId": "G3-GOLDEN-D", "status": "NOT_RUN", "label": "Heavy-rain low flight" },
+    { "caseId": "G3-GOLDEN-E", "status": "NOT_RUN", "label": "Under-bridge indoor-outdoor transition" },
+    { "caseId": "G3-GOLDEN-F", "status": "NOT_RUN", "label": "Low flight over water" },
+    { "caseId": "G3-GOLDEN-G", "status": "NOT_RUN", "label": "Close building or tower pass" },
+    { "caseId": "G3-GOLDEN-H", "status": "NOT_RUN", "label": "Maximum-speed flight" }
+  ],
+  "aircraftShotCases": [
+    { "caseId": "G1-GOLDEN-01", "status": "NOT_RUN", "label": "Front" },
+    { "caseId": "G1-GOLDEN-02", "status": "NOT_RUN", "label": "Front-right" },
+    { "caseId": "G1-GOLDEN-03", "status": "NOT_RUN", "label": "Right" },
+    { "caseId": "G1-GOLDEN-04", "status": "NOT_RUN", "label": "Rear-right" },
+    { "caseId": "G1-GOLDEN-05", "status": "NOT_RUN", "label": "Rear" },
+    { "caseId": "G1-GOLDEN-06", "status": "NOT_RUN", "label": "Rear-left" },
+    { "caseId": "G1-GOLDEN-07", "status": "NOT_RUN", "label": "Left" },
+    { "caseId": "G1-GOLDEN-08", "status": "NOT_RUN", "label": "Front-left" }
+  ],
+  "cameraMatrixCases": [
+    { "caseId": "G2-CAMERA-45-16X9", "status": "NOT_RUN", "label": "45 degree vFOV at 16:9" },
+    { "caseId": "G2-CAMERA-45-21X9", "status": "NOT_RUN", "label": "45 degree vFOV at 21:9" },
+    { "caseId": "G2-CAMERA-45-32X9", "status": "NOT_RUN", "label": "45 degree vFOV at 32:9" },
+    { "caseId": "G2-CAMERA-60-16X9", "status": "NOT_RUN", "label": "60 degree vFOV at 16:9" },
+    { "caseId": "G2-CAMERA-60-21X9", "status": "NOT_RUN", "label": "60 degree vFOV at 21:9" },
+    { "caseId": "G2-CAMERA-60-32X9", "status": "NOT_RUN", "label": "60 degree vFOV at 32:9" },
+    { "caseId": "G2-CAMERA-75-16X9", "status": "NOT_RUN", "label": "75 degree vFOV at 16:9" },
+    { "caseId": "G2-CAMERA-75-21X9", "status": "NOT_RUN", "label": "75 degree vFOV at 21:9" },
+    { "caseId": "G2-CAMERA-75-32X9", "status": "NOT_RUN", "label": "75 degree vFOV at 32:9" },
+    { "caseId": "G2-CAMERA-80-16X9", "status": "NOT_RUN", "label": "80 degree vFOV at 16:9" },
+    { "caseId": "G2-CAMERA-80-21X9", "status": "NOT_RUN", "label": "80 degree vFOV at 21:9" },
+    { "caseId": "G2-CAMERA-80-32X9", "status": "NOT_RUN", "label": "80 degree vFOV at 32:9" },
+    { "caseId": "G2-CAMERA-95-16X9", "status": "NOT_RUN", "label": "95 degree vFOV at 16:9" },
+    { "caseId": "G2-CAMERA-95-21X9", "status": "NOT_RUN", "label": "95 degree vFOV at 21:9" },
+    { "caseId": "G2-CAMERA-95-32X9", "status": "NOT_RUN", "label": "95 degree vFOV at 32:9" },
+    { "caseId": "G2-CAMERA-50-16X9", "status": "NOT_RUN", "label": "50 degree vFOV at 16:9" },
+    { "caseId": "G2-CAMERA-50-21X9", "status": "NOT_RUN", "label": "50 degree vFOV at 21:9" },
+    { "caseId": "G2-CAMERA-50-32X9", "status": "NOT_RUN", "label": "50 degree vFOV at 32:9" }
+  ],
+  "runtimeObservation": null,
+  "artifacts": []
+}

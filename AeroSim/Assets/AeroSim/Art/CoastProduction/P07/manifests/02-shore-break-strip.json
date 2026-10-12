@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-02-SHORE-BREAK-STRIP",
+  "displayName": "岸浪长条",
+  "category": "shore_break",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [1124, 53, 1284, 176], "atlasRectBottomLeft": [0.390278, 0.920486, 0.445833, 0.061111] },
+  "placement": { "mode": "spline_ribbon", "widthMeters": [3.5, 9], "segmentLengthMeters": [18, 48], "shoreNormalOffsetMeters": [-1.5, 2.0], "heightOffsetMeters": 0.035 },
+  "motion": { "flowSpeed": 0.026, "advanceMetersPerSecond": [0.7, 1.8], "lifetimeSeconds": [7, 14], "decay": [0.0, 0.86] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.045, "edgeSoftness": 0.10, "intensity": 1.05 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 12, "midMeters": 55, "farMeters": 180, "cullMeters": 320 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

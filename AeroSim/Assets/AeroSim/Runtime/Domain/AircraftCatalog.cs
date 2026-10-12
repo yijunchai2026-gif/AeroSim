@@ -115,6 +115,13 @@ namespace AeroSim.Domain
             HasCompatibilityProfile = hasCompatibilityProfile;
         }
 
+        public AircraftAssetRecord AssetContract => AircraftAssetContracts.Resolve(Id);
+        public string DisplayName => AssetContract?.displayName ?? Name;
+        public string DisplayShortName => AssetContract?.shortName ?? ShortName;
+        public string DisplayBrand => AssetContract?.brand ?? Brand;
+        public string AssetStatusLabel => AircraftAssetContracts.StatusLabel(AssetContract);
+        public bool CanClaimModelIdentity => AssetContract != null && AircraftAssetStateMachine.CanClaimModelIdentity(AssetContract.IdentityState, AssetContract.QualityState);
+
         public bool IsRuntime => Status == AircraftCatalogStatus.Runtime;
         public bool IsSelectable => IsRuntime && IsDownloaded && HasVisualAsset && HasPhysicsProfile &&
                                     HasThumbnail && HasCompatibilityProfile;
@@ -122,7 +129,7 @@ namespace AeroSim.Domain
 
     public static class AircraftCatalog
     {
-        public const string CatalogVersion = "2.0.0";
+        public const string CatalogVersion = "4.0.0-rd02.1";
 
         private static readonly string[] CameraModes = { "Normal", "Sport", "Cinematic" };
         private static readonly string[] FpvModes = { "Normal", "Sport", "Manual" };
@@ -264,7 +271,7 @@ namespace AeroSim.Domain
             if (string.IsNullOrWhiteSpace(value)) return false;
             string key = value.Trim();
             profile = Entries.FirstOrDefault(p => Matches(p.Id, key) || Matches(p.CatalogId, key) ||
-                Matches(p.Name, key) || Matches(p.ShortName, key) || p.LegacyIds.Any(id => Matches(id, key)));
+                Matches(p.Name, key) || Matches(p.DisplayName, key) || Matches(p.ShortName, key) || p.LegacyIds.Any(id => Matches(id, key)));
             return profile != null;
         }
 
@@ -273,7 +280,7 @@ namespace AeroSim.Domain
         {
             string key = (query ?? "").Trim();
             return Filter(workspace, runtimeOnly ? AircraftCatalogStatus.Runtime : (AircraftCatalogStatus?)null)
-                .Where(p => key.Length == 0 || Contains(p.Name, key) || Contains(p.ShortName, key) ||
+                .Where(p => key.Length == 0 || Contains(p.DisplayName, key) || Contains(p.Name, key) || Contains(p.ShortName, key) ||
                     Contains(p.Family, key) || Contains(p.Model, key) || Contains(p.Category, key) ||
                     p.Capabilities.Any(c => Contains(c, key)) || p.UseCases.Any(u => Contains(u, key)))
                 .ToArray();
@@ -289,7 +296,7 @@ namespace AeroSim.Domain
                 result = result.Where(p => p.Status == status.Value);
             if (requiredCapabilities != null && requiredCapabilities.Length > 0)
                 result = result.Where(p => SupportsCapabilities(p, requiredCapabilities));
-            return result.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToArray();
+            return result.OrderBy(p => p.DisplayName, StringComparer.OrdinalIgnoreCase).ToArray();
         }
 
         public static bool SupportsCapabilities(AircraftProfile profile, IEnumerable<string> requiredCapabilities)
@@ -311,8 +318,8 @@ namespace AeroSim.Domain
         public static AircraftProfile Selected => Resolve(LocalStore.Profile?.selectedAircraft);
         // Legacy runtime UI (including Free Flight) consumes Names as selectable choices.
         public static string[] Names => All.Where(p => p.Status == AircraftCatalogStatus.Runtime && p.IsSelectable)
-            .Select(p => p.Name).ToArray();
-        public static string[] AllNames => All.Select(p => p.Name).ToArray();
+            .Select(p => p.DisplayName).ToArray();
+        public static string[] AllNames => All.Select(p => p.DisplayName).ToArray();
         public static string[] CatalogIds => Entries.Select(p => p.CatalogId).ToArray();
 
         private static AircraftProfile Profile(string id, string catalogId, string name, string shortName,

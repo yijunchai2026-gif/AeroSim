@@ -23,6 +23,7 @@ namespace AeroSim.Simulation
             var albedo = texture == null ? null : Resources.Load<Texture2D>(texture);
             material.SetFloat("_UseTexture", albedo != null ? 1 : 0);
             if (albedo != null) material.SetTexture("_MainTex", albedo);
+            RegisterSurface(material, "surface.environment." + kind + "." + (texture ?? "procedural"), kind == 1 ? EnvironmentSurfaceKind.Metal : EnvironmentSurfaceKind.Concrete, tile, true, true);
             return material;
         }
 
@@ -187,13 +188,14 @@ namespace AeroSim.Simulation
             PlaceEnvironmentBatchV1("Bridge construction joints and tidal wear · visual", seams, EnvironmentSurfaceV1(new Color(.20f,.22f,.21f), 0));
 
             var waterShader = Resources.Load<Shader>("RiverSurfaceV1");
-            if (waterShader != null)
+            if (waterShader != null && _waterMode != EnvironmentFeatureMode.Off)
             {
                 var water = new Material(waterShader); _materials.Add(water);
+                RegisterSurface(water, "surface.water.river", EnvironmentSurfaceKind.Water, 2, true, true, "probe-normal");
                 water.SetVector("_SunDirection", sunlight);
                 water.SetColor("_Color", evening ? new Color(.055f,.18f,.23f) : new Color(.04f,.23f,.34f));
                 water.SetColor("_SkyColor",Color.Lerp(RenderSettings.fogColor,RenderSettings.ambientSkyColor,.55f));
-                water.SetFloat("_Rain",_rainAmount); water.SetFloat("_Wind",Mathf.Clamp01(Config.windMph/20f));
+                water.SetFloat("_Rain",_rainAmount); water.SetFloat("_Wind",Mathf.Clamp01(_environmentState.windSpeedMps/9f));
                 if(_environmentQuality>=AeroSimQuality.High)water.EnableKeyword("AEROSIM_WATER_HIGH");
                 if(_environmentQuality>=AeroSimQuality.Ultra)water.EnableKeyword("AEROSIM_WATER_ULTRA");
                 int waterCells=_environmentQuality==AeroSimQuality.Low?22:_environmentQuality==AeroSimQuality.Medium?34:_environmentQuality==AeroSimQuality.High?45:58;

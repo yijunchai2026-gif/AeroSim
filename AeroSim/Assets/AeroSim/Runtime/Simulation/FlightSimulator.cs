@@ -17,6 +17,7 @@ namespace AeroSim.Simulation
         public Vector3 CameraPosition { get; }
         public Quaternion CameraRotation { get; }
         public float CameraFieldOfView { get; }
+        public CameraSnapshot CameraSnapshot { get; }
         public int TargetIndex { get; }
         internal FlightSimulator Owner { get; }
         internal PhotoCaptureRequest(FlightSimulator owner, SessionRecord record, Camera camera, PhotoEvidence evidence)
@@ -25,7 +26,7 @@ namespace AeroSim.Simulation
             Record = record; Camera = camera; Evidence = evidence;
             SessionId = record.id; FileName = evidence.fileName; TargetIndex = evidence.targetIndex;
             CameraPosition = camera.transform.position; CameraRotation = camera.transform.rotation;
-            CameraFieldOfView = camera.fieldOfView;
+            CameraFieldOfView = camera.fieldOfView; CameraSnapshot = evidence.cameraSnapshot;
         }
     }
 
@@ -40,10 +41,13 @@ namespace AeroSim.Simulation
         public bool ReturningHome { get; private set; }
         public bool ObjectiveComplete { get; private set; }
         public bool ReplayMode { get; private set; }
+        // RD-01/02/07 compatibility adapter. The camera core no longer stores a chase boolean.
         public bool ChaseView
         {
-            get => _activeFovViewId != "fpv";
-            set => SetCameraView(value ? "near-follow" : "fpv");
+            get => _cameraState.Family == CameraFamily.Follow;
+            set => SetCameraState(value ? CameraFamily.Follow : CameraFamily.NosePilot,
+                value ? CameraPreset.Near : CameraPreset.Nose,
+                ReplayMode ? CameraContext.Replay : CameraContext.LiveFlight);
         }
         public string ActiveFovViewId => _activeFovViewId;
         public float VerticalFieldOfView => View == null ? LocalStore.GetVerticalFov(ActiveFovViewId) : View.fieldOfView;
@@ -62,6 +66,7 @@ namespace AeroSim.Simulation
         public event Action<SessionRecord> Finished;
         public event Action<string> Notice;
         public event Action PauseRequested;
+        public event Action CameraCycleRequested;
         public event Action<PhotoCaptureRequest> PhotoCaptureRequested;
 
         private GameObject _world;
@@ -75,17 +80,18 @@ namespace AeroSim.Simulation
         private Vector3 _lastPosition;
         private Vector3 _pausedVelocity, _pausedAngularVelocity, _landingPoint;
         private bool _landing;
-        private string _activeFovViewId = "near-follow";
+        private string _activeFovViewId = "fpv";
         private AudioSource _audio;
         private Material _activeGateMaterial;
 
         public void Begin(FlightConfig config)
         {
+            ClearControlInput();
             CleanWorld(); Config=config; Record=new SessionRecord {id=Guid.NewGuid().ToString("N"),startedUtc=DateTime.UtcNow.ToString("O"),title=config.title,workspace=config.workspace,environment=config.environment,aircraft=config.aircraft,mode=config.mode,courseId=config.courseId};
             Record.config=JsonUtility.FromJson<FlightConfig>(JsonUtility.ToJson(config));
             Battery=config.courseId=="s02"?24:100; Elapsed=0; GateIndex=0; ObjectiveComplete=false; ReturningHome=false; ReplayMode=false; Paused=false; _landing=false;
             _yaw=0; _hoverTime=0; _sampleTime=0; _collisionCooldown=0; _rotationTravel=0; _lastYaw=0; _leftHome=false; _braked=false; _hasTakenOff=false; _acroInverted=false; _batteryWarned=false;
-            _activeFovViewId=config.workspace=="FPV"?"fpv":"near-follow";
+            InitializeCameraState();
             BuildWorld(config.environment); BuildAircraft(); BuildGates();
             HighlightTarget();
             Running=true; _lastPosition=Body.position; ApplyConfiguredFieldOfView(); ApplyCameraViewPose(true);
@@ -95,13 +101,19 @@ namespace AeroSim.Simulation
         public void BeginReplay(SessionRecord record)
         {
             Begin(record.config??new FlightConfig {title=record.title,aircraft=record.aircraft,environment=record.environment,workspace=record.workspace,mode=record.mode});
-            Record=record; ReplayMode=true; Body.isKinematic=true; ReplayTime=0; ReplayPlaying=false; Seek(0);
+            Record=record; ReplayMode=true; Body.isKinematic=true; ReplayTime=0; ReplayPlaying=false; EnterReplayCameraState(); Seek(0);
         }
 
         public void Pause(bool paused)
         {
-            if(Body!=null && paused && !Paused) { _pausedVelocity=Body.linearVelocity; _pausedAngularVelocity=Body.angularVelocity; }
-            Paused=paused; if (Body!=null) { Body.isKinematic=paused; if(!paused) { Body.linearVelocity=_pausedVelocity; Body.angularVelocity=_pausedAngularVelocity; } }
+            if (paused) ClearControlInput();
+            if(Body!=null && paused && !Paused && !ReplayMode) { _pausedVelocity=Body.linearVelocity; _pausedAngularVelocity=Body.angularVelocity; }
+            Paused=paused;
+            if (Body!=null)
+            {
+                Body.isKinematic=paused || ReplayMode;
+                if(!paused && !ReplayMode) { Body.linearVelocity=_pausedVelocity; Body.angularVelocity=_pausedAngularVelocity; }
+            }
             if (_audio!=null) _audio.volume=paused?0:LocalStore.Profile.settings.volume*.18f;
             Status=paused?"Paused":ReturningHome?"Return-to-Home":"In Flight";
         }
@@ -145,6 +157,7 @@ namespace AeroSim.Simulation
                 targetName = hasTarget && Config.mission.targetNames != null && GateIndex < Config.mission.targetNames.Count ? Config.mission.targetNames[GateIndex] : hasTarget ? "Target " + (GateIndex + 1) : "",
                 aircraftPosition = Position, aircraftRotation = Body == null ? Vector3.zero : Body.rotation.eulerAngles,
                 cameraPosition = View.transform.position, cameraRotation = View.transform.eulerAngles, targetPosition = target,
+                cameraSnapshot = CreateCameraSnapshot(CameraContext.PhotoCapture, "pilot"),
                 targetDistance = hasTarget ? Vector3.Distance(Position, target) : 0,
                 targetFacingAngle = hasTarget ? Vector3.Angle(View.transform.forward, target - View.transform.position) : 0
             };
@@ -178,6 +191,7 @@ namespace AeroSim.Simulation
         public void Finish()
         {
             if (!Running || ReplayMode) return;
+            ClearControlInput();
             Running=false; if (Body!=null) Body.isKinematic=true; if (_audio!=null) _audio.volume=0;
             Record.duration=Elapsed;
             int completion=ObjectiveComplete?100:Config.task=="explore"&&Elapsed>=5?90:Mathf.RoundToInt(35+Mathf.Clamp01(Elapsed/45)*20+GateIndex*5+Record.photos*5);
@@ -196,22 +210,27 @@ namespace AeroSim.Simulation
             var t=b.time>a.time?(ReplayTime-a.time)/(b.time-a.time):0;
             Body.position=Vector3.Lerp(a.position,b.position,t); Body.rotation=Quaternion.Slerp(Quaternion.Euler(a.rotation),Quaternion.Euler(b.rotation),t);
             Battery=Mathf.Lerp(a.battery,b.battery,t); CurrentInput=Vector4.Lerp(a.input,b.input,t);
+            if (ReplayMode && ReplayCamera == ReplayCameraSource.Recorded) ApplyRecordedCameraAt(ReplayTime);
         }
-        public void Stop() { Running=false; ReplayMode=false; ReplayPlaying=false; CleanWorld(); }
+        public void ClearControlInput()
+        {
+            CurrentInput = Vector4.zero;
+            FlightInput.ClearAndRequireNeutral();
+        }
+
+        public void Stop() { ClearControlInput(); Running=false; ReplayMode=false; ReplayPlaying=false; CleanWorld(); }
         public void Event(string kind,string message) => Record?.events.Add(new FlightEvent {time=Elapsed,kind=kind,message=message});
 
         public bool SetCameraView(string viewId)
         {
-            var definition = FovViewDefinitions.Find(viewId);
-            if (definition == null) return false;
-            _activeFovViewId = definition.viewId;
-            ApplyConfiguredFieldOfView();
-            ApplyCameraViewPose(true);
-            return true;
+            var definition = FovViewDefinitions.Find(viewId == "chase" ? "near-follow" : viewId);
+            if (definition == null || !CameraStateCatalog.TryFromLegacyViewId(viewId, ReplayMode ? CameraContext.Replay : CameraContext.LiveFlight, out var migrated)) return false;
+            return SetCameraState(migrated);
         }
         public bool PreviewCameraView(string viewId, float verticalFov)
         {
-            if (!SetCameraView(viewId)) return false;
+            var definition = FovViewDefinitions.Find(viewId == "chase" ? "near-follow" : viewId);
+            if (definition == null || !CameraStateCatalog.TryFromLegacyViewId(viewId, CameraContext.SettingsPreview, out var preview) || !SetCameraState(preview)) return false;
             PreviewVerticalFov(verticalFov);
             return true;
         }
@@ -243,10 +262,10 @@ namespace AeroSim.Simulation
             {
                 if(FlightInput.PausePressed) PauseRequested?.Invoke();
                 if(!Paused && FlightInput.Pressed(Key.H)) StartRth();
-                if(FlightInput.Pressed(Key.C)) ChaseView=!ChaseView;
+                if(!Paused && (FlightInput.Pressed(Key.C) || (Gamepad.current?.leftShoulder.wasPressedThisFrame ?? false))) CameraCycleRequested?.Invoke();
                 if(FlightInput.Pressed(Key.P) || (Gamepad.current?.rightShoulder.wasPressedThisFrame??false)) CapturePhoto();
                 if(FlightInput.Pressed(Key.Backspace)) ResetAircraft();
-                CurrentInput=FlightInput.Read();
+                CurrentInput=Paused ? Vector4.zero : FlightInput.Read();
             }
             foreach(var rotor in _rotors) rotor.Rotate(0,Paused?0:Time.deltaTime*2600,0);
             foreach(var disc in _rotorDiscs) disc.SetActive(!Paused);
@@ -273,10 +292,11 @@ namespace AeroSim.Simulation
             }
             if(Position.y>120) { Body.AddForce(Vector3.down*15,ForceMode.Acceleration); Status="Altitude training boundary"; }
             if(new Vector2(Position.x,Position.z).magnitude>230) { Body.AddForce(-new Vector3(Position.x,0,Position.z).normalized*15,ForceMode.Acceleration); Status="Training boundary · turn back"; }
-            var wind=new Vector3(Mathf.Sin(Elapsed*.23f)*.3f+.3f,0,Mathf.Cos(Elapsed*.32f)*.2f)*Config.windMph*.08f;
+            float environmentWindMph=_environmentState.windSpeedMps/.44704f;
+            var wind=new Vector3(Mathf.Sin(Elapsed*.23f)*.3f+.3f,0,Mathf.Cos(Elapsed*.32f)*.2f)*environmentWindMph*.08f;
             Body.AddForce(wind,ForceMode.Acceleration);
             Record.distance+=Vector3.Distance(Position,_lastPosition); _lastPosition=Position; Record.maxAltitude=Mathf.Max(Record.maxAltitude,Position.y);
-            _sampleTime+=dt; if(_sampleTime>=.1f) { _sampleTime=0; Record.frames.Add(new TelemetryFrame {time=Elapsed,position=Position,rotation=Body.rotation.eulerAngles,input=CurrentInput,battery=Battery,speed=Speed}); }
+            _sampleTime+=dt; if(_sampleTime>=.1f) { _sampleTime=0; Record.frames.Add(new TelemetryFrame {time=Elapsed,position=Position,rotation=Body.rotation.eulerAngles,input=CurrentInput,battery=Battery,speed=Speed,cameraSnapshot=CreateCameraSnapshot(CameraContext.LiveFlight,"recorded")}); }
             CheckObjectives(dt);
             if(Config.professional && Config.mission!=null && Elapsed>=Config.mission.timeLimit) { Event("warning","Mission time limit reached"); Finish(); }
             if(!ReturningHome && !Paused && Status!="Low battery") Status=Battery<25?"Low battery":"In Flight";
@@ -365,11 +385,18 @@ namespace AeroSim.Simulation
         private GameObject Primitive(string name,PrimitiveType type,Vector3 pos,Vector3 scale,Material material,Transform parent=null,bool collider=true)
         {
             var g=GameObject.CreatePrimitive(type); g.name=name; g.transform.SetParent(parent??_world.transform,false); g.transform.localPosition=pos; g.transform.localScale=scale; g.GetComponent<Renderer>().sharedMaterial=material;
-            if(!collider) Destroy(g.GetComponent<Collider>()); return g;
+            if(!collider) Destroy(g.GetComponent<Collider>());
+            RegisterEnvironmentObject(g, collider);
+            return g;
         }
         private void BuildWorld(string environment)
         {
-            BuildEnvironmentVisuals(environment);
+            PrepareEnvironmentProduction(Config);
+            if (Record != null && Record.config != null) Record.config.environmentSeed = Config.environmentSeed;
+            _buildingEnvironment = true;
+            try { BuildEnvironmentVisuals(environment); }
+            finally { _buildingEnvironment = false; }
+            CompleteEnvironmentProduction();
         }
         private void BuildAircraft()
         {
@@ -418,57 +445,7 @@ namespace AeroSim.Simulation
         }
         private void LateUpdate() => ApplyCameraViewPose(false);
 
-        public void ApplyCameraViewPose(bool immediate)
-        {
-            if(View==null||Body==null||Config==null) return;
-            float size=Mathf.Max(.1f,AircraftCatalog.Resolve(Config.aircraft).VisualScale);
-            float distance=Mathf.Max(2f,AircraftCatalog.Resolve(Config.aircraft).ChaseDistance);
-            Vector3 desired;
-            Quaternion rotation;
-            float followRate;
-            switch(_activeFovViewId)
-            {
-                case "fpv":
-                    desired=Position+Body.rotation*new Vector3(0,size*.03f,size*.60f);
-                    rotation=Body.rotation*Quaternion.Euler(-LocalStore.Profile.settings.cameraAngle,0,0);
-                    followRate=0;
-                    break;
-                case "cockpit":
-                    desired=Position+Body.rotation*new Vector3(0,size*.24f,size*.18f);
-                    rotation=Body.rotation*Quaternion.Euler(-Mathf.Max(4,LocalStore.Profile.settings.cameraAngle*.55f),0,0);
-                    followRate=0;
-                    break;
-                case "gimbal":
-                    desired=Position+Body.rotation*new Vector3(size*.16f,-size*.12f,size*.38f);
-                    rotation=Body.rotation*Quaternion.Euler(18,0,0);
-                    followRate=18;
-                    break;
-                case "far-follow":
-                    desired=Position+Body.rotation*new Vector3(distance*.18f,distance*.82f,-distance*2.25f);
-                    rotation=Quaternion.LookRotation(Position+Body.rotation*Vector3.forward*distance*.85f-desired,Vector3.up);
-                    followRate=4;
-                    break;
-                case "external":
-                    desired=Position+new Vector3(distance*1.65f,distance*.72f,-distance*.65f);
-                    rotation=Quaternion.LookRotation(Position+Vector3.up*size*.15f-desired,Vector3.up);
-                    followRate=2.5f;
-                    break;
-                default:
-                    desired=Position+Body.rotation*new Vector3(0,distance*.43f,-distance);
-                    rotation=Quaternion.LookRotation(Position+Body.rotation*Vector3.forward*distance*.6f-desired,Vector3.up);
-                    followRate=8;
-                    break;
-            }
-            if(immediate||followRate<=0||LocalStore.Profile.settings.reducedMotion)
-            {
-                View.transform.position=desired;
-                View.transform.rotation=rotation;
-                return;
-            }
-            float blend=1-Mathf.Exp(-Time.unscaledDeltaTime*followRate);
-            View.transform.position=Vector3.Lerp(View.transform.position,desired,blend);
-            View.transform.rotation=Quaternion.Slerp(View.transform.rotation,rotation,blend);
-        }
+        public void ApplyCameraViewPose(bool immediate) => ApplyCameraStatePose(immediate);
         private void CleanWorld()
         {
             _rotors.Clear();_visual=null;

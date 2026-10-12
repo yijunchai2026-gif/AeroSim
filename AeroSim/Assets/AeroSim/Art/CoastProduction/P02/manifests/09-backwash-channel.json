@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-09-BACKWASH-CHANNEL","displayName":"回流槽",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"dark wet channel substrate"},{"file":"../source/tidepool-bed-reference.png","sha256":"d84db9b1323b596e5166ea08ae1d129cb989401c9598b9877918825c7c2b2f80","generatedSourceTag":"GENERATED_SOURCE:generated_image_035650","usage":"transported gravel and algae cues"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"backwash-channel","keywords":["P02_FLOW","P02_THIN_WATER"]},
+  "material":{"tileMeters":[5,1.5],"macroWavelengthMeters":[10,36],"normalStrength":0.60,"dryRoughness":0.70,"wetRoughness":0.17,"standingDepthMm":[2,55],"channelWidthMeters":[0.35,2.8],"flowSpeedMetersPerSecond":[0.05,0.65]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.78,"tideInfluence":1.0,"wetValueMultiplier":0.85,"wetNormalMultiplier":0.56},
+  "lod":["0-15m directional flow","15-40m flow mask","40-80m dark channel","80-180m macro channel",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

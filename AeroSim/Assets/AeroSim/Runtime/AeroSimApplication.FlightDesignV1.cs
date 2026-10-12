@@ -27,6 +27,11 @@ namespace AeroSim
         private Label _designOsdPauseNotice;
         private VisualElement _designOsdIndicator;
         private VisualElement _designFlightInputGuardRoot;
+        private VisualElement _cameraDock;
+        private Label _cameraDockState, _cameraDockFov, _cameraHudStatus;
+        private Button _cameraDockCycle;
+        private IVisualElementScheduledItem _cameraDockHold;
+        private bool _cameraDockLongPress;
 
         private void BuildFlightUi(bool replay)
         {
@@ -118,10 +123,11 @@ namespace AeroSim
             _designOsdIndicator.style.marginRight = 8; bar.Add(_designOsdIndicator);
             bar.Add(FlightAction("Objective", "target", ShowObjective, "objective-toggle"));
             bar.Add(FlightAction("Pause", "pause", TogglePause)); hud.Add(bar);
+            BuildCameraDock(hud);
 
             var objective = Element("objective-card", "v1-objective-card");
             objective.Add(Text(_config.title, "v1-objective-title"));
-            objective.Add(Text(AircraftCatalog.Resolve(_config.aircraft).Name, "aircraft-hud-name"));
+            objective.Add(Text(AircraftCatalog.Resolve(_config.aircraft).DisplayName, "aircraft-hud-name"));
             _objective = Text(_config.objective, "wrap", "v1-objective-copy");
             objective.Add(_objective);
             if (_config.professional) BuildInspectionPanel(objective);
@@ -167,7 +173,7 @@ namespace AeroSim
 
             var tools = Element("v1-camera-tools");
             tools.Add(FlightAction("Photo", "camera", () => _sim.CapturePhoto()));
-            tools.Add(FlightAction("Camera", "camera", () => _sim.ChaseView = !_sim.ChaseView));
+            tools.Add(FlightAction("Cameras", "camera", ShowCameraSelector));
             tools.Add(FlightAction("Land", "flight", _sim.Land));
             tools.Add(FlightAction("Return Home", "home", _sim.StartRth));
             tools.Add(FlightAction("Finish Session", "save", _sim.Finish)); hud.Add(tools);
@@ -175,12 +181,173 @@ namespace AeroSim
             compact.Add(FlightAction("Photo", "camera", () => _sim.CapturePhoto()));
             compact.Add(FlightAction("RTH", "home", _sim.StartRth));
             compact.Add(FlightAction("Finish Session", "save", _sim.Finish)); hud.Add(compact);
-            if (settings.showControls) hud.Add(Text("WASD move · R/F altitude · Q/E yaw · H RTH · C camera · P photo · Esc pause", "flight-guidance", "wrap"));
+            if (settings.showControls) hud.Add(Text("WASD move · R/F altitude · Q/E yaw · H RTH · C/LB camera · P/RB photo · Esc/Start pause", "flight-guidance", "wrap"));
             hud.Add(Text("SIMULATION — NOT FOR NAVIGATION", "v1-flight-disclaimer"));
             bool holdThrottle = string.Equals(_config.mode, "Manual", StringComparison.OrdinalIgnoreCase);
             _leftTouchStick = new TouchStick(true, holdThrottle); _rightTouchStick = new TouchStick(false);
             hud.Add(_leftTouchStick); hud.Add(_rightTouchStick);
             BuildDesignPause(hud);
+        }
+
+        private void BuildCameraDock(VisualElement hud)
+        {
+            _cameraDock = Element("v1-camera-dock");
+            _cameraDock.name = "camera-dock";
+            _cameraDockCycle = ActionButton("", () => { });
+            _cameraDockCycle.name = "camera-cycle";
+            _cameraDockCycle.AddToClassList("v1-camera-dock-cycle");
+            _cameraDockCycle.RegisterCallback<PointerDownEvent>(_ =>
+            {
+                _cameraDockLongPress = false;
+                _cameraDockHold?.Pause();
+                _cameraDockHold = _cameraDockCycle.schedule.Execute(() => { _cameraDockLongPress = true; ShowCameraSelector(); });
+                _cameraDockHold.ExecuteLater(450);
+            });
+            _cameraDockCycle.RegisterCallback<PointerUpEvent>(_ =>
+            {
+                _cameraDockHold?.Pause(); _cameraDockHold = null;
+                if (!_cameraDockLongPress) CycleCamera();
+            });
+            _cameraDockCycle.RegisterCallback<PointerCancelEvent>(_ => { _cameraDockHold?.Pause(); _cameraDockHold = null; });
+            _cameraDockState = Text("", "v1-camera-dock-state");
+            _cameraDockFov = Text("", "v1-camera-dock-fov");
+            _cameraDockCycle.Add(_cameraDockState); _cameraDockCycle.Add(_cameraDockFov);
+            _cameraDockCycle.tooltip = "Short press cycles the workspace-safe camera ring. Keyboard: C.";
+            _cameraDock.Add(_cameraDockCycle);
+            var selector = ActionButton("▾", ShowCameraSelector); selector.name = "camera-selector";
+            selector.AddToClassList("v1-camera-selector-trigger"); selector.tooltip = "Open all camera families and capability reasons.";
+            _cameraDock.Add(selector); hud.Add(_cameraDock);
+            _cameraHudStatus = Text("", "v1-camera-hud-status", "wrap");
+            _cameraHudStatus.name = "camera-hud-profile"; hud.Add(_cameraHudStatus);
+            RefreshCameraHudProfile();
+        }
+
+        private static string CameraName(CameraFamily family, CameraPreset preset)
+        {
+            return (family, preset) switch
+            {
+                (CameraFamily.NosePilot, _) => "NOSE · PILOT",
+                (CameraFamily.VideoFpv, _) => "VIDEO FPV",
+                (CameraFamily.Mount, _) => "MOUNT · HIGH",
+                (CameraFamily.Gimbal, CameraPreset.GimbalFollow) => "GIMBAL · FOLLOW",
+                (CameraFamily.Gimbal, CameraPreset.GimbalFpv) => "GIMBAL · FPV",
+                (CameraFamily.Gimbal, CameraPreset.TargetLock) => "GIMBAL · TARGET",
+                (CameraFamily.Follow, CameraPreset.Near) => "FOLLOW · NEAR",
+                (CameraFamily.Follow, CameraPreset.Far) => "FOLLOW · FAR",
+                (CameraFamily.Observer, CameraPreset.Orbit) => "OBSERVER · ORBIT",
+                (CameraFamily.Observer, CameraPreset.Free) => "OBSERVER · FREE",
+                (CameraFamily.Observer, _) => "OBSERVER · FIXED",
+                _ => family + " · " + preset
+            };
+        }
+
+        private List<(CameraFamily family, CameraPreset preset)> WorkspaceCameraRing()
+        {
+            if (_config?.workspace == "FPV") return new List<(CameraFamily, CameraPreset)>
+            {
+                (CameraFamily.NosePilot, CameraPreset.Nose), (CameraFamily.Follow, CameraPreset.Near), (CameraFamily.Follow, CameraPreset.Far)
+            };
+            if (_config?.professional == true) return new List<(CameraFamily, CameraPreset)>
+            {
+                (CameraFamily.NosePilot, CameraPreset.Nose), (CameraFamily.Mount, CameraPreset.HighMount),
+                (CameraFamily.Gimbal, CameraPreset.GimbalFollow), (CameraFamily.Follow, CameraPreset.Near)
+            };
+            return new List<(CameraFamily, CameraPreset)>
+            {
+                (CameraFamily.NosePilot, CameraPreset.Nose), (CameraFamily.Mount, CameraPreset.HighMount),
+                (CameraFamily.Follow, CameraPreset.Near), (CameraFamily.Follow, CameraPreset.Far),
+                (CameraFamily.Observer, CameraPreset.Fixed)
+            };
+        }
+
+        private void CycleCamera()
+        {
+            if (_sim == null || _sim.Paused || _page != Page.Flight) return;
+            var ring = WorkspaceCameraRing();
+            int index = ring.FindIndex(item => item.family == _sim.CameraState.Family && item.preset == _sim.CameraState.Preset);
+            for (int offset = 1; offset <= ring.Count; offset++)
+            {
+                var next = ring[(index + offset + ring.Count) % ring.Count];
+                if (_sim.SetCameraState(next.family, next.preset, CameraContext.LiveFlight)) break;
+            }
+            _flightInputInterrupt = "Camera changed · controls cleared; centre axes to resume";
+            ReleaseTouchControls("Camera changed"); OnGeometryChanged(null); RefreshCameraHudProfile();
+        }
+
+        private void SelectCamera(CameraStateDefinition definition)
+        {
+            if (_sim == null || definition == null) return;
+            if (!_sim.SetCameraState(definition.Family, definition.Preset, CameraContext.LiveFlight))
+            {
+                ShowToast(string.IsNullOrEmpty(definition.UnavailableReason) ? definition.Capability.ToString().ToUpperInvariant() : definition.UnavailableReason);
+                return;
+            }
+            _flightInputInterrupt = "Camera changed · controls cleared; centre axes to resume";
+            ReleaseTouchControls("Camera changed"); OnGeometryChanged(null); RefreshCameraHudProfile();
+            _flightDialogClose?.Invoke();
+        }
+
+        private void ShowCameraSelector()
+        {
+            if (_page != Page.Flight || _sim == null) return;
+            _flightDialogClose?.Invoke();
+            bool resumeAfter = !_sim.Paused;
+            if (resumeAfter) _sim.Pause(true);
+            ReleaseTouchControls("Camera selector open");
+            var overlay = Element("modal-overlay");
+            var panel = Panel("Camera Selector", "Families are distinct camera capabilities. Unavailable entries remain visible and cannot be selected.");
+            panel.AddToClassList("camera-selector-panel");
+            foreach (var definition in CameraStateCatalog.All.Where(value => value.Family != CameraFamily.Map))
+            {
+                var row = Element("camera-selector-row");
+                var button = ActionButton(CameraName(definition.Family, definition.Preset), () => SelectCamera(definition));
+                bool selectable = definition.Capability == CameraCapability.Available || definition.Capability == CameraCapability.Experimental;
+                button.SetEnabled(selectable); row.Add(button);
+                string capability = definition.Capability.ToString().ToUpperInvariant();
+                string detail = definition.Family == CameraFamily.VideoFpv
+                    ? "UNAVAILABLE · SIMULATED VIDEO LINK NOT IMPLEMENTED"
+                    : capability + (string.IsNullOrEmpty(definition.UnavailableReason) ? "" : " · " + definition.UnavailableReason);
+                row.Add(Text(detail, selectable ? "camera-capability" : "camera-capability-unavailable", "wrap")); panel.Add(row);
+            }
+            void Close()
+            {
+                overlay.RemoveFromHierarchy(); _flightDialogClose = null;
+                if (resumeAfter) _sim?.Pause(false);
+                _flightInputInterrupt = "Camera selector closed · centre axes to resume";
+                ReleaseTouchControls("Selector closed"); RestoreFlightDialogFocus();
+            }
+            _flightDialogClose = Close;
+            panel.Add(ActionButton("Back to Flight", Close, true));
+            overlay.Add(ModalScroll(panel)); InstallDesignModalFocus(overlay); _root.Add(overlay); ApplyTypography(overlay);
+            overlay.Query<Button>().First()?.Focus();
+        }
+
+        private void RefreshCameraHudProfile()
+        {
+            if (_sim == null || _cameraDockState == null) return;
+            var state = _sim.CameraState;
+            _cameraDockState.text = CameraName(state.Family, state.Preset);
+            _cameraDockFov.text = _sim.VerticalFieldOfView.ToString("F1") + "° v  ·  " + _sim.HorizontalFieldOfView.ToString("F1") + "° h";
+            foreach (CameraFamily family in Enum.GetValues(typeof(CameraFamily)))
+                _root.EnableInClassList("camera-profile-" + family.ToString().ToLowerInvariant(), state.Family == family);
+            string status = state.Family switch
+            {
+                CameraFamily.NosePilot => "NOSE · AIRCRAFT INPUT · NO SIMULATED LINK",
+                CameraFamily.VideoFpv => "VIDEO FPV · UNAVAILABLE · SIMULATED LINK NOT IMPLEMENTED",
+                CameraFamily.Mount => "MOUNT VIEW · AIRCRAFT INPUT",
+                CameraFamily.Gimbal => "GIMBAL · FOLLOW MODE · AXIS/LIMIT TELEMETRY EXPERIMENTAL",
+                CameraFamily.Follow => _sim.CameraObstructed ? "FOLLOW · COLLISION PULL-IN · " + _sim.CameraVisibleFraction.ToString("P0") + " VISIBLE" : "FOLLOW · AIRCRAFT INPUT",
+                CameraFamily.Observer => "OBSERVER / CAMERA INPUT · CYCLE CAMERA TO RETURN TO AIRCRAFT",
+                _ => state.Family.ToString().ToUpperInvariant()
+            };
+            _cameraHudStatus.text = status;
+            _cameraDock.EnableInClassList("camera-unavailable", state.Family == CameraFamily.VideoFpv);
+            bool observer = state.Family == CameraFamily.Observer;
+            if (_leftTouchStick != null) _leftTouchStick.style.display = observer || !_flightHudLayoutState.touchControlsRequested || _flightHudLayoutState.touchControlsProtected ? DisplayStyle.None : DisplayStyle.Flex;
+            if (_rightTouchStick != null) _rightTouchStick.style.display = observer || !_flightHudLayoutState.touchControlsRequested || _flightHudLayoutState.touchControlsProtected ? DisplayStyle.None : DisplayStyle.Flex;
+            if (_map != null) _map.style.display = state.Family == CameraFamily.Follow && _flightHudLayoutState.radarVisible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_root.Q<VisualElement>(className: "v1-flight-telemetry") is VisualElement telemetry)
+                telemetry.style.display = observer ? DisplayStyle.None : telemetry.style.display;
         }
 
         private static Button FlightAction(string title, string icon, Action action, params string[] classes)
@@ -408,6 +575,7 @@ namespace AeroSim
             if (_designDistance != null) _designDistance.text = Length(new Vector2(_sim.Position.x, _sim.Position.z).magnitude);
             if (_designVerticalSpeed != null) _designVerticalSpeed.text = Velocity(_sim.Body.isKinematic ? 0 : _sim.Body.linearVelocity.y);
             if (_designFlightClock != null) _designFlightClock.text = Duration(_sim.Elapsed);
+            RefreshCameraHudProfile();
             if (_config.workspace == "FPV") _timer.text = TimeSpan.FromSeconds(Mathf.Max(0, _sim.Elapsed)).ToString(@"mm\:ss\.fff");
             if (_designTargetProgress != null)
             {
@@ -440,6 +608,15 @@ namespace AeroSim
             float actionHeight = text > 1.1f ? 72 : 56;
             bool shortWide = height < 520 || width / Mathf.Max(1, height) > 1.9f;
             var occupied = new List<Rect>();
+            Rect cameraDockRect = new Rect(comfort.xMin + 16, 96, 152, 56);
+            if (_cameraDock != null)
+            {
+                _cameraDock.style.left = cameraDockRect.x; _cameraDock.style.top = cameraDockRect.y;
+                bool showProfileStatus = comfort.width >= 720 && !shortWide;
+                _cameraHudStatus.style.display = showProfileStatus ? DisplayStyle.Flex : DisplayStyle.None;
+                _cameraHudStatus.style.left = cameraDockRect.xMax + 16; _cameraHudStatus.style.top = cameraDockRect.y + 8;
+                occupied.Add(showProfileStatus ? new Rect(cameraDockRect.x, cameraDockRect.y, Mathf.Min(528, comfort.xMax - cameraDockRect.x), cameraDockRect.height) : cameraDockRect);
+            }
             var objective = _root.Q<VisualElement>(className: "v1-objective-scroll");
             Rect objectiveRect = default;
             if (objective != null && !compact && _config.workspace != "FPV")
@@ -480,16 +657,17 @@ namespace AeroSim
             if (shortWide)
             {
                 float telemetryWidth = Mathf.Min(360, comfort.width - 32);
-                telemetryRect = new Rect(comfort.center.x - telemetryWidth * .5f, 96, telemetryWidth, 64);
+                telemetryRect = new Rect(comfort.xMax - telemetryWidth - 16, 96, telemetryWidth, 64);
             }
             else
             {
                 float available = compact ? comfort.width - 32 : Mathf.Min(1040, comfort.width - 760);
                 available = Mathf.Max(240, available);
-                telemetryRect = new Rect(comfort.center.x - available * .5f, compact ? 96 : height - 120, available, compact ? Mathf.Max(64, 64 * text) : 80);
+                float telemetryTop = compact ? cameraDockRect.yMax + 16 : height - 120;
+                telemetryRect = new Rect(comfort.center.x - available * .5f, telemetryTop, available, compact ? Mathf.Max(64, 64 * text) : 80);
             }
             occupied.Add(telemetryRect);
-            LayoutFlightRadarAndSticks(space, comfort, touchRequested, compact, shortWide, actionHeight, occupied, objectiveRect, toolsRect, guidanceRect, telemetryRect);
+            LayoutFlightRadarAndSticks(space, comfort, touchRequested, compact, shortWide, actionHeight, occupied, objectiveRect, toolsRect, guidanceRect, telemetryRect, cameraDockRect);
 
             float touchSize = _flightHudLayoutState.leftStickEnvelope.width;
             if (shortWide)
@@ -502,12 +680,13 @@ namespace AeroSim
             if (telemetry != null)
             {
                 telemetry.style.width = telemetryRect.width; telemetry.style.left = telemetryRect.x;
+                telemetry.style.top = telemetryRect.y; telemetry.style.bottom = new StyleLength(StyleKeyword.Auto);
             }
             LayoutDesignOsdAnchors(width, height, compact);
         }
 
         private void LayoutFlightRadarAndSticks(FlightHudLayoutSpace space, Rect comfort, bool touchRequested, bool compact, bool shortWide,
-            float actionHeight, List<Rect> occupied, Rect objectiveRect, Rect toolsRect, Rect guidanceRect, Rect telemetryRect)
+            float actionHeight, List<Rect> occupied, Rect objectiveRect, Rect toolsRect, Rect guidanceRect, Rect telemetryRect, Rect cameraDockRect)
         {
             Rect content = space.ContentRect;
             float edge = comfort.width < 480 ? 8 : 16;
@@ -595,6 +774,7 @@ namespace AeroSim
                 guidanceRect = guidanceRect,
                 toolsRect = toolsRect,
                 objectiveRect = objectiveRect,
+                cameraDockRect = cameraDockRect,
                 touchControlsRequested = touchRequested,
                 touchControlsProtected = touchRequested && !sticksFit,
                 radarVisible = radar.width > 0
@@ -626,7 +806,7 @@ namespace AeroSim
             telemetry.style.height = Mathf.Max(48, telemetryHeight); telemetry.style.minHeight = Mathf.Max(48, telemetryHeight);
             float telemetryWidth = Mathf.Min(360, comfort.width - 32);
             telemetry.style.width = telemetryWidth;
-            telemetry.style.left = comfort.center.x - telemetryWidth * .5f;
+            telemetry.style.left = comfort.xMax - telemetryWidth - 16;
             telemetry.style.flexWrap = Wrap.NoWrap;
             _designAltitudeMetric.style.display = settings.osdAltitude ? DisplayStyle.Flex : DisplayStyle.None;
             _designBatteryMetric.style.display = settings.osdBattery ? DisplayStyle.Flex : DisplayStyle.None;
@@ -846,6 +1026,8 @@ namespace AeroSim
             if (_sim?.View != null && _sim.View.targetTexture == _designReplayTexture) _sim.View.targetTexture = null;
             if (_designReplayTexture != null) { _designReplayTexture.Release(); Destroy(_designReplayTexture); _designReplayTexture = null; }
             _designReplayImage = null; _designReplayMap = null; _designGraphs.Clear(); _designSticks.Clear(); _designTargetStates.Clear();
+            _cameraDockHold?.Pause(); _cameraDockHold = null; _cameraDockLongPress = false;
+            _cameraDock = null; _cameraDockCycle = null; _cameraDockState = _cameraDockFov = _cameraHudStatus = null;
             _designDistance = _designVerticalSpeed = _designFlightClock = _designReplayTime = _designTargetProgress = _designTargetDistance = _designReplayInputs = null;
             _designInputSource = null;
             _designOsdLayer = _designSpeedMetric = _designAltitudeMetric = _designBatteryMetric = null;

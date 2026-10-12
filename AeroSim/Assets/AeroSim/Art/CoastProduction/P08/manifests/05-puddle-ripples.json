@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-05-PUDDLE-RIPPLES", "displayName": "积水涟漪", "kind": "surface_impact",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "lower-wide ripple plate", "usage": "derive signed ripple normal/mask" },
+  "inputs": ["puddleAmount", "precipitation", "vfxDensity"], "activation": { "formula": "puddleAmount*rain01", "enter": 0.04, "exit": 0.02, "fadeSeconds": 0.9 },
+  "render": { "space": "surface tangent", "blend": "normal/additive mask", "depth": "surface", "diameterMeters": [0.04, 0.32], "lifetimeSeconds": [0.35, 1.1] },
+  "quality": { "Low": "Off", "Medium": "16 impacts half-res", "High": "48 impacts", "Ultra": "80 impacts+size variance" },
+  "offPath": "stop impacts; clear ripple history within 1.1s", "fallback": "single procedural ring normal or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

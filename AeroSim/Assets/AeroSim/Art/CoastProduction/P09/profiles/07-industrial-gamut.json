@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-07-INDUSTRIAL-GAMUT",
+  "displayName": "工业设施色域",
+  "category": "gamut.industrial",
+  "enabled": true,
+  "targets": ["P07 pad, concrete, galvanized steel and safety accents", "P08 weather"],
+  "intent": "低轮廓设施通过材质值域与小面积安全色可读，不以高饱和或纯白从自然环境中跳出。",
+  "parameters": {
+    "palette": {
+      "concreteShadow": {"min": "#343938", "target": "#4D5351", "max": "#676C67"},
+      "concreteLight": {"min": "#777B75", "target": "#91938B", "max": "#ABACA3"},
+      "galvanizedSteel": {"min": "#596267", "target": "#778186", "max": "#A0A8A8"},
+      "paintedWhite": {"min": "#A7ACA7", "target": "#C9CCC5", "max": "#E1E2DA"},
+      "safetyYellow": {"min": "#866F24", "target": "#B2912D", "max": "#D5B74A"},
+      "rust": {"min": "#50382A", "target": "#724B31", "max": "#915F3A"},
+      "padDark": {"min": "#1F2526", "target": "#303738", "max": "#454C4D"}
+    },
+    "response": {"saturationMax": 0.68, "safetyAccentFrameCoverageMax": 0.035, "paintedWhiteValueMax": 0.82, "rustFrameCoverageMax": 0.08, "wetValueMultiplier": [0.66, 0.86]}
+  },
+  "evaluation": {"goldenCases": ["A", "D", "E", "G", "H"], "reviewBandsMeters": [1, 5, 15, 40, 80]},
+  "guardrails": ["safety yellow is a sparse wayfinding accent", "painted white must retain texture", "rust never recolors galvanized metal globally", "pad markings remain readable in rain", "no emissive-looking albedo"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

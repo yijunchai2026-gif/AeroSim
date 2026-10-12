@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-05-SHELL-BAND",
+  "displayName": "贝壳带",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "shell shape/color vocabulary; derive dedicated coverage mask" },
+  "scale": { "coverageMeters": [2.5, 1.0], "shellFragmentMm": [8, 90], "detailRepeatMeters": 0.5 },
+  "tile": { "mode": "directional_strip", "repeatMeters": 2.5, "rotationVariantsDegrees": [0, 180], "edgeBlendMeters": 0.22 },
+  "macroVariation": { "wavelengthMeters": [8, 28], "baseColorDelta": 0.09, "roughnessDelta": 0.08, "bandWidthMeters": [0.6, 2.4] },
+  "normal": { "strength": 1.05, "nearDetailStrength": 0.3, "fadeStartMeters": 14, "fadeEndMeters": 38 },
+  "roughness": { "target": 0.7, "range": [0.56, 0.86], "wetResponseMinimum": 0.34 },
+  "lod": ["LOD0:0-15m shell mask+full maps", "LOD1:15-40m normal50%", "LOD2:40-80m band color/mask", "LOD3:80-180m macro band only", "Cull:>180m merge shoreline"],
+  "streaming": { "priority": 1, "maxResident": 2048, "mobileMaxResident": 1024, "preloadRadiusMeters": 20 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

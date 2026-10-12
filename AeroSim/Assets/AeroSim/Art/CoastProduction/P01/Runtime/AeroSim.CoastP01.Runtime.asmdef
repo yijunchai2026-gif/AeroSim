@@ -1,0 +1,14 @@
+{
+  "name": "AeroSim.CoastP01.Runtime",
+  "rootNamespace": "AeroSim.CoastP01",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

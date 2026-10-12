@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "aerosim.lookdev-pack/v1",
+  "packId": "P09-LOOKDEV-PACK-V1",
+  "displayName": "P09 海岸 LookDev 参数包",
+  "owner": "Coast Art Lead-09",
+  "createdAt": "2026-10-12T03:57:00+08:00",
+  "status": "SPEC_LOCKED_STATIC_VALIDATED",
+  "requirements": ["REQ-SCN-003", "REQ-SCN-004", "REQ-RND-001"],
+  "workPackage": "RD-08",
+  "milestone": "M4",
+  "isolation": {
+    "root": "assets/p09-lookdev-pack-v1/",
+    "parameterContract": "builtin-lighting-colorgrading-contract.json",
+    "goldenShotGuide": "GOLDEN_SHOT_COMPARISON.md",
+    "sharedSceneModified": false,
+    "runtimeWiring": "NONE"
+  },
+  "source": {
+    "file": "source/coast-lookdev-reference.png",
+    "original": "artifacts/generated_image_025614.png",
+    "sha256": "fd8dea3fd76b9a57274294814f69e701eb4fd545d2d50e7598024675eb217859",
+    "dimensions": [3840, 1648],
+    "colorMode": "RGB8_SRGB_UNCALIBRATED",
+    "role": "composition, value hierarchy, palette and atmospheric depth reference",
+    "limitations": ["not a calibrated HDRI", "contains baked lighting", "not a runtime background", "not a measured spectral target"]
+  },
+  "upstreamTargets": {
+    "P01": "coastal macro composition and hero-zone readability",
+    "P02": "asset identity and physically plausible material separation",
+    "P03": "ground/sand/gravel scale and roughness contract",
+    "P04": "rock strata, wet edge and near/mid/far value separation",
+    "P05": "ocean, foam, tide-pool and horizon response",
+    "P06": "coastal vegetation ecology, wind and alpha stability",
+    "P07": "industrial pad, concrete and galvanized metal readability",
+    "P08": "weather-state coherence, fog, cloud shadow and golden views"
+  },
+  "profiles": [
+    "profiles/01-clear-exposure.json",
+    "profiles/02-overcast-exposure.json",
+    "profiles/03-rain-exposure.json",
+    "profiles/04-ocean-gamut.json",
+    "profiles/05-rock-gamut.json",
+    "profiles/06-vegetation-gamut.json",
+    "profiles/07-industrial-gamut.json",
+    "profiles/08-fog-color.json",
+    "profiles/09-cloud-shadow-color.json",
+    "profiles/10-night-reserve.json"
+  ],
+  "qualityDeclaration": {
+    "profileCount": 10,
+    "staticValidation": "PASS",
+    "unityImport": "NOT_RUN",
+    "runtimeVisualCalibration": "NOT_RUN",
+    "goldenShotCapture": "NOT_RUN",
+    "targetHardwarePerformance": "NOT_RUN",
+    "humanArtReview": "NOT_RUN"
+  }
+}

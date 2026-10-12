@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-05-LOW-SHRUB", "displayName": "低灌木", "archetype": "evergreen_low_shrub",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.1667,0.38,0.1666,0.20]},
+  "geometry": {"heightMeters": [0.65,1.35], "radiusMeters": [0.55,1.15], "cardsLOD0": 12, "pivot": "root"},
+  "alphaCutout": {"cutoffBias": 0.03, "coverageClass": "broadleaf_dense", "twoSided": true},
+  "wind": {"primaryBend": 0.28, "edgeFlutter": 0.46, "stiffness": 0.74, "maxDisplacementMeters": 0.16, "phaseJitter": 0.18},
+  "seasonWeather": {"winterTintRGB": [0.82,0.86,0.74], "summerTintRGB": [0.94,1.00,0.90], "autumnDryness": 0.24, "flowerAmount": [0.0,0.12], "wetnessResponse": 0.68},
+  "lodBillboard": {"lod0Meters": [0,22], "lod1Meters": [18,46], "lod2Meters": [42,82], "billboardMeters": [76,175], "cullMeters": 175, "billboardViews": 8},
+  "ecology": {"distanceToMeanHighWaterM": [18,180], "elevationAboveMeanHighWaterM": [2,35], "slopeDegrees": [0,34], "soilMoisture01": [0.2,0.72], "salinity01": [0.05,0.48], "exposure01": [0.18,0.72], "substrate": ["sandy_loam","gravel","rock_fissure"], "spacingMeters": [1.1,2.8], "patchRadiusMeters": [3,14], "densityPerSquareMeter": [0.05,0.45]},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

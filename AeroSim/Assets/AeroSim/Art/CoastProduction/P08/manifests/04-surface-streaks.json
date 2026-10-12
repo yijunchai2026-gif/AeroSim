@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-04-SURFACE-STREAKS", "displayName": "地表流痕", "kind": "surface_wetness_detail",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "middle-right rivulet plate", "usage": "derive linear flow mask/normal" },
+  "inputs": ["wetness", "precipitation", "windDirectionXZ"], "activation": { "formula": "wetness*smoothstep(0.35,0.85,precipitation)", "enter": 0.1, "exit": 0.04, "fadeSeconds": 4 },
+  "render": { "space": "surface tangent", "blend": "material mask", "depth": "surface", "coverageMeters": 1.6, "flowSpeedMetersPerSecond": [0.02, 0.14] },
+  "quality": { "Low": "Off", "Medium": "Off", "High": "one flow octave", "Ultra": "two flow octaves" },
+  "offPath": "set material contribution to zero; release owned flow history", "fallback": "static wetness darkening or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

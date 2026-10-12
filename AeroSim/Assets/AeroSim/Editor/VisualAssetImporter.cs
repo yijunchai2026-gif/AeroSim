@@ -21,13 +21,40 @@ namespace AeroSim.Editor
                 });
                 return;
             }
+            if (assetPath.Contains("/Art/CoastProduction/") && assetPath.EndsWith(".png"))
+            {
+                var coast = (TextureImporter)assetImporter;
+                bool atlas = assetPath.Contains("vegetation-atlas") || assetPath.Contains("foam-atlas") ||
+                    assetPath.Contains("weather-atlas") || assetPath.Contains("decal_atlas");
+                coast.textureType = TextureImporterType.Default;
+                coast.sRGBTexture = true;
+                coast.alphaSource = TextureImporterAlphaSource.FromInput;
+                coast.alphaIsTransparency = false;
+                coast.mipmapEnabled = true;
+                coast.streamingMipmaps = true;
+                coast.wrapMode = atlas ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;
+                coast.filterMode = FilterMode.Trilinear;
+                coast.anisoLevel = 8;
+                coast.npotScale = TextureImporterNPOTScale.ToNearest;
+                coast.maxTextureSize = 4096;
+                coast.textureCompression = TextureImporterCompression.CompressedHQ;
+                coast.SetPlatformTextureSettings(new TextureImporterPlatformSettings {
+                    name = "Standalone", overridden = true, maxTextureSize = 4096,
+                    format = TextureImporterFormat.Automatic, compressionQuality = 80
+                });
+                coast.SetPlatformTextureSettings(new TextureImporterPlatformSettings {
+                    name = "iPhone", overridden = true, maxTextureSize = 2048,
+                    format = TextureImporterFormat.ASTC_6x6, compressionQuality = 70
+                });
+                return;
+            }
             if ((!assetPath.Contains("/Art/MaterialsV2/") && !assetPath.Contains("/Art/AircraftV3/")) || !assetPath.EndsWith(".png")) return;
             var importer=(TextureImporter)assetImporter;
             importer.textureType=TextureImporterType.Default;
             bool foliage=assetPath.Contains("evergreen-needles");
             importer.sRGBTexture=true; importer.alphaSource=foliage?TextureImporterAlphaSource.FromInput:TextureImporterAlphaSource.None;
             importer.alphaIsTransparency=foliage;
-            importer.mipmapEnabled=true; importer.wrapMode=foliage?TextureWrapMode.Clamp:TextureWrapMode.Repeat;
+            importer.mipmapEnabled=true; importer.streamingMipmaps=true; importer.wrapMode=foliage?TextureWrapMode.Clamp:TextureWrapMode.Repeat;
             importer.mipMapsPreserveCoverage=foliage; importer.alphaTestReferenceValue=.42f;
             importer.filterMode=FilterMode.Trilinear; importer.anisoLevel=8;
             importer.npotScale=TextureImporterNPOTScale.ToNearest; importer.maxTextureSize=2048;

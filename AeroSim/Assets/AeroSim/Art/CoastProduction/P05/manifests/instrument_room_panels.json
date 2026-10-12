@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_PANEL",
+  "display_name_zh": "仪器房板材",
+  "category": "architecture/industrial_cladding",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["镀锌片花纹", "板缝积尘", "紧固点氧化晕染"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_PANEL_FLAT_100X300_L00", "SM_P05_PANEL_FLAT_200X300_L00", "SM_P05_PANEL_CORNER_IN_030_L00", "SM_P05_PANEL_CORNER_OUT_030_L00", "SM_P05_PANEL_CAP_TOP_100_L00", "SM_P05_PANEL_SERVICE_100X200_L00"],
+    "sockets": ["SCK_EDGE_L", "SCK_EDGE_R", "SCK_TOP", "SCK_BOTTOM"],
+    "notes": ["板厚 4 cm 含折边", "水平模块宽 100/200 cm，高 300 cm", "接缝保留 1 cm 阴缝，不在贴图中固定重复"]
+  },
+  "pivot": {"rule": "左下后角，落在安装平面与地面交线", "orientation": "+X 沿板宽，+Y 朝室内，+Z 向上"},
+  "snap_grid_cm": {"translation": 10, "rotation_deg": 90, "fine_translation": 1},
+  "pbr": {
+    "material_slots": ["MI_P05_GALV_STEEL_PANEL", "MI_P05_GASKET_DARK"],
+    "metallic": [0.88, 0.96], "roughness": [0.42, 0.72],
+    "texture_set": ["T_P05_PANEL_BC", "T_P05_PANEL_N", "T_P05_PANEL_ORM", "T_P05_PANEL_OX_MASK"],
+    "special": {"uv0_texel_density_px_per_m": 512, "uv1_lightmap_padding_px": 4, "two_sided": false}
+  },
+  "lod": {"triangle_budget": [12000, 6000, 2600, 900], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["LOD2 合并小螺钉至法线", "LOD3 保留板缝轮廓"]},
+  "collision": {"mode": "simple_box", "budget": {"boxes": 1}, "rules": ["碰撞厚度 4 cm", "检修板与固定墙板拆分", "不得为单颗螺钉生成碰撞"]},
+  "deliverables": ["6 个模块网格及 LOD0-3", "2 个材质实例", "4 张 PBR 纹理", "UCX 简单碰撞"]
+}

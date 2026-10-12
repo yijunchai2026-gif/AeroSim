@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "P04_COLLISION_DIMENSIONS_CONTRACT",
+  "unit": "meter",
+  "coordinate_system": {"up": "+Y", "forward": "+Z", "right": "+X", "origin": "platform_top_center"},
+  "assembly_envelope_m": [24.8, 0.55, 24.0],
+  "design": {
+    "platform_top_m": [24.0, 0.20, 24.0],
+    "base_m": [24.0, 0.35, 24.0],
+    "top_elevation_y_m": 0.0,
+    "bottom_elevation_y_m": -0.55,
+    "surface_slope_percent_to_positive_x": 1.5,
+    "drainage_channel_center_x_m": 12.3,
+    "drainage_channel_m": [0.6, 0.45, 24.0],
+    "h_marking_outer_m": [8.0, 0.0, 10.0],
+    "h_stroke_width_m": 1.0,
+    "exclusion_border_width_m": 2.0,
+    "exclusion_stripe_width_m": 0.45,
+    "exclusion_stripe_gap_m": 0.45,
+    "tie_down_count": 8,
+    "tie_down_ring_outer_diameter_m": 0.24,
+    "inspection_cover_m": [0.8, 0.06, 0.8]
+  },
+  "colliders": [
+    {"asset_id": "P04_ASSET_01_ANTI_SLIP_PLATFORM", "type": "box", "count": 1, "center_m": [0.0, -0.10, 0.0], "size_m": [24.0, 0.20, 24.0], "is_trigger": false},
+    {"asset_id": "P04_ASSET_04_CONCRETE_BASE", "type": "box", "count": 1, "center_m": [0.0, -0.375, 0.0], "size_m": [24.0, 0.35, 24.0], "is_trigger": false},
+    {"asset_id": "P04_ASSET_05_DRAINAGE_CHANNEL", "type": "compound_boxes", "count": 3, "envelope_center_m": [12.3, -0.225, 0.0], "envelope_size_m": [0.6, 0.45, 24.0], "grate_walkable": true, "is_trigger": false},
+    {"asset_id": "P04_ASSET_06_TIE_DOWN_POINT", "type": "capsule", "count_per_instance": 1, "size_m": [0.24, 0.035, 0.24], "placement_radius_m": 9.5, "instances": 8, "is_trigger": false},
+    {"asset_id": "P04_ASSET_07_INSPECTION_COVER", "type": "box", "count": 1, "center_m": [-8.5, -0.03, 8.5], "size_m": [0.8, 0.06, 0.8], "is_trigger": false}
+  ],
+  "no_collision_assets": ["P04_ASSET_02_H_MARKING", "P04_ASSET_03_EXCLUSION_HATCH", "P04_ASSET_08_WORN_EDGE", "P04_ASSET_09_SALT_CORROSION", "P04_ASSET_10_PUDDLE_STAIN"],
+  "collision_rules": {"convex_mesh_for_static_surface": false, "mesh_collider_allowed": false, "decal_collision": false, "minimum_walkable_thickness_m": 0.02, "physics_material_hint": "high_grip_dry_concrete"}
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-10-DISTANT-COMMUNITY", "displayName": "远景群落", "archetype": "mixed_distant_cluster",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.6667,0.36,0.3333,0.22], "usage": "palette/silhouette reference; compose only from P06 members"},
+  "geometry": {"heightMeters": [0.35,2.2], "radiusMeters": [3,12], "cardsLOD0": 12, "pivot": "cluster_center_root"},
+  "alphaCutout": {"cutoffBias": 0.04, "coverageClass": "merged_cluster", "twoSided": true},
+  "wind": {"primaryBend": 0.24, "edgeFlutter": 0.0, "stiffness": 0.76, "maxDisplacementMeters": 0.18, "phaseJitter": 0.18, "billboardPrimaryOnly": true},
+  "seasonWeather": {"winterTintRGB": [0.74,0.72,0.60], "summerTintRGB": [0.91,0.98,0.84], "autumnDryness": 0.48, "flowerAmount": [0.0,0.28], "wetnessResponse": 0.56},
+  "lodBillboard": {"lod0Meters": [45,80], "lod1Meters": [72,125], "lod2Meters": [116,190], "billboardMeters": [180,480], "cullMeters": 480, "billboardViews": 8, "nearUseForbiddenBelowMeters": 45},
+  "ecology": {"distanceToMeanHighWaterM": [8,320], "elevationAboveMeanHighWaterM": [1,60], "slopeDegrees": [0,36], "soilMoisture01": [0.1,0.8], "salinity01": [0.0,0.75], "exposure01": [0.12,1.0], "substrate": ["sand","gravel","shell","sandy_loam","acidic_soil","rock_fissure"], "spacingMeters": [8,22], "patchRadiusMeters": [12,55], "densityPerSquareMeter": [0.002,0.018], "memberMix": {"saltGrass": [0.25,0.55], "heather": [0.08,0.28], "lowShrub": [0.12,0.32], "windsweptScrub": [0.03,0.15], "groundcover": [0.08,0.3], "sapling": [0.0,0.05], "deadwood": [0.0,0.03]}, "constraint": "sample a member only where that member hard ecology ranges pass"},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

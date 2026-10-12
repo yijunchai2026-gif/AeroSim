@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-08-SPLASH-PARTICLES",
+  "displayName": "浪花粒子",
+  "category": "splash_particle",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [73, 896, 2085, 807], "atlasRectBottomLeft": [0.025347, 0.408681, 0.723958, 0.280208] },
+  "placement": { "mode": "billboard_particle", "sizeMeters": [0.025, 0.65], "emissionPerMeter": [1.5, 14], "velocityMetersPerSecond": { "horizontal": [0.15, 2.2], "vertical": [0.35, 3.8] }, "gravity": -6.8 },
+  "motion": { "flowSpeed": 0, "lifetimeSeconds": [0.22, 1.25], "rotationDegreesPerSecond": [-120, 120], "decay": [0.08, 1.0] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.022, "edgeSoftness": 0.09, "intensity": 1.18 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 8, "midMeters": 38, "farMeters": 95, "cullMeters": 150 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

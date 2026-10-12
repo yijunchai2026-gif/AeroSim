@@ -31,7 +31,7 @@ namespace AeroSim
         public void StartFlight(FlightConfig config)
         {
             ReleaseHangarPreviews();
-            config.aircraft=AircraftCatalog.Resolve(config.aircraft).Name;
+            config.aircraft=AircraftCatalog.Resolve(config.aircraft).DisplayName;
             _config = config; _page = Page.Flight;
             EnsureSimulator(); _sim.Begin(config); BuildFlightUi(false);
         }
@@ -49,6 +49,7 @@ namespace AeroSim
             _sim.Notice += ShowToast;
             _sim.PhotoCaptureRequested += SavePhotoEvidence;
             _sim.PauseRequested += TogglePause;
+            _sim.CameraCycleRequested += CycleCamera;
             _sim.Finished += record => { _record = record; ShowPage(Page.Results); };
         }
         private void BuildLegacyFlightUi(bool replay)
@@ -70,7 +71,7 @@ namespace AeroSim
 
             var objectiveCard = Element("objective-card");
             objectiveCard.Add(Text(replay ? "RECORDED SESSION" : "SESSION OBJECTIVE", "page-eyebrow"));
-            objectiveCard.Add(Text(AircraftCatalog.Resolve(_sim.Config.aircraft).Name, "aircraft-hud-name"));
+            objectiveCard.Add(Text(AircraftCatalog.Resolve(_sim.Config.aircraft).DisplayName, "aircraft-hud-name"));
             _objective = Text(replay ? _record.title + " · " + _record.score + "/100" : _config.objective, "wrap"); objectiveCard.Add(_objective); hud.Add(objectiveCard);
             var settings = LocalStore.Profile.settings;
             _speed = HudMetric(hud, "SPEED", settings.speedPosition, settings.osdSpeed);
@@ -89,12 +90,12 @@ namespace AeroSim
                 _replaySlider = new Slider(0, Mathf.Max(.1f, _record.duration)) { value = 0 }; _replaySlider.AddToClassList("replay-slider");
                 _replaySlider.RegisterValueChangedCallback(e => { if (!_seeking) _sim.Seek(e.newValue); }); bottom.Add(_replaySlider);
                 var rate = 1f; bottom.Add(ActionButton("Speed", () => { rate = rate == 1 ? 2 : rate == 2 ? .5f : 1; _sim.ReplaySpeed = rate; ShowToast("Replay speed: " + rate + "x"); }));
-                bottom.Add(ActionButton("Camera", () => _sim.ChaseView = !_sim.ChaseView));
+                bottom.Add(ActionButton("Analysis Camera", () => _sim.ChaseView = !_sim.ChaseView));
             }
             else
             {
                 bottom.Add(ActionButton("Return Home", _sim.StartRth)); bottom.Add(ActionButton("Land", _sim.Land));
-                bottom.Add(ActionButton("Camera", () => _sim.ChaseView = !_sim.ChaseView));
+                bottom.Add(ActionButton("Cameras", ShowCameraSelector));
                 bottom.Add(ActionButton("Photo", () => _sim.CapturePhoto()));
                 bottom.Add(ActionButton("Finish Session", _sim.Finish, true));
             }
@@ -188,7 +189,8 @@ namespace AeroSim
         }
         private void ReleaseTouchControls(string reason)
         {
-            FlightInput.TouchLeft = FlightInput.TouchRight = Vector2.zero;
+            FlightInput.ClearAndRequireNeutral();
+            _sim?.ClearControlInput();
             _leftTouchStick?.Interrupt(reason);
             _rightTouchStick?.Interrupt(reason);
         }
@@ -214,6 +216,8 @@ namespace AeroSim
 
         private string DescribeFlightInputSource()
         {
+            if (_sim?.CameraState.Family == CameraFamily.Observer) return "OBSERVER / CAMERA INPUT";
+            if (FlightInput.WaitingForNeutral) return "INTERRUPTED · CENTRE ALL AXES TO RESUME";
             bool captured = (_leftTouchStick?.Active ?? false) || (_rightTouchStick?.Active ?? false);
             bool touch = captured || FlightInput.TouchLeft.sqrMagnitude > .0001f || FlightInput.TouchRight.sqrMagnitude > .0001f;
             var keyboard = Keyboard.current;

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_PIPE_RACK",
+  "display_name_zh": "管架",
+  "category": "structure/pipe_rack",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["热镀锌钢表面", "法兰与底板轻锈"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_RACK_COLUMN_300_L00", "SM_P05_RACK_COLUMN_600_L00", "SM_P05_RACK_BEAM_300_L00", "SM_P05_RACK_BEAM_600_L00", "SM_P05_RACK_BRACE_424_L00", "SM_P05_RACK_FOOT_L00", "SM_P05_RACK_TJUNCTION_L00"],
+    "sockets": ["SCK_BASE", "SCK_TOP", "SCK_BEAM_L", "SCK_BEAM_R", "SCK_BRACE_A", "SCK_BRACE_B"],
+    "notes": ["主跨 300/600 cm", "立柱和横梁使用 20 cm 结构高度", "连接板与螺栓按实例化组件引用"]
+  },
+  "pivot": {"rule": "结构起点底座中心", "orientation": "+X 沿主跨，+Y 横向，+Z 向上"},
+  "snap_grid_cm": {"translation": 50, "rotation_deg": 90, "fine_translation": 10},
+  "pbr": {
+    "material_slots": ["MI_P05_GALV_STRUCTURAL_STEEL", "MI_P05_DARK_STEEL"],
+    "metallic": [0.82, 0.96], "roughness": [0.4, 0.72],
+    "texture_set": ["T_P05_RACK_BC", "T_P05_RACK_N", "T_P05_RACK_ORM", "T_P05_RACK_OX_MASK"],
+    "special": {"trim_sheet": "T_P05_STRUCTURAL_TRIM", "decal_receiver": true}
+  },
+  "lod": {"triangle_budget": [42000, 21000, 9000, 2800], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["LOD1 合并连接板", "LOD2 移除螺栓几何", "LOD3 保留结构外轮廓"]},
+  "collision": {"mode": "compound", "budget": {"boxes": 10, "convex_hulls": 2}, "rules": ["梁柱按分段盒体", "斜撑允许单凸包", "连接板和螺栓不单独碰撞"]},
+  "deliverables": ["7 个管架模块及 LOD0-3", "2 个材质实例", "复合结构碰撞", "命名连接 sockets"]
+}

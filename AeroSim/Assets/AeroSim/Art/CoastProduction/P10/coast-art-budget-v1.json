@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "aerosim.coast-art-budget/v1",
+  "workPackage": "P10",
+  "environmentId": "Pacific Coast",
+  "validationMode": "STATIC_ASSET_ONLY",
+  "manifestStatus": "CAPTURED_UNREVIEWED",
+  "defaultGeneratedSourceStatus": "CAPTURED_UNREVIEWED",
+  "automaticProductionReady": false,
+  "forbiddenAutomaticStates": [
+    "ProductionReady"
+  ],
+  "notes": "P10 only audits imported assets and declarations. It never opens, saves, or mutates a shared scene. Runtime profiler evidence remains a separate gate.",
+  "workPackages": [
+    { "id": "P01", "name": "rock-material-and-geometry", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P01"] },
+    { "id": "P02", "name": "intertidal-wetness", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P02"] },
+    { "id": "P03", "name": "gravel-ground", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P03"] },
+    { "id": "P04", "name": "platform-concrete-and-decals", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P04"] },
+    { "id": "P05", "name": "industrial-metal", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P05"] },
+    { "id": "P06", "name": "vegetation-atlas", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P06"] },
+    { "id": "P07", "name": "foam-atlas", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P07"] },
+    { "id": "P08", "name": "weather-atlas", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P08"] },
+    { "id": "P09", "name": "lookdev-profiles", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P09", "Assets/AeroSim/Runtime/Simulation/CoastProductionIntegration.cs", "Assets/AeroSim/Runtime/Diagnostics/VisualLabEvidence.cs"] },
+    { "id": "P11", "name": "hero-cliff-production-slice", "assetRoots": ["Assets/AeroSim/Art/CoastProduction/P11/HeroCliff/Models", "Assets/AeroSim/Art/CoastProduction/P11/HeroCliff/Textures", "Assets/AeroSim/Art/CoastProduction/P11/HeroCliff/Shaders", "Assets/AeroSim/Resources/CoastProduction/P11"] }
+  ],
+  "generatedSourceRoots": [
+    "Assets/AeroSim/Art/CoastProduction/P01/Source",
+    "Assets/AeroSim/Art/CoastProduction/P02/source",
+    "Assets/AeroSim/Art/CoastProduction/P03/source",
+    "Assets/AeroSim/Art/CoastProduction/P04/sources",
+    "Assets/AeroSim/Art/CoastProduction/P05/source",
+    "Assets/AeroSim/Art/CoastProduction/P06/source",
+    "Assets/AeroSim/Art/CoastProduction/P07/source",
+    "Assets/AeroSim/Art/CoastProduction/P08/source",
+    "Assets/AeroSim/Art/CoastProduction/P09/source",
+    "Assets/AeroSim/Art/CoastProduction/P11/HeroCliff/Source"
+  ],
+  "contracts": [
+    {
+      "id": "CAB-01-TEXTURE-RESOLUTION",
+      "category": "textureResolution",
+      "maxSourceDimension": 4096,
+      "maxStandaloneDimension": 4096,
+      "maxMobileDimension": 2048,
+      "required": true,
+      "description": "No audited texture source may exceed 4K; standalone is capped at 4K and mobile at 2K."
+    },
+    {
+      "id": "CAB-01B-TEXTURE-MEMORY",
+      "category": "textureMemory",
+      "maxTextureMemoryMbPerAsset": 64,
+      "required": true,
+      "description": "Static compressed+mip estimate per production asset is capped at 64 MiB; runtime residency still requires device profiling."
+    },
+    {
+      "id": "CAB-02-MIP-STREAMING",
+      "category": "mipStreaming",
+      "requireMipmaps": true,
+      "requireStreaming": true,
+      "generatedSourceExempt": true,
+      "runtimeUsedGeneratedSourceExempt": false,
+      "required": true,
+      "description": "World textures and every generated source referenced by the runtime catalog require mipmaps and texture streaming; only non-runtime review/UI sources are exempt."
+    },
+    {
+      "id": "CAB-03-COMPRESSION",
+      "category": "compression",
+      "requireCompressed": true,
+      "generatedSourceExempt": true,
+      "runtimeUsedGeneratedSourceExempt": false,
+      "required": true,
+      "description": "World textures and every generated source referenced by the runtime catalog must use compressed imports; only non-runtime capture/review sources are exempt."
+    },
+    {
+      "id": "CAB-04-MATERIAL-COUNT",
+      "category": "materialCount",
+      "maxMaterialsPerRenderer": 2,
+      "maxMaterialsPerAsset": 8,
+      "required": true,
+      "description": "Static prefab/model material slots are capped per renderer and per asset."
+    },
+    {
+      "id": "CAB-05-SHADER-KEYWORD",
+      "category": "shaderKeyword",
+      "maxDeclaredKeywords": 8,
+      "maxEstimatedVariants": 64,
+      "required": true,
+      "description": "Local feature keywords are preferred; estimated declared variant combinations are capped."
+    },
+    {
+      "id": "CAB-06-DRAW-CALL",
+      "category": "drawCall",
+      "maxEstimatedDrawCallsPerAsset": 24,
+      "maxRenderersPerAsset": 16,
+      "required": true,
+      "description": "Static estimate is renderer material slots; runtime draw calls still require P09 profiler evidence."
+    },
+    {
+      "id": "CAB-07-LOD",
+      "category": "lod",
+      "minimumLodLevels": 3,
+      "maxLod0Triangles": 120000,
+      "maxLod1Ratio": 0.55,
+      "maxLod2Ratio": 0.25,
+      "required": true,
+      "description": "Any audited prefab/model that declares an LODGroup must expose at least three descending visual levels."
+    },
+    {
+      "id": "CAB-08-BILLBOARD",
+      "category": "billboard",
+      "billboardStartDistance": 180,
+      "billboardCullDistance": 720,
+      "maxBillboardMaterials": 1,
+      "required": true,
+      "description": "Vegetation impostors use one material and transition no later than 180m before the 720m cull bound."
+    },
+    {
+      "id": "CAB-09-COLLISION",
+      "category": "collision",
+      "maxCollidersPerAsset": 16,
+      "forbidMeshCollider": true,
+      "required": true,
+      "description": "Compound primitives only for audited environment prefabs; MeshCollider is prohibited."
+    },
+    {
+      "id": "CAB-10-QUALITY-DOWNGRADE",
+      "category": "qualityDowngrade",
+      "required": true,
+      "description": "Quality tiers must be monotonic and explicit; lower tiers may never enable a feature absent from the next tier."
+    }
+  ],
+  "qualityTiers": [
+    { "name": "Low", "rank": 0, "textureLimit": 1024, "lodBias": 0.55, "vegetationDensity": 0.48, "billboards": true, "waterMode": "Low", "vfxMode": "Off" },
+    { "name": "Medium", "rank": 1, "textureLimit": 2048, "lodBias": 0.75, "vegetationDensity": 0.72, "billboards": true, "waterMode": "Low", "vfxMode": "Low" },
+    { "name": "High", "rank": 2, "textureLimit": 4096, "lodBias": 1.00, "vegetationDensity": 1.00, "billboards": true, "waterMode": "Full", "vfxMode": "Full" },
+    { "name": "Ultra", "rank": 3, "textureLimit": 4096, "lodBias": 1.25, "vegetationDensity": 1.20, "billboards": true, "waterMode": "Full", "vfxMode": "Full" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_BOLT_SET",
+  "display_name_zh": "螺栓组件",
+  "category": "hardware/fastener_set",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["螺栓头造型", "垫圈压痕", "紧固件周边盐雾氧化"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_BOLT_M12X040_L00", "SM_P05_BOLT_M16X060_L00", "SM_P05_BOLT_M20X080_L00", "SM_P05_NUT_M12_L00", "SM_P05_NUT_M16_L00", "SM_P05_NUT_M20_L00", "SM_P05_WASHER_M12_L00", "SM_P05_WASHER_M16_L00", "SM_P05_WASHER_M20_L00"],
+    "sockets": ["SCK_SHAFT", "SCK_NUT", "SCK_WASHER"],
+    "notes": ["M12/M16/M20 三档", "默认使用 HISM/实例化", "螺纹仅 LOD0 以几何表达，其他层级使用法线"]
+  },
+  "pivot": {"rule": "螺杆轴线与螺栓头承压面交点", "orientation": "+X 沿螺杆从头部指向螺母，+Z 对齐六角平面法向"},
+  "snap_grid_cm": {"translation": 1, "rotation_deg": 15, "fine_translation": 0.1},
+  "pbr": {
+    "material_slots": ["MI_P05_GALV_FASTENER", "MI_P05_OXIDIZED_FASTENER"],
+    "metallic": [0.84, 0.98], "roughness": [0.32, 0.76],
+    "texture_set": ["T_P05_FASTENER_BC", "T_P05_FASTENER_N", "T_P05_FASTENER_ORM", "T_P05_FASTENER_OX_MASK"],
+    "special": {"shared_trim_atlas": true, "instance_color_variation": 0.06}
+  },
+  "lod": {"triangle_budget": [4200, 1800, 500, 60], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["预算按完整螺栓+螺母+双垫圈组件", "LOD3 为六边柱简化体"]},
+  "collision": {"mode": "none", "budget": {"hulls": 0}, "rules": ["紧固件不生成独立碰撞", "需要交互拾取时使用 1 个胶囊代理，不进入角色阻挡通道"]},
+  "deliverables": ["9 个紧固件模块及 LOD0-3", "2 个材质实例", "实例化放置规范"]
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "P04_MATERIAL_CONTRACT",
+  "scope": "package_local_only",
+  "shared_material_mutation_allowed": false,
+  "renderer": "engine_agnostic_pbr_metallic_roughness",
+  "materials": [
+    {
+      "id": "MAT_P04_CONCRETE",
+      "usage": ["P04_ASSET_01_ANTI_SLIP_PLATFORM", "P04_ASSET_04_CONCRETE_BASE"],
+      "source": "../sources/P04_concrete_source.png",
+      "source_channel": "RGB",
+      "base_color_tint_srgb": [0.72, 0.73, 0.72, 1.0],
+      "metallic": 0.0,
+      "roughness": 0.82,
+      "normal_strength": 0.65,
+      "height_cm": 0.35,
+      "uv_mode": "world_aligned_or_box",
+      "tile_size_m": [3.0, 3.0],
+      "anti_slip_micro_normal": {"procedural": true, "scale_mm": 3.0, "strength": 0.22},
+      "import": {"wrap": "repeat", "mipmaps": true, "max_size": 4096, "base_color_color_space": "sRGB", "data_maps_color_space": "linear"}
+    },
+    {
+      "id": "MAT_P04_GALVANIZED_STEEL",
+      "usage": ["P04_ASSET_05_DRAINAGE_CHANNEL", "P04_ASSET_06_TIE_DOWN_POINT", "P04_ASSET_07_INSPECTION_COVER"],
+      "base_color_srgb": [0.31, 0.33, 0.34, 1.0],
+      "metallic": 0.88,
+      "roughness": 0.46,
+      "normal_strength": 0.25
+    },
+    {
+      "id": "MAT_P04_WHITE_MARKING",
+      "usage": ["P04_ASSET_02_H_MARKING"],
+      "base_color_srgb": [0.91, 0.91, 0.86, 1.0],
+      "metallic": 0.0,
+      "roughness": 0.68,
+      "emissive": 0.0
+    },
+    {
+      "id": "MAT_P04_SAFETY_YELLOW",
+      "usage": ["P04_ASSET_03_EXCLUSION_HATCH"],
+      "base_color_srgb": [0.92, 0.66, 0.05, 1.0],
+      "metallic": 0.0,
+      "roughness": 0.66,
+      "emissive": 0.0
+    },
+    {
+      "id": "MAT_P04_WEATHERING_DECAL",
+      "usage": ["P04_ASSET_08_WORN_EDGE", "P04_ASSET_09_SALT_CORROSION", "P04_ASSET_10_PUDDLE_STAIN"],
+      "source": "../sources/P04_decal_atlas_source.png",
+      "blend": "alpha_over",
+      "metallic": 0.0,
+      "roughness_range": [0.24, 0.95],
+      "normal_strength_range": [0.0, 0.35],
+      "import": {"wrap": "clamp", "mipmaps": true, "max_size": 4096, "color_space": "sRGB", "alpha_generated_from_luminance_and_chroma": true}
+    }
+  ]
+}

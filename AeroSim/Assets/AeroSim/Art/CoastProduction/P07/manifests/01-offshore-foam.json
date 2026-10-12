@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-01-OFFSHORE-FOAM",
+  "displayName": "远海泡沫",
+  "category": "surface_foam",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [54, 50, 1028, 160], "atlasRectBottomLeft": [0.01875, 0.927083, 0.356944, 0.055556] },
+  "placement": { "mode": "ocean_projected_ribbon", "widthMeters": [18, 55], "lengthMeters": [80, 260], "heightOffsetMeters": 0.025, "headingJitterDegrees": 7 },
+  "motion": { "flowSpeed": 0.012, "crossFlow": 0.002, "lifetimeSeconds": [18, 34], "decay": [0.12, 0.72] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.035, "edgeSoftness": 0.16, "intensity": 0.68 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 25, "midMeters": 120, "farMeters": 420, "cullMeters": 900 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

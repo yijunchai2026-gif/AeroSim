@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-10-FOAM-DECAY",
+  "displayName": "foam decay",
+  "category": "foam_decay_mask",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [88, 1765, 1268, 285], "atlasRectBottomLeft": [0.030556, 0.288194, 0.440278, 0.098958] },
+  "placement": { "mode": "secondary_uv_decay_mask", "coverageMeters": [3, 32], "blendOperator": "multiply", "heightOffsetMeters": 0 },
+  "motion": { "flowSpeed": 0.009, "dissolveSeconds": { "Clear": [6, 18], "Overcast": [8, 23], "Rain": [10, 28] }, "decay": [0.0, 1.0], "monotonic": true },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.018, "edgeSoftness": 0.22, "intensity": 1.0, "outputUsage": "linear dissolve modulation" },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 10, "midMeters": 60, "farMeters": 180, "cullMeters": 320 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

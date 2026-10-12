@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-06-SALT-CRYSTAL","displayName":"盐结晶",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"rock substrate only; salt crystal pattern must be derived separately"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"salt-crystal","keywords":["P02_SALT"]},
+  "material":{"tileMeters":[1.4,1.4],"macroWavelengthMeters":[3,14],"normalStrength":0.64,"dryRoughness":0.88,"wetRoughness":0.46,"standingDepthMm":[0,1],"saltCoverage":[0.04,0.38]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.90,"tideInfluence":0.72,"wetValueMultiplier":0.82,"wetNormalMultiplier":0.78,"dissolveAboveWetness":0.72},
+  "lod":["0-15m crystal mask+normal","15-40m residue coverage","40-80m pale macro patches","80-180m macro value only",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

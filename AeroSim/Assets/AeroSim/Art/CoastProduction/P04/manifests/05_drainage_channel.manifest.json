@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_05_DRAINAGE_CHANNEL",
+  "display_name": "排水槽",
+  "category": "drainage",
+  "source_dependencies": [],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_GALVANIZED_STEEL",
+  "decal_contract": null,
+  "dimensions_m": [0.60, 0.45, 24.0],
+  "pivot": "top_center",
+  "local_position_m": [12.30, 0.0, 0.0],
+  "geometry": {"form": "u_channel_with_removable_grate", "clear_width_m": 0.40, "depth_m": 0.35, "wall_thickness_m": 0.05, "grate_bar_pitch_m": 0.08, "outfall_direction": "+Z", "longitudinal_fall_percent": 0.5},
+  "collision": {"enabled": true, "type": "compound_boxes", "primitive_count": 3, "grate_walkable": true, "open_void_collision": false},
+  "lod": {"lod0_max_triangles": 9000, "lod1_max_triangles": 2400, "cull_distance_m": 180.0},
+  "integration": {"scene_independent": true, "snap_socket": "P04_DRAIN_POS_X", "shared_scene_write": false},
+  "acceptance": ["receives 1.5% platform runoff", "channel does not exceed top elevation", "collision leaves channel void open below grate", "24 m continuous drainage run"]
+}

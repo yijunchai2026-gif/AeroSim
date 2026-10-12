@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aerosim.water-fx-subasset/v1",
+  "assetId": "P07-FX-06-TIDE-POOL-EDGE",
+  "displayName": "潮池边",
+  "category": "tide_pool_edge",
+  "source": { "file": "../source/foam-atlas-reference.png", "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f", "cropPixelsTopLeft": [1070, 657, 570, 331], "atlasRectBottomLeft": [0.371528, 0.656944, 0.197917, 0.114931] },
+  "placement": { "mode": "closed_spline_decal", "radiusMeters": [0.8, 5], "bandWidthMeters": [0.18, 0.75], "shoreMaskRequired": true, "heightOffsetMeters": 0.018 },
+  "motion": { "flowSpeed": 0.006, "pulseHz": [0.03, 0.10], "lifetimeSeconds": [20, 60], "decay": [0.18, 0.62] },
+  "material": { "contract": "../foam-atlas-material-contract.json", "alphaThreshold": 0.025, "edgeSoftness": 0.20, "intensity": 0.58 },
+  "variants": { "weather": ["Clear", "Overcast", "Rain"], "quality": ["Low", "High", "Ultra"] },
+  "lod": { "nearMeters": 5, "midMeters": 24, "farMeters": 65, "cullMeters": 100 },
+  "productionState": { "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

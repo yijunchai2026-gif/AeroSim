@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-02-OVERCAST-EXPOSURE",
+  "displayName": "阴天曝光基准",
+  "category": "exposure.overcast",
+  "enabled": true,
+  "targets": ["P01 silhouette", "P03 ground", "P04 rock", "P05 ocean", "P06 vegetation", "P07 industrial", "P08 weather"],
+  "intent": "软光阴天保持海天、远山和地表分层；提升暗部可读性但不把画面推成无黑位灰泥。",
+  "parameters": {
+    "lighting": {
+      "sunColor": "#DCE4E7",
+      "sunIntensity": 0.42,
+      "sunShadowStrength": 0.48,
+      "ambientSkyColor": "#A6B2B7",
+      "ambientEquatorColor": "#899598",
+      "ambientGroundColor": "#4D5351",
+      "ambientIntensity": 0.94,
+      "reflectionIntensity": 0.62,
+      "fogColor": "#AAB7BC",
+      "fogDensity": 0.0028
+    },
+    "colorGrading": {
+      "exposureEv": 0.18,
+      "contrast": 0.03,
+      "saturation": 0.82,
+      "temperature": -0.08,
+      "tint": -0.01,
+      "colorFilter": "#F7FBFC",
+      "lift": [0.004, 0.006, 0.007],
+      "gamma": [1.005, 1.005, 1.0],
+      "gain": [0.985, 0.995, 1.0]
+    }
+  },
+  "evaluation": {"goldenCases": ["C", "E", "F", "G", "H"], "gray18DisplayRange": [0.17, 0.23], "whiteClipMaxPercent": 0.25, "blackClipMaxPercent": 0.75},
+  "guardrails": ["autoExposure OFF", "keep a readable black anchor in near rock/vegetation", "do not neutralize all hue separation", "horizon fog must not erase coastline"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN"}
+}

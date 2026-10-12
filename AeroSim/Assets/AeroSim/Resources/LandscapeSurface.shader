@@ -9,6 +9,7 @@ Shader "AeroSim/LandscapeSurface"
         _Terrain ("Slope Blend", Range(0,1)) = 0
         _Smoothness ("Smoothness", Range(0,1)) = 0.15
         _Wetness ("Weather wetness", Range(0,1)) = 0
+        _CloudCover ("Cloud shadow amount", Range(0,1)) = .25
         _DetailDistance ("Detail distance", Float) = 0
     }
     SubShader {
@@ -20,7 +21,7 @@ Shader "AeroSim/LandscapeSurface"
         #pragma shader_feature_local AEROSIM_LANDSCAPE_ULTRA
         sampler2D _MainTex, _RockTex;
         fixed4 _Color;
-        float _Scale, _Macro, _Terrain, _Smoothness, _Wetness, _DetailDistance;
+        float _Scale, _Macro, _Terrain, _Smoothness, _Wetness, _CloudCover, _DetailDistance;
         struct Input { float3 worldPos; float3 worldNormal; };
         float3 Triplanar(sampler2D source, float3 p, float3 weights)
         {
@@ -45,6 +46,9 @@ Shader "AeroSim/LandscapeSurface"
                     albedo*=lerp(1,lerp(.88,1.10,dot(micro,float3(.299,.587,.114))),fade*.16);
                 #endif
             #endif
+            float cloudWave=sin(IN.worldPos.x*.009+_Time.y*.028)+sin(IN.worldPos.z*.007-_Time.y*.017)+sin((IN.worldPos.x+IN.worldPos.z)*.003);
+            float cloudShadow=smoothstep(.35,1.15,cloudWave)*_CloudCover;
+            albedo*=lerp(1,.76,cloudShadow*.56);
             o.Albedo=albedo*lerp(1,.82,_Wetness*.34);
             o.Smoothness=saturate(_Smoothness+_Wetness*.25*(1-slope*.45));
             o.Occlusion=lerp(.96,.90,slope*.25); o.Alpha=1;

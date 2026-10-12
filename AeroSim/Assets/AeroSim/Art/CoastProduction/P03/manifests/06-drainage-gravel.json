@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-06-DRAINAGE-GRAVEL",
+  "displayName": "排水砾石",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "rounded stone vocabulary; remove sand/shell dominance in derivation" },
+  "scale": { "coverageMeters": [2.0, 2.0], "aggregateDiameterMm": [16, 50], "detailRepeatMeters": 0.4 },
+  "tile": { "mode": "seamless_repeat", "repeatMeters": 2.0, "rotationVariantsDegrees": [0, 90, 180, 270], "edgeBlendMeters": 0.2 },
+  "macroVariation": { "wavelengthMeters": [6, 20], "baseColorDelta": 0.055, "roughnessDelta": 0.06, "gradingPatchesMeters": [2, 6] },
+  "normal": { "strength": 1.12, "nearDetailStrength": 0.32, "fadeStartMeters": 16, "fadeEndMeters": 40 },
+  "roughness": { "target": 0.74, "range": [0.62, 0.86], "wetResponseMinimum": 0.32 },
+  "lod": ["LOD0:0-15m full maps+detail", "LOD1:15-40m normal60%", "LOD2:40-80m macro only", "LOD3:80-180m 512/256 mip", "Cull:>180m merge pad surround"],
+  "streaming": { "priority": 1, "maxResident": 2048, "mobileMaxResident": 1024, "preloadRadiusMeters": 24 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

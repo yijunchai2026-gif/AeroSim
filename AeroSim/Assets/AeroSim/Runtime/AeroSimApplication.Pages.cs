@@ -101,6 +101,8 @@ namespace AeroSim
 
         public void ShowPage(Page page)
         {
+            _sim?.ClearControlInput();
+            if (_page == Page.VisualLab && page != Page.VisualLab) ReleaseVisualLab();
             if (_fovDraft != null) CancelFovEditing();
             ReleaseDesignReplayView();
             ReleaseHangarPreviews();
@@ -122,7 +124,7 @@ namespace AeroSim
             Page.Tuning => DesignTuning(), Page.OsdEditor => DesignOsdEditor(), Page.Dashboard => DesignDashboard(),
             Page.Catalog => DesignCatalog(), Page.Brief => DesignBrief(), Page.Preflight => DesignPreflight(),
             Page.MissionEditor => DesignMissionEditor(), Page.Instructor => DesignInstructor(), Page.Readiness => DesignReadiness(),
-            Page.Settings => DesignSettings(), Page.Records => Records(), Page.Results => DesignResults(),
+            Page.Settings => DesignSettings(), Page.VisualLab => BuildVisualLab(), Page.Records => Records(), Page.Results => DesignResults(),
             Page.Report => DesignReport(), _ => DesignFreeFlight()
         };
 
@@ -351,19 +353,19 @@ namespace AeroSim
             card.Add(Text("Input: " + (_inputCapabilities?.PrimaryDeviceLabel ?? "Keyboard / Touch") + "\nPause: Esc / Start / Pause button\nTraining boundary: 394 ft altitude · 755 ft radius", "muted", "wrap"));
             card.Add(Row(ActionButton("Controller Setup", () => ShowPage(Page.Controller)), start)); s.Add(card); return s;
         }
-        private FlightConfig MissionConfig(MissionDefinition m) => new() { title = m.title, aircraft = AircraftCatalog.Selected.Name, workspace = "Professional", environment = m.environment, professional = true, mission = m, windMph = m.windMph, rthAltitude = m.rthAltitude, task = "inspection", objective = "Capture all " + m.targets.Count + " inspection targets in order." };
+        private FlightConfig MissionConfig(MissionDefinition m) => new() { title = m.title, aircraft = AircraftCatalog.Selected.DisplayName, workspace = "Professional", environment = m.environment, professional = true, mission = m, windMph = m.windMph, rthAltitude = m.rthAltitude, task = "inspection", objective = "Capture all " + m.targets.Count + " inspection targets in order." };
 
         private VisualElement FreeFlight()
         {
             _mission = null;
-            _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
+            _config = new FlightConfig { workspace = WorkspaceName, aircraft = AircraftCatalog.Selected.DisplayName, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Normal", environment = _workspace == TrainingWorkspace.Fpv ? "Desert Range" : "Pacific Coast" };
             var config = _config;
             var s = Canvas(WorkspaceName + " / Free Flight", "Make the sky your practice space.", "Configure a local training environment. Settings below affect the next flight.");
             var card = Panel("Flight setup", "Procedural practice maps — not photorealistic scans or DJI hardware models.");
             var image = Element("scene-banner"); SetBackground(image, "Art/DesignV1/CoastHeroV1"); card.Add(image);
             Choice(card, "Environment", new[] { "Pacific Coast", "Desert Range", "City Park", "Warehouse" }, config.environment, v => config.environment = v);
             Choice(card, "Aircraft", AircraftCatalog.Names, config.aircraft, v => { config.aircraft = v; LocalStore.Profile.selectedAircraft = AircraftCatalog.Resolve(v).Id; LocalStore.Save(); });
-            card.Add(ActionButton("Browse Aircraft in Hangar", () => ShowPage(Page.Hangar)));
+            card.Add(ActionButton("Browse Aircraft Bay", () => ShowPage(Page.Hangar)));
             Choice(card, "Flight mode", new[] { "Normal", "Sport", "Manual" }, config.mode, v => config.mode = v);
             Choice(card, "Weather", FlightWeather.Names, config.weather, v => config.weather = v);
             Range(card, "Wind (mph)", 0, 25, config.windMph, v => config.windMph = v);
@@ -383,7 +385,7 @@ namespace AeroSim
                 var best = LocalStore.Sessions().Where(r => r.courseId == "race-" + map && r.passed).OrderBy(r => r.duration).FirstOrDefault();
                 var p = Panel(map + " Circuit", "6 gates · " + (best == null ? "No completed lap yet" : "Personal best " + Duration(best.duration)));
                 p.Add(Text("The current MVP shares a six-gate route across four environments. Try assisted flight before switching to manual.", "wrap", "muted"));
-                p.Add(ActionButton("Start Challenge", () => StartFlight(new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = AircraftCatalog.Selected.Name, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." }), true)); grid.Add(p);
+                p.Add(ActionButton("Start Challenge", () => StartFlight(new FlightConfig { title = map + " Circuit", workspace = WorkspaceName, environment = map, aircraft = AircraftCatalog.Selected.DisplayName, mode = _workspace == TrainingWorkspace.Fpv ? "Manual" : "Sport", race = true, task = "gates", courseId = "race-" + map, objective = "Fly through all 6 gates in order with as few collisions as possible." }), true)); grid.Add(p);
             }
             s.Add(grid); return s;
         }

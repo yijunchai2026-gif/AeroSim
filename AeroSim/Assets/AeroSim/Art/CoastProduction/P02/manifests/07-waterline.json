@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-07-WATERLINE","displayName":"水线",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"dark wet band and residue vocabulary"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"waterline","keywords":["P02_SALT"]},
+  "material":{"tileMeters":[4.5,1.2],"macroWavelengthMeters":[12,48],"normalStrength":0.52,"dryRoughness":0.81,"wetRoughness":0.25,"standingDepthMm":[0,3],"bandWidthMeters":[0.08,0.65]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.62,"tideInfluence":1.0,"wetValueMultiplier":0.83,"wetNormalMultiplier":0.70},
+  "lod":["0-15m residue+wet band","15-40m wet band","40-80m broad band","80-180m macro line",">180m cull unique sampling"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

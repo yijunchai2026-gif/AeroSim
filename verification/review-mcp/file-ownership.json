@@ -1,0 +1,46 @@
+{
+  "schema": "aerosim.file-ownership/v1",
+  "sharedContracts": [
+    "AeroSim/Assets/AeroSim/Editor/ReviewMcp/AeroSimReviewContracts.cs"
+  ],
+  "owners": [
+    {
+      "worker": "review-readonly",
+      "paths": [
+        "AeroSim/Assets/AeroSim/Editor/ReviewMcp/AeroSimReviewBridge.cs",
+        "AeroSim/Assets/AeroSim/Editor/ReviewMcp/AeroSimReviewCapture.cs",
+        "AeroSim/Assets/AeroSim/Editor/ReviewMcp/AeroSimReviewInspection.cs"
+      ]
+    },
+    {
+      "worker": "review-mutations",
+      "paths": [
+        "AeroSim/Assets/AeroSim/Editor/ReviewMcp/AeroSimReviewMutations.cs"
+      ]
+    },
+    {
+      "worker": "review-harness",
+      "paths": [
+        "Tools/AeroSimReviewMcp/",
+        "verification/review-mcp/"
+      ]
+    },
+    {
+      "worker": "integration",
+      "paths": [
+        "AeroSim/Assets/AeroSim/Editor/ReviewMcp/AeroSimReviewContracts.cs",
+        "AeroSim/Assets/AeroSim/Editor/AeroSim.Editor.asmdef",
+        "README.md"
+      ]
+    }
+  ],
+  "serializedUnityOperations": [
+    "AssetDatabase",
+    "PrefabUtility",
+    "EditorSceneManager",
+    "PlayMode",
+    "BuildPipeline",
+    "SceneViewCapture",
+    "GameViewCapture"
+  ]
+}

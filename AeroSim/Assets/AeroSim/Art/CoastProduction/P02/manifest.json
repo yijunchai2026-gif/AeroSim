@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aerosim.asset-pack/v1",
+  "packId": "P02-INTERTIDAL-PACK-V1",
+  "displayName": "P02 潮间带资产包",
+  "owner": "Coast Art Lead-02",
+  "createdAt": "2026-10-12T03:57:00+08:00",
+  "status": "SPEC_LOCKED_STATIC_VALIDATED",
+  "isolation": {
+    "root": "assets/p02-intertidal-pack-v1/",
+    "shaderMaterialContract": "shader-material-contract.json",
+    "weatherWetnessParameters": "weather-wetness-parameters.json",
+    "sharedSceneAssemblyModified": false,
+    "oceanMainShaderModified": false,
+    "runtimeWiring": "NONE",
+    "forbiddenPaths": ["AeroSim/Assets/AeroSim/Resources/OceanSurface.shader", "shared scene assembly files"]
+  },
+  "sources": [
+    {"file":"source/wet-rock-reference.png","original":"artifacts/generated_image_035657.png","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","dimensions":[2880,2880],"colorMode":"RGB8"},
+    {"file":"source/tidepool-bed-reference.png","original":"artifacts/generated_image_035650.png","generatedSourceTag":"GENERATED_SOURCE:generated_image_035650","sha256":"d84db9b1323b596e5166ea08ae1d129cb989401c9598b9877918825c7c2b2f80","dimensions":[2880,2880],"colorMode":"RGB8"}
+  ],
+  "subAssets": [
+    "manifests/01-wet-rock.json", "manifests/02-wet-dry-transition.json",
+    "manifests/03-tidepool-bed.json", "manifests/04-shallow-water-edge.json",
+    "manifests/05-algae-layer.json", "manifests/06-salt-crystal.json",
+    "manifests/07-waterline.json", "manifests/08-standing-water.json",
+    "manifests/09-backwash-channel.json", "manifests/10-tidal-runnel.json"
+  ],
+  "qualityDeclaration": {"manifestCount":10,"staticValidation":"PASS","textureDerivation":"NOT_RUN","shaderImplementation":"NOT_RUN","unityImport":"NOT_RUN","runtimeVisual":"NOT_RUN","performance":"NOT_RUN"}
+}

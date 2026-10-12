@@ -1,0 +1,123 @@
+# P04 静态校验报告
+
+- 结果：**PASS**
+- 通过：110
+- 失败：0
+- 校验范围：包索引、10 个 manifest、3 个合同、源图尺寸/哈希、碰撞交叉一致性、场景隔离。
+
+## 明细
+
+- PASS · package.manifest.json 可解析
+- PASS · 包 ID 正确
+- PASS · 声明为场景独立
+- PASS · 禁止共享场景改动
+- PASS · 无场景引用
+- PASS · 子资产数量为 10 — `actual=10`
+- PASS · 包索引资产 ID 唯一
+- PASS · manifest 存在: manifests/01_anti_slip_platform.manifest.json
+- PASS · manifest 可解析: manifests/01_anti_slip_platform.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_01_ANTI_SLIP_PLATFORM
+- PASS · 索引 ID 匹配: P04_ASSET_01_ANTI_SLIP_PLATFORM
+- PASS · 尺寸合法: P04_ASSET_01_ANTI_SLIP_PLATFORM
+- PASS · 场景隔离: P04_ASSET_01_ANTI_SLIP_PLATFORM
+- PASS · 材质合同可解析: P04_ASSET_01_ANTI_SLIP_PLATFORM
+- PASS · Decal 合同可解析: P04_ASSET_01_ANTI_SLIP_PLATFORM
+- PASS · 源依赖存在: P04_ASSET_01_ANTI_SLIP_PLATFORM -> ../sources/P04_concrete_source.png
+- PASS · manifest 存在: manifests/02_h_marking.manifest.json
+- PASS · manifest 可解析: manifests/02_h_marking.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_02_H_MARKING
+- PASS · 索引 ID 匹配: P04_ASSET_02_H_MARKING
+- PASS · 尺寸合法: P04_ASSET_02_H_MARKING
+- PASS · 场景隔离: P04_ASSET_02_H_MARKING
+- PASS · 材质合同可解析: P04_ASSET_02_H_MARKING
+- PASS · Decal 合同可解析: P04_ASSET_02_H_MARKING
+- PASS · 源依赖存在: P04_ASSET_02_H_MARKING -> ../sources/P04_decal_atlas_source.png
+- PASS · manifest 存在: manifests/03_exclusion_hatch.manifest.json
+- PASS · manifest 可解析: manifests/03_exclusion_hatch.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_03_EXCLUSION_HATCH
+- PASS · 索引 ID 匹配: P04_ASSET_03_EXCLUSION_HATCH
+- PASS · 尺寸合法: P04_ASSET_03_EXCLUSION_HATCH
+- PASS · 场景隔离: P04_ASSET_03_EXCLUSION_HATCH
+- PASS · 材质合同可解析: P04_ASSET_03_EXCLUSION_HATCH
+- PASS · Decal 合同可解析: P04_ASSET_03_EXCLUSION_HATCH
+- PASS · 源依赖存在: P04_ASSET_03_EXCLUSION_HATCH -> ../sources/P04_decal_atlas_source.png
+- PASS · manifest 存在: manifests/04_concrete_base.manifest.json
+- PASS · manifest 可解析: manifests/04_concrete_base.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_04_CONCRETE_BASE
+- PASS · 索引 ID 匹配: P04_ASSET_04_CONCRETE_BASE
+- PASS · 尺寸合法: P04_ASSET_04_CONCRETE_BASE
+- PASS · 场景隔离: P04_ASSET_04_CONCRETE_BASE
+- PASS · 材质合同可解析: P04_ASSET_04_CONCRETE_BASE
+- PASS · Decal 合同可解析: P04_ASSET_04_CONCRETE_BASE
+- PASS · 源依赖存在: P04_ASSET_04_CONCRETE_BASE -> ../sources/P04_concrete_source.png
+- PASS · manifest 存在: manifests/05_drainage_channel.manifest.json
+- PASS · manifest 可解析: manifests/05_drainage_channel.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_05_DRAINAGE_CHANNEL
+- PASS · 索引 ID 匹配: P04_ASSET_05_DRAINAGE_CHANNEL
+- PASS · 尺寸合法: P04_ASSET_05_DRAINAGE_CHANNEL
+- PASS · 场景隔离: P04_ASSET_05_DRAINAGE_CHANNEL
+- PASS · 材质合同可解析: P04_ASSET_05_DRAINAGE_CHANNEL
+- PASS · Decal 合同可解析: P04_ASSET_05_DRAINAGE_CHANNEL
+- PASS · manifest 存在: manifests/06_tie_down_point.manifest.json
+- PASS · manifest 可解析: manifests/06_tie_down_point.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_06_TIE_DOWN_POINT
+- PASS · 索引 ID 匹配: P04_ASSET_06_TIE_DOWN_POINT
+- PASS · 尺寸合法: P04_ASSET_06_TIE_DOWN_POINT
+- PASS · 场景隔离: P04_ASSET_06_TIE_DOWN_POINT
+- PASS · 材质合同可解析: P04_ASSET_06_TIE_DOWN_POINT
+- PASS · Decal 合同可解析: P04_ASSET_06_TIE_DOWN_POINT
+- PASS · manifest 存在: manifests/07_inspection_cover.manifest.json
+- PASS · manifest 可解析: manifests/07_inspection_cover.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_07_INSPECTION_COVER
+- PASS · 索引 ID 匹配: P04_ASSET_07_INSPECTION_COVER
+- PASS · 尺寸合法: P04_ASSET_07_INSPECTION_COVER
+- PASS · 场景隔离: P04_ASSET_07_INSPECTION_COVER
+- PASS · 材质合同可解析: P04_ASSET_07_INSPECTION_COVER
+- PASS · Decal 合同可解析: P04_ASSET_07_INSPECTION_COVER
+- PASS · manifest 存在: manifests/08_worn_edge.manifest.json
+- PASS · manifest 可解析: manifests/08_worn_edge.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_08_WORN_EDGE
+- PASS · 索引 ID 匹配: P04_ASSET_08_WORN_EDGE
+- PASS · 尺寸合法: P04_ASSET_08_WORN_EDGE
+- PASS · 场景隔离: P04_ASSET_08_WORN_EDGE
+- PASS · 材质合同可解析: P04_ASSET_08_WORN_EDGE
+- PASS · Decal 合同可解析: P04_ASSET_08_WORN_EDGE
+- PASS · 源依赖存在: P04_ASSET_08_WORN_EDGE -> ../sources/P04_decal_atlas_source.png
+- PASS · manifest 存在: manifests/09_salt_corrosion.manifest.json
+- PASS · manifest 可解析: manifests/09_salt_corrosion.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_09_SALT_CORROSION
+- PASS · 索引 ID 匹配: P04_ASSET_09_SALT_CORROSION
+- PASS · 尺寸合法: P04_ASSET_09_SALT_CORROSION
+- PASS · 场景隔离: P04_ASSET_09_SALT_CORROSION
+- PASS · 材质合同可解析: P04_ASSET_09_SALT_CORROSION
+- PASS · Decal 合同可解析: P04_ASSET_09_SALT_CORROSION
+- PASS · 源依赖存在: P04_ASSET_09_SALT_CORROSION -> ../sources/P04_decal_atlas_source.png
+- PASS · manifest 存在: manifests/10_puddle_stain.manifest.json
+- PASS · manifest 可解析: manifests/10_puddle_stain.manifest.json
+- PASS · manifest 字段完整: P04_ASSET_10_PUDDLE_STAIN
+- PASS · 索引 ID 匹配: P04_ASSET_10_PUDDLE_STAIN
+- PASS · 尺寸合法: P04_ASSET_10_PUDDLE_STAIN
+- PASS · 场景隔离: P04_ASSET_10_PUDDLE_STAIN
+- PASS · 材质合同可解析: P04_ASSET_10_PUDDLE_STAIN
+- PASS · Decal 合同可解析: P04_ASSET_10_PUDDLE_STAIN
+- PASS · 源依赖存在: P04_ASSET_10_PUDDLE_STAIN -> ../sources/P04_decal_atlas_source.png
+- PASS · manifest 资产 ID 唯一
+- PASS · 合同存在: contracts/material.contract.json
+- PASS · 合同可解析: contracts/material.contract.json
+- PASS · 合同存在: contracts/decal.contract.json
+- PASS · 合同可解析: contracts/decal.contract.json
+- PASS · 合同存在: contracts/collision_dimensions.contract.json
+- PASS · 合同可解析: contracts/collision_dimensions.contract.json
+- PASS · 无碰撞资产集合与 manifests 一致 — `contract=['P04_ASSET_02_H_MARKING', 'P04_ASSET_03_EXCLUSION_HATCH', 'P04_ASSET_08_WORN_EDGE', 'P04_ASSET_09_SALT_CORROSION', 'P04_ASSET_10_PUDDLE_STAIN'] manifest=['P04_ASSET_02_H_MARKING', 'P04_ASSET_03_EXCLUSION_HATCH', 'P04_ASSET_08_WORN_EDGE', 'P04_ASSET_09_SALT_CORROSION', 'P04_ASSET_10_PUDDLE_STAIN']`
+- PASS · 有碰撞资产均在碰撞合同登记 — `enabled=['P04_ASSET_01_ANTI_SLIP_PLATFORM', 'P04_ASSET_04_CONCRETE_BASE', 'P04_ASSET_05_DRAINAGE_CHANNEL', 'P04_ASSET_06_TIE_DOWN_POINT', 'P04_ASSET_07_INSPECTION_COVER'] contract=['P04_ASSET_01_ANTI_SLIP_PLATFORM', 'P04_ASSET_04_CONCRETE_BASE', 'P04_ASSET_05_DRAINAGE_CHANNEL', 'P04_ASSET_06_TIE_DOWN_POINT', 'P04_ASSET_07_INSPECTION_COVER']`
+- PASS · 源文件存在: SRC_P04_CONCRETE
+- PASS · 源尺寸锁定: SRC_P04_CONCRETE — `actual=(2880, 2880) expected=(2880, 2880)`
+- PASS · 源 SHA-256 锁定: SRC_P04_CONCRETE — `8c77fcf613b1c66a564cf9c35ed982f3a90f623b85b5addfcbe8b0e7000c2cf1`
+- PASS · 源文件存在: SRC_P04_DECAL_ATLAS
+- PASS · 源尺寸锁定: SRC_P04_DECAL_ATLAS — `actual=(2880, 2880) expected=(2880, 2880)`
+- PASS · 源 SHA-256 锁定: SRC_P04_DECAL_ATLAS — `7aea566b552668fb7b82c1adffdd9e6f9f11eb48054496d65d1bb17e2e78b7ec`
+- PASS · 资产包不含场景或 Prefab 文件
+
+## 结论
+
+可交付。

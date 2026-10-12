@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aerosim.weather-subasset/v1", "assetId": "P08-WX-01-DRIZZLE", "displayName": "细雨", "kind": "world_precipitation",
+  "source": { "file": "../source/weather-atlas-reference.png", "sha256": "7db8075a5b0a8558282b15c3276c9c081a298b083633303fc906511a66e176e1", "regionHint": "top-left rain field", "usage": "derive linear streak mask" },
+  "inputs": ["precipitation", "vfxDensity", "windDirectionXZ", "windSpeedMps"], "activation": { "formula": "drizzle01", "enter": 0.02, "exit": 0.01, "fadeSeconds": 0.8 },
+  "render": { "space": "camera-relative world", "blend": "alpha", "depth": "soft-particle", "rangeMeters": [1, 28], "windResponse": 0.75 },
+  "quality": { "Low": "25% particles", "Medium": "50% particles", "High": "80% particles", "Ultra": "100% particles" },
+  "offPath": "stop emission; allow <=1.2s lifetime drain; then disable owned emitter", "fallback": "procedural thin line or Off",
+  "productionState": { "texture": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

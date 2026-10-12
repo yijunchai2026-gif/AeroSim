@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_COLLISION_PROXY",
+  "display_name_zh": "金属碰撞代理",
+  "category": "technical/collision_proxy",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["仅用于关联金属表面物理材质；运行时不可见"]},
+  "modular_kit": {
+    "module_ids": ["UCX_P05_PROXY_BOX_100_00", "UCX_P05_PROXY_BOX_200_00", "UCX_P05_PROXY_CAPSULE_D05_00", "UCX_P05_PROXY_RAIL_100_00", "UCX_P05_PROXY_STAIRS_100_00", "UCX_P05_PROXY_CONVEX_A_00"],
+    "sockets": ["SCK_PROXY_ORIGIN", "SCK_PROXY_START", "SCK_PROXY_END"],
+    "notes": ["代理尺寸与渲染模块一一对应", "禁止非均匀缩放凸包", "代理网格默认隐藏且不投影"]
+  },
+  "pivot": {"rule": "与被代理渲染网格 pivot 完全一致", "orientation": "继承渲染网格局部轴；不得额外旋转或镜像"},
+  "snap_grid_cm": {"translation": 10, "rotation_deg": 45, "fine_translation": 1},
+  "pbr": {
+    "material_slots": ["M_P05_COLLISION_DEBUG"],
+    "metallic": [0.0, 0.0], "roughness": [1.0, 1.0],
+    "texture_set": ["NONE_PROCEDURAL_DEBUG_COLOR"],
+    "special": {"runtime_visible": false, "editor_debug_rgba": [0.0, 0.85, 0.2, 0.35], "physical_material": "PM_P05_METAL"}
+  },
+  "lod": {"triangle_budget": [240, 160, 96, 48], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["碰撞实际不随渲染 LOD 切换", "四档预算用于不同复杂度代理模板选择"]},
+  "collision": {"mode": "proxy_only", "budget": {"max_hulls": 12, "max_vertices_per_hull": 24}, "rules": ["盒体优先于凸包", "可行走面允许单连续盒体", "单凸包不得跨越可动关节", "外扩不得超过可见轮廓 1 cm", "细于 3 cm 的非玩法部件忽略"]},
+  "deliverables": ["6 个通用代理模板", "金属物理材质绑定", "UCX 命名与通道响应标准", "编辑器调试显示配置"]
+}

@@ -49,7 +49,16 @@ namespace AeroSim.Simulation
                     velocity.z.constantMin < 0 && velocity.z.constantMax < 0;
             }
         }
-        private ParticleSystem RainParticles => _world != null ? _world.GetComponentInChildren<ParticleSystem>(true) : null;
+        private ParticleSystem RainParticles
+        {
+            get
+            {
+                if (_world == null) return null;
+                foreach (var particles in _world.GetComponentsInChildren<ParticleSystem>(true))
+                    if (particles.gameObject.name == "Deterministic camera-local rain") return particles;
+                return null;
+            }
+        }
         public bool EnvironmentKeywordActive(string keyword)
         {
             foreach (var material in _materials) if (material != null && material.IsKeywordEnabled(keyword)) return true;
@@ -61,6 +70,7 @@ namespace AeroSim.Simulation
             var m = Material(tint);
             m.SetFloat("_Smoothness", smoothness); m.SetFloat("_Metallic", metallic);
             if (texture != null) m.mainTexture = Resources.Load<Texture2D>("Art/MaterialsV2/" + texture);
+            RegisterSurface(m, "surface.standard." + (texture ?? "constant"), EnvironmentSurfaceKind.Generic, 1, false, true);
             return m;
         }
 
@@ -70,9 +80,10 @@ namespace AeroSim.Simulation
             m.color = tint; m.SetTexture("_MainTex", Resources.Load<Texture2D>("Art/MaterialsV2/" + texture));
             m.SetTexture("_RockTex", Resources.Load<Texture2D>("Art/MaterialsV2/coastal-rock-v2"));
             m.SetFloat("_Scale", tileSize); m.SetFloat("_Macro", macro); m.SetFloat("_Terrain", terrain ? 1 : 0);
-            m.SetFloat("_Wetness", _rainAmount); m.SetFloat("_DetailDistance", _environmentQuality >= AeroSimQuality.Ultra ? 70 : _environmentQuality >= AeroSimQuality.High ? 42 : 0);
+            m.SetFloat("_Wetness", _rainAmount); m.SetFloat("_CloudCover", _cloudAmount); m.SetFloat("_DetailDistance", _environmentQuality >= AeroSimQuality.Ultra ? 70 : _environmentQuality >= AeroSimQuality.High ? 42 : 0);
             if (_environmentQuality >= AeroSimQuality.High) m.EnableKeyword("AEROSIM_LANDSCAPE_DETAIL");
             if (_environmentQuality >= AeroSimQuality.Ultra) m.EnableKeyword("AEROSIM_LANDSCAPE_ULTRA");
+            RegisterSurface(m, "surface.landscape." + texture + (terrain ? ".terrain" : ".object"), terrain ? EnvironmentSurfaceKind.Terrain : EnvironmentSurfaceKind.Rock, tileSize, true, true);
             return m;
         }
 
@@ -89,6 +100,7 @@ namespace AeroSim.Simulation
             var renderer = g.AddComponent<MeshRenderer>(); renderer.sharedMaterial = material;
             renderer.shadowCastingMode = ShadowCastingMode.On;
             if (collision) g.AddComponent<MeshCollider>().sharedMesh = mesh;
+            RegisterEnvironmentObject(g, collision);
             return g;
         }
 
@@ -100,13 +112,13 @@ namespace AeroSim.Simulation
             _previousAmbientMode=RenderSettings.ambientMode; _previousAmbientSky=RenderSettings.ambientSkyColor;
             _previousAmbientEquator=RenderSettings.ambientEquatorColor; _previousAmbientGround=RenderSettings.ambientGroundColor;
             _visualSettingsCaptured=true;
-            var evening = Config.timeOfDay > 18;
-            var weather = (Config.weather ?? "Clear").Trim();
-            var raining = weather.Equals("Rain", StringComparison.OrdinalIgnoreCase);
-            var overcast = raining || weather.Equals("Overcast", StringComparison.OrdinalIgnoreCase);
-            _rainAmount = raining ? 1f : 0f;
-            _cloudAmount = raining ? 1f : overcast ? .86f : .26f;
+            var evening = _environmentState.timeOfDay > 18;
+            var raining = _environmentState.precipitation > .5f;
+            var overcast = raining || _environmentState.cloudAmount > .5f;
+            _rainAmount = _environmentState.precipitation;
+            _cloudAmount = _environmentState.cloudAmount;
             ConfigureVisualQuality();
+            PrepareCoastProductionIntegration();
 
             // One weather state drives sky, fog, key light, materials, water, VFX and ambience.
             RenderSettings.ambientMode = AmbientMode.Trilight;
@@ -115,15 +127,16 @@ namespace AeroSim.Simulation
             RenderSettings.ambientEquatorColor = Color.Lerp(new Color(.43f,.46f,.45f), new Color(.31f,.34f,.35f), _cloudAmount*.7f);
             RenderSettings.ambientGroundColor = Color.Lerp(new Color(.19f,.20f,.18f), new Color(.14f,.15f,.15f), _cloudAmount);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Exponential;
-            RenderSettings.fogDensity = raining ? .0046f : overcast ? .0031f : .00115f;
+            RenderSettings.fogDensity = _environmentState.fogDensity;
             var clearFog = evening ? new Color(.65f,.58f,.56f) : new Color(.69f,.78f,.82f);
             RenderSettings.fogColor = Color.Lerp(clearFog, new Color(.46f,.52f,.56f), _cloudAmount*.78f);
             var sun = new GameObject("Weather key light").AddComponent<Light>(); sun.transform.SetParent(_world.transform, false);
             sun.type = LightType.Directional; sun.intensity = raining ? .48f : overcast ? .72f : 1.18f;
             sun.color = Color.Lerp(evening ? new Color(1,.67f,.40f) : new Color(1,.94f,.83f), new Color(.78f,.84f,.88f), _cloudAmount*.58f);
-            sun.transform.rotation = Quaternion.Euler(evening ? 13 : 36,-38,0);
+            sun.transform.rotation = Quaternion.LookRotation(-_environmentState.sunDirection, Vector3.up);
             sun.shadows = _environmentQuality == AeroSimQuality.Low ? LightShadows.Hard : LightShadows.Soft;
             sun.shadowStrength = raining ? .46f : overcast ? .58f : .78f; sun.shadowBias = .035f; sun.shadowNormalBias = .22f;
+            ApplyCoastLookDev(sun);
             _skyMaterial = new Material(Resources.Load<Shader>("Atmosphere")); _materials.Add(_skyMaterial);
             _skyMaterial.SetVector("_SunDirection", -sun.transform.forward);
             var zenith = evening ? new Color(.21f,.27f,.40f) : new Color(.19f,.42f,.65f);
@@ -151,7 +164,7 @@ namespace AeroSim.Simulation
             _stoneVariants = new Mesh[4];
             for(int i=0;i<4;i++) _stoneVariants[i] = OrganicMesh(24,16,i+7,.32f);
             _branchMesh = NeedleCrownMesh();
-            int seed=17; foreach(char c in environment) seed=unchecked(seed*31+c);
+            int seed=_environmentState.seed;
             var rng=new System.Random(seed);
             int count = _environmentQuality == AeroSimQuality.Low ? 72 : _environmentQuality == AeroSimQuality.Medium ? 128 : _environmentQuality == AeroSimQuality.High ? 190 : Application.isMobilePlatform ? 210 : 240;
             for(int i=0;i<count;i++)
@@ -175,11 +188,13 @@ namespace AeroSim.Simulation
                 else BuildTree(x,z,h,bark,i%3==0?lighterNeedles:needles,rng);
             }
             if(!city && !warehouse) BuildDistantRidges(stone,ground,desert);
-            if(environment=="Pacific Coast")
+            Material coastalWater = null;
+            if(environment=="Pacific Coast" && _waterMode != EnvironmentFeatureMode.Off)
             {
-                var water=new Material(Resources.Load<Shader>("OceanSurface")); _materials.Add(water);
+                var water=new Material(Resources.Load<Shader>("OceanSurface")); coastalWater=water; _materials.Add(water);
+                RegisterSurface(water, "surface.water.ocean", EnvironmentSurfaceKind.Water, 2, true, true, "probe-normal");
                 water.SetVector("_SunDirection",-sun.transform.forward); water.SetFloat("_Evening",evening?1:0);
-                water.SetFloat("_Rain",_rainAmount); water.SetFloat("_Wind",Mathf.Clamp01(Config.windMph/20f));
+                water.SetFloat("_Rain",_rainAmount); water.SetFloat("_Wind",Mathf.Clamp01(_environmentState.windSpeedMps/9f));
                 water.SetColor("_SkyColor",Color.Lerp(RenderSettings.fogColor,RenderSettings.ambientSkyColor,.55f));
                 if(_environmentQuality>=AeroSimQuality.High) water.EnableKeyword("AEROSIM_WATER_HIGH");
                 if(_environmentQuality>=AeroSimQuality.Ultra) water.EnableKeyword("AEROSIM_WATER_ULTRA");
@@ -204,6 +219,7 @@ namespace AeroSim.Simulation
                 BuildBridgeDetailsV1(concrete,steel,-sun.transform.forward,evening);
             }
             if(!desert && !warehouse) BuildGroundDetails(rng,scrub,stone);
+            if(environment=="Pacific Coast") BuildProceduralVerticalSlice(coastalWater);
 
             var cameraObject=new GameObject("Flight Camera"); cameraObject.transform.SetParent(_world.transform,false);
             View=cameraObject.AddComponent<Camera>(); View.clearFlags=CameraClearFlags.Skybox;
@@ -229,12 +245,14 @@ namespace AeroSim.Simulation
             QualitySettings.anisotropicFiltering=q==AeroSimQuality.Low?AnisotropicFiltering.Disable:AnisotropicFiltering.Enable;
             QualitySettings.lodBias=q==AeroSimQuality.Low ? .65f : q==AeroSimQuality.Medium ? 1f : q==AeroSimQuality.High ? 1.35f : 1.7f;
             QualitySettings.maximumLODLevel=q==AeroSimQuality.Low?1:0;
+            QualitySettings.streamingMipmapsActive = _environmentPolicy?.textureMipStreaming == true;
+            QualitySettings.streamingMipmapsMemoryBudget = q == AeroSimQuality.Low ? 256 : q == AeroSimQuality.Medium ? 384 : q == AeroSimQuality.High ? 512 : 768;
         }
 
         private void BuildWeatherVisuals(bool raining, int seed, Transform cameraRoot)
         {
             // Low is the explicit VFX-off path; lighting, wetness and fog still communicate rain.
-            if (!raining || _environmentQuality == AeroSimQuality.Low) return;
+            if (!raining || _vfxMode == EnvironmentFeatureMode.Off) return;
             var rainObject = new GameObject("Deterministic camera-local rain");
             rainObject.transform.SetParent(cameraRoot, false); rainObject.transform.localPosition = new Vector3(0,9,8);
             var particles = rainObject.AddComponent<ParticleSystem>();
@@ -255,13 +273,15 @@ namespace AeroSim.Simulation
             renderer.renderMode = ParticleSystemRenderMode.Stretch; renderer.lengthScale = 2.2f; renderer.velocityScale = .06f;
             renderer.shadowCastingMode = ShadowCastingMode.Off; renderer.receiveShadows = false;
             var rainMaterial = new Material(Resources.Load<Shader>("RainStreak")); _materials.Add(rainMaterial);
-            rainMaterial.SetFloat("_Opacity", _environmentQuality >= AeroSimQuality.Ultra ? .40f : _environmentQuality >= AeroSimQuality.High ? .34f : .24f); renderer.sharedMaterial = rainMaterial;
+            rainMaterial.SetFloat("_Opacity", _environmentQuality >= AeroSimQuality.Ultra ? .40f : _environmentQuality >= AeroSimQuality.High ? .34f : .24f);
+            if (_coastProduction?.weatherAtlas != null) rainMaterial.SetTexture("_WeatherAtlas", _coastProduction.weatherAtlas);
+            renderer.sharedMaterial = rainMaterial;
             particles.randomSeed = unchecked((uint)seed); particles.useAutoRandomSeed = false; particles.Play();
         }
 
         private void BuildWeatherAmbience(bool raining, bool overcast, int seed, Transform cameraRoot)
         {
-            if ((!raining && !overcast) || LocalStore.Profile.settings.volume <= 0) return;
+            if ((!raining && !overcast) || LocalStore.Profile.settings.volume <= 0 || _environmentAudioMode == EnvironmentFeatureMode.Off) return;
             const int sampleRate = 11025, sampleCount = 11025;
             var samples = new float[sampleCount]; var random = new System.Random(seed ^ 0x5f3759df);
             float low = 0;
@@ -342,9 +362,11 @@ namespace AeroSim.Simulation
         {
             var m=new Material(Resources.Load<Shader>("NeedleFoliage"));m.enableInstancing=true;_materials.Add(m);
             m.color=tint;m.mainTexture=Resources.Load<Texture2D>("Art/MaterialsV2/evergreen-needles-v2");
-            m.SetFloat("_Wind",_environmentQuality==AeroSimQuality.Low?0:Mathf.Clamp01(Config.windMph/18f)); m.SetFloat("_Wetness",_rainAmount);
+            m.SetFloat("_Wind",_vegetationMode == EnvironmentFeatureMode.Low ? 0 : Mathf.Clamp01(_environmentState.windSpeedMps/8f)); m.SetFloat("_Wetness",_environmentState.wetness);
             if(_environmentQuality>=AeroSimQuality.High)m.EnableKeyword("AEROSIM_FOLIAGE_WIND");
-            if(_environmentQuality>=AeroSimQuality.Ultra)m.EnableKeyword("AEROSIM_FOLIAGE_ULTRA"); return m;
+            if(_environmentQuality>=AeroSimQuality.Ultra)m.EnableKeyword("AEROSIM_FOLIAGE_ULTRA");
+            RegisterSurface(m, "surface.vegetation.needles", EnvironmentSurfaceKind.Vegetation, .75f, true, false, "alpha-cutout-static");
+            return m;
         }
         private Mesh NeedleCrownMesh()
         {
@@ -486,6 +508,7 @@ namespace AeroSim.Simulation
                 _visualSettingsCaptured=false;
             }
             if(_weatherClip!=null)Destroy(_weatherClip); _weatherClip=null;
+            ReleaseVerticalSliceResources();
             _skyMaterial=null; _rotorDiscs.Clear();
             foreach(var mesh in _visualMeshes)if(mesh!=null)Destroy(mesh);_visualMeshes.Clear();
         }

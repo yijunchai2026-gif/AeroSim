@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_SALT_OXIDATION",
+  "display_name_zh": "盐雾氧化",
+  "category": "material/weathering",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["板缝锈色", "螺钉氧化晕", "镀锌层斑驳", "下缘沉积"]},
+  "modular_kit": {
+    "module_ids": ["MI_P05_SALT_OX_LIGHT", "MI_P05_SALT_OX_MEDIUM", "MI_P05_SALT_OX_HEAVY", "DEC_P05_OX_SEAM_100", "DEC_P05_OX_FASTENER_020", "DEC_P05_SALT_RUNOFF_100"],
+    "sockets": ["SCK_DECAL_ORIGIN"],
+    "notes": ["轻/中/重三档材质实例", "接缝、紧固件、流挂三类 decal", "使用世界坐标宏观噪声打破平铺"]
+  },
+  "pivot": {"rule": "decal 中心位于投射盒后表面中心；材质实例无几何 pivot", "orientation": "+X 为投射方向，+Z 向上以保持流挂重力方向"},
+  "snap_grid_cm": {"translation": 5, "rotation_deg": 15, "fine_translation": 1},
+  "pbr": {
+    "material_slots": ["MI_P05_SALT_OX_LIGHT", "MI_P05_SALT_OX_MEDIUM", "MI_P05_SALT_OX_HEAVY"],
+    "metallic": [0.18, 0.92], "roughness": [0.58, 0.92],
+    "texture_set": ["T_P05_SALTOX_BC", "T_P05_SALTOX_N", "T_P05_SALTOX_ORM", "T_P05_SALTOX_MASK"],
+    "special": {"coverage": {"light": 0.12, "medium": 0.32, "heavy": 0.58}, "rust_hue_srgb": [0.31, 0.14, 0.06], "salt_hue_srgb": [0.72, 0.75, 0.72], "height_blend": 0.18}
+  },
+  "lod": {"triangle_budget": [24, 24, 12, 0], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["预算仅针对 decal 代理盒", "LOD3 禁用局部 decal，仅保留底材宏观氧化"]},
+  "collision": {"mode": "none", "budget": {"hulls": 0}, "rules": ["材质与 decal 不产生碰撞", "不得改变承载面物理材质"]},
+  "deliverables": ["3 个氧化强度材质实例", "3 类 weathering decal", "4 张可平铺 PBR/遮罩纹理"]
+}

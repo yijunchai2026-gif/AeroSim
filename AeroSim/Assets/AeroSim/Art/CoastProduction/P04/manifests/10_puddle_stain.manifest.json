@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_10_PUDDLE_STAIN",
+  "display_name": "积水污迹",
+  "category": "weathering_decal",
+  "source_dependencies": ["../sources/P04_decal_atlas_source.png"],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_WEATHERING_DECAL",
+  "decal_contract": "../contracts/decal.contract.json#ATLAS_MOSS_DAMP_A",
+  "dimensions_m": [10.0, 0.0, 5.0],
+  "pivot": "decal_group_center",
+  "local_position_m": [7.0, 0.010, -3.0],
+  "decal": {"distribution": "low_side_irregular_patches", "preferred_side": "+X", "patch_count": [3, 7], "atlas_regions": ["ATLAS_MOSS_DAMP_A", "ATLAS_RUNOFF_A"], "opacity_range": [0.12, 0.46], "roughness_delta": -0.38, "normal_strength": 0.05, "max_patch_depth_visual_m": 0.0, "sort_layer": 400},
+  "collision": {"enabled": false, "type": "none"},
+  "integration": {"scene_independent": true, "receiver_layer": "P04_PLATFORM_TOP", "shared_scene_write": false},
+  "acceptance": ["stains collect on +X low side", "visual wetness does not create water geometry", "H center remains readable", "no collision"]
+}

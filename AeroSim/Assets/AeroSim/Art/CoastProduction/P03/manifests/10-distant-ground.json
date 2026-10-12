@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aerosim.ground-subasset/v1",
+  "assetId": "P03-SURF-10-DISTANT-GROUND",
+  "displayName": "远景地表",
+  "source": { "file": "../source/coastal-aggregate-reference.png", "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6", "usage": "low-frequency palette reference; remove identifiable shell/stone repetition" },
+  "scale": { "coverageMeters": [32.0, 32.0], "texelTargetCmAt1024": 3.125, "detailRepeatMeters": 8.0 },
+  "tile": { "mode": "seamless_macro_repeat", "repeatMeters": 32.0, "rotationVariantsDegrees": [0, 90, 180, 270], "edgeBlendMeters": 2.0 },
+  "macroVariation": { "wavelengthMeters": [48, 140], "baseColorDelta": 0.08, "roughnessDelta": 0.06, "biomePatchesMeters": [20, 60] },
+  "normal": { "strength": 0.16, "nearDetailStrength": 0.0, "fadeStartMeters": 40, "fadeEndMeters": 70 },
+  "roughness": { "target": 0.8, "range": [0.7, 0.9], "wetResponseMinimum": 0.46 },
+  "lod": ["LOD0:0-15m not selected", "LOD1:15-40m not selected", "LOD2:40-80m 1024 macro", "LOD3:80-180m 512/256 macro", "Cull:>180m terrain 256 mip"],
+  "streaming": { "priority": -1, "maxResident": 1024, "mobileMaxResident": 512, "preloadRadiusMeters": 120 },
+  "productionState": { "maps": "NOT_DERIVED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN" }
+}

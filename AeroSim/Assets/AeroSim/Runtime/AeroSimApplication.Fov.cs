@@ -17,6 +17,7 @@ namespace AeroSim
         private float _fovUndoExpiresAt;
         private readonly Dictionary<string, string> _fovDraftSource = new();
         private string _fovOpeningViewId;
+        private CameraState? _fovOpeningCameraState;
         internal static Func<bool> FovXrActiveProbe = () => XRSettings.enabled && XRSettings.isDeviceActive;
         internal static bool IsFovXrControlled => FovXrActiveProbe?.Invoke() == true;
 
@@ -28,14 +29,16 @@ namespace AeroSim
             _fovDraftSource.Clear();
             foreach (var definition in FovViewDefinitions.All) _fovDraftSource[definition.viewId] = "custom";
             _fovOpeningViewId = _sim?.ActiveFovViewId ?? "near-follow";
+            _fovOpeningCameraState = _sim?.CameraState;
         }
 
         private VisualElement BuildFovSettingsPanel(bool inFlight)
         {
             BeginFovEditing();
             bool xrControlled = IsFovXrControlled;
-            var panel = Panel("Camera & Comfort", "Vertical FOV is the saved source of truth. Horizontal FOV is derived live from the current window aspect ratio.");
+            var panel = Panel("Camera & Comfort", "FOV edits are an isolated family/preset transaction. Vertical FOV is saved; horizontal FOV is derived from the live aspect ratio.");
             panel.AddToClassList("fov-settings-panel");
+            panel.Add(Text("VIDEO FPV · UNAVAILABLE · no video-link/lens simulation is installed, so it has no editable FOV profile.", "camera-capability-unavailable", "wrap"));
             if (xrControlled) panel.Add(Text("FOV is controlled by the active XR headset runtime. Desktop FOV controls are disabled until XR is inactive.", "warning-text", "wrap", "fov-xr-reason"));
             if (LocalStore.FovDiagnostics.Count > 0) panel.Add(Text("Runtime diagnostic · " + LocalStore.FovDiagnostics[LocalStore.FovDiagnostics.Count - 1], "muted", "wrap"));
             var derivedLabels = new Dictionary<string, Label>();
@@ -70,8 +73,11 @@ namespace AeroSim
             {
                 string viewId = definition.viewId;
                 var section = Element("fov-view-section");
+                CameraStateCatalog.TryFromLegacyViewId(viewId, CameraContext.SettingsPreview, out var profileState);
+                section.userData = profileState;
                 var heading = Element("product-row");
-                heading.Add(Text(definition.displayName, "panel-title"));
+                heading.Add(Text(CameraName(profileState.Family, profileState.Preset), "panel-title"));
+                heading.Add(Text("FAMILY / PRESET", "fov-profile-key"));
                 valueLabels[viewId] = Text("", "fov-value"); heading.Add(valueLabels[viewId]); section.Add(heading);
                 var slider = new Slider("Vertical FOV (" + definition.minimumDeg.ToString("F0") + "°–" + definition.maximumDeg.ToString("F0") + "°)", definition.minimumDeg, definition.maximumDeg)
                 {
@@ -135,6 +141,7 @@ namespace AeroSim
             _fovUndoExpiresAt = Time.realtimeSinceStartup + 10f;
             LocalStore.RecordFovDiagnostic("Applied six-view FOV profile; Undo is available for 10 seconds.");
             _sim?.ApplyConfiguredFieldOfView();
+            _sim?.CommitCameraPreview();
             ClearFovEditing();
             ShowFovUndoToast();
             if (_page == Page.Flight && _flightDialogClose != null) _flightDialogClose();
@@ -189,7 +196,8 @@ namespace AeroSim
             LocalStore.RecordFovDiagnostic("Cancelled FOV draft and restored its opening snapshot.");
             if (_sim != null && _sim.View != null)
             {
-                _sim.SetCameraView(_fovOpeningViewId);
+                if (_fovOpeningCameraState.HasValue) _sim.SetCameraState(_fovOpeningCameraState.Value);
+                else _sim.SetCameraView(_fovOpeningViewId);
                 if (_fovSnapshot != null) _sim.PreviewVerticalFov(_fovSnapshot[_sim.ActiveFovViewId]);
                 else _sim.ApplyConfiguredFieldOfView();
             }
@@ -200,6 +208,7 @@ namespace AeroSim
         {
             _fovDraft = null;
             _fovSnapshot = null;
+            _fovOpeningCameraState = null;
             _fovDraftSource.Clear();
         }
 

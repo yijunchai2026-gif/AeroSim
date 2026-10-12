@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "aerosim.lookdev-contract/v1",
+  "contractId": "P09-BUILTIN-LIGHTING-COLORGRADING-V1",
+  "owner": "Coast Art Lead-09",
+  "renderPipeline": "Built-in",
+  "pipelineMigrationRequired": false,
+  "runtimeIntegration": "NOT_CONNECTED",
+  "sharedSceneModified": false,
+  "workingSpace": "Unity project color space; values authored as linear-light scalars and sRGB hex colors",
+  "stateOwnership": "EnvironmentState is the sole weather/time/seed authority; adapters may read but never fork weather state",
+  "applicationOrder": [
+    "EnvironmentState selects a profile",
+    "lighting adapter applies sun, ambient, reflection and fog",
+    "material adapters consume palette envelopes without replacing material identity",
+    "game-owned color transform applies last; identity is a valid fallback",
+    "capture metadata records resolved values and profile IDs"
+  ],
+  "lightingParameters": {
+    "sunColor": {"type": "sRGB hex", "builtin": "Directional Light.color"},
+    "sunIntensity": {"type": "float 0..2", "builtin": "Directional Light.intensity"},
+    "sunShadowStrength": {"type": "float 0..1", "builtin": "Light.shadowStrength"},
+    "ambientSkyColor": {"type": "sRGB hex", "builtin": "RenderSettings.ambientSkyColor or ambientLight fallback"},
+    "ambientEquatorColor": {"type": "sRGB hex", "builtin": "RenderSettings.ambientEquatorColor"},
+    "ambientGroundColor": {"type": "sRGB hex", "builtin": "RenderSettings.ambientGroundColor"},
+    "ambientIntensity": {"type": "float 0..2", "builtin": "RenderSettings.ambientIntensity"},
+    "reflectionIntensity": {"type": "float 0..1", "builtin": "RenderSettings.reflectionIntensity"},
+    "fogColor": {"type": "sRGB hex", "builtin": "RenderSettings.fogColor"},
+    "fogDensity": {"type": "float 0..0.05", "builtin": "RenderSettings.fogDensity when FogMode.ExponentialSquared"}
+  },
+  "colorGradingParameters": {
+    "exposureEv": {"type": "float -4..4", "meaning": "relative stop offset from frozen baseline", "fallback": "0; do not compensate by changing material base color"},
+    "contrast": {"type": "float -0.25..0.25", "meaning": "normalized scene contrast around middle gray"},
+    "saturation": {"type": "float 0..1.25", "meaning": "1 is identity"},
+    "temperature": {"type": "float -1..1", "meaning": "normalized cool/warm offset, not kelvin"},
+    "tint": {"type": "float -1..1", "meaning": "normalized green/magenta offset"},
+    "colorFilter": {"type": "sRGB hex", "meaning": "identity is #FFFFFF"},
+    "lift": {"type": "linear RGB triplet", "meaning": "shadow offset; identity [0,0,0]"},
+    "gamma": {"type": "linear RGB triplet", "meaning": "midtone multiplier; identity [1,1,1]"},
+    "gain": {"type": "linear RGB triplet", "meaning": "highlight multiplier; identity [1,1,1]"}
+  },
+  "safety": {
+    "autoExposure": "OFF for golden-shot comparison and normal flight baseline",
+    "dynamicFov": "OFF for look comparison",
+    "dofChromaticAberrationFilmGrain": "OFF for flight",
+    "hdrCamera": "allowed but must be recorded; do not infer acceptance from HDR enabled",
+    "transitionSeconds": {"min": 0.5, "max": 3.0, "rule": "interpolate resolved parameters; never step exposure during active flight"},
+    "clipping": {"maxReferenceWhiteClipPercent": 0.5, "maxReferenceBlackClipPercent": 1.0},
+    "nightReserve": "disabled and non-selectable until navigation, lighting and gameplay review"
+  },
+  "adapterBoundary": {
+    "allowed": ["new isolated adapter", "MaterialPropertyBlock", "RenderSettings", "Directional Light", "game-owned full-screen color transform"],
+    "forbidden": ["URP/HDRP package installation", "GraphicsSettings SRP assignment", "shared scene edits", "weather state duplication", "global material mutation without restore"],
+    "migrationPolicy": "Any pipeline migration requires a superseding accepted ADR and same-build evidence; this contract remains data-only."
+  },
+  "evidenceFields": ["profileId", "contractId", "pipeline", "quality", "scene", "weather", "time", "seed", "cameraPose", "vFov", "hFov", "resolution", "resolvedParameters", "sourceCommit", "buildId"],
+  "acceptance": {"staticValidationMayPass": true, "runtimeVisualCalibration": "NOT_RUN", "performance": "NOT_RUN", "humanApproval": "NOT_RUN"}
+}

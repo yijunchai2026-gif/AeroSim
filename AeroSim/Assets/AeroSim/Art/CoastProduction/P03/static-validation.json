@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aerosim.static-validation/v1",
+  "packId": "P03-GROUND-SURFACE-PACK-V1",
+  "validatedAt": "2026-10-12T04:10:00+08:00",
+  "result": "PASS",
+  "scope": "manifest and source integrity only",
+  "checks": {
+    "jsonDocumentsParsed": 13,
+    "subAssetManifestCount": 10,
+    "uniqueAssetIds": 10,
+    "requiredFields": "PASS",
+    "sourceExists": "PASS",
+    "sourceSha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6",
+    "roughnessRanges": "PASS",
+    "normalStrengthRanges": "PASS",
+    "lodEntryCountPerAsset": 5,
+    "runtimeIntegration": "NOT_CONNECTED",
+    "sharedEnvironmentAssemblyModified": false,
+    "gitDiffCheck": "PASS"
+  },
+  "notValidated": ["texture derivation", "seamlessness", "PBR physical calibration", "Unity import", "runtime appearance", "mip residency", "GPU memory", "performance"]
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"aerosim.intertidal-subasset/v1","assetId":"P02-INT-01-WET-ROCK","displayName":"湿岩",
+  "sources":[{"file":"../source/wet-rock-reference.png","sha256":"ceb7ff9a0b55ef5801e2bc9d4bf78308c51144c752f04cab2d51ff94e0f77b40","generatedSourceTag":"GENERATED_SOURCE:generated_image_035657","usage":"wet basalt color and surface vocabulary"}],
+  "shader":{"contract":"../shader-material-contract.json","profile":"wet-rock","keywords":[]},
+  "material":{"tileMeters":[3.2,3.2],"macroWavelengthMeters":[14,42],"normalStrength":0.82,"dryRoughness":0.72,"wetRoughness":0.24,"standingDepthMm":[0,2]},
+  "weatherWetness":{"parameterSet":"../weather-wetness-parameters.json","weatherInfluence":0.74,"tideInfluence":0.96,"wetValueMultiplier":0.84,"wetNormalMultiplier":0.72},
+  "lod":["0-15m full maps","15-40m half micro-normal","40-80m macro wetness","80-180m macro color/roughness",">180m shared far aggregate"],
+  "productionState":{"maps":"NOT_DERIVED","shader":"NOT_AUTHORED","runtimeIntegration":"NOT_CONNECTED","visualCalibration":"NOT_RUN"}
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_CABLE",
+  "display_name_zh": "缆索",
+  "category": "utility/cable_spline",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["镀锌钢缆夹", "固定点氧化"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_CABLE_D02_SEG100_L00", "SM_P05_CABLE_D05_SEG100_L00", "SM_P05_CABLE_CLAMP_D02_L00", "SM_P05_CABLE_CLAMP_D05_L00", "SM_P05_CABLE_ANCHOR_L00"],
+    "sockets": ["SCK_CABLE_START", "SCK_CABLE_END", "SCK_CLAMP", "SCK_ANCHOR"],
+    "notes": ["直径 2/5 cm 两档", "直段长度 100 cm，可供样条变形", "样条切线沿 +X，最小弯曲半径为直径的 8 倍"]
+  },
+  "pivot": {"rule": "第一固定点或直段起点中心", "orientation": "+X 沿缆索切线，+Z 为默认上方向"},
+  "snap_grid_cm": {"translation": 5, "rotation_deg": 15, "fine_translation": 1},
+  "pbr": {
+    "material_slots": ["MI_P05_CABLE_RUBBER", "MI_P05_CABLE_GALV_STEEL", "MI_P05_CABLE_CLAMP"],
+    "metallic": [0.0, 0.94], "roughness": [0.48, 0.82],
+    "texture_set": ["T_P05_CABLE_BC", "T_P05_CABLE_N", "T_P05_CABLE_ORM"],
+    "special": {"uv_mode": "spline_distance", "uv_repeat_cm": 50, "twist_lock": true}
+  },
+  "lod": {"triangle_budget": [14000, 7000, 2600, 500], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["圆截面 LOD0/1/2/3 为 16/10/6/4 边", "远景缆夹烘入法线"]},
+  "collision": {"mode": "none", "budget": {"hulls": 0}, "rules": ["直径小于 3 cm 默认无碰撞", "5 cm 缆索仅在阻挡玩法需要时由碰撞代理资产生成胶囊链"]},
+  "deliverables": ["2 个样条直段与 3 个连接模块及 LOD0-3", "橡胶和钢缆材质实例", "样条 UV 规范"]
+}

@@ -1,0 +1,98 @@
+{
+  "schema": "aerosim.hero-cliff-source-capture/v1",
+  "captureStatus": "CAPTURED",
+  "reviewStatus": "NOT_REVIEWED",
+  "gateStatus": "GATE_NOT_RUN",
+  "visualPass": false,
+  "renderer": "Blender EEVEE source review (not Unity device)",
+  "fixedRoute": [
+    1,
+    5,
+    15,
+    40,
+    80
+  ],
+  "compositionProtection": "target in central 70%; crown and waterline required at 15/40/80m",
+  "frames": [
+    {
+      "file": "P11_001m_FinalColor.png",
+      "distanceMeters": 1,
+      "camera": [
+        4.320169925689697,
+        18.339914321899414,
+        0.6498375535011292
+      ],
+      "target": [
+        5.0,
+        18.0,
+        0.0
+      ],
+      "captureStatus": "CAPTURED",
+      "reviewStatus": "NOT_REVIEWED"
+    },
+    {
+      "file": "P11_005m_FinalColor.png",
+      "distanceMeters": 5,
+      "camera": [
+        1.6008496284484863,
+        19.699575424194336,
+        3.249187707901001
+      ],
+      "target": [
+        5.0,
+        18.0,
+        0.0
+      ],
+      "captureStatus": "CAPTURED",
+      "reviewStatus": "NOT_REVIEWED"
+    },
+    {
+      "file": "P11_015m_FinalColor.png",
+      "distanceMeters": 15,
+      "camera": [
+        -5.197450637817383,
+        23.098724365234375,
+        9.747563362121582
+      ],
+      "target": [
+        5.0,
+        18.0,
+        0.0
+      ],
+      "captureStatus": "CAPTURED",
+      "reviewStatus": "NOT_REVIEWED"
+    },
+    {
+      "file": "P11_040m_FinalColor.png",
+      "distanceMeters": 40,
+      "camera": [
+        -22.19320297241211,
+        31.596601486206055,
+        25.993501663208008
+      ],
+      "target": [
+        5.0,
+        18.0,
+        0.0
+      ],
+      "captureStatus": "CAPTURED",
+      "reviewStatus": "NOT_REVIEWED"
+    },
+    {
+      "file": "P11_080m_FinalColor.png",
+      "distanceMeters": 80,
+      "camera": [
+        -49.38640594482422,
+        45.19320297241211,
+        51.987003326416016
+      ],
+      "target": [
+        5.0,
+        18.0,
+        0.0
+      ],
+      "captureStatus": "CAPTURED",
+      "reviewStatus": "NOT_REVIEWED"
+    }
+  ]
+}

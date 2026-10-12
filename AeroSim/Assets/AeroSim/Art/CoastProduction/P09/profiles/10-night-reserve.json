@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "aerosim.lookdev-profile/v1",
+  "profileId": "P09-LD-10-NIGHT-RESERVE",
+  "displayName": "夜间预留（禁用）",
+  "category": "reserve.night",
+  "enabled": false,
+  "targets": ["future P01-P08 night extension"],
+  "intent": "只冻结接口与安全边界；在导航灯、任务可读性、反射探针、声音和性能审核前不可选择。",
+  "parameters": {
+    "lighting": {
+      "sunColor": "#9BAFCF",
+      "sunIntensity": 0.05,
+      "sunShadowStrength": 0.28,
+      "ambientSkyColor": "#152139",
+      "ambientEquatorColor": "#111A2A",
+      "ambientGroundColor": "#090D13",
+      "ambientIntensity": 0.22,
+      "reflectionIntensity": 0.28,
+      "fogColor": "#182436",
+      "fogDensity": 0.0035
+    },
+    "colorGrading": {
+      "exposureEv": -1.2,
+      "contrast": 0.04,
+      "saturation": 0.62,
+      "temperature": -0.2,
+      "tint": 0.0,
+      "colorFilter": "#DCE8FF",
+      "lift": [0.002, 0.004, 0.008],
+      "gamma": [0.95, 0.97, 1.0],
+      "gain": [0.82, 0.9, 1.0]
+    },
+    "reserveRequirements": ["navigation/obstacle light photometry", "task-marker contrast", "aircraft readability", "reflection/light probe calibration", "night fog review", "performance evidence"]
+  },
+  "evaluation": {"goldenCases": [], "status": "NOT_RUN_NON_SELECTABLE", "minimumObstacleContrast": 0.25},
+  "guardrails": ["must remain disabled", "no moonlight-as-blue-day shortcut", "no exposure compensation via emissive albedo", "cannot enter weather selector or golden-shot pass"],
+  "productionState": {"runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN", "performance": "NOT_RUN", "approval": "NOT_APPROVED"}
+}

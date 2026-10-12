@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "P04_DECAL_CONTRACT",
+  "scope": "package_local_only",
+  "projection_axis": "negative_Y",
+  "surface_offset_m": {"minimum": 0.003, "default": 0.006, "maximum": 0.012},
+  "receiver_layers": ["P04_PLATFORM_TOP", "P04_CONCRETE_BASE_VISIBLE"],
+  "forbidden_receivers": ["water", "transparent", "dynamic_aircraft", "collision_only"],
+  "source_atlas": {
+    "path": "../sources/P04_decal_atlas_source.png",
+    "size_px": [2880, 2880],
+    "has_embedded_alpha": false,
+    "alpha_preprocess": "Remove neutral gray background in linear space; preserve light salt/paint and dark dirt; output premultiplied-safe straight alpha with 8 px dilation.",
+    "source_is_weathering_only": true
+  },
+  "vector_masks": {
+    "H_MARKING": {"type": "signed_distance_field_or_vector", "source": "procedural", "weather_modulator": "ATLAS_PAINT_WEAR_A"},
+    "EXCLUSION_HATCH": {"type": "signed_distance_field_or_vector", "source": "procedural", "weather_modulator": "ATLAS_TIRE_WEAR_A"}
+  },
+  "atlas_regions_normalized_top_left_origin": [
+    {"id": "ATLAS_PAINT_WEAR_A", "rect": [0.015, 0.010, 0.250, 0.325], "usage": ["marking_wear", "salt_bloom"]},
+    {"id": "ATLAS_RUNOFF_A", "rect": [0.315, 0.015, 0.205, 0.475], "usage": ["salt_runoff", "water_streak"]},
+    {"id": "ATLAS_TIRE_WEAR_A", "rect": [0.535, 0.015, 0.455, 0.240], "usage": ["edge_wear", "rubber_scuff"]},
+    {"id": "ATLAS_CRACK_A", "rect": [0.505, 0.625, 0.485, 0.205], "usage": ["worn_edge", "fine_crack"]},
+    {"id": "ATLAS_MOSS_DAMP_A", "rect": [0.010, 0.835, 0.980, 0.155], "usage": ["puddle_stain", "damp_edge"]}
+  ],
+  "sort_order": [
+    {"layer": 100, "meaning": "H and exclusion markings"},
+    {"layer": 200, "meaning": "worn paint and edge abrasion"},
+    {"layer": 300, "meaning": "salt corrosion and runoff"},
+    {"layer": 400, "meaning": "puddle and damp stains"}
+  ],
+  "runtime_rules": {"receive_lighting": true, "affect_base_color": true, "affect_normal": true, "affect_roughness": true, "affect_metallic": false, "casts_shadow": false, "collision": false}
+}

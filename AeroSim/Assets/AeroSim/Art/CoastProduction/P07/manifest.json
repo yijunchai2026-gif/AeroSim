@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "aerosim.asset-pack/v1",
+  "packId": "P07-WATER-FX-PACK-V1",
+  "displayName": "P07 水体特效资产包",
+  "owner": "Coast Art Lead-07",
+  "createdAt": "2026-10-12T03:57:00+08:00",
+  "status": "STATIC_VALIDATED",
+  "isolation": {
+    "root": "assets/p07-water-fx-pack-v1/",
+    "shader": "shaders/FoamAtlas.shader",
+    "materialContract": "foam-atlas-material-contract.json",
+    "oceanModified": false,
+    "sharedEnvironmentAssemblyModified": false,
+    "runtimeWiring": "NONE"
+  },
+  "source": {
+    "file": "source/foam-atlas-reference.png",
+    "original": "artifacts/generated_image_035643.png",
+    "sha256": "1afda591f7a75dc2cdcd80934d7626429ca22da5d1310eeb3786b1b20908433f",
+    "dimensions": [2880, 2880],
+    "colorMode": "RGB8",
+    "alphaMode": "luminance-derived",
+    "role": "foam shape atlas and mask source",
+    "limitations": [
+      "source has opaque black background and no authored alpha channel",
+      "atlas regions require final art-direction crop review",
+      "runtime visual and performance validation not run"
+    ]
+  },
+  "subAssets": [
+    "manifests/01-offshore-foam.json",
+    "manifests/02-shore-break-strip.json",
+    "manifests/03-broken-surf.json",
+    "manifests/04-backwash.json",
+    "manifests/05-rock-wrap.json",
+    "manifests/06-tide-pool-edge.json",
+    "manifests/07-raindrop-ripple.json",
+    "manifests/08-splash-particles.json",
+    "manifests/09-wet-edge-mask.json",
+    "manifests/10-foam-decay.json"
+  ],
+  "variants": {
+    "weather": ["Clear", "Overcast", "Rain"],
+    "quality": ["Low", "High", "Ultra"]
+  },
+  "qualityDeclaration": {
+    "manifestCount": 10,
+    "staticValidation": "PASS",
+    "textureDerivation": "SOURCE_ATLAS_ONLY",
+    "unityImport": "NOT_RUN",
+    "runtimeVisual": "NOT_RUN",
+    "performance": "NOT_RUN"
+  }
+}

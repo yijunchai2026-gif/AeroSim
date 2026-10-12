@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aerosim.vegetation-subasset/v1", "assetId": "P06-VEG-06-WINDSWEPT-SCRUB", "displayName": "风剪灌丛", "archetype": "windswept_scrub",
+  "source": {"file": "../source/coastal-vegetation-atlas.png", "sha256": "c82d1f17f49ed33dc359a002332bd39cb0d5759bbf2fe926654352ab87ce6b6f", "regionNormalizedTopLeft": [0.50,0.77,0.1667,0.20]},
+  "geometry": {"heightMeters": [0.7,1.8], "radiusMeters": [0.8,1.8], "cardsLOD0": 14, "pivot": "root", "growthLeanDegrees": [8,28]},
+  "alphaCutout": {"cutoffBias": -0.01, "coverageClass": "branchy_asymmetric", "twoSided": true},
+  "wind": {"primaryBend": 0.31, "edgeFlutter": 0.39, "stiffness": 0.78, "maxDisplacementMeters": 0.24, "phaseJitter": 0.16, "prevailingDirectionAlignment": 0.82},
+  "seasonWeather": {"winterTintRGB": [0.76,0.74,0.66], "summerTintRGB": [0.90,0.96,0.84], "autumnDryness": 0.46, "flowerAmount": [0.0,0.18], "wetnessResponse": 0.54},
+  "lodBillboard": {"lod0Meters": [0,24], "lod1Meters": [20,52], "lod2Meters": [48,96], "billboardMeters": [88,210], "cullMeters": 210, "billboardViews": 8},
+  "ecology": {"distanceToMeanHighWaterM": [12,150], "elevationAboveMeanHighWaterM": [2,28], "slopeDegrees": [0,42], "soilMoisture01": [0.08,0.52], "salinity01": [0.12,0.65], "exposure01": [0.72,1.0], "substrate": ["gravel","sandy_loam","rock_fissure"], "spacingMeters": [1.6,3.8], "patchRadiusMeters": [4,18], "densityPerSquareMeter": [0.03,0.26], "orientation": "lean downwind within 18 degrees"},
+  "productionState": {"alpha": "NOT_DERIVED", "geometry": "NOT_AUTHORED", "billboard": "NOT_BAKED", "runtimeIntegration": "NOT_CONNECTED", "visualCalibration": "NOT_RUN"}
+}

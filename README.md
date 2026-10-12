@@ -56,4 +56,16 @@ Unity Library、Builds、Logs、UserSettings，以及自动生成的 QA 截图�
 
 后续代码/文档更新按“验证 → commit → push → 返回 GitHub 地址与具体提交链接”交付；不自动合并主干。完整约定见 [AGENTS.md](AGENTS.md)。
 
+## AeroSim Review MCP
+
+Unity Editor 内置的 Review Bridge 支持 Phase 1–3：引擎内视口捕获、场景/材质/LOD/碰撞检查、日志与性能证据，以及带 Undo、事务记录和资产路径白名单的受控修改。外部零依赖 MCP Server、Claude 配置、Evidence Bundle 和安全边界见 [Tools/AeroSimReviewMcp/README.md](Tools/AeroSimReviewMcp/README.md)。
+
+合同测试：
+
+```bash
+python3 -m unittest verification/review-mcp/test_contract.py
+```
+
+Unity 集成入口：`AeroSim.Editor.ReviewMcp.AeroSimReviewBridge.ProcessAllPending`。运行证据写入被 Git 忽略的 `AeroSim/Library/AeroSimReview/`，技术捕获成功不代表视觉或产品验收通过。
+
 2026-10-07 已通过 GitHub Desktop 发布到私有仓库 [yijunchai2026-gif/AeroSim](https://github.com/yijunchai2026-gif/AeroSim)。本地 `main` 已连接 `origin/main`。构建产物和自动生成的 QA 大文件仍只保留在本机，未随源码上传。

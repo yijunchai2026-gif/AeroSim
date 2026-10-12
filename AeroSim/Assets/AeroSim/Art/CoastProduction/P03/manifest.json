@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "aerosim.asset-pack/v1",
+  "packId": "P03-GROUND-SURFACE-PACK-V1",
+  "displayName": "P03 海岸地表资产包",
+  "owner": "Coast Art Lead-03",
+  "createdAt": "2026-10-12T03:57:00+08:00",
+  "status": "SPEC_LOCKED_TEXTURE_DERIVATION_PENDING",
+  "isolation": {
+    "root": "assets/p03-ground-surface-pack-v1/",
+    "materialContract": "material-contract.json",
+    "sharedEnvironmentAssemblyModified": false,
+    "runtimeWiring": "NONE"
+  },
+  "source": {
+    "file": "source/coastal-aggregate-reference.png",
+    "original": "artifacts/generated_image_035645.png",
+    "sha256": "1ed0eaa6db628cb8835b692e0db4f0f3c7117e8682ee358688474e147ae3c4e6",
+    "dimensions": [2880, 2880],
+    "colorMode": "RGB8",
+    "role": "visual source/reference for color, aggregate and shell vocabulary",
+    "limitations": ["not proven seamless", "contains baked illumination", "does not contain calibrated normal, height, AO or roughness"]
+  },
+  "subAssets": [
+    "manifests/01-coarse-sand.json",
+    "manifests/02-fine-sand.json",
+    "manifests/03-dry-gravel.json",
+    "manifests/04-wet-gravel.json",
+    "manifests/05-shell-band.json",
+    "manifests/06-drainage-gravel.json",
+    "manifests/07-pad-transition.json",
+    "manifests/08-walkway-base.json",
+    "manifests/09-wheel-track-disturbance.json",
+    "manifests/10-distant-ground.json"
+  ],
+  "qualityDeclaration": {
+    "manifestCount": 10,
+    "staticValidation": "PASS",
+    "textureDerivation": "NOT_RUN",
+    "unityImport": "NOT_RUN",
+    "runtimeVisual": "NOT_RUN",
+    "performance": "NOT_RUN"
+  }
+}

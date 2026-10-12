@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_03_EXCLUSION_HATCH",
+  "display_name": "禁入斜纹",
+  "category": "surface_decal",
+  "source_dependencies": ["../sources/P04_decal_atlas_source.png"],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_SAFETY_YELLOW",
+  "decal_contract": "../contracts/decal.contract.json#EXCLUSION_HATCH",
+  "dimensions_m": [24.0, 0.0, 24.0],
+  "pivot": "center",
+  "local_position_m": [0.0, 0.006, 0.0],
+  "decal": {"mask": "procedural_perimeter_hatch", "border_width_m": 2.0, "stripe_angle_deg": 45.0, "stripe_width_m": 0.45, "stripe_gap_m": 0.45, "inner_clear_size_m": [20.0, 20.0], "weather_modulator": "ATLAS_TIRE_WEAR_A", "wear_amount": 0.14, "sort_layer": 100},
+  "collision": {"enabled": false, "type": "none"},
+  "integration": {"scene_independent": true, "receiver_layer": "P04_PLATFORM_TOP", "shared_scene_write": false},
+  "acceptance": ["2 m perimeter zone only", "45 degree stripes maintain 1:1 paint-gap cadence", "does not overlap H center area", "no collision"]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "package_id": "P05_INDUSTRIAL_FACILITIES",
+  "asset_id": "P05_IF_GRATING",
+  "display_name_zh": "格栅",
+  "category": "architecture/walkable_grating",
+  "source_reference": {"path": "../source/generated_image_035559.png", "usage": ["镀锌钢片花纹", "边框与积盐色差"]},
+  "modular_kit": {
+    "module_ids": ["SM_P05_GRATE_050X050_L00", "SM_P05_GRATE_100X050_L00", "SM_P05_GRATE_100X100_L00", "SM_P05_GRATE_200X100_L00", "SM_P05_GRATE_STEP_100X030_L00", "SM_P05_GRATE_EDGE_100_L00"],
+    "sockets": ["SCK_EDGE_X0", "SCK_EDGE_X1", "SCK_EDGE_Y0", "SCK_EDGE_Y1"],
+    "notes": ["承载扁钢沿 +X", "网格节距 3 cm，条宽 0.5 cm", "边框厚 3 cm；踏步含防滑鼻口"]
+  },
+  "pivot": {"rule": "左下角边框底面", "orientation": "+X 沿承载扁钢，+Y 横向，+Z 向上"},
+  "snap_grid_cm": {"translation": 10, "rotation_deg": 90, "fine_translation": 1},
+  "pbr": {
+    "material_slots": ["MI_P05_GALV_STEEL_GRATING"],
+    "metallic": [0.86, 0.96], "roughness": [0.45, 0.74],
+    "texture_set": ["T_P05_GRATE_BC", "T_P05_GRATE_N", "T_P05_GRATE_ORM", "T_P05_GRATE_SALT_MASK"],
+    "special": {"alpha_cutout_allowed_from_lod": 2, "dithered_transition": true}
+  },
+  "lod": {"triangle_budget": [30000, 15000, 4500, 800], "screen_ratio": [0.35, 0.16, 0.07, 0.025], "notes": ["LOD0-1 使用真实条格", "LOD2 使用双层卡片", "LOD3 使用不透明轮廓板"]},
+  "collision": {"mode": "simple_box", "budget": {"boxes": 1}, "rules": ["行走面为连续薄盒体", "碰撞顶面与格栅最高点齐平", "孔隙不参与角色碰撞"]},
+  "deliverables": ["6 个格栅模块及 LOD0-3", "1 个 PBR 材质实例", "连续行走面碰撞"]
+}

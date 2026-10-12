@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "asset_id": "P04_ASSET_04_CONCRETE_BASE",
+  "display_name": "混凝土基座",
+  "category": "structural_base",
+  "source_dependencies": ["../sources/P04_concrete_source.png"],
+  "material_contract": "../contracts/material.contract.json#MAT_P04_CONCRETE",
+  "decal_contract": null,
+  "dimensions_m": [24.0, 0.35, 24.0],
+  "pivot": "top_center",
+  "local_position_m": [0.0, -0.20, 0.0],
+  "geometry": {"form": "rectangular_foundation", "top_y_m": -0.20, "bottom_y_m": -0.55, "edge_bevel_m": 0.015, "visible_side_uv": "world_aligned_3m"},
+  "collision": {"enabled": true, "type": "box", "center_m": [0.0, -0.375, 0.0], "size_m": [24.0, 0.35, 24.0]},
+  "lod": {"policy": "single_structural_mesh", "max_triangles": 600},
+  "integration": {"scene_independent": true, "receiver_layer": "P04_CONCRETE_BASE_VISIBLE", "shared_scene_write": false},
+  "acceptance": ["base meets platform underside without gap", "bottom elevation is Y=-0.55", "no mesh collider", "visible sides use locked concrete source"]
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "aerosim.coast-production.package/v1",
+  "packageId": "COAST-PRODUCTION-P01",
+  "version": "1.0.0",
+  "owner": "Coast Art Lead-01",
+  "provenance": {
+    "classification": "PROCEDURAL / GENERATED SOURCE",
+    "scanClaim": "NOT A SCAN"
+  },
+  "source": {
+    "path": "Assets/AeroSim/Art/CoastProduction/P01/Source/generated_image_035637.png",
+    "sha256": "5a3f5a1eedd1bd65df28a256d1824eca02c6c2f5ca0f18777db9d788a0aad309",
+    "dimensions": [
+      2880,
+      2880
+    ]
+  },
+  "material": {
+    "path": "Assets/AeroSim/Art/CoastProduction/P01/Materials/CoastRockP01.mat",
+    "shader": "AeroSim/Coast/CoastRockP01",
+    "parameters": {
+      "_Tint": [
+        0.72,
+        0.75,
+        0.76,
+        1
+      ],
+      "_MetersPerTile": 4.0,
+      "_StrataScale": 0.34,
+      "_StrataStrength": 0.42,
+      "_MacroStrength": 0.18,
+      "_Roughness": 0.84,
+      "_Wetness": 0.08,
+      "_EdgeLight": 0.12
+    }
+  },
+  "assets": [
+    {
+      "assetId": "P01-CLIFF-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/macro-cliff.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/macro-cliff.prefab"
+    },
+    {
+      "assetId": "P01-STRATA-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/strata-wall.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/strata-wall.prefab"
+    },
+    {
+      "assetId": "P01-OVERHANG-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/overhang.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/overhang.prefab"
+    },
+    {
+      "assetId": "P01-TALUS-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/talus-blocks.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/talus-blocks.prefab"
+    },
+    {
+      "assetId": "P01-STACK-A",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/sea-stack-a.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/sea-stack-a.prefab"
+    },
+    {
+      "assetId": "P01-STACK-B",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/sea-stack-b.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/sea-stack-b.prefab"
+    },
+    {
+      "assetId": "P01-FRACTURE-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/fractured-edge.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/fractured-edge.prefab"
+    },
+    {
+      "assetId": "P01-FOOT-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/cliff-foot.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/cliff-foot.prefab"
+    },
+    {
+      "assetId": "P01-DISTANT-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/distant-silhouette.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/distant-silhouette.prefab"
+    },
+    {
+      "assetId": "P01-COL-01",
+      "manifestPath": "Assets/AeroSim/Art/CoastProduction/P01/Manifests/collision-proxy.manifest.json",
+      "prefabPath": "Assets/AeroSim/Art/CoastProduction/P01/Prefabs/collision-proxy.prefab"
+    }
+  ],
+  "integration": {
+    "modifiesSharedSceneAssembly": false,
+    "entryPoint": "package-manifest.json",
+    "generator": "Editor/CoastP01Generator.cs",
+    "validator": "Tools/validate_p01.py"
+  }
+}
