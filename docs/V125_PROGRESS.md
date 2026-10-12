@@ -175,6 +175,10 @@
 
 根再次检查35暂存文件范围、空白与疑似凭据，无意外路径；旧3个meta/候选04/Wave B无关改动不纳入。08 Runtime DLL SHA仍 `0aec831cff961caafa77a38f90bdf0335ff4026b817ccde9fd71b8ed21e99f9f`，只是静态字节核对，没有新应用运行。根统一在独立交接停止后提交并正常push，成功与否以实际命令和新 `ls-remote` 为准，本段提交前记录不构成上传证明。1.25未发布、0用户机型批准、完整三端/23图/真实地图与真机门禁继续保留。
 
+独立成员已停写，扩大到PRD＋7份专项/进度文档的终验实际 **1,095检查/0失败/exit0、332链接、0未发布依赖**；根在最终两QA文件重新暂存后复跑同值，并核8个文档散列、4份本机证据、三套TAP的34/13/21零失败与零跳过。QA文档 SHA `11e24d86661cedc4cd85c7e8d761be42399dca0ba02b9ce855753f1e3c99c16c`，紧凑结果 SHA `7099569c34285b8fb54653ab636b408bcce8f53e6be009ae6db3efaa26098bea`；这些是本上传回执加入前的精确输入，不把后加纯文档回执冒称为独立成员再测。
+
+本波37文件已提交并实际上传：[代码/图稿/文档提交5430dc1](https://github.com/yijunchai2026-gif/AeroSim/commit/5430dc11581a577f9d3ce32e990393d70e068070)。正常push exit0；2026-10-12 23:22 UTC随后新的 `ls-remote` exit0，开发分支SHA精确为 `5430dc11581a577f9d3ce32e990393d70e068070`，不是origin缓存。[GitHub仓库](https://github.com/yijunchai2026-gif/AeroSim)与[开发分支](https://github.com/yijunchai2026-gif/AeroSim/tree/codex/v125-product-lines)可查。远端main仍为本次恢复时的 `9dac0c168dcce406a1e0155738e9e4c769f1aa8d`，本波未合并或force-push；原无关工作区内容完整保留。上方“暂存未提交”是额度中断时的历史断点，现已交付，后继不要重新生成/跑完毕套件或重复当作未上传。当前本段只追加真实交付事实，经根文档验证后另作正常回执提交推送；整体1.25仍未完成。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
