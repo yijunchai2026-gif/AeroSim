@@ -197,6 +197,7 @@ def call_unity(project: Path, tool: str, arguments: Any, timeout: float = 30.0, 
     request.update(safe_arguments)
     request_path = inbox / f"{request_id}.json"
     response_path = outbox / f"{request_id}.json"
+    response_pattern = f"{request_id}-*.json"
     temporary_path = inbox / f".{request_id}.tmp"
 
     encoded = json.dumps(request, ensure_ascii=False, separators=(",", ":"))
@@ -208,9 +209,11 @@ def call_unity(project: Path, tool: str, arguments: Any, timeout: float = 30.0, 
 
     deadline = time.monotonic() + timeout
     while True:
-        if response_path.is_file():
+        response_candidates = [response_path] if response_path.is_file() else sorted(outbox.glob(response_pattern))
+        if response_candidates:
+            resolved_response_path = response_candidates[-1]
             try:
-                with response_path.open("r", encoding="utf-8") as stream:
+                with resolved_response_path.open("r", encoding="utf-8") as stream:
                     response = json.load(stream)
             except (OSError, json.JSONDecodeError) as exc:
                 raise HarnessError(f"Invalid Unity response for request {request_id}: {exc}") from exc

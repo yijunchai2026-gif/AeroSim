@@ -9,8 +9,9 @@ Shader "AeroSim/Coast/HeroCliffP11"
   _WetCavityMask("Unique UV Wet/Cavity/Breakup",2D)="black"{}
   _Tint("Tint",Color)=(1,1,1,1) _MacroTint("Macro Recess Tint",Color)=(0.72,0.78,0.75,1)
   _MacroMetersPerTile("Macro Feature Scale (m)",Range(4,40))=14
-  _MicroMetersPerTile("Micro Feature Scale (m)",Range(.15,2))=.65
-  _MacroStrength("Macro Strength",Range(0,.5))=.22 _MicroStrength("Micro Strength",Range(0,1))=.32
+  _MicroMetersPerTile("Micro Feature Scale (m)",Range(.04,2))=.09
+  _MacroStrength("Macro Strength",Range(0,.5))=.22 _MicroStrength("Micro Strength",Range(0,1))=.72
+  _MicroNormalStrength("Micro Normal Strength",Range(0,1.5))=.58
   _NormalStrength("Baked Normal Strength",Range(0,2))=1 _HeightStrength("Height Influence",Range(0,0.15))=.06
   _Wetness("Environment Wetness",Range(0,1))=0
   _WaterLevel("Environment Water Level",Range(-10,10))=1 _Precipitation("Environment Precipitation",Range(0,1))=0
@@ -26,7 +27,7 @@ Shader "AeroSim/Coast/HeroCliffP11"
   sampler2D _BaseColor, _NormalMap, _RoughnessMap, _AOMap, _HeightMap, _CurvatureMap, _WetCavityMask;
   float4 _BaseColor_TexelSize;
   fixed4 _Tint, _MacroTint;
-  float _MacroMetersPerTile, _MicroMetersPerTile, _MacroStrength, _MicroStrength, _NormalStrength, _HeightStrength;
+  float _MacroMetersPerTile, _MicroMetersPerTile, _MacroStrength, _MicroStrength, _MicroNormalStrength, _NormalStrength, _HeightStrength;
   float _Wetness, _WaterLevel, _Precipitation, _WaterlineWidth, _CavityWetness;
 
   struct Input
@@ -76,16 +77,19 @@ Shader "AeroSim/Coast/HeroCliffP11"
    float3 macroPosition = IN.worldPos / max(_MacroMetersPerTile, 0.01);
    float macroSigned = (RockNoise(macroPosition) - 0.5) * 2.0;
    float microSigned = 0.0;
+   float2 microNormal = 0.0;
    float microVisibility = 0.0;
    #if defined(HERO_CLIFF_MICRO)
     float3 microPosition = IN.worldPos / max(_MicroMetersPerTile, 0.01);
     microVisibility = DetailVisibility(microPosition);
     microSigned = (RockNoise(microPosition + 17.31) - 0.5) * 2.0;
+    microNormal.x = (RockNoise(microPosition + float3(3.17, 11.73, 5.29)) - 0.5) * 2.0;
+    microNormal.y = (RockNoise(microPosition + float3(13.41, 2.61, 19.07)) - 0.5) * 2.0;
    #endif
 
    float recessTint = saturate(-macroSigned) * _MacroStrength;
    float macroValue = 1.0 + macroSigned * _MacroStrength * 0.42;
-   float microValue = 1.0 + microSigned * _MicroStrength * microVisibility * 0.13;
+   float microValue = 1.0 + microSigned * _MicroStrength * microVisibility * 0.30;
    float heightValue = 1.0 + (height - 0.5) * _HeightStrength * 2.0;
    float curvatureValue = 1.0 + (curvature - 0.5) * 0.08;
    float3 albedo = baseSample.rgb * _Tint.rgb;
@@ -99,9 +103,12 @@ Shader "AeroSim/Coast/HeroCliffP11"
    // Normal is kept in tangent space. The former world/triplanar normal was being
    // written into this tangent-space output and produced dark projection seams.
    bakedNormal.xy *= _NormalStrength;
+   bakedNormal.xy += microNormal * (_MicroNormalStrength * microVisibility);
+   float normalLength = max(1.0, length(bakedNormal.xy));
+   bakedNormal.xy /= normalLength;
    bakedNormal.z = sqrt(saturate(1.0 - dot(bakedNormal.xy, bakedNormal.xy)));
    o.Normal = normalize(bakedNormal);
-   rough = saturate(rough - macroSigned * _MacroStrength * 0.08 - microSigned * _MicroStrength * microVisibility * 0.05);
+   rough = saturate(rough - macroSigned * _MacroStrength * 0.12 - microSigned * _MicroStrength * microVisibility * 0.30);
    o.Metallic = 0.0;
    o.Smoothness = saturate(1.0 - rough + wet * 0.48 + waterline * 0.12);
    o.Occlusion = saturate(lerp(1.0, ao, 0.86) * lerp(0.94, 1.02, curvature));

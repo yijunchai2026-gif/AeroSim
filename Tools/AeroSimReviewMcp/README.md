@@ -48,9 +48,9 @@ python3 Tools/AeroSimReviewMcp/aerosim_review_mcp.py request inspect_scene --tim
 每个 `tools/call` 生成唯一 ID，并以原子重命名方式写入：
 
 - 请求：`<UnityProject>/Library/AeroSimReview/inbox/<id>.json`
-- 响应：`<UnityProject>/Library/AeroSimReview/outbox/<id>.json`
+- 响应：`<UnityProject>/Library/AeroSimReview/outbox/<id>-<runId>.json`（兼容旧版 `<id>.json`）
 
-请求使用 `aerosim.review-mcp/v1`。服务等待同 ID 的响应；超过 `--timeout` 后返回明确的 MCP tool error。若请求尚未被 Unity 消费，超时时会删除 inbox 文件；若 Unity 已消费，请将操作视为可能仍在完成，不应盲目重试变更工具。
+请求使用 `aerosim.review-mcp/v1`。服务等待同 ID 的固定文件名或带 run ID 后缀的响应；超过 `--timeout` 后返回明确的 MCP tool error。若请求尚未被 Unity 消费，超时时会删除 inbox 文件；若 Unity 已消费，请将操作视为可能仍在完成，不应盲目重试变更工具。
 
 `assetPath` 与 `secondaryAssetPath` 拒绝绝对路径、`..` 穿越以及符号链接逃逸。传输目录在创建前也会检查解析后的路径，禁止写出 Unity 项目根目录。未知工具和未知参数字段在入队前拒绝。
 

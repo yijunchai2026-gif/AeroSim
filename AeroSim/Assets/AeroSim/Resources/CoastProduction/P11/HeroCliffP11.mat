@@ -36,8 +36,9 @@ Material:
     - _HeightStrength: 0.06
     - _MacroMetersPerTile: 14
     - _MacroStrength: 0.22
-    - _MicroMetersPerTile: 0.65
-    - _MicroStrength: 0.32
+    - _MicroMetersPerTile: 0.09
+    - _MicroNormalStrength: 0.58
+    - _MicroStrength: 0.72
     - _NormalStrength: 1
     - _Precipitation: 0
     - _WaterLevel: 1
