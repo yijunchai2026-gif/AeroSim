@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "baseFreeze": "verification/v125-qa/registry-contract-freeze.json",
+  "previousClarification": "verification/v125-qa/registry-contract-addendum-v1.json",
+  "status": "ROOT_OVERFLOW_CLARIFICATION_BEFORE_SOURCE_FREEZE",
+  "faultPolicy": [
+    "Faulted is terminal for this registry. The triggering call publishes an empty snapshot and revokes/invalidates all old active SourceIds exactly once.",
+    "If IdentityEpoch exhaustion triggers Faulted and old CatalogRevision is below Int64.MaxValue, clearing a nonempty snapshot increments CatalogRevision once. If old sources are already empty, no revision increment is needed.",
+    "If CatalogRevision is already Int64.MaxValue when a changed snapshot would be committed, Faulted publishes empty sources at the SAME Int64.MaxValue; never wraps or fabricates a higher revision.",
+    "Further ApplySnapshot calls always return Faulted with the same empty snapshot and unchanged CatalogRevision; all three delta lists are empty. They cannot reactivate devices, consume generations or repeat revocations."
+  ],
+  "scope": "Synthetic boundary tests may set private counters by reflection; no production test hook or runtime adapter wiring is authorized."
+}

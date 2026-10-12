@@ -70,3 +70,32 @@ test('ambiguous feedback must not cause seeded approval', () => rejects('CATALOG
 test('gallery containing stale revision is rejected', () => rejects('GALLERY_FROZEN_DRAFTS_MATCH', ({write, drafts}) => {
   drafts[1].revision = 'stale'; write('AeroSim-1.25-机型逐一审核.html','<script id="draft-data" type="application/json">'+JSON.stringify(drafts)+'</script>');
 }));
+
+function addPendingArt(f, namespace, id, embed = true) {
+  const image = 'assets/v125-art/' + namespace + '/synthetic-draft.png';
+  const bytes = Buffer.from('synthetic new art ' + namespace);
+  const d = {aircraftId:id, image, revision:'qa-r1', sha256:digest(bytes), appearanceStatus:'pending_user', kind:'generated_review_bitmap'};
+  f.write(image, bytes);
+  f.write('assets/v125-art/' + namespace + '/review-drafts.json', [d]);
+  f.drafts.push(d);
+  f.catalog.aircraft.push({id, englishName:'Synthetic new art', appearanceStatus:'pending_user', review:{status:'pending_user'}, productionAssetAllowed:false});
+  f.write('assets/catalog-v125/dji-aircraft.json', f.catalog);
+  f.write('AeroSim-1.25-机型逐一审核.html', '<script id="draft-data" type="application/json">' + JSON.stringify(f.drafts) + '</script>');
+  f.write('飞行模拟器产品设计文档.md', f.prd + (embed ? '\n![Synthetic new art](' + image + ')\n' : ''));
+}
+test('both new namespaces are audited and embedded without user approval', () => {
+  for (const [namespace, id] of [['phantom4','dji-phantom-4'], ['air2s','dji-air-2s']]) {
+    const r = fixture(f => addPendingArt(f, namespace, id));
+    assert.equal(r.exit, 0, JSON.stringify(r.report.failures));
+    assert.equal(r.report.summary.currentDrafts, 3);
+    assert.ok(r.report.checks.some(x => x.id === 'NEW_ART_EMBEDDED_IN_PRD:' + id && x.result === 'PASS'));
+  }
+});
+test('new art omitted from product document is rejected', () => {
+  for (const [namespace,id] of [['phantom4','dji-phantom-4'], ['air2s','dji-air-2s']])
+    rejects('NEW_ART_EMBEDDED_IN_PRD:' + id, f => addPendingArt(f, namespace, id, false));
+});
+test('wrong aircraft in either new namespace is rejected', () => {
+  for (const namespace of ['phantom4','air2s'])
+    rejects('NEW_ART_EXACT_NAMESPACE_ID:qa-wrong-aircraft', f => addPendingArt(f, namespace, 'qa-wrong-aircraft'));
+});

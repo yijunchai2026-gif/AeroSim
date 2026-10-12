@@ -25,12 +25,15 @@ for(const a of catalog.aircraft){
   if(a.releaseYear!=null&&(!Number.isInteger(a.releaseYear)||!official(a.releaseYearEvidenceUrl)))throw Error('Year lacks official source '+a.id);
 }
 const drafts=[];
-for(const p of ['assets/v125-art/legacy/review-drafts.json','assets/v125-art/current/review-drafts.json','assets/v125-art/inspire/review-drafts.json','assets/v125-art/mavic/review-drafts.json']){
+for(const p of ['assets/v125-art/legacy/review-drafts.json','assets/v125-art/current/review-drafts.json','assets/v125-art/inspire/review-drafts.json','assets/v125-art/mavic/review-drafts.json','assets/v125-art/phantom4/review-drafts.json','assets/v125-art/air2s/review-drafts.json']){
   if(!fs.existsSync(path.join(root,p)))continue;
   const raw=JSON.parse(read(p));
   for(const d of Array.isArray(raw)?raw:raw.drafts||[]){
     if(!ids.has(d.aircraftId)||drafts.some(x=>x.aircraftId===d.aircraftId))throw Error('Unknown/duplicate draft '+d.aircraftId);
-    if(!/^assets\/v125-art\/(legacy|current|inspire|mavic)\/[a-z0-9-]+\.png$/.test(d.image)||sha(d.image)!==d.sha256)throw Error('Draft file/hash mismatch '+d.image);
+    const namespace=p.split('/')[2];
+    const exactNewId={phantom4:'dji-phantom-4',air2s:'dji-air-2s'}[namespace];
+    if((exactNewId&&d.aircraftId!==exactNewId)||!d.image?.startsWith('assets/v125-art/'+namespace+'/'))throw Error('Draft namespace/aircraft mismatch '+d.aircraftId);
+    if(!/^assets\/v125-art\/(legacy|current|inspire|mavic|phantom4|air2s)\/[a-z0-9-]+\.png$/.test(d.image)||sha(d.image)!==d.sha256)throw Error('Draft file/hash mismatch '+d.image);
     if(d.kind!=='generated_review_bitmap'||d.appearanceStatus!=='pending_user'||!d.revision||!d.sourceUrls?.length||d.sourceUrls.some(u=>!official(u)))throw Error('Invalid review draft '+d.aircraftId);
     drafts.push(d);
   }

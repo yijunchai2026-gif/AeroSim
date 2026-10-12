@@ -1,0 +1,23 @@
+[
+  {
+    "aircraftId": "dji-phantom-4",
+    "revision": "draft-01",
+    "image": "assets/v125-art/phantom4/phantom-4-draft-01.png",
+    "sha256": "f5d855115819f4fbe1c1b4ec738cb0fbfc087338bd78d127f71f5d30df85d518",
+    "kind": "generated_review_bitmap",
+    "sourceUrls": [
+      "https://www.dji.com/support/product/phantom-4",
+      "https://www.dji.com/sg/support/product/phantom-4"
+    ],
+    "appearanceStatus": "pending_user",
+    "notes": [
+      "Generated once with built-in image_gen using a text prompt and no attached reference image; 1536 x 1024 PNG review bitmap, not a runnable mesh, CAD drawing, official photograph, or final PBR material asset.",
+      "Only the official Phantom 4 support-page FRONT product photograph was visually reviewed in the browser before generation. Official support specifications and FAQ were read; no official side, top, or three-quarter photograph and no manual diagram were successfully inspected.",
+      "The target is the original 2016 Phantom 4, not Phantom 4 Pro, Advanced, RTK, Pro V2.0, or Phantom 3. The broad white fixed-arm X silhouette, four installed white two-blade propellers, tall landing skids, and single suspended camera are recognizable.",
+      "Observed risk: the side-view gimbal bracket shape and camera mounting geometry are inconsistent with the front and three-quarter panels; the sheet is not a coherent measured 3D reconstruction.",
+      "Observed risk: the camera housing, lens, gimbal supports, and motor housings are visually bulky. Exact original-camera and motor proportions have not been verified against high-resolution multi-view official photographs.",
+      "Observed risk: landing-skid curvature, body height, sensor-window size and placement, propeller geometry, shell seams, and inter-view projections are not dimensionally calibrated. The left-side panel retains perspective and the top-view nose direction is not clearly evidenced.",
+      "No user confirmation has been recorded. Not eligible for production Unity aircraft selection or final 3D asset integration. This draft requires separate per-model user review bound to this exact revision and SHA."
+    ]
+  }
+]

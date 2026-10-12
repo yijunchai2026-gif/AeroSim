@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "ROOT_FROZEN_IDENTITY_REGISTRY_SUBSET_ONLY",
+  "frozenAt": "2026-10-11T19:37:16Z",
+  "proposal": "docs/V125_REGISTRY_CONTRACT_PROPOSAL.md",
+  "proposalSha256": "629b4c2c68ced3bc3ea07c781ade52aa32e5a85adac53e9c23e9cd2ed6acfd2c",
+  "resolverSha256": "88a215d7431824c3c3062d377c4d2e35a7bdd3af81348bf1add4aca2adca084f",
+  "frameSha256": "aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d",
+  "rootDecisions": [
+    "Accept the complete-snapshot, single-writer identity-only protocol and all candidate fail-closed policies in the proposal; not a raw source registry or Gate A closure.",
+    "New SourceId starts IdentityEpoch=1 even if initially ambiguous; all initially ambiguous SourceIds appear in InvalidatedBindingSourceIds. Later confidence/device identity transitions increment epoch once.",
+    "Same-source collision entry/exit invalidates binding but does not revoke SourceId; genuine lifecycle/descriptor changes revoke the previous SourceId.",
+    "Current-source immutable entries determine CatalogRevision; inactive-only history updates with unchanged empty/current snapshot do not alone increment it.",
+    "The adapter must supply genuine unique object tokens and monotonic invalidation/usage stage revisions; no OS event coalescing, Unity runtime, mapping, profile, calibration or application wiring is implemented here."
+  ],
+  "allowedProductionFiles": [
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputIdentityRegistry.cs",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputIdentityRegistry.cs.meta"
+  ],
+  "expectedVerification": "Strict pure compilation, author tests then independently authored reference transitions and three compiled mutations; existing resolver/router/touch remain byte-unchanged.",
+  "physicalController": "NOT_RUN",
+  "iPadIphone": "NOT_RUN",
+  "nativeBinary": "UNCHANGED_CANDIDATE08"
+}

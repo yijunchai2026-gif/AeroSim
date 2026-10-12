@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_AUTOMATED_GALLERY_DOCUMENT_ONLY",
+  "recordedAtUtc": "2026-10-12T23:19:48.173Z",
+  "role": "Independent registry/art/document integration QA; not the registry implementation QA",
+  "scope": "Frozen product-document additions, review gallery gates, current draft bindings, source/old-byte guards and tracked local dependencies. No native build.",
+  "integrationFreeze": {
+    "path": "verification/v125-qa/registry-art-source-freeze.json",
+    "sha256": "96013e4c9e857b3081939fedacd67aa143dc2cdb8e02646c340052132c1e3471",
+    "matches": 23,
+    "total": 23
+  },
+  "registrySourceFreeze": {
+    "path": "verification/v125-qa/registry-source-freeze.json",
+    "sha256": "873c61e578789b15370eb6dada1abc6a882182f1b26c2b7d9b6d36bc8d33fc5c",
+    "matches": 14,
+    "total": 14,
+    "scope": "Byte verification only; did not rerun C# registry tests"
+  },
+  "readOnlyGuard": {
+    "path": "verification/v125-qa/registry-wave-readonly-guard.json",
+    "sha256": "1f558a6954c11b74b78a863017e31d57b90d42186fcf08b8654017672f77cf8f",
+    "matches": 39,
+    "total": 39,
+    "priorFiles": 16,
+    "originalConcepts": 23,
+    "originalCurrentDrafts": 5
+  },
+  "testPreparationHistory": {
+    "initialTestSha256": "de627261bdec3b5923fcb02083eb2efd3bebffc9e41cd6ae8832223703f7b4b8",
+    "initialPhase1": {
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "scope": "Synthetic cases and original byte guard only; real gallery/PRD final tests not run at this phase"
+    },
+    "probeCorrection": "Before final freeze root identified a mistaken English candidate08 literal in the not-yet-executed PRD probe. Changed only this test expectation to the actual Chinese header declaration: 已构建应用：1.0.0 开发候选08. Product source/reference not altered to satisfy a probe.",
+    "frozenTestSha256": "85bd3081049a1d921b43689f9c1ef40dc7fbabc53e61fc3781206120d0910820",
+    "correctedPhase1": {
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    }
+  },
+  "tool": {
+    "runtime": "Node.js v24.18.0",
+    "mode": "node:test, isolated filesystem fixtures and VM DOM shim; view_image for the two real PNGs"
+  },
+  "execution": {
+    "timestampExact": "Not retained for the pre-quota three test runs",
+    "completedBeforeQuotaHandoff": true,
+    "recoveredAtUtc": "2026-10-12T23:13:31Z",
+    "inputHashesReverifiedOnResume": true,
+    "noDuplicateCompletedRunOnResume": true,
+    "suites": [
+      {
+        "key": "catalogue",
+        "command": "node --test --test-reporter=tap verification/v125-qa/test-catalog-review.mjs",
+        "tests": 34,
+        "passed": 34,
+        "failed": 0,
+        "skipped": 0,
+        "exitCode": 0
+      },
+      {
+        "key": "documentRules",
+        "command": "node --test --test-reporter=tap verification/v125-qa/prd-review/prd-document-check-test.mjs",
+        "tests": 13,
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0,
+        "exitCode": 0
+      },
+      {
+        "key": "independentGallery",
+        "command": "node --test --test-reporter=tap verification/v125-qa/registry-art/independent-gallery-tests.mjs",
+        "tests": 21,
+        "passed": 21,
+        "failed": 0,
+        "skipped": 0,
+        "exitCode": 0
+      }
+    ],
+    "total": {
+      "tests": 68,
+      "passed": 68,
+      "failed": 0,
+      "skipped": 0,
+      "exitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    "consoleCopiesMatchToolOutput": true,
+    "retainedConsoleCopies": [
+        {
+            "suite": "catalogue",
+            "path": "/private/tmp/aerosim-registry-art-qa.D98ItJ/catalogue.tap.txt",
+            "sha256": "0238fc20a4dfbc41a265ad5adea41542c74019b524996bf3e57052aa6db69b47",
+            "bytes": 6810,
+            "origin": "Faithful retained copy of actual tool console TAP output, saved after quota handoff; not an independently timestamped raw process log"
+        },
+        {
+            "suite": "documentRules",
+            "path": "/private/tmp/aerosim-registry-art-qa.D98ItJ/documentRules.tap.txt",
+            "sha256": "dab858c52b000e819a5f7b2c5de8793fd77659bb82832b373907ddc33901a5ec",
+            "bytes": 2397,
+            "origin": "Faithful retained copy of actual tool console TAP output, saved after quota handoff; not an independently timestamped raw process log"
+        },
+        {
+            "suite": "independentGallery",
+            "path": "/private/tmp/aerosim-registry-art-qa.D98ItJ/independentGallery.tap.txt",
+            "sha256": "bec7943c3524cb8309607a839f698129d33fde4ee91aeddf3f91e814ff72fdd0",
+            "bytes": 5187,
+            "origin": "Faithful retained copy of actual tool console TAP output, saved after quota handoff; not an independently timestamped raw process log"
+        }
+    ],
+    "testSourceSha256": {
+      "verification/v125-qa/test-catalog-review.mjs": "350807420b2802bd7481d583b19c9709ecd49b63b6873d5ca4153c89dc18de96",
+      "verification/v125-qa/prd-review/prd-document-check-test.mjs": "e1933cfd233c413b11c40945a26b7bd143ff26ecb07a7f0e8ce902e5a966c412",
+      "verification/v125-qa/registry-art/independent-gallery-tests.mjs": "85bd3081049a1d921b43689f9c1ef40dc7fbabc53e61fc3781206120d0910820"
+    }
+  },
+  "gallery": {
+    "baseEntries": 132,
+    "variants": 9,
+    "totalEntries": 141,
+    "currentDrafts": 7,
+    "approved": 0,
+    "withoutCurrentDrafts": 134,
+    "catalogCompleteness": "NOT_PROVEN",
+    "noRealApprovalControlClicked": true,
+    "currentDraftIds": [
+      "dji-phantom-1",
+      "dji-mini-4-pro",
+      "dji-inspire-1",
+      "dji-mavic-pro",
+      "dji-mavic-4-pro",
+      "dji-phantom-4",
+      "dji-air-2s"
+    ],
+    "allSeedAppearanceStatus": "pending_user",
+    "productionAssetIntegration": false
+  },
+  "visualReview": {
+    "method": "Actually viewed both project PNGs with view_image and read both complete artist handoffs; independent QA did not inspect official photographs or physical aircraft.",
+    "images": [
+      {
+        "path": "assets/v125-art/phantom4/phantom-4-draft-01.png",
+        "sha256": "f5d855115819f4fbe1c1b4ec738cb0fbfc087338bd78d127f71f5d30df85d518",
+        "bytes": 1712605,
+        "width": 1536,
+        "height": 1024,
+        "matches": true,
+        "status": "pending_user",
+        "viewed": true
+      },
+      {
+        "path": "assets/v125-art/air2s/air-2s-draft-01.png",
+        "sha256": "05f07935cd8a1f60890d082a297ae1e13145f0633afb8e9e8060d56b0f580d2f",
+        "bytes": 1834870,
+        "width": 1536,
+        "height": 1024,
+        "matches": true,
+        "status": "pending_user",
+        "viewed": true
+      }
+    ],
+    "phantom4Observations": "White fixed X silhouette, four white propellers and one hanging camera visible. Side-panel gimbal/mount differs from front/three-quarter; motor/camera proportions and top-view nose direction uncalibrated. Not a coherent measured mesh.",
+    "air2sObservations": "Gray unfolded four-arm silhouette, dark orange-tip propellers, one nose camera and front/upward sensing windows visible. Gimbal/support thickness and sensor/window projection drift remain; underside/rear and dimensional consistency not established.",
+    "artistHandoffsFullyRead": [
+      "docs/V125_ART_PHANTOM4.md",
+      "docs/V125_ART_AIR2S.md"
+    ],
+    "approval": "NO_HUMAN_APPROVAL_OR_VISUAL_EQUALITY_CLAIM"
+  },
+  "historicalPreIntegrationAudit": {
+    "source": "verification/v125-qa/registry/registry-independent-results.json:documentPreIntegrationAudit",
+    "sourceSha256": "b5bcc9290cced7db77329a48be82c0f35ebc5cef804b131a4a94d73c00f55be6",
+    "ownedBy": "Independent identity-registry QA",
+    "checks": 583,
+    "failures": 1,
+    "exitCode": 1,
+    "localLinkOccurrences": 247,
+    "publicationPendingUnique": 17,
+    "soleFailure": "GALLERY_FROZEN_DRAFTS_MATCH: gallery 5 versus manifest 6 before integration",
+    "preserved": true,
+    "closure": "Final frozen gallery and manifest each contain 7 current drafts; final independent 68 tests and tracked audit pass. Original pre-integration failure record unchanged."
+  },
+  "initialTrackedDocumentAudit": {
+    "command": "node verification/v125-qa/prd-review/prd-document-check.mjs --require-tracked --doc docs/V125_PROGRESS.md --doc docs/V125_ART_PHANTOM4.md --doc docs/V125_ART_AIR2S.md --doc docs/V125_REGISTRY_CONTRACT_PROPOSAL.md --doc docs/V125_REGISTRY_IMPLEMENTATION.md --doc docs/V125_REGISTRY_QA.md",
+    "checkedAt": "2026-10-12T23:13:47.595Z",
+    "sourceSha256": {
+      "飞行模拟器产品设计文档.md": "07290c076ac360de1b1a751d3462801a889f56ea462231d72aed1104b04787b7",
+      "docs/V125_PROGRESS.md": "0fe25c60ee26629e0b5d32f392a0ea709805323f769eeb4b744c4bc7ff5654a8",
+      "docs/V125_ART_PHANTOM4.md": "8478cded16ac912ccb0f7a6a4deb2aa86b2cb4011210ecdb955632ab0f65b259",
+      "docs/V125_ART_AIR2S.md": "566f17713c14605576f44332b75ed87ce28d700a0e979ff4d25f76503a11fb74",
+      "docs/V125_REGISTRY_CONTRACT_PROPOSAL.md": "629b4c2c68ced3bc3ea07c781ade52aa32e5a85adac53e9c23e9cd2ed6acfd2c",
+      "docs/V125_REGISTRY_IMPLEMENTATION.md": "b14038c3633861c637a4cb3946769bdef759f712c2b1961c24d10c2ffb8c2039",
+      "docs/V125_REGISTRY_QA.md": "988a5b98f601fbd4eacae82f003226618e1722e0bfccfe93ff7f874dd77e8fe0"
+    },
+    "summary": {
+      "checks": 1052,
+      "failed": 0,
+      "localLinkOccurrences": 318,
+      "originalConcepts": 23,
+      "currentDrafts": 7,
+      "inheritedMissingOccurrences": 0,
+      "publicationPendingUnique": 0,
+      "status": "PASS_AUTOMATED_ONLY"
+    },
+    "exitCode": 0,
+    "outputHandling": "Complete checker execution succeeded; tool stdout was truncated, so only intact sourceSha256 and summary blocks were recovered. No full-output hash is claimed."
+  },
+  "selfDocumentTrackedAudit": {
+    "command": "node verification/v125-qa/prd-review/prd-document-check.mjs --require-tracked --doc docs/V125_PROGRESS.md --doc docs/V125_ART_PHANTOM4.md --doc docs/V125_ART_AIR2S.md --doc docs/V125_REGISTRY_CONTRACT_PROPOSAL.md --doc docs/V125_REGISTRY_IMPLEMENTATION.md --doc docs/V125_REGISTRY_QA.md --doc docs/V125_REGISTRY_ART_QA.md",
+    "exitCode": 0,
+    "checkedAt": "2026-10-12T23:19:48.173Z",
+    "requireTracked": true,
+    "sourceSha256": {
+      "飞行模拟器产品设计文档.md": "07290c076ac360de1b1a751d3462801a889f56ea462231d72aed1104b04787b7",
+      "docs/V125_PROGRESS.md": "499dabcdbc2354ed5c0acbe42d3a2fa9943b873285ffe6a723dfacc14fb997c7",
+      "docs/V125_ART_PHANTOM4.md": "8478cded16ac912ccb0f7a6a4deb2aa86b2cb4011210ecdb955632ab0f65b259",
+      "docs/V125_ART_AIR2S.md": "566f17713c14605576f44332b75ed87ce28d700a0e979ff4d25f76503a11fb74",
+      "docs/V125_REGISTRY_CONTRACT_PROPOSAL.md": "629b4c2c68ced3bc3ea07c781ade52aa32e5a85adac53e9c23e9cd2ed6acfd2c",
+      "docs/V125_REGISTRY_IMPLEMENTATION.md": "b14038c3633861c637a4cb3946769bdef759f712c2b1961c24d10c2ffb8c2039",
+      "docs/V125_REGISTRY_QA.md": "988a5b98f601fbd4eacae82f003226618e1722e0bfccfe93ff7f874dd77e8fe0",
+      "docs/V125_REGISTRY_ART_QA.md": "11e24d86661cedc4cd85c7e8d761be42399dca0ba02b9ce855753f1e3c99c16c"
+    },
+    "summary": {
+      "checks": 1095,
+      "failed": 0,
+      "localLinkOccurrences": 332,
+      "originalConcepts": 23,
+      "currentDrafts": 7,
+      "inheritedMissingOccurrences": 0,
+      "publicationPendingUnique": 0,
+      "status": "PASS_AUTOMATED_ONLY"
+    },
+    "failures": [],
+    "galleryMatch": {
+      "id": "GALLERY_FROZEN_DRAFTS_MATCH",
+      "result": "PASS",
+      "evidence": {
+        "galleryDraftCount": 7,
+        "manifestDraftCount": 7
+      }
+    },
+    "completeJsonStdoutSha256": "049076f37b9481ac5a0b31e57350d7f60375e82aeddec5a62819ac155a38ade6",
+    "completeJsonStdoutBytes": 426589,
+    "stdoutRetention": "Full JSON captured in memory for parsing/hash; full check array not saved or committed.",
+    "status": "PASS_AUTOMATED_ONLY",
+    "compactConsoleEvidence": {
+      "path": "/private/tmp/aerosim-registry-art-qa.D98ItJ/expanded-document-final-summary.json",
+      "sha256": "657fb437036a66a67248c29952bdac3a179deb0689665155c5f07e690f96ae65",
+      "bytes": 1978,
+      "origin": "Retained compact final checker summary; complete JSON stdout was hashed in memory, not retained as a full raw log"
+    }
+  },
+  "boundaries": {
+    "browserInteractive": "NOT_RUN",
+    "zoomTouchFocusExportInBrowser": "NOT_RUN",
+    "nativeOrUnityStarted": false,
+    "newNativeBuild": false,
+    "actualApplication": "1.0.0 开发候选08 unchanged",
+    "physicalController": "NOT_RUN",
+    "iPhoneIpadHardware": "NOT_RUN",
+    "scenePbrOrModelMesh": "NOT_VALIDATED",
+    "googleMapsAirspace": "NOT_VALIDATED",
+    "visual23PageParity": "NOT_ESTABLISHED",
+    "userModelApproval": "UNCHANGED_PENDING_USER",
+    "gateA": "NOT_CLOSED",
+    "version125Complete": false,
+    "gitWrite": false,
+    "modelApprovalStoreRealWrite": false,
+    "localStorageTrust": "Local drafts only; not signed identity proof or safe automatic production approval. Root must verify actual individual user confirmation and exact current image hash."
+  }
+}

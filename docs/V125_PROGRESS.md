@@ -153,6 +153,28 @@
 
 下一波继续共享输入Gate A的纯registry/映射与配置事务，并按美术交接修专业首页/回放/场景样板；三端产品线接线与设备验证分别关闭。用户逐机型确认是新最终资产门禁，其他不依赖批准的工作可继续；不自行批准或用版本号升级掩盖尚未完成项。
 
+## 2026-10-11 12:30续作：live身份registry与两份新机型审核稿
+
+恢复HEAD为 `bf97d1ae75e7b66e3e4d1848613a97eff9b09b2b`；本次新 `ls-remote` 开发分支SHA与之精确一致，因此上批30文件已交付，不重复08构建/矩阵或身份原测试。保留旧3个meta、候选04和Wave B未选工作。本波仍在 `codex/v125-product-lines`，不合并main或force-push。
+
+- 技术负责人先交132行[提案](V125_REGISTRY_CONTRACT_PROPOSAL.md)，根全文复核后冻结 identity-only 子集及 usage/overflow 两项澄清。作者实现 `InputIdentityRegistry.cs/.meta` 与严格纯C#自测；它仅管理完整身份快照、代际和重复serial冲突，不接Unity采样、mapping、校准保存或旧FlightInput，不能从08继承native通过。
+- 根源码复核发现首次计数会漏掉 generation 耗尽但仍Active的观察，可能使同serial幸存设备假判唯一。追加 immutable [v3](../verification/v125-qa/registry-contract-addendum-v3.json)后作者修复为先统计全部合格Active观察；新增26边界断言。修后作者及根严格复跑均 **33,883检查/0失败/exit0**，1,200 ticks/seed1251011/6槽；旧33,857不是修后结果。作者已停写，根[source freeze](../verification/v125-qa/registry-source-freeze.json)固定14文件，源SHA `2536d814d4430b436ad322b602943b8a88de7ff294203034c91cbc960a730ba2`。这是作者套件回归，不替独立QA；纯模块不在08二进制中。
+- 独立QA在读新实现前先锁主49组＋v3补4组字面轨迹，两个JSON实际由driver消费，未用实现输出倒写预期。冻结后独立及根严格复跑均 **15,889检查/0失败/exit0**，实际消费53轨迹/220次Apply（其中v3为4/21）、7个反射边界和9个无效构造；四个mutation均成功严格编译后被未改套件exit1检出，失败数195/19/118/56。既有resolver另跑310,390/0/exit0，不混入新registry计数。见[独立QA](V125_REGISTRY_QA.md)及[紧凑结果](../verification/v125-qa/registry/registry-independent-results.json)。整合前583检查/1失败（当时画廊5、manifest6）原样保留为历史预检，不能提前写最终文档PASS。
+- 两名3D美术各交一份原版Phantom 4与Air 2S四视图审核位图，均1536×1024、各一次内置文字生成、`pending_user`；原版Phantom 4不是Pro/Advanced/RTK。Phantom官方参考浏览器挂起后中断并只读恢复，未取得所尝试的manual或其他角度图；不能扩大已查证参考范围。根实际看Phantom生成源并核项目副本同SHA，实际看Air 2S项目PNG；两份稿件的云台跨视图、比例和缺少校准/网格风险保留于[Phantom说明](V125_ART_PHANTOM4.md)及[Air 2S说明](V125_ART_AIR2S.md)。PNG SHA分别为 `f5d855115819f4fbe1c1b4ec738cb0fbfc087338bd78d127f71f5d30df85d518` 和 `05f07935cd8a1f60890d082a297ae1e13145f0633afb8e9e8060d56b0f580d2f`。23原图与原5个current稿保持原字节；不是最终网格/PBR或用户批准。
+- 本波根拥有生成器/目录测试/文档检查器对精确两namespace的增量支持，以及PRD、画廊和本文整合；不泛放任意资产路径/来源域。新增[只读守卫](../verification/v125-qa/registry-wave-readonly-guard.json)固定16个原文件及23原图，属于保持字节的基线，不是新运行或视觉通过。
+
+根已将两份图嵌入PRD v1.8的25.15并刷新审核页：132主机型+9变体=141条、7份current稿、0批准、134条尚无current稿，目录无遗漏证明仍未关闭；localStorage导出不是可信签名或正式批准。生成器只加精确phantom4/air2s namespace及机型ID，未扩大来源域/生产门禁。根完整工具回归34目录+13文档规则+21独立新测试=**68/0/exit0、0skip**，随后冻结root/art/doc输入并交独立文档终验。自动文档/文件检查不等于浏览器缩放与触点实测、图像精准或用户验收。
+
+本波没有新Unity构建/native启动；实际应用仍1.0.0开发候选08，不能把纯registry源或新审核位图算进08已测二进制。独立文档终验与实际Git交付回执将在本节追加；此处不预称已上传。最终只提交已核对范围并正常推送、核新远端SHA；raw采样/映射/校准事务、三端正式接线、完整23图视觉、地图和移动真机门禁继续保留。
+
+### 2026-10-12 16:13额度恢复续接：独立文档终验
+
+上一日独立画廊QA额度中断，35个已检查文件仅暂存、未提交；本次先恢复同HEAD与新远端开发分支SHA `bf97d1ae75e7b66e3e4d1848613a97eff9b09b2b`，再核[整合输入冻结](../verification/v125-qa/registry-art-source-freeze.json)23/23、registry源14/14、只读守卫39/39，全部仍一致。没有购买额度、使用reset或重复生成两份图。三套68项独立运行及实际看两图已在中断前完成，成员恢复其真实输出和指纹，不把丢失的精确运行时刻补写成现在。
+
+独立成员本次新执行PRD＋本文＋两美术说明＋registry三文档的 `--require-tracked` 审计：**1,052检查/0失败/exit0，318次本地链接、0未暂存依赖**。结论仅 `PASS_FROZEN_GALLERY_DOCUMENT_INPUTS`；另一registry QA的旧583/1失败原样保留，由最终画廊与manifest同为7稿关闭陈旧HTML差异。见[独立文档QA](V125_REGISTRY_ART_QA.md)与[紧凑结果](../verification/v125-qa/registry-art/gallery-document-results.json)，自身报告及本段加入后的扩大依赖复核在这两份文件中另记，不倒写1052范围。
+
+根再次检查35暂存文件范围、空白与疑似凭据，无意外路径；旧3个meta/候选04/Wave B无关改动不纳入。08 Runtime DLL SHA仍 `0aec831cff961caafa77a38f90bdf0335ff4026b817ccde9fd71b8ed21e99f9f`，只是静态字节核对，没有新应用运行。根统一在独立交接停止后提交并正常push，成功与否以实际命令和新 `ls-remote` 为准，本段提交前记录不构成上传证明。1.25未发布、0用户机型批准、完整三端/23图/真实地图与真机门禁继续保留。
+
 ## 团队和文件边界
 
 | 波次/负责人 | 本批职责 | 文件范围 |
@@ -181,6 +203,10 @@
 | 本轮UI美术/移动布局审查 | 原图与历史候选对照、iPad/iPhone布局与触点建议 | V125_UI_MOBILE_AUDIT.md，不改图稿或移动代码 |
 | 本轮场景3D美术审查 | 材质类别、米尺度、shader/几何/水面与性能调研 | V125_SCENE_REALISM_AUDIT.md，不生成/接入新资产 |
 | 本轮根整合/独立QA | 建议整合、冻结与只读守卫、独立检查器回归和交付 | V125_UX_UI_OPTIMIZATION_RESEARCH.md、V125_UX_UI_RESEARCH_QA.md、ux-ui-research-*.json、本文 |
+| snapshot registry技术负责人/程序员 | 先提案、按根addenda实现纯身份快照及作者测试，停写后交QA | InputIdentityRegistry.cs/.meta、DeveloperTests/runner、V125_REGISTRY_CONTRACT_PROPOSAL.md、V125_REGISTRY_IMPLEMENTATION.md |
+| snapshot registry独立QA | 先冻结字面预期，再运行独立driver与隔离mutation | registry/prepared-vectors*.json、IndependentTests/runner/results、V125_REGISTRY_QA.md；不写作者文件 |
+| 本波两名3D美术 | 原版Phantom 4及Air 2S官方参考、审核位图、提示记录和差异 | 各自phantom4/air2s目录及V125_ART_PHANTOM4/AIR2S.md；不改旧5稿 |
+| 本波根页面工具/独立文档QA | 精确namespace支持、文档嵌图与画廊整合，另派独立门禁/文档复核 | 根独占生成器/现有测试/checker/PRD；QA独占registry-art测试/结果及V125_REGISTRY_ART_QA.md |
 
 并发上限四个运行成员，角色按波次接力，不并行争用 Unity 构建。后续设备程序员/QA 按技术审查分配，跨线支援由根负责人记录交接。
 
