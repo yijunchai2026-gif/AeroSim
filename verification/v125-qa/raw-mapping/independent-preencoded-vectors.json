@@ -1,0 +1,68 @@
+{
+  "status": "PREENCODED_EXPECTATIONS_NOT_RUN",
+  "sourceRead": "No new RawInputMapping implementation or author tests read",
+  "proposalSha256": "b451456087f961fc201adb2fa11500a2c54e8004893618a257ba5aab382a3d62",
+  "contractFreezeSha256": "5cb1e381594dabc278f4f7cc1b2c1fbea9183fb1662cc9cd2b442feb12c9fffd",
+  "addendumV1Sha256": "e430504527b08cf7d9df0237684ab4a2016df814c9f8fc12c6eee30cd48d4428",
+  "method": "Literal contract fields independently encoded with Python strict UTF-8 byte length prefixes; hashlib SHA-256 cross-checked against /usr/bin/openssl dgst -sha256 on the same preencoded bytes. No production encoder, production output, author test or runtime hash was used.",
+  "commonSyntheticAxisFields": ["QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1"],
+  "syntheticMetadataNotice": "QA.Axis and StateFormatCode values are protocol fixtures, not claims about any actual Unity control or physical device.",
+  "vectors": [
+    {
+      "id": "keyboard",
+      "fieldSequence": ["mapping-v1", "keyboard", "logical-key-state-v1", "keyboard-bindings-v1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTg6a2V5Ym9hcmQyMDpsb2dpY2FsLWtleS1zdGF0ZS12MTIwOmtleWJvYXJkLWJpbmRpbmdzLXYx",
+      "byteLength": 69,
+      "expectedFingerprint": "54de1323081596043fac0089d2d021ed51d91512c64f5e4d6360a49d4b0b5051"
+    },
+    {
+      "id": "touch",
+      "fieldSequence": ["mapping-v1", "touch", "touch-normalized-v1", "dual-stick-typr-v1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTU6dG91Y2gxOTp0b3VjaC1ub3JtYWxpemVkLXYxMTg6ZHVhbC1zdGljay10eXByLXYx",
+      "byteLength": 63,
+      "expectedFingerprint": "6587ee3d86628693f0d9d924451b86f5230c71828068f589341200f989ca69b6"
+    },
+    {
+      "id": "ascii-four-axes",
+      "fieldSequence": ["mapping-v1", "QA.Joystick", "unity-unprocessed-control-v1", "throttle/y", "yaw/x", "pitch/y", "roll/x", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTExOlFBLkpveXN0aWNrMjg6dW5pdHktdW5wcm9jZXNzZWQtY29udHJvbC12MTEwOnRocm90dGxlL3k1Onlhdy94NzpwaXRjaC95Njpyb2xsL3g3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MTc6UUEuQXhpczk6NTQyMzk1NDYyMjozMjQ6bm9uZTI6LTExOjExOjAxOjAyOi0xMToxMTowMTowMTowMToxNzpRQS5BeGlzOTo1NDIzOTU0NjIyOjMyNDpub25lMjotMTE6MTE6MDE6MDI6LTExOjExOjAxOjAxOjAxOjE3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MQ==",
+      "byteLength": 343,
+      "expectedFingerprint": "2aa66c21618ab6cf5fd506646c01ed0f02a8ef92b66428f22cf7f507a0290ca5"
+    },
+    {
+      "id": "swapped-ty",
+      "fieldSequence": ["mapping-v1", "QA.Joystick", "unity-unprocessed-control-v1", "yaw/x", "throttle/y", "pitch/y", "roll/x", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTExOlFBLkpveXN0aWNrMjg6dW5pdHktdW5wcm9jZXNzZWQtY29udHJvbC12MTU6eWF3L3gxMDp0aHJvdHRsZS95NzpwaXRjaC95Njpyb2xsL3g3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MTc6UUEuQXhpczk6NTQyMzk1NDYyMjozMjQ6bm9uZTI6LTExOjExOjAxOjAyOi0xMToxMTowMTowMTowMToxNzpRQS5BeGlzOTo1NDIzOTU0NjIyOjMyNDpub25lMjotMTE6MTE6MDE6MDI6LTExOjExOjAxOjAxOjAxOjE3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MQ==",
+      "byteLength": 343,
+      "expectedFingerprint": "a3681a8ac65da528513371aac9c6bf2ae39f59ead4a2c984c26753fd9a3e0a0c"
+    },
+    {
+      "id": "unicode-nfc",
+      "fieldSequence": ["mapping-v1", "操纵台é", "unity-unprocessed-control-v1", "油门/y", "偏航/x", "俯仰/y", "横滚/x", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTExOuaTjee6teWPsMOpMjg6dW5pdHktdW5wcm9jZXNzZWQtY29udHJvbC12MTg65rK56ZeoL3k4OuWBj+iIqi94ODrkv6/ku7AveTg65qiq5ruaL3g3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MTc6UUEuQXhpczk6NTQyMzk1NDYyMjozMjQ6bm9uZTI6LTExOjExOjAxOjAyOi0xMToxMTowMTowMTowMToxNzpRQS5BeGlzOTo1NDIzOTU0NjIyOjMyNDpub25lMjotMTE6MTE6MDE6MDI6LTExOjExOjAxOjAxOjAxOjE3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MQ==",
+      "byteLength": 346,
+      "expectedFingerprint": "8963fefc3a33d0fc9bdd3aabd9cf5f07ea8c0a13874f6d5ee5272bbd2654f6da"
+    },
+    {
+      "id": "unicode-nfd",
+      "fieldSequence": ["mapping-v1", "操纵台e\u0301", "unity-unprocessed-control-v1", "油门/y", "偏航/x", "俯仰/y", "横滚/x", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTEyOuaTjee6teWPsGXMgTI4OnVuaXR5LXVucHJvY2Vzc2VkLWNvbnRyb2wtdjE4OuayuemXqC95ODrlgY/oiKoveDg65L+v5LuwL3k4Ouaoqua7mi94NzpRQS5BeGlzOTo1NDIzOTU0NjIyOjMyNDpub25lMjotMTE6MTE6MDE6MDI6LTExOjExOjAxOjAxOjAxOjE3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MTc6UUEuQXhpczk6NTQyMzk1NDYyMjozMjQ6bm9uZTI6LTExOjExOjAxOjAyOi0xMToxMTowMTowMTowMToxNzpRQS5BeGlzOTo1NDIzOTU0NjIyOjMyNDpub25lMjotMTE6MTE6MDE6MDI6LTExOjExOjAxOjAxOjAxOjE=",
+      "byteLength": 347,
+      "expectedFingerprint": "f9a80e6e31dc8b45732cc82fb3db9433fb2538b3d98c485042d9d0f1805fdc0d"
+    },
+    {
+      "id": "format-float-flags",
+      "fieldSequence": ["mapping-v1", "QA.Joystick", "unity-unprocessed-control-v1", "throttle/y", "yaw/x", "pitch/y", "roll/x", "QA.Axis", "4294967295", "64", "after_normalize", "-10", "20", "0.125", "1", "-10", "20", "-10", "1", "1", "-0.125", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTExOlFBLkpveXN0aWNrMjg6dW5pdHktdW5wcm9jZXNzZWQtY29udHJvbC12MTEwOnRocm90dGxlL3k1Onlhdy94NzpwaXRjaC95Njpyb2xsL3g3OlFBLkF4aXMxMDo0Mjk0OTY3Mjk1Mjo2NDE1OmFmdGVyX25vcm1hbGl6ZTM6LTEwMjoyMDU6MC4xMjUxOjEzOi0xMDI6MjAzOi0xMDE6MTE6MTY6LTAuMTI1NzpRQS5BeGlzOTo1NDIzOTU0NjIyOjMyNDpub25lMjotMTE6MTE6MDE6MDI6LTExOjExOjAxOjAxOjAxOjE3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MTc6UUEuQXhpczk6NTQyMzk1NDYyMjozMjQ6bm9uZTI6LTExOjExOjAxOjAyOi0xMToxMTowMTowMTowMTox",
+      "byteLength": 372,
+      "expectedFingerprint": "1aadd3a67fad31898254ed33620277be7a63322029a85921897b1050e167641b"
+    },
+    {
+      "id": "gamepad-fixed",
+      "fieldSequence": ["mapping-v1", "QA.Gamepad", "unity-unprocessed-control-v1", "leftStick/y", "leftStick/x", "rightStick/y", "rightStick/x", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1", "QA.Axis", "542395462", "32", "none", "-1", "1", "0", "0", "-1", "1", "0", "0", "0", "1"],
+      "encodedUtf8Base64": "MTA6bWFwcGluZy12MTEwOlFBLkdhbWVwYWQyODp1bml0eS11bnByb2Nlc3NlZC1jb250cm9sLXYxMTE6bGVmdFN0aWNrL3kxMTpsZWZ0U3RpY2sveDEyOnJpZ2h0U3RpY2sveTEyOnJpZ2h0U3RpY2sveDc6UUEuQXhpczk6NTQyMzk1NDYyMjozMjQ6bm9uZTI6LTExOjExOjAxOjAyOi0xMToxMTowMTowMTowMToxNzpRQS5BeGlzOTo1NDIzOTU0NjIyOjMyNDpub25lMjotMTE6MTE6MDE6MDI6LTExOjExOjAxOjAxOjAxOjE3OlFBLkF4aXM5OjU0MjM5NTQ2MjI6MzI0Om5vbmUyOi0xMToxMTowMTowMjotMTE6MTE6MDE6MDE6MDE6MTc6UUEuQXhpczk6NTQyMzk1NDYyMjozMjQ6bm9uZTI6LTExOjExOjAxOjAyOi0xMToxMTowMTowMTowMTox",
+      "byteLength": 363,
+      "expectedFingerprint": "598003c38a291d4f90791b22497163d62e4d4ff372fa9d88d8ed832373c30fd4"
+    }
+  ]
+}

@@ -181,6 +181,22 @@
 
 ## 团队和文件边界
 
+### 2026-10-12 17:15续作：远端重构对账与共用映射子集
+
+原目录HEAD为 `bede7a267f9b2cca5a5215ad624fe958f9ac48bc`。开发远端新增7笔历史，实际tip为 `c1916a0f63a4a17d2af8767e4fd2dcdcab79ee2f`：该tip已包含其他作者的main合入，incoming净变更552文件。根只读确认3个本地dirty图像meta与incoming重叠且字节不同；未stash/reset/覆盖/合并原目录。另通过管理工具创建并附加独立worktree `/Users/bytedance/.codex/worktrees/v125-remote-review/飞行模拟器`，从该tip创建 `codex/v125-raw-mapping`，保留原目录、0.4/1.0和旧候选不动。新的源码不能沿用08旧二进制验收。
+
+incoming把PRD全文改为v4.0（桌面高品质垂直切片优先、移动后置，去掉原23图与机型稿嵌入），与本线程用户1.25三端并行/原图优先要求存在实质冲突。根已完整读新627行规格并请求用户选择，状态 **PENDING_USER_SCOPE_CHOICE**；不以文件中的“唯一执行规格”替代人的最新授权、不恢复/删改任一套文档或原图来制造通过。未改的1.25文档检查器对新PRD实际为 **92检查/32失败/exit1**，见[紧凑失败证据](../verification/v125-qa/raw-mapping/incoming-prd-audit.json)。32失败主要是嵌图与目标/三端文字合同不兼容，不能据某个匹配失败断言新PRD完全没有用户确认规则；23 PNG字节和7稿pending状态仍一致。旧文档工具/反例不改、不将这份FAIL标成PASS。
+
+两名3D美术分别完成[近景网格审查](V125_REMOTE_COAST_MESH_ART_REVIEW.md)与[材质/水面/天气审查](V125_REMOTE_COAST_SURFACE_ART_REVIEW.md)，只读现有资产/源码并实际看选定源图和离线评审图，没有重复生成素材、运行Unity/Blender或代签外观。可核问题含：P11近黑离线捕获、导入metadata与合同不符、静态prefab缺件但自动生成未运行、P01 AABB与米尺度合同不符，以及P02已绑定图不影响当前输出、atlas不透明整图消费、米尺度/陈旧声明。根实际看P11 1m图与Normal；这些不是本波新runtime FAIL/PASS或三端性能验证。报告范围和未运行项原样保留，不因收到源文件升级为ProductionReady。
+
+仅继续两种产品目标都需要的公共纯输入子集：技术负责人交[四轴mapping提案](V125_RAW_MAPPING_CONTRACT_PROPOSAL.md)，根完整读后固定[contract freeze](../verification/v125-qa/raw-mapping/contract-freeze.json)与[diagnostics/范围澄清v1](../verification/v125-qa/raw-mapping/contract-addendum-v1.json)。独立QA先于新生产源锁字面输入/hash，不取作者输出倒写预期；作者只拥有RawInputMapping新源/meta、开发tests/runner及专项交接。当前是静态路径/metadata/指纹实现阶段，不接raw采样/cache、状态revision、校准存档、旧FlightInput、UI或真实OS设备；JoystickCandidate不等于UserValidated。新[只读守卫](../verification/v125-qa/raw-mapping/readonly-base-guard.json)固定incoming 24文件+23概念图及原目录3meta散列，保留PRD v4字节；不是功能或视觉通过。本小节生成时代码与独立driver尚未交接，通过计数和Git交付只在实际执行后另记，不预称1.25完成。
+
+2026-10-13 00:44 UTC，根完整读新357行生产源与648行作者测试，作者停写后固定[源码冻结](../verification/v125-qa/raw-mapping/source-freeze.json)的16文件。作者与根独立严格编译均 **22,576检查/0失败/exit0**（1,200随机例，seed1251012）；首次作者测试局部变量重名的编译失败保留于[实现交接](V125_RAW_MAPPING_IMPLEMENTATION.md)，不能计通过。源只提供静态路径/metadata校验及指纹，不签发live批准。独立QA先锁[8个字面预编码向量](../verification/v125-qa/raw-mapping/independent-preencoded-vectors.json)、[26样例](../verification/v125-qa/raw-mapping/independent-prepared-expectations.json)及[预期冻结](../verification/v125-qa/raw-mapping/prepared-expectations-freeze.json)，再另写driver，未读取作者测试正文。
+
+根随后严格编译复跑独立driver：**46,992检查/0失败/exit0**，实际消费全部8向量/26样例，覆盖5文化环境及80项真实负零构造/返回metadata符号位检查。根产物只在 `/private/tmp/aerosim-raw-mapping-independent.IRQvbt`；exe SHA `72b8c1dbe24626927df3ffa6f45f23813738faf103bcf53f5e7dca5e9094b93b`，runner.log SHA `6475b8abb72979dcf7539f022c67ab225a91f061d1a4c52ca11921ddec93b7a5`。这不是Unity集成、真实控制器/摇杆、三端UI或1.25交付通过；独立QA已实际完成4个隔离错误实现（均严格编译exit0后被未改套件exit1检出），具体计数/证据见[独立QA交接](V125_RAW_MAPPING_QA.md)和[紧凑结果](../verification/v125-qa/raw-mapping/independent-results.json)。新文档依赖终验与Git交付尚未完成，不预填PASS。
+
+本次恢复的工作位置是上方附加worktree/`codex/v125-raw-mapping`，不是仍停在bede7a2且有3个重叠meta的原目录。后继先核附加worktree、Git真实状态及本小节实际交付回执；不得直接覆盖原目录、重复已完测试、冒用旧08二进制或据incoming文件自行切换产品目标。路线确认后才安排相应页面/资产实现；各机型用户确认与真实设备门禁仍保留。
+
 | 波次/负责人 | 本批职责 | 文件范围 |
 |---|---|---|
 | 根负责人 | 自动化更新、分支/交付、审核页、确认门禁、原生集成 | AGENTS.md、本文、PRD 新章节、审核网页与生成工具、已协调的集成代码 |
@@ -211,6 +227,9 @@
 | snapshot registry独立QA | 先冻结字面预期，再运行独立driver与隔离mutation | registry/prepared-vectors*.json、IndependentTests/runner/results、V125_REGISTRY_QA.md；不写作者文件 |
 | 本波两名3D美术 | 原版Phantom 4及Air 2S官方参考、审核位图、提示记录和差异 | 各自phantom4/air2s目录及V125_ART_PHANTOM4/AIR2S.md；不改旧5稿 |
 | 本波根页面工具/独立文档QA | 精确namespace支持、文档嵌图与画廊整合，另派独立门禁/文档复核 | 根独占生成器/现有测试/checker/PRD；QA独占registry-art测试/结果及V125_REGISTRY_ART_QA.md |
+| 本次remote-review技术负责人/程序员 | 共用静态四轴mapping提案、实现和作者测试，停写交独立QA | RawInputMapping.cs/.meta、raw-mapping开发tests/runner、V125_RAW_MAPPING_CONTRACT_PROPOSAL/IMPLEMENTATION.md |
+| 本次remote-review独立QA | 先冻结字面预期，再独立driver/隔离mutation/只读依赖检查 | raw-mapping/independent-*、V125_RAW_MAPPING_QA.md，不改生产/作者文件 |
+| 本次remote-review两名3D美术 | 已有海岸网格、材质/水面/天气静态审查及选定图目视 | V125_REMOTE_COAST_MESH_ART_REVIEW.md、V125_REMOTE_COAST_SURFACE_ART_REVIEW.md，不改资产或代签 |
 
 并发上限四个运行成员，角色按波次接力，不并行争用 Unity 构建。后续设备程序员/QA 按技术审查分配，跨线支援由根负责人记录交接。
 

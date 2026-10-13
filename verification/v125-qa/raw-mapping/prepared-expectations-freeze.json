@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "frozenAtUtc": "2026-10-13T00:38:27.980Z",
+  "scope": "Root-reviewed independent literal expectations, prepared before QA reads production source or developer tests. No implementation execution PASS.",
+  "files": {
+    "verification/v125-qa/raw-mapping/independent-preencoded-vectors.json": "c5267d4245b5c705c4e31981e3cbb929220557a81e8974fe4b63d33c40244891",
+    "verification/v125-qa/raw-mapping/independent-prepared-expectations.json": "56656b91952e609abba171c9fd8b5e66312f20ba08239824dd2c645ecda6ea1f"
+  },
+  "preencodedVectors": 8,
+  "literalCases": 26,
+  "rootOracleByteChecks": 8,
+  "checksScope": "Node reconstructed only literal field sequences and verified base64/byteLength/SHA; did not invoke production API.",
+  "caseIds": [
+    "valid-four-axes",
+    "mapping-order-sensitive",
+    "unicode-utf8-nfc",
+    "unicode-utf8-nfd",
+    "builtin-keyboard",
+    "builtin-touch",
+    "builtin-joystick-unsupported",
+    "gamepad-fixed-candidate-is-not-user-validated",
+    "gamepad-edit-gate-precedes-invalid-layout-catalog",
+    "gamepad-missing-axis-is-rejected",
+    "joystick-null-mapping-missing-precedes-invalid-input",
+    "case-sensitive-exact-lookup",
+    "path-nfc-nfd-not-normalized",
+    "three-duplicate-mapped-paths",
+    "duplicate-unselected-catalog-path",
+    "wildcard-not-resolved-or-echoed",
+    "cross-device-selector-syntax-rejected",
+    "cross-device-looking-relative-prefix-not-stripped",
+    "button-rejected-without-axis-metadata-errors",
+    "unknown-valuekind-even-unselected",
+    "catalog-collects-path-and-valuekind-stage-suppresses-mapping",
+    "metadata-errors-collect-even-with-missing-preprocess",
+    "unknown-clamp-nonfinite-and-evaluable-range-collect",
+    "finite-metadata-full-format-precision-and-flags",
+    "positive-negative-zero-canonical-equivalence",
+    "immutable-prior-result-after-input-list-clear-and-new-validation"
+  ],
+  "status": "EXPECTATIONS_FROZEN_BEFORE_SOURCE_QA"
+}

@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUtc": "2026-10-13T00:23:08.490Z",
+  "head": "c1916a0f63a4a17d2af8767e4fd2dcdcab79ee2f",
+  "scope": "Incoming c1916a0 worktree byte guard. Not old candidate08 or runtime/visual pass. New PRD v4 versus human 1.25 scope unresolved; no reinterpretation.",
+  "files": {
+    "AGENTS.md": "52a30e1d1ce42d5c11ac7ab1efadbd081e846e62ebd399ee9c030fa2cc0d999d",
+    "飞行模拟器产品设计文档.md": "fd656b23c76121d46d437fed053e19957377b2194a964e0f31833db6e9480da8",
+    "assets/catalog-v125/dji-aircraft.json": "4beb519cb142ce156d33464c0ef85d674921df2013bf3f32771f7fbff0cf909c",
+    "AeroSim-1.25-机型逐一审核.html": "7dbb08d2aa3ed7cb9f840e64d22c5c94d7e9154acab7f31c9a4b00e279d8fc6f",
+    "AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs": "aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs": "88a215d7431824c3c3062d377c4d2e35a7bdd3af81348bf1add4aca2adca084f",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputIdentityRegistry.cs": "2536d814d4430b436ad322b602943b8a88de7ff294203034c91cbc960a730ba2",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputRouter.cs": "991a36ee16244bb3d1e1e60578331c0481cc994464bcc6be105076d4cb5006ef",
+    "AeroSim/Assets/AeroSim/Runtime/Input/TouchInputState.cs": "2319cdc4e7dd9aa4510565caba6b1d0be5a712fadd8e032328f0ec236b470fb6",
+    "AeroSim/Assets/AeroSim/Runtime/Input/FlightInput.cs": "c7a2e9da426b0a527511a645442ed4161f9754ff19d039509bd7c51539fa2a99",
+    "docs/V125_GATE_A_CONTRACT.md": "f2237ca63358afcd2ee7c76eb828609e61b8094a15ecdd43476d5f7012257697",
+    "assets/v125-art/legacy/review-drafts.json": "8ee42d51961b92dfd4df7643b1b06c733db54e2eee5045cc294d12c873c39613",
+    "assets/v125-art/current/review-drafts.json": "348caee78d0a6df5ee249b3b7dc71e0248ac930bbb495e80ba83fc6461d28cff",
+    "assets/v125-art/inspire/review-drafts.json": "3c6f7a1cfa7676d6db06735434e2ea235df4e888b4c370176e4fe4dd8a47104f",
+    "assets/v125-art/mavic/review-drafts.json": "2d4cf32ab294592476de301d17b3d3b48911b3fbf5a4d45b15c96862229dee32",
+    "assets/v125-art/phantom4/review-drafts.json": "e0ce4eeb84a86fe57b2e1427b38a8a4fd193b18526dec147001aea69b85acc4c",
+    "assets/v125-art/air2s/review-drafts.json": "d587211b4d95c13127dc679e5771636279d6851f6d9bd1fc2e9fafa895c7513e",
+    "assets/v125-art/legacy/phantom-first-generation-draft-02.png": "0bd916ac7627cfb0d07957199ced134358e593ddeaaaa6334e6df4cd0b18f698",
+    "assets/v125-art/current/mini-4-pro-draft-01.png": "5d41de5113d0a0da95109807d479b4392c28052adb802383278db6deb90b360d",
+    "assets/v125-art/inspire/inspire-1-x3-draft-03.png": "94a2245bd26a4bfdd930ea0b6d51f596e9bf4d1459f88861329a4c4e695e4491",
+    "assets/v125-art/mavic/mavic-pro-draft-02.png": "ace4e4d0edad8555ac726a8b2c674c4a7513201cc8c01bcac8927fd12c462931",
+    "assets/v125-art/mavic/mavic-4-pro-draft-01.png": "efdc1b0d6c5bf307968731e1c5f0afd9f40aa3e4e5a4eb3deb5382e090eaa9ab",
+    "assets/v125-art/phantom4/phantom-4-draft-01.png": "f5d855115819f4fbe1c1b4ec738cb0fbfc087338bd78d127f71f5d30df85d518",
+    "assets/v125-art/air2s/air-2s-draft-01.png": "05f07935cd8a1f60890d082a297ae1e13145f0633afb8e9e8060d56b0f580d2f"
+  },
+  "originalConcepts": [
+    {
+      "file": "assets/aerosim-us-01-onboarding-learning-path.png",
+      "sha256": "0c03886b7542a72cc2fd0938e4c9de7f0200e639177579e39a7d7c59f0179669"
+    },
+    {
+      "file": "assets/aerosim-us-02-controller-calibration.png",
+      "sha256": "aff35fef57082ceff060d6623f5a813538bc4e813edd9302bfb6caffdc43e618"
+    },
+    {
+      "file": "assets/aerosim-us-03-aerial-home.png",
+      "sha256": "e24a8936787bd945a09a16c69e2fa0cd3814396c0070799c82f18c84cb7dd4dc"
+    },
+    {
+      "file": "assets/aerosim-us-04-aerial-academy.png",
+      "sha256": "5ee04e6d61c7457f4cc95f5d8351d9e5a2b4375a17efcf3888cdefbb311583cf"
+    },
+    {
+      "file": "assets/aerosim-us-05-free-flight-setup.png",
+      "sha256": "351a24b76181992d0bce7304a1543f38c1bcffaab047087884f3db038025243a"
+    },
+    {
+      "file": "assets/aerosim-us-06-fpv-home.png",
+      "sha256": "e28c5556c27fcbb573b035bfdc6a4a4e10b1fadf7e78ac6dcfff94499da1bce4"
+    },
+    {
+      "file": "assets/aerosim-us-07-fpv-challenges.png",
+      "sha256": "8d92a0a703fc28f20d4e98347c8937fef4f780a6ae4982bb8f28cc5614c854ef"
+    },
+    {
+      "file": "assets/aerosim-us-08-fpv-tuning.png",
+      "sha256": "a7d9ca2ec8b687668eeb4451bcbcfc961458196d5272c58c2703991b83f32ef7"
+    },
+    {
+      "file": "assets/aerosim-us-09-fpv-race-osd.png",
+      "sha256": "b6ffb63b2ed699692b45cddf8e544b70f6193d68019294b9f30ea6a8f7a9df25"
+    },
+    {
+      "file": "assets/aerosim-us-10-professional-dashboard.png",
+      "sha256": "78795b88ace57024e8a2c198bda99b4e02cad84dea3ca7047700e22ccefaaf64"
+    },
+    {
+      "file": "assets/aerosim-us-11-professional-preflight.png",
+      "sha256": "d82e639254461cff9a98963e2ef05db9a3a4110c15b1e190080689d33cd4a09e"
+    },
+    {
+      "file": "assets/aerosim-us-12-professional-mission.png",
+      "sha256": "235ce331d4632b4a1186ac3d746a575e3a35b7a89fa1bb9b4d11e1ff234e9914"
+    },
+    {
+      "file": "assets/aerosim-us-13-instructor-live-session.png",
+      "sha256": "177de0233e1a12d3647a7ba07a896cb3b06490a1acd5a3720fe0a98b2bce97c5"
+    },
+    {
+      "file": "assets/aerosim-us-14-flight-results.png",
+      "sha256": "3ab7f1bd318bbb013a70abb906217f6f190aa96275ce09f956c276a23c61c221"
+    },
+    {
+      "file": "assets/aerosim-us-15-replay-analysis.png",
+      "sha256": "192cd3a041761c4e0a61ecac80da26b445128542f152201fbe6c8561a518cf1e"
+    },
+    {
+      "file": "assets/aerosim-us-16-us-flight-readiness.png",
+      "sha256": "c695330aee2685e8b3241ada318cbebacb154780ca3757a13660636ce6194433"
+    },
+    {
+      "file": "assets/aerosim-us-17-professional-report.png",
+      "sha256": "f54b925773739a78e9f4f56251d179682422d0f4de3a69fff809ce6e22c8f513"
+    },
+    {
+      "file": "assets/aerosim-us-18-fpv-osd-editor.png",
+      "sha256": "c151a5fde6a88ebe0cda77e88cf87b551fa7c4bb2c72a97da1381e347f60fc21"
+    },
+    {
+      "file": "assets/aerosim-us-19-professional-mission-brief.png",
+      "sha256": "298926de53b7a29ff16a7b385d882203541f9afdee7e74a0e3c668749f96fbb5"
+    },
+    {
+      "file": "assets/aerosim-us-20-professional-training-catalog.png",
+      "sha256": "3da96167f71ab686373299298b36093061aba4117462d363ab224dc8c4ed8641"
+    },
+    {
+      "file": "assets/aerosim-us-21-professional-mission-editor.png",
+      "sha256": "05d1947d3b8f1997d3a1a4383755c67d4e9a9d0222d0a561e6f81d248685bc3b"
+    },
+    {
+      "file": "assets/aerosim-us-22-global-settings.png",
+      "sha256": "6d678132b25464a833cb6d2994a99a196dbd4cc81d43bd7e225aef2128704d86"
+    },
+    {
+      "file": "assets/aerosim-us-flight-training-ui-v1.png",
+      "sha256": "9629a175214a232617c618d5987edfce98deb0721f4191ec3fc0d6f0541db97c"
+    }
+  ],
+  "draftCount": 7,
+  "userApproved": 0,
+  "originalWorktreePreserved": "/Users/bytedance/Documents/ChatGPT/飞行模拟器",
+  "originalDirtyMetaProtected": {
+    "CoastHeroV1.png.meta": "32338d4a250abb6216bfed9a55a1bfc35ef0730686780185e8e9316ad53fe524",
+    "ControllerCutout.png.meta": "b18828223b327e34b3ee229b1b4e9016e0d8dc07b19702e9d094e986a9c07039",
+    "FpvIndustrialSunset.png.meta": "c9f4d707a323e6fcd7dc0a35c299af4912989ce10cb40b7ecbc7ed861dc674f3"
+  }
+}

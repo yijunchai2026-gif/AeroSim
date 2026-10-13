@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-13T00:24:56.303Z",
+  "scope": "Unmodified existing 1.25 document checker against incoming PRD v4 at c1916a0. Does not evaluate a new mapping implementation.",
+  "baseCommit": "c1916a0f63a4a17d2af8767e4fd2dcdcab79ee2f",
+  "command": "node verification/v125-qa/prd-review/prd-document-check.mjs --require-tracked",
+  "exitCode": 1,
+  "checkedAt": "2026-10-13T00:24:56.245Z",
+  "summary": {
+    "checks": 92,
+    "failed": 32,
+    "localLinkOccurrences": 0,
+    "originalConcepts": 23,
+    "currentDrafts": 7,
+    "inheritedMissingOccurrences": 0,
+    "publicationPendingUnique": 0,
+    "status": "FAIL_DOCUMENT_QA"
+  },
+  "sourceSha256": {
+    "飞行模拟器产品设计文档.md": "fd656b23c76121d46d437fed053e19957377b2194a964e0f31833db6e9480da8"
+  },
+  "checkerSha256": "b3b34d0999920cdc98e0423bb501d1dfbc05b82dd225c7230af410e8f7d4036b",
+  "stdoutSha256": "6f3e1c702cfbeec95223417e21fd7bd9e1cff697bd0fdf0fc8d49e3b919ddfab",
+  "failures": [
+    {
+      "id": "ORIGINAL_LINK_OCCURRENCES_MINIMUM_23",
+      "evidence": "The same real-document condition is reported rather than aborting parser self-test before evidence output"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:01",
+      "evidence": "assets/aerosim-us-01-onboarding-learning-path.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:02",
+      "evidence": "assets/aerosim-us-02-controller-calibration.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:03",
+      "evidence": "assets/aerosim-us-03-aerial-home.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:04",
+      "evidence": "assets/aerosim-us-04-aerial-academy.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:05",
+      "evidence": "assets/aerosim-us-05-free-flight-setup.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:06",
+      "evidence": "assets/aerosim-us-06-fpv-home.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:07",
+      "evidence": "assets/aerosim-us-07-fpv-challenges.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:08",
+      "evidence": "assets/aerosim-us-08-fpv-tuning.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:09",
+      "evidence": "assets/aerosim-us-09-fpv-race-osd.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:10",
+      "evidence": "assets/aerosim-us-10-professional-dashboard.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:11",
+      "evidence": "assets/aerosim-us-11-professional-preflight.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:12",
+      "evidence": "assets/aerosim-us-12-professional-mission.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:13",
+      "evidence": "assets/aerosim-us-13-instructor-live-session.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:14",
+      "evidence": "assets/aerosim-us-14-flight-results.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:15",
+      "evidence": "assets/aerosim-us-15-replay-analysis.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:16",
+      "evidence": "assets/aerosim-us-16-us-flight-readiness.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:17",
+      "evidence": "assets/aerosim-us-17-professional-report.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:18",
+      "evidence": "assets/aerosim-us-18-fpv-osd-editor.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:19",
+      "evidence": "assets/aerosim-us-19-professional-mission-brief.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:20",
+      "evidence": "assets/aerosim-us-20-professional-training-catalog.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:21",
+      "evidence": "assets/aerosim-us-21-professional-mission-editor.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:22",
+      "evidence": "assets/aerosim-us-22-global-settings.png"
+    },
+    {
+      "id": "ORIGINAL_EMBEDDED:23",
+      "evidence": "assets/aerosim-us-flight-training-ui-v1.png"
+    },
+    {
+      "id": "NEW_ART_EMBEDDED_IN_PRD:dji-phantom-4",
+      "evidence": "assets/v125-art/phantom4/phantom-4-draft-01.png"
+    },
+    {
+      "id": "NEW_ART_EMBEDDED_IN_PRD:dji-air-2s",
+      "evidence": "assets/v125-art/air2s/air-2s-draft-01.png"
+    },
+    {
+      "id": "MAVIC4_EMBEDDED_IN_PRD",
+      "evidence": "assets/v125-art/mavic/mavic-4-pro-draft-01.png"
+    },
+    {
+      "id": "CURRENT_VERSION_TARGET_125",
+      "evidence": "Header declares current target"
+    },
+    {
+      "id": "THREE_DEVICE_LINES_NAMED",
+      "evidence": "Names do not prove hardware testing"
+    },
+    {
+      "id": "ACTUAL_VERSION_NOT_UPGRADED_BY_DOC",
+      "evidence": "Actual runtime evidence retained as 1.0.0 development candidate"
+    },
+    {
+      "id": "REAL_DEVICE_BOUNDARY_RETAINED",
+      "evidence": "Only textual boundary; no native device test performed"
+    },
+    {
+      "id": "PER_MODEL_EXPLICIT_USER_GATE_RETAINED",
+      "evidence": "No ambiguous “basically correct” message is converted into an approval record"
+    }
+  ],
+  "interpretation": "Inherited document scope/embedding incompatibility, not deletion of original PNG bytes and not proof all v4 human-confirmation language is absent. User choice requested; no contract/tools/PRD rewritten to manufacture PASS.",
+  "resolution": "PENDING_USER_SCOPE_CHOICE",
+  "originalConceptCount": 23,
+  "reviewDraftsPendingUser": 7,
+  "noNewNativeOrBrowserRun": true
+}

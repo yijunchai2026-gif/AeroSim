@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "frozenAtUtc": "2026-10-13T00:31:23.848Z",
+  "scope": "Approved bounded public API/metadata-validation/fingerprint prototype only. No overall 1.25/v4 scope resolution, live mapping approval or application wiring.",
+  "files": {
+    "docs/V125_RAW_MAPPING_CONTRACT_PROPOSAL.md": "b451456087f961fc201adb2fa11500a2c54e8004893618a257ba5aab382a3d62",
+    "verification/v125-qa/raw-mapping/contract-addendum-v1.json": "e430504527b08cf7d9df0237684ab4a2016df814c9f8fc12c6eee30cd48d4428",
+    "verification/v125-qa/raw-mapping/readonly-base-guard.json": "495d934704b43e0dc8783ba7f2267e5d6471536921ffe281df266d7be0343b2f"
+  },
+  "allowedAuthorFiles": [
+    "AeroSim/Assets/AeroSim/Runtime/Input/RawInputMapping.cs",
+    "AeroSim/Assets/AeroSim/Runtime/Input/RawInputMapping.cs.meta",
+    "verification/v125-qa/raw-mapping/RawInputMappingDeveloperTests.cs",
+    "verification/v125-qa/raw-mapping/build-raw-mapping-developer-tests.sh",
+    "docs/V125_RAW_MAPPING_IMPLEMENTATION.md"
+  ],
+  "sourceStatus": "NOT_IMPLEMENTED_AT_CONTRACT_FREEZE"
+}

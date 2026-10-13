@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "status": "PREPARED_LITERAL_EXPECTATIONS_NOT_RUN",
+  "contractFreezeSha256": "5cb1e381594dabc278f4f7cc1b2c1fbea9183fb1662cc9cd2b442feb12c9fffd",
+  "addendumV1Sha256": "e430504527b08cf7d9df0237684ab4a2016df814c9f8fc12c6eee30cd48d4428",
+  "projection": "This is QA's exact JSON projection, not production serialization: enum names; Mapping's four paths or null; Controls' paths in returned order; all diagnostics with frozen error/index/path/field. Every rejected/missing result also independently checks full empty Mapping/Controls/convention/fingerprint, not partial acceptance. Full descriptor equality is asserted separately from this concise projection.",
+  "syntheticScope": "No device identity/handle exists in this API. Cross-device syntax rejection is tested; actual adapter ownership, raw readings, live validation and SourceAvailable cannot be proven here.",
+  "fixtures": {
+    "basePaths": ["throttle/y", "yaw/x", "pitch/y", "roll/x"],
+    "gamepadPaths": ["leftStick/y", "leftStick/x", "rightStick/y", "rightStick/x"],
+    "baseMetadata": {
+      "valueKind": "AxisFloat", "controlTypeFullName": "QA.Axis", "stateFormatCode": 542395462, "sizeInBits": 32,
+      "preprocess": {"clamp": "None", "clampMin": -1, "clampMax": 1, "clampConstant": 0, "normalize": false, "normalizeMin": -1, "normalizeMax": 1, "normalizeZero": 0, "invert": false, "scale": false, "scaleFactor": 1}
+    },
+    "catalogDefinition": "Unless explicitly changed, one distinct descriptor for each catalogPaths entry uses baseMetadata; input mappingPaths correspond to AxisMapping T/Y/P/R. Changes are literal overrides, not fallback/normalization. Null mappingPaths means requestedMapping=null. Special float text is converted to Single by the independent input builder, not sent as permissive JSON numeric data.",
+    "defaults": {"operation": "ValidateHardware", "kind": "Joystick", "layout": "QA.Joystick", "catalogPaths": ["throttle/y", "yaw/x", "pitch/y", "roll/x"], "mappingPaths": ["throttle/y", "yaw/x", "pitch/y", "roll/x"]}
+  },
+  "cases": [
+    {
+      "id": "valid-four-axes",
+      "input": {},
+      "expected": {"status":"JoystickCandidate","isValid":true,"kind":"Joystick","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"controlsPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"fingerprint":"2aa66c21618ab6cf5fd506646c01ed0f02a8ef92b66428f22cf7f507a0290ca5","diagnostics":[]}
+    },
+    {
+      "id": "mapping-order-sensitive",
+      "input": {"mappingPaths":["yaw/x","throttle/y","pitch/y","roll/x"]},
+      "expected": {"status":"JoystickCandidate","isValid":true,"kind":"Joystick","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["yaw/x","throttle/y","pitch/y","roll/x"],"controlsPaths":["yaw/x","throttle/y","pitch/y","roll/x"],"fingerprint":"a3681a8ac65da528513371aac9c6bf2ae39f59ead4a2c984c26753fd9a3e0a0c","diagnostics":[]}
+    },
+    {
+      "id": "unicode-utf8-nfc",
+      "input": {"layout":"操纵台é","catalogPaths":["油门/y","偏航/x","俯仰/y","横滚/x"],"mappingPaths":["油门/y","偏航/x","俯仰/y","横滚/x"]},
+      "expected": {"status":"JoystickCandidate","isValid":true,"kind":"Joystick","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["油门/y","偏航/x","俯仰/y","横滚/x"],"controlsPaths":["油门/y","偏航/x","俯仰/y","横滚/x"],"fingerprint":"8963fefc3a33d0fc9bdd3aabd9cf5f07ea8c0a13874f6d5ee5272bbd2654f6da","diagnostics":[]}
+    },
+    {
+      "id": "unicode-utf8-nfd",
+      "input": {"layout":"操纵台e\u0301","catalogPaths":["油门/y","偏航/x","俯仰/y","横滚/x"],"mappingPaths":["油门/y","偏航/x","俯仰/y","横滚/x"]},
+      "expected": {"status":"JoystickCandidate","isValid":true,"kind":"Joystick","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["油门/y","偏航/x","俯仰/y","横滚/x"],"controlsPaths":["油门/y","偏航/x","俯仰/y","横滚/x"],"fingerprint":"f9a80e6e31dc8b45732cc82fb3db9433fb2538b3d98c485042d9d0f1805fdc0d","diagnostics":[]}
+    },
+    {
+      "id": "builtin-keyboard",
+      "input": {"operation":"GetBuiltIn","kind":"Keyboard"},
+      "expected": {"status":"BuiltInValid","isValid":true,"kind":"Keyboard","rawConvention":"logical-key-state-v1","mappingPaths":null,"controlsPaths":[],"fingerprint":"54de1323081596043fac0089d2d021ed51d91512c64f5e4d6360a49d4b0b5051","diagnostics":[]}
+    },
+    {
+      "id": "builtin-touch",
+      "input": {"operation":"GetBuiltIn","kind":"Touch"},
+      "expected": {"status":"BuiltInValid","isValid":true,"kind":"Touch","rawConvention":"touch-normalized-v1","mappingPaths":null,"controlsPaths":[],"fingerprint":"6587ee3d86628693f0d9d924451b86f5230c71828068f589341200f989ca69b6","diagnostics":[]}
+    },
+    {
+      "id": "builtin-joystick-unsupported",
+      "input": {"operation":"GetBuiltIn","kind":"Joystick"},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"UnsupportedBuiltInKind","axisIndex":-1,"path":"","field":"kind"}]}
+    },
+    {
+      "id": "gamepad-fixed-candidate-is-not-user-validated",
+      "input": {"kind":"Gamepad","layout":"QA.Gamepad","catalogPaths":["leftStick/y","leftStick/x","rightStick/y","rightStick/x"],"mappingPaths":null},
+      "expected": {"status":"BuiltInValid","isValid":true,"kind":"Gamepad","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["leftStick/y","leftStick/x","rightStick/y","rightStick/x"],"controlsPaths":["leftStick/y","leftStick/x","rightStick/y","rightStick/x"],"fingerprint":"598003c38a291d4f90791b22497163d62e4d4ff372fa9d88d8ed832373c30fd4","diagnostics":[]}
+    },
+    {
+      "id": "gamepad-edit-gate-precedes-invalid-layout-catalog",
+      "input": {"kind":"Gamepad","layout":null,"catalogPaths":null,"mappingPaths":["leftStick/y","leftStick/x","rightStick/y","rightStick/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Gamepad","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"MappingNotEditable","axisIndex":-1,"path":"","field":"mapping"}]}
+    },
+    {
+      "id": "gamepad-missing-axis-is-rejected",
+      "input": {"kind":"Gamepad","layout":"QA.Gamepad","catalogPaths":["leftStick/y","leftStick/x","rightStick/y","trigger"],"mappingPaths":null},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Gamepad","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"AxisNotFound","axisIndex":3,"path":"rightStick/x","field":"path"}]}
+    },
+    {
+      "id": "joystick-null-mapping-missing-precedes-invalid-input",
+      "input": {"layout":null,"catalogPaths":null,"mappingPaths":null},
+      "expected": {"status":"Missing","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"MappingMissing","axisIndex":-1,"path":"","field":"mapping"}]}
+    },
+    {
+      "id": "case-sensitive-exact-lookup",
+      "input": {"mappingPaths":["throttle/y","Yaw/x","pitch/y","roll/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"AxisNotFound","axisIndex":1,"path":"Yaw/x","field":"path"}]}
+    },
+    {
+      "id": "path-nfc-nfd-not-normalized",
+      "input": {"catalogPaths":["é/y","yaw/x","pitch/y","roll/x"],"mappingPaths":["e\u0301/y","yaw/x","pitch/y","roll/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"AxisNotFound","axisIndex":0,"path":"e\u0301/y","field":"path"}]}
+    },
+    {
+      "id": "three-duplicate-mapped-paths",
+      "input": {"mappingPaths":["throttle/y","throttle/y","throttle/y","roll/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"DuplicateMappedPath","axisIndex":0,"path":"throttle/y","field":"path"},{"error":"DuplicateMappedPath","axisIndex":1,"path":"throttle/y","field":"path"},{"error":"DuplicateMappedPath","axisIndex":2,"path":"throttle/y","field":"path"}]}
+    },
+    {
+      "id": "duplicate-unselected-catalog-path",
+      "input": {"catalogPaths":["throttle/y","yaw/x","pitch/y","roll/x","aux","aux"],"metadataOverrides":{"4":{"valueKind":"Other","preprocess":null},"5":{"valueKind":"ButtonFloat","preprocess":null}}},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"DuplicateCatalogPath","axisIndex":-1,"path":"aux","field":"catalog"}]}
+    },
+    {
+      "id": "wildcard-not-resolved-or-echoed",
+      "input": {"mappingPaths":["throttle/*","yaw/x","pitch/y","roll/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"InvalidMappingPath","axisIndex":0,"path":"","field":"path"}]}
+    },
+    {
+      "id": "cross-device-selector-syntax-rejected",
+      "input": {"mappingPaths":["<OtherDevice>/throttle/y","yaw/x","pitch/y","roll/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"InvalidMappingPath","axisIndex":0,"path":"","field":"path"}]}
+    },
+    {
+      "id": "cross-device-looking-relative-prefix-not-stripped",
+      "input": {"mappingPaths":["OtherDevice/throttle/y","yaw/x","pitch/y","roll/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"AxisNotFound","axisIndex":0,"path":"OtherDevice/throttle/y","field":"path"}]}
+    },
+    {
+      "id": "button-rejected-without-axis-metadata-errors",
+      "input": {"metadataOverrides":{"0":{"valueKind":"ButtonFloat","controlTypeFullName":null,"stateFormatCode":0,"sizeInBits":0,"preprocess":null}}},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"ButtonAxisNotAllowed","axisIndex":0,"path":"throttle/y","field":"valueKind"}]}
+    },
+    {
+      "id": "unknown-valuekind-even-unselected",
+      "input": {"catalogPaths":["throttle/y","yaw/x","pitch/y","roll/x","aux"],"metadataOverrides":{"4":{"valueKind":999,"preprocess":null}}},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"UnsupportedControlValueKind","axisIndex":-1,"path":"aux","field":"valueKind"}]}
+    },
+    {
+      "id": "catalog-collects-path-and-valuekind-stage-suppresses-mapping",
+      "input": {"catalogPaths":["bad path","yaw/x","pitch/y","roll/x"],"metadataOverrides":{"0":{"valueKind":999}},"mappingPaths":["*","yaw/x","pitch/y","roll/x"]},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"InvalidCatalogPath","axisIndex":-1,"path":"","field":"path"},{"error":"UnsupportedControlValueKind","axisIndex":-1,"path":"","field":"valueKind"}]}
+    },
+    {
+      "id": "metadata-errors-collect-even-with-missing-preprocess",
+      "input": {"metadataOverrides":{"0":{"controlTypeFullName":"QA.Axis,Assembly","stateFormatCode":0,"sizeInBits":0,"preprocess":null}}},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"InvalidControlType","axisIndex":0,"path":"throttle/y","field":"controlTypeFullName"},{"error":"MissingPreprocess","axisIndex":0,"path":"throttle/y","field":"preprocess"},{"error":"InvalidStateSize","axisIndex":0,"path":"throttle/y","field":"sizeInBits"},{"error":"InvalidStateFormat","axisIndex":0,"path":"throttle/y","field":"stateFormatCode"}]}
+    },
+    {
+      "id": "unknown-clamp-nonfinite-and-evaluable-range-collect",
+      "input": {"metadataOverrides":{"0":{"preprocess":{"clamp":999,"clampMin":10,"clampMax":-10,"clampConstant":0,"normalize":true,"normalizeMin":1,"normalizeMax":1,"normalizeZero":1,"invert":false,"scale":false,"scaleFactor":"NaN"}}}},
+      "expected": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"UnsupportedClamp","axisIndex":0,"path":"throttle/y","field":"clamp"},{"error":"InvalidNormalizeRange","axisIndex":0,"path":"throttle/y","field":"normalizeRange"},{"error":"NonFinitePreprocess","axisIndex":0,"path":"throttle/y","field":"scaleFactor"}]}
+    },
+    {
+      "id": "finite-metadata-full-format-precision-and-flags",
+      "input": {"metadataOverrides":{"0":{"stateFormatCode":4294967295,"sizeInBits":64,"preprocess":{"clamp":"AfterNormalize","clampMin":-10,"clampMax":20,"clampConstant":0.125,"normalize":true,"normalizeMin":-10,"normalizeMax":20,"normalizeZero":-10,"invert":true,"scale":true,"scaleFactor":-0.125}}}},
+      "expected": {"status":"JoystickCandidate","isValid":true,"kind":"Joystick","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"controlsPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"fingerprint":"1aadd3a67fad31898254ed33620277be7a63322029a85921897b1050e167641b","diagnostics":[]}
+    },
+    {
+      "id": "positive-negative-zero-canonical-equivalence",
+      "input": {"allAxisPreprocessOverrides":{"clampConstant":"-0","normalizeZero":"-0"}},
+      "expected": {"status":"JoystickCandidate","isValid":true,"kind":"Joystick","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"controlsPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"fingerprint":"2aa66c21618ab6cf5fd506646c01ed0f02a8ef92b66428f22cf7f507a0290ca5","diagnostics":[]}
+    },
+    {
+      "id": "immutable-prior-result-after-input-list-clear-and-new-validation",
+      "input": {"sequence":["validate-base-as-old-result","clear-input-list","validate-cleared-list-as-new-result","attempt-IList-mutation-if-exposed"]},
+      "expectedOldResult": {"status":"JoystickCandidate","isValid":true,"kind":"Joystick","rawConvention":"unity-unprocessed-control-v1","mappingPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"controlsPaths":["throttle/y","yaw/x","pitch/y","roll/x"],"fingerprint":"2aa66c21618ab6cf5fd506646c01ed0f02a8ef92b66428f22cf7f507a0290ca5","diagnostics":[]},
+      "expectedNewResult": {"status":"Rejected","isValid":false,"kind":"Joystick","rawConvention":"","mappingPaths":null,"controlsPaths":[],"fingerprint":"","diagnostics":[{"error":"AxisNotFound","axisIndex":0,"path":"throttle/y","field":"path"},{"error":"AxisNotFound","axisIndex":1,"path":"yaw/x","field":"path"},{"error":"AxisNotFound","axisIndex":2,"path":"pitch/y","field":"path"},{"error":"AxisNotFound","axisIndex":3,"path":"roll/x","field":"path"}]},
+      "expectedCollectionMutation":"No mutable result collection; unsupported IList mutation throws NotSupportedException; old result remains unchanged. DTOs sealed/get-only and no public result/diagnostic constructor."
+    }
+  ]
+}

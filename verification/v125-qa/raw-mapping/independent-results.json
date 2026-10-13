@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-13T00:52:43Z",
+  "status": "PURE_MAPPING_VALIDATION_PASSED",
+  "scope": "Independent System-only four-axis canonical-path/metadata validation and deterministic fingerprint QA. Not Gate A, raw-reading/processor-bypass/live mapping approval, application wiring, visual, physical controller or iOS device acceptance.",
+  "sourceScopeChoice": "PENDING_USER_SCOPE_CHOICE; incoming PRD v4 versus user 1.25 three-device/original23 remains unresolved. This shared pure component does not choose product priority.",
+  "independence": {
+    "authorTestsRead": false,
+    "preparedBeforeProductionSourceRead": true,
+    "vectors": 8,
+    "literalCases": 26,
+    "vectorSha256": "c5267d4245b5c705c4e31981e3cbb929220557a81e8974fe4b63d33c40244891",
+    "casesSha256": "56656b91952e609abba171c9fd8b5e66312f20ba08239824dd2c645ecda6ea1f",
+    "preparedFreezeSha256": "c6882fe08ca980890e31f8a44073d1fca254f5ca6483713f19b6072ebf14ea86",
+    "sourceFreezeSha256": "fead876ada63318238ad9c60ae56a6f080eecc8a49a15960e2effae7360d522e",
+    "sourceSha256": "4e89d44094262f72dd11edfb7e45aa5fa0d76e36955eafdccbac9f9c4076ae9c",
+    "driverSha256": "0d2a8e73e1471f78bec84eb5521d6a2ad11e3eff49aa232a2bdac2635e8e3174",
+    "runnerSha256": "b7fa8b715fe04eee3e81499fb092f914e6ebbd4e5f026084c9c2ad727ab0dbff",
+    "noWaiverOrExpectedMutation": true
+  },
+  "strictCompilation": {
+    "compilerFlags": "-nologo -noconfig -nostdlib+ -langversion:latest -warn:4 -warnaserror+ -target:exe",
+    "runtime": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/NetCoreRuntime/dotnet",
+    "runtimeSha256": "f67be57bba338b304ad4f6904a160c7f415627d9c15a9ccc0f2390b9d97b08be",
+    "compiler": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/DotNetSdkRoslyn/csc.dll",
+    "compilerSha256": "da60224e49f5a12fffa0245eb9da814d69429dbe5a4f2ce03812956a1c60decb",
+    "mono": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/bin/mono",
+    "monoSha256": "ed57742caacc3f9e424070702682d5965d1efd09cf352284f5ace6e5380be5c6",
+    "referenceDirectory": "/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/lib/mono/4.8-api",
+    "references": ["mscorlib.dll", "System.dll", "System.Core.dll", "System.Web.Extensions.dll"],
+    "jsonReferenceSha256": "24ccfc74fd4987587f4c9cac20ae253625dcbf3223b49e44ba54cfcf4d58c969",
+    "sources": ["AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs", "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs", "AeroSim/Assets/AeroSim/Runtime/Input/RawInputMapping.cs", "verification/v125-qa/raw-mapping/independent-driver.cs"]
+  },
+  "baseline": {
+    "command": "bash verification/v125-qa/raw-mapping/independent-runner.sh",
+    "compileExit": 0,
+    "runnerExit": 0,
+    "checks": 46992,
+    "failures": 0,
+    "preencodedVectorsConsumed": 8,
+    "literalCasesConsumed": 26,
+    "finalRetentionSequenceConsumed": true,
+    "cultures": ["invariant", "en-US", "fr-FR", "tr-TR", "ar-EG"],
+    "negativeZeroMethod": "BitConverter.ToSingle(BitConverter.GetBytes(Int32.MinValue),0); requires actual Single bit pattern 0x80000000, then verifies returned ClampConstant/NormalizeZero bits. Not float.Parse(-0).",
+    "negativeZeroSignBitChecks": 80,
+    "outputDirectory": "/private/tmp/aerosim-raw-mapping-independent.fUUaiK",
+    "exeSha256": "083546df079b327bc8cbc0139d58b3f72b25521daa974a975999ed3d57a914b8",
+    "runnerLogSha256": "6475b8abb72979dcf7539f022c67ab225a91f061d1a4c52ca11921ddec93b7a5"
+  },
+  "mutations": [
+    {
+      "id": "case-insensitive",
+      "change": "Only exact-lookup byPath comparer changed Ordinal to OrdinalIgnoreCase.",
+      "command": "bash verification/v125-qa/raw-mapping/independent-runner.sh /private/tmp/aerosim-raw-mapping-mutations.oGrhlE/case-insensitive.cs",
+      "sourceSha256": "71d76148f77804c702a75c7b4691cefdd3e79fb7392be39cdb1142bce7e3831d",
+      "compileExit": 0, "runnerExit": 1, "checks": 42410, "failures": 36,
+      "detectedBy": "case-sensitive-exact-lookup.status and full frozen rejected projection (35 literal failures across 5 cultures); boundary ordinal-distinct x/X additionally throws ArgumentException and is recorded as a failure, not the sole detection.",
+      "outputDirectory": "/private/tmp/aerosim-raw-mapping-independent.6iQGgo",
+      "exeSha256": "86c1aa466ac9a29ba42efd6faefd442e21f651fe6211d24a4a5971a3f07b4f2f",
+      "runnerLogSha256": "e11557c9dfb81253bee26aae9ddf31e5e2b5b89bdf2f061ddf97fec260ead436"
+    },
+    {
+      "id": "button-accepted",
+      "change": "Selected-type guard rejects only Other, incorrectly allowing ButtonFloat to enter axis metadata/hashing.",
+      "command": "bash verification/v125-qa/raw-mapping/independent-runner.sh /private/tmp/aerosim-raw-mapping-mutations.oGrhlE/button-accepted.cs",
+      "sourceSha256": "ded2fbe0b5b2f9761ff745b84074a86d9b4f7c800cef057b1676c2e18b6f1897",
+      "compileExit": 0, "runnerExit": 1, "checks": 46982, "failures": 22,
+      "detectedBy": "button-rejected-without-axis-metadata-errors frozen diagnostics; valid-button-still-not-axis full rejected shape independently detects actual erroneous acceptance.",
+      "outputDirectory": "/private/tmp/aerosim-raw-mapping-independent.Dc0DQu",
+      "exeSha256": "89f1ea90e0ee9063177a4cd478b186a392aea66615675ec92f452f90b17c1278",
+      "runnerLogSha256": "93c87188177f48422c2ef93c00abfaeed9023d78da247e1b8680784fc806a82b"
+    },
+    {
+      "id": "invert-omitted",
+      "change": "Omit each control's invert field from HardwareFingerprint field sequence.",
+      "command": "bash verification/v125-qa/raw-mapping/independent-runner.sh /private/tmp/aerosim-raw-mapping-mutations.oGrhlE/invert-omitted.cs",
+      "sourceSha256": "54e17f62daaf1a4bba0c12053c824ea292c652c14b6d50f7a1db4ad66b3e3944",
+      "compileExit": 0, "runnerExit": 1, "checks": 46992, "failures": 79,
+      "detectedBy": "ascii-four-axes.literal-production-hash and all other pre-source locked hardware hash vectors; flags case and per-axis invert sensitivity also fail.",
+      "outputDirectory": "/private/tmp/aerosim-raw-mapping-independent.LLYhSs",
+      "exeSha256": "fc3913edd60e21d62a2c015a8b5b9fab2204acc8521bfb06cb138878d9019122",
+      "runnerLogSha256": "1ddfeb5e6a1249dc81c0d04184e0137e1adf6a155111ce308089213c364ca680"
+    },
+    {
+      "id": "candidate-to-builtin",
+      "change": "Return BuiltInValid for valid Joystick instead of JoystickCandidate.",
+      "command": "bash verification/v125-qa/raw-mapping/independent-runner.sh /private/tmp/aerosim-raw-mapping-mutations.oGrhlE/candidate-to-builtin.cs",
+      "sourceSha256": "6b68c5484ec986eba79c49d5feb48d4e557f839283d80d2869887804a7c8526a",
+      "compileExit": 0, "runnerExit": 1, "checks": 46992, "failures": 71,
+      "detectedBy": "ascii-four-axes.candidate-not-authorization and valid-four-axes.status, plus all Joystick literal candidate projections.",
+      "outputDirectory": "/private/tmp/aerosim-raw-mapping-independent.9at3F1",
+      "exeSha256": "b3030b5bf381729161ffce8a61a391b81916031932df4f74e4c98a127bc12ada",
+      "runnerLogSha256": "7e3a0fbea6245312da16cdde9032b6f92919e3ef183936e78029701571a5f9a7"
+    }
+  ],
+  "byteGuards": {
+    "baseFilesChecked": 24, "originalConceptsChecked": 23, "originalDirtyMetaChecked": 3,
+    "sourceFreezeFilesChecked": 16, "mismatches": [],
+    "reviewDraftsChecked": 7, "pendingUser": 7, "userApproved": 0,
+    "originalMetaDirectory": "/Users/bytedance/Documents/ChatGPT/飞行模拟器/AeroSim/Assets/AeroSim/Resources/Art/DesignV1",
+    "documentCheckerShaUnchanged": "b3b34d0999920cdc98e0423bb501d1dfbc05b82dd225c7230af410e8f7d4036b"
+  },
+  "artReview": {
+    "meshReportSha256": "bdd2389555e8728448f3279a7d82343d4ca270cef342bc73598caae6d6984829",
+    "surfaceReportSha256": "53c6347083372b77ab20b2e49bc5ff54f639cb545379877f7c59ef145c4a64bf",
+    "reportsFullyRead": true,
+    "independentVisualRerun": false,
+    "keyOpenRisks": ["P11 source captures too dark for near-scene acceptance; Unity prefab/GUID/import metadata drift and asset-unit/LOD/collision checks not run.", "P04/P05 are contracts/reference candidates rather than completed engine meshes/PBR/LOD deliveries.", "P02 tidepool/wet-edge texture binding lacks output contribution in inspected shader dataflow.", "P06 opaque atlas plus box vegetation is not cutout/card/billboard/species delivery.", "Whole water/weather atlas consumption does not establish per-cell FX, linear masks or mobile performance."]
+  },
+  "documentQa": {
+    "status": "PASS_NEW_SCOPE_LINKS_AND_TRACKED_DEPENDENCIES_ONLY; overall inherited product gate remains FAIL_DOCUMENT_QA",
+    "inheritedChecks": 92, "inheritedFailures": 32, "inheritedExit": 1,
+    "preStage": {"globalChecks": 280, "globalFailures": 32, "exit": 1, "newScopeChecks": 188, "newScopeFailures": 0, "localLinkOccurrences": 91, "publicationPendingUnique": 20, "stdoutSha256": "70fd3740d6b6edbfa349784f1f776de55c0866f0009b99921d1cbf0b66eade39"},
+    "finalCommand": "node verification/v125-qa/prd-review/prd-document-check.mjs --require-tracked --doc docs/V125_RAW_MAPPING_CONTRACT_PROPOSAL.md --doc docs/V125_RAW_MAPPING_IMPLEMENTATION.md --doc docs/V125_RAW_MAPPING_QA.md --doc docs/V125_REMOTE_COAST_MESH_ART_REVIEW.md --doc docs/V125_REMOTE_COAST_SURFACE_ART_REVIEW.md --doc docs/V125_PROGRESS.md",
+    "requireTracked": true,
+    "globalChecks": 374, "globalFailures": 32, "globalExit": 1, "globalStatus": "FAIL_DOCUMENT_QA",
+    "newScopeChecks": 282, "newScopeFailures": 0, "newScopeLinkOccurrences": 92,
+    "publicationPendingUnique": 0,
+    "stdoutSha256": "260a3d5ba02f7fcd2184b4200b0eb29dbbfd2fa095c3167b18f1f29ca6c8a284",
+    "sourceSha256": {
+      "飞行模拟器产品设计文档.md": "fd656b23c76121d46d437fed053e19957377b2194a964e0f31833db6e9480da8",
+      "docs/V125_RAW_MAPPING_CONTRACT_PROPOSAL.md": "b451456087f961fc201adb2fa11500a2c54e8004893618a257ba5aab382a3d62",
+      "docs/V125_RAW_MAPPING_IMPLEMENTATION.md": "46f7e43b0be09b607533fe823aec30bdcfb555321fa88240b0f57b2d493b13ca",
+      "docs/V125_RAW_MAPPING_QA.md": "b63bbeee17d47582416a47d727ed9c47a233cf572dc0083af0fb22d88273c117",
+      "docs/V125_REMOTE_COAST_MESH_ART_REVIEW.md": "bdd2389555e8728448f3279a7d82343d4ca270cef342bc73598caae6d6984829",
+      "docs/V125_REMOTE_COAST_SURFACE_ART_REVIEW.md": "53c6347083372b77ab20b2e49bc5ff54f639cb545379877f7c59ef145c4a64bf",
+      "docs/V125_PROGRESS.md": "196e113c12d9a63a0e991a4b5ba8d0d2b351db3c78bd6ab4b2473b30b764c87c"
+    },
+    "semanticProductGates": "FAIL_OR_PENDING_USER; no PRD rewrite, no checker edit, no full-document PASS",
+    "trackingBoundary": "Original checker uses read-only git ls-files internally after root staged 21 explicit paths. QA performed no Git mutation. Final QA document bytes were rechecked; root must re-stage this result and QA document updates. Tracking is not proof of pushed GitHub bytes."
+  },
+  "notRun": ["Unity/native launch or build", "physical controllers/hotplug/real raw values/processor bypass", "iPad/iPhone real devices", "production source owner binding/UserValidated evidence", "router/filter/calibration/store/application/UI integration", "art visual rerender/import/performance", "user exterior approval/final acceptance", "new standalone replay of old high-count suites"],
+  "publication": "Root owns stage/commit/push; independent QA performed no Git mutation. Temporary executables/logs are not repository deliverables."
+}

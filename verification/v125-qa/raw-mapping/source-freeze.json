@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "frozenAtUtc": "2026-10-13T00:44:39.724Z",
+  "baseCommit": "c1916a0f63a4a17d2af8767e4fd2dcdcab79ee2f",
+  "scope": "Root reviewed 357-line new source and complete 648-line author test; System-only static mapping validation/fingerprint, no live UserValidated or app wiring.",
+  "status": "SOURCE_FROZEN_BEFORE_INDEPENDENT_SOURCE_EXECUTION",
+  "files": {
+    "AeroSim/Assets/AeroSim/Runtime/Input/RawInputMapping.cs": "4e89d44094262f72dd11edfb7e45aa5fa0d76e36955eafdccbac9f9c4076ae9c",
+    "AeroSim/Assets/AeroSim/Runtime/Input/RawInputMapping.cs.meta": "2a43c207aa40f20e980b7377fa1eefc49758af77f43a9ec5d205364e45cd2751",
+    "verification/v125-qa/raw-mapping/RawInputMappingDeveloperTests.cs": "080ecec325d147f3ae4ec8ac74d14ffc91ab7dc2f79253f365f4158eb000d5e6",
+    "verification/v125-qa/raw-mapping/build-raw-mapping-developer-tests.sh": "a46b79c023270e74fb7b7f684d1ee41b573330314753f4c9df0829e9844e824d",
+    "docs/V125_RAW_MAPPING_IMPLEMENTATION.md": "46f7e43b0be09b607533fe823aec30bdcfb555321fa88240b0f57b2d493b13ca",
+    "docs/V125_RAW_MAPPING_CONTRACT_PROPOSAL.md": "b451456087f961fc201adb2fa11500a2c54e8004893618a257ba5aab382a3d62",
+    "verification/v125-qa/raw-mapping/contract-freeze.json": "5cb1e381594dabc278f4f7cc1b2c1fbea9183fb1662cc9cd2b442feb12c9fffd",
+    "verification/v125-qa/raw-mapping/contract-addendum-v1.json": "e430504527b08cf7d9df0237684ab4a2016df814c9f8fc12c6eee30cd48d4428",
+    "verification/v125-qa/raw-mapping/readonly-base-guard.json": "495d934704b43e0dc8783ba7f2267e5d6471536921ffe281df266d7be0343b2f",
+    "verification/v125-qa/raw-mapping/independent-preencoded-vectors.json": "c5267d4245b5c705c4e31981e3cbb929220557a81e8974fe4b63d33c40244891",
+    "verification/v125-qa/raw-mapping/independent-prepared-expectations.json": "56656b91952e609abba171c9fd8b5e66312f20ba08239824dd2c645ecda6ea1f",
+    "verification/v125-qa/raw-mapping/prepared-expectations-freeze.json": "c6882fe08ca980890e31f8a44073d1fca254f5ca6483713f19b6072ebf14ea86",
+    "AeroSim/Assets/AeroSim/Runtime/Input/FlightControlFrame.cs": "aedd8c7593bf61f61cfbd7c2fcc082570828f0f8d486ec39b2d8a0c232fd773d",
+    "AeroSim/Assets/AeroSim/Runtime/Input/InputDeviceIdentity.cs": "88a215d7431824c3c3062d377c4d2e35a7bdd3af81348bf1add4aca2adca084f",
+    "docs/V125_REMOTE_COAST_MESH_ART_REVIEW.md": "bdd2389555e8728448f3279a7d82343d4ca270cef342bc73598caae6d6984829",
+    "docs/V125_REMOTE_COAST_SURFACE_ART_REVIEW.md": "53c6347083372b77ab20b2e49bc5ff54f639cb545379877f7c59ef145c4a64bf"
+  },
+  "rootDeveloperReplay": {
+    "command": "bash verification/v125-qa/raw-mapping/build-raw-mapping-developer-tests.sh",
+    "checks": 22576,
+    "failures": 0,
+    "randomCases": 1200,
+    "seed": 1251012,
+    "exitCode": 0,
+    "compilerFlags": "-warn:4 -warnaserror+",
+    "outputDirectory": "/private/tmp/aerosim-raw-mapping-developer.hFultF",
+    "exeSha256": "ae2949b9670a03d0e94adef29301252c5260c0f75858fbde777bdd87c08c2b9c"
+  },
+  "byteGuards": {
+    "baseFiles": 24,
+    "originalConcepts": 23,
+    "pendingUserDrafts": 7
+  },
+  "newMetaGuid": "de8cd83fe1df4b9683f1c7bc3352dc19",
+  "sourceScopeChoice": "PENDING_USER_SCOPE_CHOICE: 1.25 three-device/original23 versus incoming PRD v4 desktop slice. Pure component unaffected; no priority silently changed.",
+  "inheritedDocumentGate": "FAIL 92 checks / 32 failures; report incoming-prd-audit.json, not modified to PASS",
+  "independentQaAtFreeze": "NOT_RUN"
+}
