@@ -13,9 +13,10 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 PROTOCOL = "aerosim.review-mcp/v1"
+RUNTIME_PROTOCOL = "aerosim.runtime-review-mcp/v1"
 MCP_PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "aerosim-review-mcp"
-SERVER_VERSION = "1.0.0"
+SERVER_VERSION = "1.1.0"
 
 READ_TOOLS = (
     "capture_scene_view", "capture_game_view", "capture_camera", "capture_diagnostic_bundle",
@@ -32,6 +33,10 @@ MUTATION_TOOLS = (
 )
 ALL_TOOLS = READ_TOOLS + MUTATION_TOOLS
 ALL_TOOL_SET = frozenset(ALL_TOOLS)
+RUNTIME_TOOLS = (
+    "inspect_scene", "capture_game_view", "get_console_logs", "get_performance_metrics", "validate_scene",
+)
+RUNTIME_TOOL_SET = frozenset(RUNTIME_TOOLS)
 
 VECTOR_SCHEMA = {
     "type": "object",
@@ -55,6 +60,15 @@ CAPTURE_SCHEMA = {
         "height": {"type": "integer", "minimum": 1},
         "cameraPath": {"type": "string"},
         "channels": {"type": "array", "items": {"type": "string"}},
+        "includeUi": {"type": "boolean"},
+    },
+    "additionalProperties": False,
+}
+RUNTIME_CAPTURE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "width": {"type": "integer", "minimum": 1, "maximum": 4096},
+        "height": {"type": "integer", "minimum": 1, "maximum": 4096},
         "includeUi": {"type": "boolean"},
     },
     "additionalProperties": False,
@@ -176,11 +190,60 @@ def validate_arguments(arguments: Any, project: Path) -> Dict[str, Any]:
     return dict(arguments)
 
 
-def tool_definitions() -> List[Dict[str, Any]]:
+def runtime_transport_directories(runtime_root: Path, create: bool = True) -> tuple[Path, Path]:
+    """Return the fixed player queue below persistentDataPath/AeroSimReview."""
+    base = runtime_root.expanduser().resolve()
+    if base.name != "AeroSimReview":
+        raise HarnessError("Runtime root must be the persistentDataPath/AeroSimReview directory")
+    inbox, outbox = base / "inbox", base / "outbox"
+    for path in (inbox.resolve(), outbox.resolve()):
+        if not _inside(path, base):
+            raise HarnessError(f"Runtime transport path escapes AeroSimReview: {path}")
+    if create:
+        inbox.mkdir(parents=True, exist_ok=True)
+        outbox.mkdir(parents=True, exist_ok=True)
+    return inbox.resolve(), outbox.resolve()
+
+
+def validate_runtime_arguments(arguments: Any) -> Dict[str, Any]:
+    if arguments is None:
+        return {}
+    if not isinstance(arguments, dict):
+        raise HarnessError("Tool arguments must be a JSON object")
+    unknown = sorted(set(arguments) - {"capture"})
+    if unknown:
+        raise HarnessError("Unknown runtime argument field(s): " + ", ".join(unknown))
+    capture = arguments.get("capture")
+    if capture is not None:
+        if not isinstance(capture, dict):
+            raise HarnessError("capture must be a JSON object")
+        capture_unknown = sorted(set(capture) - {"width", "height", "includeUi"})
+        if capture_unknown:
+            raise HarnessError("Unknown runtime capture field(s): " + ", ".join(capture_unknown))
+        for field in ("width", "height"):
+            value = capture.get(field)
+            if value is not None and (isinstance(value, bool) or not isinstance(value, int) or value < 1 or value > 4096):
+                raise HarnessError(f"capture.{field} must be an integer in 1..4096")
+        if "includeUi" in capture and not isinstance(capture["includeUi"], bool):
+            raise HarnessError("capture.includeUi must be a boolean")
+    return dict(arguments)
+
+
+def tool_definitions(mode: str = "editor") -> List[Dict[str, Any]]:
     result = []
-    for name in ALL_TOOLS:
-        kind = "Read-only review" if name in READ_TOOLS else "Mutation (Unity Undo/transaction boundary applies)"
-        result.append({"name": name, "description": f"{kind} tool forwarded to the AeroSim Unity Editor bridge.", "inputSchema": INPUT_SCHEMA})
+    names = RUNTIME_TOOLS if mode == "runtime" else ALL_TOOLS
+    schema = {
+        "type": "object",
+        "properties": {"capture": RUNTIME_CAPTURE_SCHEMA},
+        "additionalProperties": False,
+    } if mode == "runtime" else INPUT_SCHEMA
+    for name in names:
+        if mode == "runtime":
+            description = "Read-only tool forwarded to the running AeroSim player bridge."
+        else:
+            kind = "Read-only review" if name in READ_TOOLS else "Mutation (Unity Undo/transaction boundary applies)"
+            description = f"{kind} tool forwarded to the AeroSim Unity Editor bridge."
+        result.append({"name": name, "description": description, "inputSchema": schema})
     return result
 
 
@@ -232,6 +295,60 @@ def call_unity(project: Path, tool: str, arguments: Any, timeout: float = 30.0, 
         time.sleep(min(poll_interval, max(0.0, deadline - time.monotonic())))
 
 
+def call_runtime(runtime_root: Path, tool: str, arguments: Any, timeout: float = 30.0, poll_interval: float = 0.05) -> Dict[str, Any]:
+    if tool not in RUNTIME_TOOL_SET:
+        raise HarnessError(f"Unknown or non-read-only runtime tool: {tool}")
+    if timeout < 0:
+        raise HarnessError("Timeout must be non-negative")
+    safe_arguments = validate_runtime_arguments(arguments)
+    inbox, outbox = runtime_transport_directories(runtime_root)
+    request_id = uuid.uuid4().hex
+    request = {"protocol": RUNTIME_PROTOCOL, "id": request_id, "tool": tool}
+    request.update(safe_arguments)
+    request_path = inbox / f"{request_id}.json"
+    temporary_path = inbox / f".{request_id}.tmp"
+    encoded = json.dumps(request, ensure_ascii=False, separators=(",", ":"))
+    if len(encoded.encode("utf-8")) > 64 * 1024:
+        raise HarnessError("Runtime request exceeds the 65536-byte limit")
+    with temporary_path.open("x", encoding="utf-8") as stream:
+        stream.write(encoded)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temporary_path, request_path)
+    deadline = time.monotonic() + timeout
+    pattern = f"{request_id}-*.json"
+    while True:
+        candidates = sorted(outbox.glob(pattern))
+        if candidates:
+            resolved_response_path = candidates[-1]
+            try:
+                with resolved_response_path.open("r", encoding="utf-8") as stream:
+                    response = json.load(stream)
+            except (OSError, json.JSONDecodeError) as exc:
+                # Preserve malformed responses in outbox for transport diagnostics.
+                raise HarnessError(f"Invalid runtime response for request {request_id}: {exc}") from exc
+            if not isinstance(response, dict) or response.get("requestId") != request_id:
+                # Preserve mismatched responses in outbox for transport diagnostics.
+                raise HarnessError(f"Runtime response requestId mismatch for request {request_id}")
+            try:
+                resolved_response_path.unlink()
+            except OSError as exc:
+                # Cleanup is best-effort: never discard an otherwise valid business response.
+                warnings = response.get("transportWarnings")
+                if not isinstance(warnings, list):
+                    warnings = []
+                    response["transportWarnings"] = warnings
+                warnings.append(f"Runtime response was consumed but outbox cleanup failed: {exc}")
+            return response
+        if time.monotonic() >= deadline:
+            try:
+                request_path.unlink()
+            except FileNotFoundError:
+                pass
+            raise RequestTimeout(f"Timed out after {timeout:g}s waiting for runtime response to request {request_id} ({tool})")
+        time.sleep(min(poll_interval, max(0.0, deadline - time.monotonic())))
+
+
 def _tool_result(response: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "content": [{"type": "text", "text": json.dumps(response, ensure_ascii=False, indent=2)}],
@@ -241,8 +358,16 @@ def _tool_result(response: Dict[str, Any]) -> Dict[str, Any]:
 
 
 class McpServer:
-    def __init__(self, project: Path, timeout: float = 30.0):
-        self.project = project.resolve()
+    def __init__(self, project: Optional[Path] = None, timeout: float = 30.0, mode: str = "editor", runtime_root: Optional[Path] = None):
+        if mode not in ("editor", "runtime"):
+            raise HarnessError(f"Unknown bridge mode: {mode}")
+        if mode == "editor" and project is None:
+            raise HarnessError("Editor mode requires a Unity project")
+        if mode == "runtime" and runtime_root is None:
+            raise HarnessError("Runtime mode requires --runtime-root or AEROSIM_RUNTIME_REVIEW_ROOT")
+        self.project = project.resolve() if project is not None else None
+        self.runtime_root = runtime_root.expanduser().resolve() if runtime_root is not None else None
+        self.mode = mode
         self.timeout = timeout
 
     def dispatch(self, message: Any) -> Optional[Dict[str, Any]]:
@@ -262,13 +387,16 @@ class McpServer:
             }
             return self._result(request_id, result)
         if method == "tools/list":
-            return self._result(request_id, {"tools": tool_definitions()})
+            return self._result(request_id, {"tools": tool_definitions(self.mode)})
         if method == "tools/call":
             params = message.get("params", {})
             if not isinstance(params, dict) or not isinstance(params.get("name"), str):
                 return self._error(request_id, -32602, "tools/call requires string params.name")
             try:
-                response = call_unity(self.project, params["name"], params.get("arguments", {}), self.timeout)
+                if self.mode == "runtime":
+                    response = call_runtime(self.runtime_root, params["name"], params.get("arguments", {}), self.timeout)
+                else:
+                    response = call_unity(self.project, params["name"], params.get("arguments", {}), self.timeout)
                 return self._result(request_id, _tool_result(response))
             except HarnessError as exc:
                 result = {"content": [{"type": "text", "text": str(exc)}], "isError": True}
@@ -316,12 +444,16 @@ def build_parser() -> argparse.ArgumentParser:
     for command in ("serve", "health"):
         item = subparsers.add_parser(command)
         item.add_argument("--project")
+        item.add_argument("--mode", choices=("editor", "runtime"), default="editor")
+        item.add_argument("--runtime-root")
         if command == "serve":
             item.add_argument("--timeout", type=float, default=30.0)
     request = subparsers.add_parser("request")
-    request.add_argument("tool", choices=ALL_TOOLS)
+    request.add_argument("tool", choices=tuple(dict.fromkeys(ALL_TOOLS + RUNTIME_TOOLS)))
     request.add_argument("--arguments", type=_json_argument, default={})
     request.add_argument("--project")
+    request.add_argument("--mode", choices=("editor", "runtime"), default="editor")
+    request.add_argument("--runtime-root")
     request.add_argument("--timeout", type=float, default=30.0)
     return parser
 
@@ -331,16 +463,28 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = parser.parse_args(argv)
     command = args.command or "serve"
     try:
-        project = locate_project(getattr(args, "project", None))
+        mode = getattr(args, "mode", "editor")
+        runtime_root_value = getattr(args, "runtime_root", None) or os.environ.get("AEROSIM_RUNTIME_REVIEW_ROOT")
+        runtime_root = Path(runtime_root_value).expanduser().resolve() if runtime_root_value else None
+        project = None if mode == "runtime" else locate_project(getattr(args, "project", None))
+        if mode == "runtime" and runtime_root is None:
+            raise HarnessError("Runtime mode requires --runtime-root or AEROSIM_RUNTIME_REVIEW_ROOT")
         if command == "health":
-            inbox, outbox = transport_directories(project)
-            print(json.dumps({"ok": True, "protocol": PROTOCOL, "project": str(project), "inbox": str(inbox), "outbox": str(outbox)}, ensure_ascii=False, indent=2))
+            if mode == "runtime":
+                inbox, outbox = runtime_transport_directories(runtime_root)
+                protocol = RUNTIME_PROTOCOL
+                location = {"runtimeRoot": str(runtime_root)}
+            else:
+                inbox, outbox = transport_directories(project)
+                protocol = PROTOCOL
+                location = {"project": str(project)}
+            print(json.dumps({"ok": True, "mode": mode, "protocol": protocol, **location, "inbox": str(inbox), "outbox": str(outbox)}, ensure_ascii=False, indent=2))
             return 0
         if command == "request":
-            response = call_unity(project, args.tool, args.arguments, args.timeout)
+            response = call_runtime(runtime_root, args.tool, args.arguments, args.timeout) if mode == "runtime" else call_unity(project, args.tool, args.arguments, args.timeout)
             print(json.dumps(response, ensure_ascii=False, indent=2))
             return 0 if response.get("success", False) else 1
-        return McpServer(project, getattr(args, "timeout", 30.0)).serve()
+        return McpServer(project, getattr(args, "timeout", 30.0), mode=mode, runtime_root=runtime_root).serve()
     except HarnessError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

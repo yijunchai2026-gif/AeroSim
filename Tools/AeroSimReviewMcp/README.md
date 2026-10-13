@@ -1,6 +1,6 @@
 # AeroSim Review MCP / 外部 Harness
 
-这是一个**零第三方依赖**的 Python stdio JSON-RPC/MCP 服务。它只负责把 MCP 工具调用安全地投递给正在运行的 Unity Editor，并等待 Editor 写回结果；实际检查、截图、变更和 Evidence Bundle 均由 Unity 侧实现。
+这是一个**零第三方依赖**的 Python stdio JSON-RPC/MCP 服务。默认保持原 Unity Editor Review MCP 协议和工具兼容；通过 `--mode runtime` 可切换到正在运行的 Player，只暴露 Phase 4 只读 Runtime 子集。
 
 ## 前提与启动
 
@@ -53,6 +53,33 @@ python3 Tools/AeroSimReviewMcp/aerosim_review_mcp.py request inspect_scene --tim
 请求使用 `aerosim.review-mcp/v1`。服务等待同 ID 的固定文件名或带 run ID 后缀的响应；超过 `--timeout` 后返回明确的 MCP tool error。若请求尚未被 Unity 消费，超时时会删除 inbox 文件；若 Unity 已消费，请将操作视为可能仍在完成，不应盲目重试变更工具。
 
 `assetPath` 与 `secondaryAssetPath` 拒绝绝对路径、`..` 穿越以及符号链接逃逸。传输目录在创建前也会检查解析后的路径，禁止写出 Unity 项目根目录。未知工具和未知参数字段在入队前拒绝。
+
+## Runtime Player 只读模式（Phase 4）
+
+Player 启动后，Unity 侧只在 `Application.persistentDataPath/AeroSimReview` 下创建固定的 `inbox/`、`outbox/` 与 `runs/`。Python 端必须显式指向这个 `AeroSimReview` 目录（或设置 `AEROSIM_RUNTIME_REVIEW_ROOT`），不会猜测或扫描用户目录：
+
+```bash
+python3 Tools/AeroSimReviewMcp/aerosim_review_mcp.py health \
+  --mode runtime \
+  --runtime-root "/absolute/persistentDataPath/AeroSimReview"
+
+python3 Tools/AeroSimReviewMcp/aerosim_review_mcp.py request validate_scene \
+  --mode runtime \
+  --runtime-root "/absolute/persistentDataPath/AeroSimReview" \
+  --timeout 30
+```
+
+Runtime 协议为 `aerosim.runtime-review-mcp/v1`，仅暴露：
+
+- `inspect_scene`
+- `capture_game_view`
+- `get_console_logs`
+- `get_performance_metrics`
+- `validate_scene`
+
+该模式不包含任何写工具，也不接受资产路径、组件名、命令或脚本参数。请求限制为 64 KiB；Unity 主线程串行消费，按文件写入时间 FIFO（文件名仅作同时间戳 tie-breaker），每次轮询最多增量枚举 32 项，队列深度最多 32，且每秒最多处理 4 个请求，避免一次性全目录数组和排序。`inspect_scene` 使用 4096 对象上限和 1 秒缓存，`get_performance_metrics` 复用同一有界层级样本并使用 1 秒缓存；响应会明确返回采样时间、缓存年龄、范围及是否截断。`validate_scene` 只执行可自动核验的基础 G0/G1/G2（草稿支撑 raycast、有限 transform、尺度、Sandbox 边界、Collider/Renderer），明确不替代地质连续性、玩家路线、正常视角构图或人工视觉判断。截图保存在隔离的 `runs/<runId>/` 内；`includeUi=false` 会在截图协程启动前失败，不生成或返回截图 artifact。
+
+Editor 默认模式、`aerosim.review-mcp/v1`、`Library/AeroSimReview` 队列和原工具集保持不变。
 
 ## Evidence Bundle
 
