@@ -46,7 +46,8 @@ namespace AeroSim.Simulation
             if (colliders.Length == 0 || colliders.Length > 16) errors.Add("compound collision count outside 1..16");
             if (colliders.Any(c => c is MeshCollider || !(c is BoxCollider || c is SphereCollider || c is CapsuleCollider))) errors.Add("collision must use primitives; MeshCollider forbidden");
             var renderers = root.GetComponentsInChildren<Renderer>(true);
-            if (renderers.Length != 4) errors.Add("exactly four visual LOD renderers required");
+            if (renderers.Length != 8) errors.Add("exactly eight cliff/talus LOD renderers required");
+            if (group != null && group.GetLODs().Take(4).Any(lod => lod.renderers.Length != 2)) errors.Add("each visual LOD must pair cliff and talus renderers");
             if (renderers.SelectMany(r => r.sharedMaterials).Where(m => m != null).Distinct().Count() != 1) errors.Add("P11 must use one shared material");
             report = errors.Count == 0 ? "P11_VALIDATED_GENERATED_UNREVIEWED" : "P11_REJECTED: " + string.Join("; ", errors);
             return errors.Count == 0;

@@ -89,13 +89,18 @@ namespace AeroSim.Editor
 
             var root = (GameObject)PrefabUtility.InstantiatePrefab(model);
             root.name = "HeroCliff_P11_GENERATED_UNREVIEWED";
-            var lodRenderers = new Renderer[4];
+            var lodRenderers = new Renderer[4][];
             for (int i = 0; i < 4; i++)
             {
-                Transform node = Find(root.transform, "HC_LOD" + i);
-                if (node == null) { UnityEngine.Object.DestroyImmediate(root); throw new InvalidDataException("P11 missing HC_LOD" + i); }
-                var renderer = node.GetComponent<Renderer>(); renderer.sharedMaterial = material; lodRenderers[i] = renderer;
-                var properties = new MaterialPropertyBlock(); properties.SetColor("_LodColor", new[] { Color.red, Color.yellow, Color.green, Color.blue }[i]); properties.SetColor("_MaterialId", new Color(.18f,.72f,.36f,1)); renderer.SetPropertyBlock(properties);
+                Transform cliffNode = Find(root.transform, "HC_LOD" + i);
+                Transform talusNode = Find(root.transform, "HC_TALUS" + i);
+                if (cliffNode == null || talusNode == null) { UnityEngine.Object.DestroyImmediate(root); throw new InvalidDataException("P11 missing cliff/talus LOD" + i); }
+                lodRenderers[i] = new[] { cliffNode.GetComponent<Renderer>(), talusNode.GetComponent<Renderer>() };
+                foreach (var renderer in lodRenderers[i])
+                {
+                    renderer.sharedMaterial = material;
+                    var properties = new MaterialPropertyBlock(); properties.SetColor("_LodColor", new[] { Color.red, Color.yellow, Color.green, Color.blue }[i]); properties.SetColor("_MaterialId", new Color(.18f,.72f,.36f,1)); renderer.SetPropertyBlock(properties);
+                }
             }
             foreach (var node in root.GetComponentsInChildren<Transform>(true).Where(t => t.name.StartsWith("HC_COL_BOX_", StringComparison.Ordinal)).ToArray())
             {
@@ -106,7 +111,7 @@ namespace AeroSim.Editor
                 node.gameObject.layer = 0;
             }
             var group = root.GetComponent<LODGroup>() ?? root.AddComponent<LODGroup>();
-            group.SetLODs(new[] { new LOD(.58f, new[]{lodRenderers[0]}), new LOD(.28f,new[]{lodRenderers[1]}), new LOD(.12f,new[]{lodRenderers[2]}), new LOD(.035f,new[]{lodRenderers[3]}), new LOD(.005f,Array.Empty<Renderer>()) });
+            group.SetLODs(new[] { new LOD(.58f, lodRenderers[0]), new LOD(.28f, lodRenderers[1]), new LOD(.12f, lodRenderers[2]), new LOD(.035f, lodRenderers[3]), new LOD(.005f,Array.Empty<Renderer>()) });
             group.fadeMode = LODFadeMode.CrossFade; group.animateCrossFading = true; group.RecalculateBounds();
             var metadata = root.AddComponent<HeroCliffP11Metadata>(); metadata.productionReady = false; metadata.provenance = "GENERATED_UNREVIEWED / UNITY DEVICE QA NOT RUN"; metadata.sourceSeed = 110412;
             PrefabUtility.SaveAsPrefabAsset(root, HeroCliffP11Importer.Prefab); UnityEngine.Object.DestroyImmediate(root);

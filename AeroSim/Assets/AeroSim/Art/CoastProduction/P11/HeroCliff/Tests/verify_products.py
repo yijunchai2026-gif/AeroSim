@@ -29,7 +29,9 @@ for lod in ("HC_LOD0","HC_LOD1","HC_LOD2","HC_LOD3"):
     check(stats.get("boundaryComponents") == 1 and stats.get("boundaryDegreeErrors") == 0,lod+" boundary is inconsistent")
     check(stats.get("frontFacingRatio",0)>=.999,lod+" normals/face orientation inconsistent")
     check(stats.get("occupancy",0)>=.25 and stats.get("silhouetteIoUToLOD0",0)>=.97,lod+" offscreen occupancy/silhouette gate")
-check(len(g.get("features",[]))>=7,"geological feature declaration incomplete")
+check(len(g.get("features",[]))>=8,"geological feature declaration incomplete")
+detached=g.get("detachedRockTriangles",{})
+check(detached.get("LOD0",0)>=3500 and detached.get("LOD3",99999)<=500,"detached talus LOD budget invalid")
 uv=m.get("uv",{}); uvs=uv.get("stats",{})
 check(uvs.get("zeroAreaRatio",1)<.005,"zero-area UV ratio >=0.5%")
 check(uv.get("paddingPixels",0)>=8,"UV padding contract too small")
@@ -68,7 +70,7 @@ for rel,digest in m.get("files",{}).items():
 
 shader=text(os.path.join(ROOT,"Shaders","HeroCliffP11.shader"))
 check("float2 uv_BaseColor" in shader and "tex2D(_BaseColor,uv)" in shader and "tex2D(_NormalMap,uv)" in shader,"unique UV baked-map shader sampling missing")
-check("RockNoise(macroPosition)" in shader and "RockNoise(microPosition" in shader and "DetailVisibility" in shader,"world-space procedural macro/micro overlay missing")
+check("ValueNoise3D(macroPosition)" in shader and "ValueNoise3D(microPosition" in shader and "DetailVisibility" in shader,"world-space non-periodic macro/micro overlay missing")
 check("tri(_BaseColor" not in shader and "tri(_NormalMap" not in shader,"unique bake is incorrectly repeated as triplanar")
 importer=text(os.path.abspath(os.path.join(ROOT,"../../../../Editor/HeroCliffP11Importer.cs")))
 for prop,suffix in (("_BaseColor","BaseColor"),("_NormalMap","Normal"),("_RoughnessMap","Roughness"),("_AOMap","AO"),("_HeightMap","Height"),("_CurvatureMap","Curvature"),("_WetCavityMask","WetnessCavityMask")):

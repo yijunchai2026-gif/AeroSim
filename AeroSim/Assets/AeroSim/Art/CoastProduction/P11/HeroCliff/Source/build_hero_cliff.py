@@ -47,10 +47,22 @@ def cliff_x(y,z,high):
     fault_b=math.tanh((y-(32.0-z*.075))/1.65)
     fault_window=math.exp(-((z-35.0)/18.0)**2)+.72*math.exp(-((z-82.0)/16.0)**2)
     x+=(fault_a*.50-fault_b*.32)*fault_window
+    # A localized fault scarp and hanging-wall collapse create a readable headland-scale event.
+    scarp_line=22.5+(z-68.0)*.19
+    scarp_window=math.exp(-((z-69.0)/12.5)**4)
+    x+=.82*math.tanh((y-scarp_line)/.62)*scarp_window
+    collapse_bowl=math.exp(-((y-17.5)/8.5)**2-((z-84.0)/10.5)**2)
+    x+=1.35*collapse_bowl
 
     # Sparse erosion cavities with different sizes and elevations.
     for cy,cz,sy,sz,depth in ((12.0,22.0,5.0,9.5,1.55),(25.0,64.0,6.5,8.0,1.25),(34.0,94.0,4.2,6.0,.82)):
         x+=depth*math.exp(-((y-cy)/sy)**2-((z-cz)/sz)**2)
+    # Deep undercut beneath the central resistant cap; the tight lower edge reads as an overhang.
+    overhang_window=math.exp(-((z-59.0)/13.0)**4)
+    cap=.5*(math.tanh((y-21.2)/.28)-math.tanh((y-24.8)/.34))
+    undercut=math.exp(-((y-18.8)/2.7)**2)
+    x-=1.35*cap*overhang_window
+    x+=1.05*undercut*overhang_window
 
     # Integrated talus masses soften the waterline transition without periodic repetition.
     for cz,amp,span in ((14,1.15,7.5),(47,.82,6.5),(78,1.28,9.0),(103,.72,5.5)):
@@ -101,6 +113,32 @@ def make_surface(name,ny,nz,high=False):
     obj["geology"]="continuous silhouette,bedding,fault throw,fractures,erosion cavities,undercut ledges,integrated talus"
     obj["seed"]=SEED
     return obj
+
+def make_talus(name,count,subdivisions):
+    formations=[
+      (-1.8,1.5,-42.0,3.8,1.9,4.6,.16),(-2.5,1.0,-35.0,2.5,1.4,3.1,-.22),(-1.2,1.8,-12.0,4.4,2.0,3.5,.31),
+      (-2.8,.9,-4.0,2.8,1.2,4.2,-.14),(-1.6,1.7,17.0,4.8,2.2,3.2,.26),(-3.1,1.0,26.0,3.2,1.5,4.6,-.27),
+      (-.8,2.1,37.0,5.2,2.7,3.8,.12),(-2.4,1.2,46.0,3.0,1.6,4.0,.37),(2.6,19.0,2.0,2.8,1.4,7.5,.08),
+      (2.2,22.7,7.0,3.5,1.1,5.5,-.12),(2.8,13.0,28.0,2.2,2.7,4.2,.24),(1.6,29.0,-28.0,2.4,3.1,4.8,-.19)]
+    pieces=[]
+    for index,(x,y,z,sx,sy,sz,rotation) in enumerate(formations[:count]):
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdivisions,radius=1,location=(x,y,z),rotation=(rotation*.35,rotation,rotation*.18))
+        piece=bpy.context.object; piece.name=name+"_Piece_%02d"%index
+        for vertex_index,vertex in enumerate(piece.data.vertices):
+            breakup=.76+.22*n2(index*1.71+vertex.co.x*2.3,vertex_index*.37+vertex.co.z*1.9)
+            vertex.co.x*=breakup
+            vertex.co.z*=.82+.24*n2(index*.83+vertex.co.z*2.1,vertex_index*.19)
+            vertex.co.y=round(vertex.co.y*3.4)/3.4+(.07*math.sin(vertex_index*2.17+index))
+        piece.scale=(sx,sy,sz)
+        bpy.ops.object.transform_apply(location=False,rotation=False,scale=True); pieces.append(piece)
+    bpy.ops.object.select_all(action='DESELECT')
+    for piece in pieces: piece.select_set(True)
+    bpy.context.view_layer.objects.active=pieces[0]; bpy.ops.object.join(); result=bpy.context.object; result.name=name
+    for polygon in result.data.polygons: polygon.use_smooth=False
+    uv=result.data.uv_layers.new(name="UVMap")
+    for loop in uv.data: loop.uv=(.5,.5)
+    result["geology"]="independent talus blocks, detached collapse slabs, resistant overhang fragments"
+    return result
 
 def tris(obj): return sum(len(p.vertices)-2 for p in obj.data.polygons)
 
@@ -243,6 +281,10 @@ lod0=make_surface("HC_LOD0",181,257,False)        # 92,160 continuous triangles
 lod1=make_surface("HC_LOD1",130,193,False)        # 49,536 / 53.75%
 lod2=make_surface("HC_LOD2",78,143,False)         # 21,868 / 23.73%
 lod3=make_surface("HC_LOD3",43,93,False)          # 7,728 / 8.39%
+talus0=make_talus("HC_TALUS0",12,3)
+talus1=make_talus("HC_TALUS1",12,2)
+talus2=make_talus("HC_TALUS2",10,2)
+talus3=make_talus("HC_TALUS3",8,1)
 high.hide_render=False # Cycles selected-to-active source must remain renderable during bake.
 
 # Explicit cage, expanded toward camera along low-poly normals.
@@ -254,7 +296,7 @@ cage.hide_render=True; cage.display_type='WIRE'
 high_mat=bpy.data.materials.new("M_HeroCliff_HighBakeSource"); high_mat.use_nodes=True
 low_mat=bpy.data.materials.new("M_HeroCliff_P11_Baked"); low_mat.use_nodes=True
 for obj in (high,): obj.data.materials.append(high_mat)
-for obj in (lod0,lod1,lod2,lod3): obj.data.materials.append(low_mat)
+for obj in (lod0,lod1,lod2,lod3,talus0,talus1,talus2,talus3): obj.data.materials.append(low_mat)
 
 scene=bpy.context.scene; scene.render.engine='CYCLES'; scene.cycles.samples=8; scene.cycles.use_denoising=False
 scene.render.bake.use_selected_to_active=True; scene.render.bake.use_cage=True; scene.render.bake.cage_object=cage; scene.render.bake.cage_extrusion=CAGE_EXTRUSION; scene.render.bake.margin=MARGIN; scene.render.bake.use_clear=True
@@ -321,12 +363,12 @@ print("P11_LOD_QA="+json.dumps(topology,sort_keys=True))
 blend_path=os.path.join(MODEL_DIR,"HeroCliff_P11_Source.blend"); bpy.ops.wm.save_as_mainfile(filepath=blend_path)
 # FBX runtime payload excludes high and cage.
 bpy.ops.object.select_all(action='DESELECT')
-for o in (lod0,lod1,lod2,lod3,*proxies): o.select_set(True)
+for o in (lod0,lod1,lod2,lod3,talus0,talus1,talus2,talus3,*proxies): o.select_set(True)
 bpy.ops.export_scene.fbx(filepath=os.path.join(MODEL_DIR,"HeroCliff_P11.fbx"),use_selection=True,apply_unit_scale=True,add_leaf_bones=False,bake_anim=False,mesh_smooth_type='FACE',axis_forward='-Z',axis_up='Y')
 
 manifest={
  "schema":"aerosim.hero-cliff-p11/v2","seed":SEED,"blender":bpy.app.version_string,"status":"GENERATED_NOT_REVIEWED","productionReady":False,
- "geometry":{"features":["continuous silhouette","physical bedding ledges","diagonal fault throw","geometry fracture channels","erosion cavities","undercut rock ledges","integrated talus/collapse"],"lodGeneration":"independent lower-resolution continuous manifold height fields; no decimate collapse","triangles":tri,"highToLod0Reduction":1-tri["HC_LOD0"]/tri["HC_High"],"lodRatios":{"LOD1":tri["HC_LOD1"]/tri["HC_LOD0"],"LOD2":tri["HC_LOD2"]/tri["HC_LOD0"],"LOD3":tri["HC_LOD3"]/tri["HC_LOD0"]},"lodValidation":topology},
+ "geometry":{"features":["continuous silhouette","physical bedding ledges","diagonal fault throw","localized fault scarp","geometry fracture channels","erosion cavities","undercut rock ledges","independent talus and collapse blocks"],"lodGeneration":"independent lower-resolution continuous manifold height fields; no decimate collapse","triangles":tri,"detachedRockTriangles":{"LOD0":tris(talus0),"LOD1":tris(talus1),"LOD2":tris(talus2),"LOD3":tris(talus3)},"highToLod0Reduction":1-tri["HC_LOD0"]/tri["HC_High"],"lodRatios":{"LOD1":tri["HC_LOD1"]/tri["HC_LOD0"],"LOD2":tri["HC_LOD2"]/tri["HC_LOD0"],"LOD3":tri["HC_LOD3"]/tri["HC_LOD0"]},"lodValidation":topology},
  "uv":{"layout":"unique non-overlapping grid atlas","paddingPixels":MARGIN,"stats":uv},
  "bakes":{"engine":"CYCLES","device":"CPU","samples":scene.cycles.samples,"selectedToActive":True,"cageObject":cage.name,"cageExtrusion":CAGE_EXTRUSION,"rayDistance":CAGE_EXTRUSION,"marginPixels":MARGIN,"maps":bake_log,"heightBitDepth":16},
  "material":{"name":low_mat.name,"uniqueUvSampling":"EXTEND","connectedMaps":["BaseColor","Normal","Roughness","AO","Height"],"geometryLinkedAuxiliary":["Curvature","WetnessCavityMask"],"wetnessChannels":"R=low-height wetness,G=high-poly pointiness/cavity,B=geometry noise breakup"},

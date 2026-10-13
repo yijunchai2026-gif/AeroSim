@@ -61,6 +61,23 @@ Shader "AeroSim/Coast/HeroCliffP11"
    return saturate(0.5 + a * 0.23 + b * 0.17 + c * 0.10);
   }
 
+  float Hash31(float3 p)
+  {
+   return frac(sin(dot(p, float3(127.1, 311.7, 74.7))) * 43758.5453);
+  }
+
+  float ValueNoise3D(float3 p)
+  {
+   float3 cell = floor(p);
+   float3 local = frac(p);
+   local = local * local * (3.0 - 2.0 * local);
+   float x00 = lerp(Hash31(cell), Hash31(cell + float3(1,0,0)), local.x);
+   float x10 = lerp(Hash31(cell + float3(0,1,0)), Hash31(cell + float3(1,1,0)), local.x);
+   float x01 = lerp(Hash31(cell + float3(0,0,1)), Hash31(cell + float3(1,0,1)), local.x);
+   float x11 = lerp(Hash31(cell + float3(0,1,1)), Hash31(cell + float3(1,1,1)), local.x);
+   return lerp(lerp(x00, x10, local.y), lerp(x01, x11, local.y), local.z);
+  }
+
   float DetailVisibility(float3 p)
   {
    // Fade only frequencies smaller than a pixel; never collapse the unique bake.
@@ -83,10 +100,11 @@ Shader "AeroSim/Coast/HeroCliffP11"
    float2 detailUvB = detailUvA * 0.577 + float2(0.37, 0.61);
    float2 detailUvTop = float2(IN.worldPos.x, IN.worldPos.z) / max(_DetailMetersPerTile, 0.01);
    float2 detailUvSide = float2(IN.worldPos.x, IN.worldPos.y) / max(_DetailMetersPerTile, 0.01);
-   float3 projectionNormal = normalize(cross(ddy(IN.worldPos), ddx(IN.worldPos)));
+   float3 projectionVector = cross(ddy(IN.worldPos), ddx(IN.worldPos));
+   float3 projectionNormal = projectionVector * rsqrt(max(dot(projectionVector, projectionVector), 1e-6));
    float3 projectionWeights = pow(abs(projectionNormal), 4.0);
    projectionWeights /= max(dot(projectionWeights, 1.0), 0.001);
-   float detailBlend = RockNoise(IN.worldPos / 5.7 + 9.13);
+   float detailBlend = ValueNoise3D(IN.worldPos / 5.7 + 9.13);
    float3 detailFrontColor = lerp(tex2D(_DetailBaseColor, detailUvA).rgb, tex2D(_DetailBaseColor, detailUvB).rgb, detailBlend);
    float3 detailColor = detailFrontColor * projectionWeights.x + tex2D(_DetailBaseColor, detailUvTop).rgb * projectionWeights.y + tex2D(_DetailBaseColor, detailUvSide).rgb * projectionWeights.z;
    float3 detailFrontNormal = normalize(lerp(UnpackNormal(tex2D(_DetailNormal, detailUvA)), UnpackNormal(tex2D(_DetailNormal, detailUvB)), detailBlend));
@@ -95,20 +113,23 @@ Shader "AeroSim/Coast/HeroCliffP11"
    float detailRoughness = detailFrontRoughness * projectionWeights.x + tex2D(_DetailRoughness, detailUvTop).r * projectionWeights.y + tex2D(_DetailRoughness, detailUvSide).r * projectionWeights.z;
    float detailFrontHeight = lerp(tex2D(_DetailHeight, detailUvA).r, tex2D(_DetailHeight, detailUvB).r, detailBlend);
    float detailHeight = detailFrontHeight * projectionWeights.x + tex2D(_DetailHeight, detailUvTop).r * projectionWeights.y + tex2D(_DetailHeight, detailUvSide).r * projectionWeights.z;
+   float detailVisibility = DetailVisibility(IN.worldPos / max(_DetailMetersPerTile, 0.01));
+   float cameraDistance = distance(IN.worldPos, _WorldSpaceCameraPos);
+   float effectiveDetailStrength = 0.0;
 
    // Supplemental world-space 3D frequencies add scale cues without replacing or
    // periodically re-projecting any unique bake. Micro is derivative-faded at range.
    float3 macroPosition = IN.worldPos / max(_MacroMetersPerTile, 0.01);
-   float macroSigned = (RockNoise(macroPosition) - 0.5) * 2.0;
+   float macroSigned = (ValueNoise3D(macroPosition) - 0.5) * 2.0;
    float microSigned = 0.0;
    float2 microNormal = 0.0;
    float microVisibility = 0.0;
    #if defined(HERO_CLIFF_MICRO)
     float3 microPosition = IN.worldPos / max(_MicroMetersPerTile, 0.01);
     microVisibility = DetailVisibility(microPosition);
-    microSigned = (RockNoise(microPosition + 17.31) - 0.5) * 2.0;
-    microNormal.x = (RockNoise(microPosition + float3(3.17, 11.73, 5.29)) - 0.5) * 2.0;
-    microNormal.y = (RockNoise(microPosition + float3(13.41, 2.61, 19.07)) - 0.5) * 2.0;
+    microSigned = (ValueNoise3D(microPosition + 17.31) - 0.5) * 2.0;
+    microNormal.x = (ValueNoise3D(microPosition + float3(3.17, 11.73, 5.29)) - 0.5) * 2.0;
+    microNormal.y = (ValueNoise3D(microPosition + float3(13.41, 2.61, 19.07)) - 0.5) * 2.0;
    #endif
 
    float recessTint = saturate(-macroSigned) * _MacroStrength;
@@ -121,7 +142,12 @@ Shader "AeroSim/Coast/HeroCliffP11"
    albedo *= macroValue * microValue * heightValue * curvatureValue;
    float detailCavity = saturate((detailHeight - 0.35) * 1.55);
    float3 scannedRock = detailColor * lerp(0.78, 1.14, detailCavity);
-   albedo = lerp(albedo, albedo * scannedRock * 2.05, _DetailStrength);
+   albedo = lerp(albedo, albedo * scannedRock * 2.05, effectiveDetailStrength);
+   float farBlend = smoothstep(10.0, 30.0, cameraDistance);
+   float farMacro = ValueNoise3D(IN.worldPos / 18.0 + float3(4.2, 11.7, 2.9));
+   float farSecondary = ValueNoise3D(IN.worldPos / 31.0 + float3(19.7, 3.1, 8.4));
+   float3 farRockColor = float3(0.31, 0.255, 0.19) * lerp(0.55, 1.42, farMacro * 0.68 + farSecondary * 0.32);
+   albedo = lerp(albedo, farRockColor, farBlend);
 
    float waterline = saturate(1.0 - abs(IN.worldPos.y - _WaterLevel) / max(_WaterlineWidth, 0.01));
    float wet = saturate(_Wetness * (0.35 + 0.65 * mask.r) + _Precipitation * 0.25 + waterline * 0.72 + mask.g * _CavityWetness);
@@ -130,14 +156,19 @@ Shader "AeroSim/Coast/HeroCliffP11"
    // Normal is kept in tangent space. The former world/triplanar normal was being
    // written into this tangent-space output and produced dark projection seams.
    bakedNormal.xy *= _NormalStrength;
-   bakedNormal.xy += detailNormal.xy * (_DetailStrength * 0.72);
+   bakedNormal.xy *= (1.0 - farBlend * 0.72);
+   bakedNormal.xy += detailNormal.xy * (effectiveDetailStrength * 0.72);
    bakedNormal.xy += microNormal * (_MicroNormalStrength * microVisibility);
    float normalLength = max(1.0, length(bakedNormal.xy));
    bakedNormal.xy /= normalLength;
    bakedNormal.z = sqrt(saturate(1.0 - dot(bakedNormal.xy, bakedNormal.xy)));
    o.Normal = normalize(bakedNormal);
-   rough = lerp(rough, detailRoughness, _DetailStrength * 0.72);
-   rough = saturate(rough - macroSigned * _MacroStrength * 0.08 - microSigned * _MicroStrength * microVisibility * 0.05);
+   float roughMacro = ValueNoise3D(IN.worldPos / 7.5 + float3(7.1, 2.4, 13.7));
+   float roughSecondary = ValueNoise3D(IN.worldPos / 16.0 + float3(1.8, 17.3, 5.9));
+   float geologyRoughness = lerp(0.28, 0.84, saturate(roughMacro * 0.72 + roughSecondary * 0.28));
+   rough = lerp(geologyRoughness, detailRoughness, effectiveDetailStrength * 0.16);
+   rough += mask.g * 0.08 - projectionWeights.y * 0.10 + waterline * 0.04;
+   rough = saturate(rough - macroSigned * _MacroStrength * 0.05 - microSigned * _MicroStrength * microVisibility * 0.04);
    o.Metallic = 0.0;
    o.Smoothness = saturate(1.0 - rough + wet * 0.48 + waterline * 0.12);
    o.Occlusion = saturate(lerp(1.0, ao, 0.86) * lerp(0.94, 1.02, curvature));

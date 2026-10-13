@@ -131,8 +131,8 @@
     "type": "compound primitive boxes"
   },
   "files": {
-    "Models/HeroCliff_P11.fbx": "ffbb94e4749e520309b161d12a264101a49837d4bfdcda1e5af1879892bcf2c0",
-    "Models/HeroCliff_P11_Source.blend": "e271f77b6580e752577be60c804b526a1e24a4606890d85773496b61129eb800",
+    "Models/HeroCliff_P11.fbx": "a1f9615b0346e14d2e6852bc245c247adea5f6d1150dea9350e5c6b5c15aa6da",
+    "Models/HeroCliff_P11_Source.blend": "4d1a1e3cd7f0fbad319571eb70198ffa8da4f4f392b74fe7ab2c9134e4d56958",
     "Textures/T_HeroCliff_P11_AO.png": "5daabc007fb022774f2279c4a15418597f34d8c73ada0a57bb9f5a6163bde4ef",
     "Textures/T_HeroCliff_P11_BaseColor.png": "4db15a0e07d182af3c254bf637b08b876a2b869a4ee61c1761d53a3163cff9cc",
     "Textures/T_HeroCliff_P11_Curvature.png": "3d75a57ca6c41897cb2c84eff989bebf261db66eb541dbd81ae5a7dcd1bc8809",
@@ -142,14 +142,21 @@
     "Textures/T_HeroCliff_P11_WetnessCavityMask.png": "8f0c36559863473f1dba602a59ee1ce30d2cd6cc0052d4fedaeafa6ef9e93ccb"
   },
   "geometry": {
+    "detachedRockTriangles": {
+      "LOD0": 3840,
+      "LOD1": 960,
+      "LOD2": 800,
+      "LOD3": 160
+    },
     "features": [
       "continuous silhouette",
       "physical bedding ledges",
       "diagonal fault throw",
+      "localized fault scarp",
       "geometry fracture channels",
       "erosion cavities",
       "undercut rock ledges",
-      "integrated talus/collapse"
+      "independent talus and collapse blocks"
     ],
     "highToLod0Reduction": 0.808,
     "lodGeneration": "independent lower-resolution continuous manifold height fields; no decimate collapse",
@@ -167,7 +174,7 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 1.0,
+        "occupancy": 0.6246337890625,
         "silhouetteIoUToLOD0": 1.0,
         "triangles": 92160,
         "zeroAreaFaces": 0
@@ -180,8 +187,8 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 1.0,
-        "silhouetteIoUToLOD0": 1.0,
+        "occupancy": 0.6246337890625,
+        "silhouetteIoUToLOD0": 0.9999755719223675,
         "triangles": 49536,
         "zeroAreaFaces": 0
       },
@@ -193,8 +200,8 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 1.0,
-        "silhouetteIoUToLOD0": 1.0,
+        "occupancy": 0.6246414184570312,
+        "silhouetteIoUToLOD0": 0.9999877859611838,
         "triangles": 21868,
         "zeroAreaFaces": 0
       },
@@ -206,8 +213,8 @@
         "frontFacingRatio": 1.0,
         "mainComponentRatio": 1.0,
         "nonManifoldEdges": 0,
-        "occupancy": 1.0,
-        "silhouetteIoUToLOD0": 1.0,
+        "occupancy": 0.6246490478515625,
+        "silhouetteIoUToLOD0": 0.999951145038168,
         "triangles": 7728,
         "zeroAreaFaces": 0
       }

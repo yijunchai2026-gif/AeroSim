@@ -62,6 +62,16 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
     float c=sin(dot(p,float3(.617,-2.731,1.541))+b*.67+4.13);
     return saturate(.5+a*.23+b*.17+c*.10);
    }
+   float Hash31(float3 p) { return frac(sin(dot(p,float3(127.1,311.7,74.7)))*43758.5453); }
+   float ValueNoise3D(float3 p)
+   {
+    float3 cell=floor(p); float3 local=frac(p); local=local*local*(3.0-2.0*local);
+    float x00=lerp(Hash31(cell),Hash31(cell+float3(1,0,0)),local.x);
+    float x10=lerp(Hash31(cell+float3(0,1,0)),Hash31(cell+float3(1,1,0)),local.x);
+    float x01=lerp(Hash31(cell+float3(0,0,1)),Hash31(cell+float3(1,0,1)),local.x);
+    float x11=lerp(Hash31(cell+float3(0,1,1)),Hash31(cell+float3(1,1,1)),local.x);
+    return lerp(lerp(x00,x10,local.y),lerp(x01,x11,local.y),local.z);
+   }
    float DetailVisibility(float3 p)
    {
     float footprint=max(length(ddx(p)),length(ddy(p)));
@@ -72,10 +82,10 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
     float2 uv=UniqueAtlasUV(input.uv);
     float3 microPosition=input.worldPos/max(_MicroMetersPerTile,.01);
     float microVisibility=DetailVisibility(microPosition);
-    float microSigned=(RockNoise(microPosition+17.31)-.5)*2.0;
+    float microSigned=(ValueNoise3D(microPosition+17.31)-.5)*2.0;
     float2 microNormal;
-    microNormal.x=(RockNoise(microPosition+float3(3.17,11.73,5.29))-.5)*2.0;
-    microNormal.y=(RockNoise(microPosition+float3(13.41,2.61,19.07))-.5)*2.0;
+    microNormal.x=(ValueNoise3D(microPosition+float3(3.17,11.73,5.29))-.5)*2.0;
+    microNormal.y=(ValueNoise3D(microPosition+float3(13.41,2.61,19.07))-.5)*2.0;
     float3 tangentNormal=UnpackNormal(tex2D(_NormalMap,uv));
     float2 detailUvA=float2(input.worldPos.z,input.worldPos.y)/max(_DetailMetersPerTile,.01);
     float2 detailUvB=detailUvA*.577+float2(.37,.61);
@@ -83,12 +93,14 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
     float2 detailUvSide=float2(input.worldPos.x,input.worldPos.y)/max(_DetailMetersPerTile,.01);
     float3 projectionWeights=pow(abs(normalize(input.worldNormal)),4.0);
     projectionWeights/=max(dot(projectionWeights,1.0),.001);
-    float detailBlend=RockNoise(input.worldPos/5.7+9.13);
+    float detailBlend=ValueNoise3D(input.worldPos/5.7+9.13);
     float3 detailFrontNormal=normalize(lerp(UnpackNormal(tex2D(_DetailNormal,detailUvA)),UnpackNormal(tex2D(_DetailNormal,detailUvB)),detailBlend));
     float3 detailNormal=normalize(detailFrontNormal*projectionWeights.x+UnpackNormal(tex2D(_DetailNormal,detailUvTop))*projectionWeights.y+UnpackNormal(tex2D(_DetailNormal,detailUvSide))*projectionWeights.z);
     float detailFrontRoughness=lerp(tex2D(_DetailRoughness,detailUvA).r,tex2D(_DetailRoughness,detailUvB).r,detailBlend);
     float detailRoughness=detailFrontRoughness*projectionWeights.x+tex2D(_DetailRoughness,detailUvTop).r*projectionWeights.y+tex2D(_DetailRoughness,detailUvSide).r*projectionWeights.z;
-    tangentNormal.xy=tangentNormal.xy*_NormalStrength+detailNormal.xy*(_DetailStrength*.72)+microNormal*(_MicroNormalStrength*microVisibility);
+    float cameraDistance=distance(input.worldPos,_WorldSpaceCameraPos);
+    float effectiveDetailStrength=0.0;
+    tangentNormal.xy=tangentNormal.xy*_NormalStrength+detailNormal.xy*(effectiveDetailStrength*.72)+microNormal*(_MicroNormalStrength*microVisibility);
     tangentNormal.xy/=max(1.0,length(tangentNormal.xy));
     tangentNormal.z=sqrt(saturate(1.0-dot(tangentNormal.xy,tangentNormal.xy)));
     float3 normal=normalize(input.worldTangent*tangentNormal.x+input.worldBinormal*tangentNormal.y+input.worldNormal*tangentNormal.z);
@@ -97,10 +109,13 @@ Shader "Hidden/AeroSim/HeroCliffDiagnostics"
     if(mode<2.5) return float4(normal*0.5+0.5,1);
     if(mode<3.5)
     {
-     float macroSigned=(RockNoise(input.worldPos/max(_MacroMetersPerTile,.01))-.5)*2.0;
-     float roughness=tex2D(_RoughnessMap,uv).r;
-     roughness=lerp(roughness,detailRoughness,_DetailStrength*.72);
-     roughness=saturate(roughness-macroSigned*_MacroStrength*.08-microSigned*_MicroStrength*microVisibility*.05);
+     float macroSigned=(ValueNoise3D(input.worldPos/max(_MacroMetersPerTile,.01))-.5)*2.0;
+     float roughMacro=ValueNoise3D(input.worldPos/7.5+float3(7.1,2.4,13.7));
+     float roughSecondary=ValueNoise3D(input.worldPos/16.0+float3(1.8,17.3,5.9));
+     float geologyRoughness=lerp(.28,.84,saturate(roughMacro*.72+roughSecondary*.28));
+     float roughness=lerp(geologyRoughness,detailRoughness,effectiveDetailStrength*.16);
+     roughness+=tex2D(_WetCavityMask,uv).g*.08-projectionWeights.y*.10;
+     roughness=saturate(roughness-macroSigned*_MacroStrength*.05-microSigned*_MicroStrength*microVisibility*.04);
      return float4(roughness,roughness,roughness,1);
     }
     if(mode<4.5)
