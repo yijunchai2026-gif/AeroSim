@@ -197,6 +197,12 @@ incoming把PRD全文改为v4.0（桌面高品质垂直切片优先、移动后�
 
 本次恢复的工作位置是上方附加worktree/`codex/v125-raw-mapping`，不是仍停在bede7a2且有3个重叠meta的原目录。后继先核附加worktree、Git真实状态及本小节实际交付回执；不得直接覆盖原目录、重复已完测试、冒用旧08二进制或据incoming文件自行切换产品目标。路线确认后才安排相应页面/资产实现；各机型用户确认与真实设备门禁仍保留。
 
+本批已完成并上传的真实回执（2026-10-13 11:39 UTC）：独立QA停写后，根重新暂存最终报告/结果，复跑原检查器+6专项/进度文档 `--require-tracked`，实际 **374检查/32继承失败/exit1**；32失败ID与incoming记录完全相同。单列本批新增scope **282检查/0新失败、92条相对引用、0未跟踪依赖**，不称整体文档或视觉PASS。QA最终SHA `b63bbeee17d47582416a47d727ed9c47a233cf572dc0083af0fb22d88273c117`，compact结果SHA `79d16fd6c5c1114db4a76bd5a8586aa8e044e50df5b00eef1f10ad3e28a16097`；其进度输入SHA `196e113c12d9a63a0e991a4b5ba8d0d2b351db3c78bd6ab4b2473b30b764c87c` 是加入本回执前字节，本回执不冒称独立成员再测。根实际核24基线+23原图+3本地meta+16冻结文件、4mutation的12个source/exe/log证据；21个提交路径无意外项，空白检查exit0，有限凭据模式检查无命中（不是全面安全审计）。
+
+21文件已提交：[7eeb5f1代码/验证/美术审查](https://github.com/yijunchai2026-gif/AeroSim/commit/7eeb5f168b28b6d110800ecf312fd4a3e269be6a)，正常push exit0，随后**新的** `ls-remote` exit0且分支SHA精确为 `7eeb5f168b28b6d110800ecf312fd4a3e269be6a`。[仓库](https://github.com/yijunchai2026-gif/AeroSim)、[本批分支](https://github.com/yijunchai2026-gif/AeroSim/tree/codex/v125-raw-mapping)。main在本次push前后只读检查均为 `a9a059e5826f9ece59b9f2a8624e471f7f8a00c8`，是外部历史，本负责人未合并/撤销/推送main或force-push。原目录仍bede7a2/behind7、3dirty meta与历史无关内容保留；本批独立worktree第一提交后干净，继续保留为恢复点。本回执只追加上述已发生事实，文档验证后另提交推送，不先声称该回执已经上传。
+
+**1.25仍未完成；PENDING_USER_SCOPE_CHOICE未解除。** 用户需选择保留1.25电脑/iPad/iPhone三端并行+原23图，或切换为incoming PRD v4桌面垂直切片优先。未收到选择前，不改写任一套目标或把海岸素材静态审查升级为生产/视觉通过；不替用户批准任何机型。下一次自动续作先读本附加worktree和交付SHA，不重复本批纯套件/生成图稿；无新选择、依赖或可行动变化时保持安静。后继raw采样/同live实例绑定、校准与接线仍须新的冻结/独立验证，不能靠本静态mapping指纹授权飞行。
+
 | 波次/负责人 | 本批职责 | 文件范围 |
 |---|---|---|
 | 根负责人 | 自动化更新、分支/交付、审核页、确认门禁、原生集成 | AGENTS.md、本文、PRD 新章节、审核网页与生成工具、已协调的集成代码 |
