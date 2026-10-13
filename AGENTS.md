@@ -23,6 +23,30 @@
 - 当前精选截图在 `assets/ui-v04/`；历史图在 `assets/ui-history/`。全量 `verification` 截图不提交，仅提交必要图稿和紧凑验证证据。
 - 不把自动几何检查通过等同于全面视觉验收；保留未解决候选和人工验收限制。
 
+## 场景合理性与视觉前置门禁（2026-10-13 起）
+
+- 所有场景和大型视觉资产严格按 `G0 场景存在合理性 → G1 空间连续性/尺度/重力 → G2 正常游戏视角的轮廓与构图 → G3 材质/光照/天气 → G4 LOD/性能/诊断/工程完整性` 顺序验收。任一上游门禁失败，立即停止下游优化；不得在地貌关系或重力错误时继续调贴图、材质、LOD 或性能。
+- 新增元素实现前必须回答：为什么出现在这里、如何连接现有地形、受什么物理过程与重力约束、玩家从正常路线能感知什么正向提升。没有可信答案不得制作或接入。
+- 山体、岩壁、海岬、沙滩等必须是连续地貌：顶部连接内陆，两端自然过渡，底部连接沙滩/潮间带/碎石坡/水下地形；禁止突然出现或结束的墙片、独立模型遮掩断裂。
+- 独立岩石和道具必须有可识别支撑面，重心投影落在支撑范围内，与地面或母岩合理嵌入，并有接触阴影、AO、积尘或碎屑过渡。Raycast、Collider 与自动检测只作辅助，不能替代截图中的视觉接地判断。
+- 大型场景资产先做无材质灰模；灰模阶段只验位置、连续性、尺度、轮廓、重力、路线和构图。灰模未通过，禁止制作 PBR、烘焙、复杂 LOD 和天气联动。
+- 每轮视觉迭代必须先提供相同出生点、路线、相机、天气和时间下的正常游戏视角 Before/After，并覆盖近景、中景、远景。孤立 LookDev、固定资产捕获和诊断通道只能补充，不能替代正常游戏画面。
+- Critic 必须先做常识判断：元素是否合理存在、是否自然/真实、是否违反重力、是否与环境连续、是否有模型摆放感。常识门禁通过后，才评价 Normal、Roughness、AO、LOD、Tiling 和性能。
+- 悬浮、地貌突现/突止、明显尺度错误、资产与环境不融合、正常视角像贴片或独立模型、严重重复纹理、修改后弱于基线，任一项均为 P0 并一票否决。不得用加权分数、自动化全绿或 MCP 成功稀释 P0。
+- 大模型 Critic 分数仅供参考；若分数与 Before/After 直观证据冲突，以截图和用户观感为准，废弃评分并重新审查。用户指出“不真实”或“没有改善”时暂停当前方向，禁止用技术结果辩解；基础方案错误则回滚或重做。
+- 每轮交付必须明确：产品目标、存在与物理合理性、Before、After、常识门禁、视觉门禁、工程门禁和最终结论。只有前三类门禁均通过，才可标记 Candidate；最终用户验收仍只能由用户完成。
+
+## 游戏内 3D 场景编辑器与运行时 MCP
+
+- 可以建设类似成熟游戏关卡编辑器的游戏内 3D 场景编辑器，但第一阶段只允许在独立 `Sandbox` 场景和草稿数据中工作，禁止直接修改正式飞行场景、核心 Simulation/Physics 或已发布资产。
+- 人工 UI 与 AI MCP 必须复用同一套运行时 Command API；禁止分别维护两套修改路径。核心模块至少包含 Selection、Hierarchy、Inspector、Asset Palette、Move/Rotate/Scale Gizmo、Snap、CommandHistory、SceneSerializer、Validation 与 Evidence。
+- 所有可编辑对象使用稳定 Runtime ID 和白名单 Prefab ID；AI 只能访问授权资产目录和显式开放属性。禁止任意 C#、Shell、Python、反射调用、任意文件路径和删除正式资产。
+- 每次 MCP 修改必须经过 `inspect → dry-run/preview → transaction snapshot → apply → validate → evidence → commit 或 rollback`。支持 Undo/Redo、事务回滚、变更前后值、场景 diff 和审计日志；失败时默认回滚。
+- 运行时 MCP 初始工具应覆盖：`runtime_inspect_scene`、`runtime_list_prefabs`、`runtime_spawn_object`、`runtime_modify_transform`、`runtime_delete_draft_object`、`runtime_validate_scene`、`runtime_capture_before_after`、`runtime_save_sandbox`、`runtime_rollback`、`runtime_inspect_performance`。删除只允许草稿对象。
+- `runtime_validate_scene` 必须先执行本文件的 G0/G1/G2 门禁，包括地形连续性、支撑/重力、尺度、玩家路线和正常视角 Before/After；材质、LOD 与性能优化不能绕过这些门禁。
+- AI 优化产物默认状态为 `DRAFT_NOT_USER_CONFIRMED`；只能保存为独立 JSON/场景补丁和 Evidence Bundle。经人工审查和用户确认后，才允许通过受控导入流程进入正式场景。
+- 实施顺序：Phase 4 运行时只读 Inspect/Capture；Phase 5 选取、层级、属性和受控 Transform；Phase 6 Gizmo、吸附、Undo/Redo、序列化与验证；Phase 7 AI 布局、光照、LOD 和性能优化。每阶段单独构建、验证和验收，不因 MCP 可调用就声称编辑器完成。
+
 ## 提交范围与安全
 
 - 开始工作先读 Git 状态；保留用户已有改动。仅提交与当前请求相关且已检查的文件，不盲目 `git add .`。
